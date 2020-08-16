@@ -1,0 +1,54 @@
+{
+    "name": "chrome-extension-template",
+    "version": "0.0.1",
+    "description": "Chrome extension boilerplate, replace all values!",
+    "main": "src/popup/popup.html",
+    "repository": "",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "start": "nodemon --exec npm run dev",
+        "dev": "webpack --mode development",
+        "prebuild": "rimraf dist",
+        "build": "webpack --mode production"
+    },
+    "nodemonConfig": {
+        "ignore": [
+            "dist/",
+            "node_modules"
+        ],
+        "execMap": {
+            "js": "node"
+        },
+        "ext": "js html css",
+        "verbose": true
+    },
+    "dependencies": {
+        "@babel/cli": "^7.10.5",
+        "@babel/core": "^7.11.1",
+        "@babel/node": "^7.10.5",
+        "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
+        "@babel/plugin-proposal-optional-chaining": "^7.11.0",
+        "@babel/plugin-transform-async-to-generator": "^7.10.4",
+        "@babel/plugin-transform-react-jsx": "^7.10.4",
+        "@babel/preset-env": "^7.11.0",
+        "@babel/preset-react": "^7.10.4",
+        "@webcomponents/webcomponentsjs": "^2.4.4",
+        "babel-loader": "^8.1.0",
+        "babel-preset-minify": "^0.5.1",
+        "copy-webpack-plugin": "^6.0.3",
+        "eslint": "^7.6.0",
+        "eslint-config-standard": "^14.1.1",
+        "eslint-plugin-import": "^2.22.0",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-react": "^7.20.5",
+        "eslint-plugin-standard": "^4.0.1",
+        "jquery": "^3.5.1",
+        "nodemon": "^2.0.4",
+        "rimraf": "^3.0.2",
+        "webextension-polyfill": "^0.6.0",
+        "webpack": "^4.44.1",
+        "webpack-cli": "^3.3.12"
+    }
+}
