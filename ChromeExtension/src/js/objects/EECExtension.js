@@ -1,94 +1,121 @@
+import EECExtensionCSS from './EECExtension.css'
+import { computeWordRects, makeFixedPositionChildDiv } from './TextUtility.js'
+
 class EECExtension extends HTMLElement {
   constructor () {
     super()
 
-    // Setup the positioning of this element
-    this.style.cssText = 'position: absolute; top: 0px; right: 50px; z-index: 100;'
-
     // Create a shadow root
-    this.attachShadow({ mode: 'open' }) // sets and returns 'this.shadowRoot'
+    this.attachShadow({ mode: 'open' })
+  }
 
+  setupElement () {
     // Create (nested) span elements as 'wrapper' and 'icon'
-    const wrapper = document.createElement('span')
-    wrapper.setAttribute('class', 'wrapper')
-    const icon = wrapper.appendChild(document.createElement('span'))
-    icon.setAttribute('class', 'icon')
-    icon.setAttribute('tabindex', 0)
+    const buttonDivs = makeFixedPositionChildDiv(
+      this.textBox, window.innerWidth, window.innerHeight,
+      'eec-button-wrapper', 'eec-icon', true)
+    this.wrapperElem = buttonDivs[0]
+    this.iconElem = buttonDivs[1]
+    this.iconElem.setAttribute('tabindex', 0)
 
     // Insert icon from defined attribute or default icon
-    const img = icon.appendChild(document.createElement('img'))
-    img.src = this.hasAttribute('img') ? this.getAttribute('img') : EECExtension.DEFAULT_IMG
+    const img = document.createElement('img')
+    img.setAttribute('class', 'eec-icon-img')
+    img.style.pointerEvents = 'auto'
+    img.src = EECExtension.DEFAULT_IMG
+    this.iconElem.appendChild(img)
+
+    this.infoElem = document.createElement('span')
+    this.infoElem.setAttribute('class', 'eec-info')
+    this.iconElem.appendChild(this.infoElem)
 
     // Take attribute content and put it inside the info span
-    const info = wrapper.appendChild(document.createElement('span'))
-    info.setAttribute('class', 'info')
-    info.textContent = this.getAttribute('data-text')
-
-    // Attach callbacks to the editor element focus and input events
-    // this.editorElement = this.getAttribute('data-editor')
-    // if (this.editorElement) {
-    //   this.editorElement.addEventListener('focusin', (e) => { this.editorFocused(e) }, false)
-    //   this.editorElement.addEventListener('focusout', (e) => { this.editorBlurred(e) }, false)
-    //   this.editorElement.addEventListener('input', (e) => { this.editorInput(e) }, false)
-    // }
+    this.infoElem.textContent = 'It looks like you\'re asking if @Jillian has look at the player-character state machine. Consider revising.'
+    this.iconElem.onclick = () => {
+      if (this.infoElem.style.opacity > 0) {
+        this.infoElem.style.opacity = 0
+      } else {
+        this.infoElem.style.opacity = 1
+      }
+    }
 
     // Create some CSS to apply to the shadow dom
-    const style = document.createElement('style')
-    style.textContent = `
-      .wrapper {
-        position: relative;
-      }
+    this.styleElem = document.createElement('style')
+    this.styleElem.textContent = EECExtensionCSS
 
-      .info {
-        font-size: 0.8rem;
-        width: 200px;
-        display: inline-block;
-        border: 1px solid black;
-        padding: 10px;
-        background: white;
-        border-radius: 10px;
-        opacity: 0;
-        transition: 0.6s all;
-        position: absolute;
-        bottom: 20px;
-        left: 10px;
-        z-index: 3;
-      }
+    // Make elements to hold the markup
+    const markupDivs = makeFixedPositionChildDiv(
+      this.textBox, window.innerWidth, window.innerHeight,
+      'eec-markup-wrapper', 'eec-markup', true)
+    this.markupWrapper = markupDivs[0]
+    this.markupDiv = markupDivs[1]
 
-      img {
-        width: 1.2rem;
-      }
-
-      .icon:hover + .info, .icon:focus + .info {
-        opacity: 1;
-      }`
-
-    // attach the created elements to the shadow DOM
-    this.shadowRoot.append(style, wrapper)
+    // Attach the created elements to the shadow DOM
+    this.shadowRoot.append(this.styleElem, this.markupWrapper, this.wrapperElem)
   }
 
-  editorFocused (event) {
-    console.log('Focus event:', event)
-  }
-
-  editorBlurred (event) {
-    console.log('Blur event:', event)
-  }
-
-  editorInput (event) {
-    console.log('Input event:', event)
-  }
-
+  // Custom Element is mounted to the DOM
   connectedCallback () {
-    console.log('EEC-Extension element added to page.')
+    // Setup the positioning of this element
+    this.style.cssText = 'position: absolute; top: 0px; left: 0px; z-index: 3;'
   }
 
+  // Custom Element is unmounted from the DOM
   disconnectedCallback () {
     console.log('EEC-Extension element removed from page.')
   }
 
+  // Custom Element is moved to a different DOM
   adoptedCallback () {
     console.log('EEC-Extension element moved to new page.')
+  }
+
+  // Update the textBox we are watching
+  setTextBox (newTextBox) {
+    this.textBox = $(newTextBox)
+    if (this.textBox) {
+      this.setupElement()
+      this.textBox.on('focusin', this.textBoxFocused.bind(this))
+      this.textBox.on('focusout', this.textBoxBlurred.bind(this))
+      this.textBox.on('input', this.textBoxInput.bind(this))
+    }
+  }
+
+  textBoxFocused (event) {
+    this.updateUnderlinedWords(this._wordList)
+  }
+
+  textBoxBlurred (event) {
+  }
+
+  textBoxInput (event) {
+    this.updateUnderlinedWords(this._wordList)
+  }
+
+  get wordList () { return this._wordList }
+  set wordList (wordList) {
+    this._wordList = wordList
+  }
+
+  updateUnderlinedWords (words) {
+    if (this.textBox && this.markupWrapper) {
+      this.markupDiv.textContent = ''
+      const rects = computeWordRects(this.textBox, words)
+      if (rects.length > 0) {
+        rects.forEach((rect) => {
+          const newHighlighter = document.createElement('div')
+          newHighlighter.setAttribute('class', 'eec-highlighter')
+          newHighlighter.style.cssText = `
+            position: absolute;
+            left: ${rect.left}px;
+            top: ${rect.top}px;
+            height: ${rect.height}px;
+            width: ${rect.width}px;
+            border-bottom: 1px solid #ff99ab;`
+          this.markupDiv.append(newHighlighter)
+        })
+      }
+    }
   }
 }
 

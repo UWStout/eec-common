@@ -35,6 +35,11 @@ module.exports = (env, argv) => {
             ]
           }
         }
+      }, {
+        // CSS files: imports CSS files as a raw string
+        test: /\.css$/,
+        include: [path.resolve(__dirname, 'src')],
+        use: 'raw-loader'
       }]
     },
 

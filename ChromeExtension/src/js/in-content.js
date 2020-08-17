@@ -7,28 +7,35 @@
  * Note that in this scenario the port is open from the popup, but other extensions may open it from
  * the background page or not even have either background.js or popup.js.
  **/
-
 import './objects/EECExtension.js'
 
-const EECElementList = new Set()
+const EECElementList = new Map()
 function updateTextBoxes () {
-  const textBoxes = document.querySelectorAll('[role="textbox"]')
-  console.log('EEC-Extension: checking ' + textBoxes.length + ' textbox(es).')
+  // Try slate editor first (for discord)
+  let textBoxes = document.querySelectorAll('[data-slate-editor')
+  if (textBoxes.length < 1) {
+    // Fall back to generic editable divs (with role 'textbox')
+    textBoxes = document.querySelectorAll('[role="textbox"]')
+  }
+
+  // Loop over each textbox and install an extension element
+  // for it if one does not already exist.
   textBoxes.forEach((textBox) => {
     if (!EECElementList.has(textBox)) {
-      textBox.insertAdjacentHTML('afterend',
-        '<eec-extension data-text="Some explanatory text goes here." />'
-      )
-      EECElementList.add(textBox)
+      // Build extension
+      const extensionElem = document.createElement('eec-extension')
+      extensionElem.wordList = ['test', 'seth', 'the']
+      extensionElem.setTextBox(textBox)
+
+      // Insert it and add to lookup map
+      textBox.parentNode.insertBefore(extensionElem, textBox.nextSibling)
+      EECElementList.set(textBox, extensionElem)
     }
   })
 }
 
-// Options for the observer (which mutations to observe)
-const config = { childList: true, subtree: true }
-
 // Callback function to execute when mutations are observed
-const callback = (mutationsList, observer) => {
+const mutationCallback = (mutationsList, observer) => {
   // Use traditional 'for loops' for IE 11
   for (const mutation of mutationsList) {
     if (mutation.type === 'childList') {
@@ -38,8 +45,7 @@ const callback = (mutationsList, observer) => {
 }
 
 // Create an observer instance linked to the callback function
-const observer = new MutationObserver(callback)
+const observer = new MutationObserver(mutationCallback)
 
 // Start observing the target node for configured mutations
-observer.observe(document.body, config)
-
+observer.observe(document.body, { childList: true, subtree: true })
