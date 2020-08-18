@@ -1,5 +1,9 @@
 import EECExtensionCSS from './EECExtension.css'
 import { computeWordRects, makeFixedPositionChildDiv } from './TextUtility.js'
+import { ResizeObserver as ROPolyfill } from '@juggle/resize-observer'
+
+// Use polyfill only if needed
+const ResizeObserver = window.ResizeObserver || ROPolyfill
 
 class EECExtension extends HTMLElement {
   constructor () {
@@ -32,10 +36,13 @@ class EECExtension extends HTMLElement {
     // Take attribute content and put it inside the info span
     this.infoElem.textContent = 'It looks like you\'re asking if @Jillian has look at the player-character state machine. Consider revising.'
     this.iconElem.onclick = () => {
+      console.log('EEC ICON CLICKED')
       if (this.infoElem.style.opacity > 0) {
         this.infoElem.style.opacity = 0
+        console.log('\tHiding')
       } else {
         this.infoElem.style.opacity = 1
+        console.log('\tShowing')
       }
     }
 
@@ -78,6 +85,18 @@ class EECExtension extends HTMLElement {
       this.textBox.on('focusin', this.textBoxFocused.bind(this))
       this.textBox.on('focusout', this.textBoxBlurred.bind(this))
       this.textBox.on('input', this.textBoxInput.bind(this))
+
+      this.sizeObserver = new ResizeObserver((entries) => {
+        if (entries.length > 0) {
+          const newSize = entries[0].borderBoxSize[0]
+          this.markupWrapper.firstChild.style.width = `${newSize.inlineSize}px`
+          this.markupWrapper.firstChild.style.height = `${newSize.blockSize}px`
+          this.wrapperElem.firstChild.style.width = `${newSize.inlineSize}px`
+          this.wrapperElem.firstChild.style.height = `${newSize.blockSize}px`
+          this.updateUnderlinedWords(this._wordList)
+        }
+      })
+      this.sizeObserver.observe(newTextBox)
     }
   }
 

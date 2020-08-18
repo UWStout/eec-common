@@ -1,23 +1,82 @@
+function traverseAndSpanifyWords (sourceElement, destinationElement, searchWords) {
+  // Are there children to traverse
+  if (!sourceElement.hasChildNodes()) {
+    return
+  }
+
+  // Loop over children
+  let sourceChild = sourceElement.firstChild
+  let destinationChild = destinationElement.firstChild
+  while (sourceChild) {
+    // Examine source child node type
+    switch (sourceChild.nodeType) {
+      // HTML Element node
+      case Node.ELEMENT_NODE:
+        traverseAndSpanifyWords(sourceChild, destinationChild, searchWords)
+        break
+
+        // Text node
+      case Node.TEXT_NODE:
+        {
+          // Gather unmatched words to rebuild the text node
+          let gatheredText = ''
+
+          // Break text into words and check each one
+          const allWords = sourceChild.nodeValue.split(' ')
+          allWords.forEach((curWord) => {
+            // Look for word in word list (without any punctuation)
+            if (curWord !== '' && searchWords.includes(curWord.toLowerCase().replace(/\W/g, ''))) {
+              // Place gathered text as text node & place word as span
+              destinationChild.parentNode.insertBefore(
+                document.createTextNode(gatheredText),
+                destinationChild
+              )
+              destinationChild.parentNode.insertBefore(
+                $('<span>').addClass('highlight-word-span').text(curWord)[0],
+                destinationChild
+              )
+
+              // Reset gathered text
+              gatheredText = ' '
+            } else {
+              // Gather the word for appending later
+              gatheredText += (curWord + ' ')
+            }
+          })
+
+          // Any remaining gathered words should be appended here
+          if (gatheredText !== ' ' && gatheredText !== '') {
+            destinationChild.parentNode.insertBefore(
+              document.createTextNode(gatheredText),
+              destinationChild
+            )
+          }
+
+          // Remove the destination child and make it point the previous node
+          const prevDestination = destinationChild.previousSibling
+          destinationChild.parentNode.removeChild(destinationChild)
+          destinationChild = prevDestination
+        }
+        break
+    }
+
+    // Advance to next sibling
+    sourceChild = sourceChild.nextSibling
+    destinationChild = destinationChild.nextSibling
+  }
+}
+
+let ghostTextBox
 export function computeWordRects (textBox, searchWords) {
   // Clone the text box
-  const ghostTextBox = textBox.clone()
-  ghostTextBox.empty()
-
-  // Split the message into words
-  const allWords = textBox.text().split(' ')
+  if (ghostTextBox) {
+    ghostTextBox.remove()
+  }
+  ghostTextBox = textBox.clone()
+  ghostTextBox.css('background-color', 'lightgreen')
 
   // Loop over words and surround matched ones with a span
-  let gatheredText = ''
-  allWords.forEach((curWord) => {
-    if (searchWords.includes(curWord.replace(/\W/g, ''))) {
-      ghostTextBox.append(document.createTextNode(gatheredText + ' '))
-      ghostTextBox.append($('<span>').addClass('highlight-word-span').text(curWord))
-      gatheredText = ' '
-    } else {
-      gatheredText += (curWord + ' ')
-    }
-  })
-  ghostTextBox.append(document.createTextNode(gatheredText))
+  traverseAndSpanifyWords(textBox[0], ghostTextBox[0], searchWords)
 
   // Append the cloned text box so we can measure it
   textBox.after(ghostTextBox)
@@ -35,8 +94,11 @@ export function computeWordRects (textBox, searchWords) {
     })
   })
 
-  // Remove the cloned text box and return the rects
+  // Clear out old text box
   ghostTextBox.remove()
+  ghostTextBox = undefined
+
+  // Return the rects
   return wordRects
 }
 

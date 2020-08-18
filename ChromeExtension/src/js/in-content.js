@@ -9,11 +9,20 @@
  **/
 import './objects/EECExtension.js'
 
+// Detect discord or teams
+const IS_DISCORD = window.location.host.includes('discord')
+if (IS_DISCORD) { console.log('DISCORD DETECTED') }
+
+const IS_TEAMS = window.location.host.includes('teams.microsoft.')
+if (IS_TEAMS) { console.log('MS TEAMS DETECTED') }
+
 const EECElementList = new Map()
 function updateTextBoxes () {
   // Try slate editor first (for discord)
-  let textBoxes = document.querySelectorAll('[data-slate-editor')
-  if (textBoxes.length < 1) {
+  let textBoxes
+  if (IS_DISCORD) {
+    textBoxes = document.querySelectorAll('[data-slate-editor]')
+  } else {
     // Fall back to generic editable divs (with role 'textbox')
     textBoxes = document.querySelectorAll('[role="textbox"]')
   }
@@ -21,7 +30,13 @@ function updateTextBoxes () {
   // Loop over each textbox and install an extension element
   // for it if one does not already exist.
   textBoxes.forEach((textBox) => {
-    if (!EECElementList.has(textBox)) {
+    let key = textBox
+    if (IS_DISCORD) {
+      key = textBox.getAttribute('aria-label')
+    }
+    if (!EECElementList.has(key)) {
+      console.log(`Adding New EEC Extension for (${EECElementList.size + 1} added)`)
+
       // Build extension
       const extensionElem = document.createElement('eec-extension')
       extensionElem.wordList = ['test', 'seth', 'the']
@@ -29,7 +44,7 @@ function updateTextBoxes () {
 
       // Insert it and add to lookup map
       textBox.parentNode.insertBefore(extensionElem, textBox.nextSibling)
-      EECElementList.set(textBox, extensionElem)
+      EECElementList.set(key, extensionElem)
     }
   })
 }
