@@ -18,8 +18,7 @@
     "matches": [
       "*://teams.microsoft.com/*",
       "*://*.discord.com/*",
-      "*://*.discord.gg/*",
-      "*://*.facebook.com/*"],
+      "*://*.discord.gg/*"],
     "js": [
       "webcomponents-bundle.js",
       "browser-polyfill.min.js",
