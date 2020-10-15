@@ -1,56 +1,27 @@
-/**
- * popup.js
- *
- * This file initializes its scripts after the popup has loaded.
- *
- * It shows how to access global variables from background.js.
- * Note that getViews could be used instead to access other scripts.
- *
- * A port to the active tab is open to send messages to its in-content.js script.
- **/
+import React from 'react'
+import ReactDOM from 'react-dom'
+import RadialTest from './popup/components/RadialTest.jsx'
 
-// Start the popup script, this could be anything from a simple script to a webapp
-const initPopupScript = () => {
-  // Access the background window object
-  const backgroundWindow = chrome.extension.getBackgroundPage()
-
-  // Do anything with the exposed variables from background.js
-  console.log(backgroundWindow.sampleBackgroundGlobal)
-
-  // This port enables a long-lived connection to in-content.js
-  let port = null
-
-  // Send messages to the open port
-  const sendPortMessage = message => port.postMessage(message)
-
-  // Find the current active tab
-  const getTab = () =>
-    new Promise(resolve => {
-      chrome.tabs.query({
-        active: true,
-        currentWindow: true
-      }, tabs => resolve(tabs[0]))
-    })
-
-  // Handle port messages
-  const messageHandler = message => {
-    console.log('popup.js - received message:', message)
-  }
-
-  // Find the current active tab, then open a port to it
-  getTab().then(tab => {
-    // Connects to tab port to enable communication with inContent.js
-    port = chrome.tabs.connect(tab.id, {
-      name: 'eec-extension'
-    })
-
-    // Set up the message listener
-    port.onMessage.addListener(messageHandler)
-
-    // Send a test message to in-content.js
-    sendPortMessage('Message from popup!')
-  })
-}
+import { initPopupScript } from './popup/communication.js'
 
 // Fire scripts after page has loaded
 document.addEventListener('DOMContentLoaded', initPopupScript)
+
+const items = [
+  { href: 'http://www.facebook.com', image: 'url(facebook.png)' },
+  { href: 'http://www.reddit.com', image: 'url(reddit.png)' },
+  { href: 'http://www.flickr.com', image: 'url(flickr.png)' },
+  { href: 'http://www.google.com', image: 'url(googleplus.png)' }
+]
+
+const center = {
+  image: 'url(share.png)'
+}
+
+ReactDOM.render(
+  <div style={{ padding: '140px 180px' }}>
+    <RadialTest animation="shrinkIn" items={items} center={center}
+      stagger={0} duration={300} itemsSize={50} />
+  </div>,
+  document.body
+)

@@ -39,7 +39,7 @@ function updateTextBoxes () {
 
       // Build extension
       const extensionElem = document.createElement('eec-extension')
-      extensionElem.wordList = ['test', 'seth', 'the']
+      extensionElem.wordList = ['test', 'seth', 'the', 'violence', 'meta']
       extensionElem.setTextBox(textBox)
 
       // Insert it and add to lookup map
