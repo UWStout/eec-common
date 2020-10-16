@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import RadialTest from './popup/components/RadialTest.jsx'
+// import RadialTest from './popup/components/RadialTest.jsx'
+import MainMenu from './popup/components/MainMenu.jsx'
 
 import { initPopupScript } from './popup/communication.js'
 
@@ -19,9 +20,10 @@ const center = {
 }
 
 ReactDOM.render(
-  <div style={{ padding: '140px 180px' }}>
-    <RadialTest animation="shrinkIn" items={items} center={center}
-      stagger={0} duration={300} itemsSize={50} />
+  <div style={{ padding: '20px 20px 20px 20px' }}>
+    {/* <RadialTest animation="shrinkIn" items={items} center={center}
+      stagger={0} duration={300} itemsSize={50} /> */}
+    <MainMenu />
   </div>,
   document.body
 )

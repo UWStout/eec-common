@@ -38,7 +38,6 @@
         "babel-loader": "^8.1.0",
         "babel-preset-minify": "^0.5.1",
         "copy-webpack-plugin": "^6.0.3",
-        "css-loader": "^5.0.0",
         "eslint": "^7.6.0",
         "eslint-config-standard": "^14.1.1",
         "eslint-plugin-import": "^2.22.0",
@@ -55,9 +54,12 @@
         "rimraf": "^3.0.2",
         "sass": "^1.27.0",
         "sass-loader": "^10.0.3",
-        "style-loader": "^2.0.0",
         "webextension-polyfill": "^0.6.0",
         "webpack": "^4.44.1",
         "webpack-cli": "^3.3.12"
+    },
+    "devDependencies": {
+        "css-loader": "^5.0.0",
+        "style-loader": "^2.0.0"
     }
 }
