@@ -1,11 +1,17 @@
+// Read extra environment variables from the .env file
+import dotenv from 'dotenv'
+
 // Using express for basic HTTP
 import Express from 'express'
 
-// Custom data router for our RESTfull data API
+// Custom data router for our RESTFull data API
 import dataRouter from './data.js'
 
 // Custom router for user authentication API
 import authRouter from './auth.js'
+
+// Update environment variables
+dotenv.config()
 
 // Make a standard express app server
 const app = new Express()
