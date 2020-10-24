@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "node watchCode.mjs",
-    "build": "esbuild --platform=node --outfile=dist/server.js src/server.js"
+    "build": "esbuild --platform=node --bundle --external:bcrypt --minify --outfile=dist/server.js src/server.js"
   },
   "license": "MIT",
   "private": true,
@@ -21,6 +21,7 @@
     "eslint-plugin-standard": "^4.0.1"
   },
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "express": "^4.17.1"
   }
 }

@@ -1,3 +1,4 @@
+// Using express for basic HTTP
 import Express from 'express'
 
 // Custom data router for our RESTfull data API
@@ -14,6 +15,9 @@ app.use((req, res, next) => {
   console.log(`${req.method} request for ${req.url}`)
   next()
 })
+
+// Enable parsing of JSON-Encoded bodies
+app.use(Express.json())
 
 // All authentication routes are under '/auth/'
 app.use('/auth', authRouter)

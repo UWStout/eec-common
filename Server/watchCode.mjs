@@ -1,3 +1,5 @@
+import path from 'path'
+
 // Spawn child processes and colored string output
 import childProcess from 'child_process'
 import 'colors'
@@ -22,7 +24,7 @@ function cleanExit () {
 let serverProcess = null
 function spawnServerProcess () {
   // Spawn server process
-  serverProcess = childProcess.spawn('node', ['dist/server.js', 'dev'])
+  serverProcess = childProcess.spawn('node', ['dist/server.js', 'dev'], { cwd: path.resolve() })
 
   // Echo server output
   serverProcess.stdout.on('data', (data) => {
@@ -65,9 +67,14 @@ function startServer () {
 /**
  * Build the code
  */
+let service = null
 async function build () {
-  // Start build service
-  const service = await startService()
+  // Start build service if not already running
+  if (service === null) {
+    service = await startService()
+  }
+
+  // Begin a build
   let buildSuccess = true
   try {
     // Time the build
@@ -77,9 +84,10 @@ async function build () {
     await service.build({
       color: true,
       entryPoints: ['./src/server.js'],
-      outfile: './dist/server.js',
+      outdir: './dist/',
       bundle: true,
-      sourcemap: false,
+      sourcemap: true,
+      external: ['bcrypt'],
       platform: 'node',
       logLevel: 'error'
     })
@@ -91,9 +99,6 @@ async function build () {
     // Output the error
     console.log('Error: build failed')
     buildSuccess = false
-  } finally {
-    // Stop service (restarts next time watcher detects change)
-    service.stop()
   }
 
   return buildSuccess
