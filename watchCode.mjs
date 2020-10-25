@@ -87,7 +87,7 @@ async function build () {
       outdir: './dist/',
       bundle: true,
       sourcemap: true,
-      external: ['bcrypt'],
+      external: ['bcrypt', 'sqlite3'],
       platform: 'node',
       logLevel: 'error'
     })

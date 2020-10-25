@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "node watchCode.mjs",
-    "build": "esbuild --platform=node --bundle --external:bcrypt --minify --outfile=dist/server.js src/server.js"
+    "build": "esbuild --platform=node --bundle --external:bcrypt --external:sqlite3 --minify --outfile=dist/server.js src/server.js"
   },
   "license": "MIT",
   "private": true,
@@ -24,6 +24,7 @@
     "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1"
+    "jsonwebtoken": "^8.5.1",
+    "sqlite3": "^5.0.0"
   }
 }
