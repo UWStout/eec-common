@@ -108,7 +108,7 @@ function confirmSchema (db) {
 
 // SQL to create the initial schema
 const CREATE_QUERIES = [
-  `CREATE TABLE Users (
+  `CREATE TABLE IF NOT EXISTS Users (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     email TEXT NOT NULL,
     passwordHash CHAR(64) NOT NULL,
