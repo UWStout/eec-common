@@ -3,7 +3,10 @@ import path from 'path'
 
 // Import and initialize sqlite library
 import sqlite3 from 'sqlite3'
-const sqlite = sqlite3.verbose()
+let sqlite = sqlite3
+if (process.argv.find((arg) => { return arg === 'dev' })) {
+  sqlite = sqlite3.verbose()
+}
 
 // Path to database file
 const DB_FILE_PATH = path.join(__dirname, '../db')
