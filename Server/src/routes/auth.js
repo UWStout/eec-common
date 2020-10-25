@@ -7,23 +7,6 @@ import JWT from 'jsonwebtoken'
 // Database controller
 import * as DB from '../sqlite/sqliteAuthController.js'
 
-// Temporary user data for testing
-// const users = [
-//   {
-//     firstName: 'John',
-//     lastName: 'Doe',
-//     email: 'johndoe@email.com',
-//     type: 'standard',
-//     password: '$2b$10$MSN/FDQAWJC9aJJ40Ewav.xRIzTUkjutfLFUrcVZ9daz0sogbIodq'
-//   }, {
-//     firstName: 'Seth',
-//     lastName: 'Berrier',
-//     email: 'berriers@uwstout.edu',
-//     type: 'admin',
-//     password: '$2b$10$MSN/FDQAWJC9aJJ40Ewav.xRIzTUkjutfLFUrcVZ9daz0sogbIodq'
-//   }
-// ]
-
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
   // Gather the jwt access token from the request header
