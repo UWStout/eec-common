@@ -8,9 +8,6 @@ import * as SQLHelp from './sqliteHelper.js'
 // How many rounds to use when generating hash salt for passwords
 const SALT_ROUNDS = 10
 
-// Initialize sqlite library and connect to users database
-const userDBHandle = retrieveDBHandle('karunaData', true, true)
-
 /**
  * Retrieve all the details for a given userID
  * @param {number} userID ID of the user in the database
@@ -45,6 +42,7 @@ export function removeUser (userID) {
  * @return {Promise} Resolves to object with basic user info, rejects if invalid
  */
 export function validateUser (email, password) {
+  const userDBHandle = retrieveDBHandle('karunaData', true, true)
   return new Promise((resolve, reject) => {
     userDBHandle.get(
       `SELECT ID, firstName, lastName, userType, passwordHash
