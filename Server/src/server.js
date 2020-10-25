@@ -5,10 +5,10 @@ import dotenv from 'dotenv'
 import Express from 'express'
 
 // Custom data router for our RESTFull data API
-import dataRouter from './data.js'
+import dataRouter from './routes/data.js'
 
 // Custom router for user authentication API
-import authRouter from './auth.js'
+import authRouter from './routes/auth.js'
 
 // Update environment variables
 dotenv.config()
