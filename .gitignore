@@ -1,3 +1,6 @@
+# Secret info that should not be in the repo
+.env
+
 ## IDEs ###
 *.sublime-workspace
 .tag*
