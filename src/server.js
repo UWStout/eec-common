@@ -34,13 +34,13 @@ app.use('/data', dataRouter)
 // If this is a dev run, use 'reload' else just bind to port 8000
 if (process.argv.find((arg) => { return arg === 'dev' })) {
   // Start server listening on debug/dev port
-  app.listen(3000, 'localhost', () => {
-    console.log('Dev server listening on port 3000')
+  app.listen(process.env.DEV_PORT, 'localhost', () => {
+    console.log(`Dev server listening on port ${process.env.DEV_PORT}`)
   })
 } else {
   // Start server listening on main/production port
-  app.listen(8000, 'localhost', () => {
-    console.log('Production server listening on port 8000')
+  app.listen(process.env.PROD_PORT, 'localhost', () => {
+    console.log(`Production server listening on port ${process.env.PROD_PORT}`)
   })
 }
 
