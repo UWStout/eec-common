@@ -1,0 +1,25 @@
+#mainMenu {
+    color: blue;
+}
+
+#karunaHead {
+    color: black;
+    border-bottom: 3px solid rgb(88, 85, 85);
+    display: inline;
+    padding: 0px 50px 10px 50px;
+    list-style-type: none;
+    text-align: center;
+}
+
+#karunaHead li {
+    display: inline-block; 
+    padding: 20px;
+}
+
+#karunaTitle {
+    background-color: white;
+}
+
+#returnButton {
+    background-color: rgb(81, 81, 212);
+}
