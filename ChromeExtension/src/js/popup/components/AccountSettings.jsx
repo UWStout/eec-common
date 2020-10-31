@@ -49,11 +49,12 @@ export default class AccountSettings extends Component {
 
     async validateLogin() {
         try {
-            const data = await Axios.post('http://localhost:3000/auth/login',
+            const response = await Axios.post('http://localhost:3000/auth/login',
                 { email: this.state.email, password: this.state.password }
             )
-            window.alert('Success')
-            console.log(data)
+            const token = response.data.token
+            const tokenInfo = JSON.parse(atob(token.split('.')[1]))
+            console.log(tokenInfo)
         } catch (error) {
             window.alert(error.toString())
             console.log(error)
@@ -69,7 +70,7 @@ export default class AccountSettings extends Component {
                 </div>
                 <div>
                     <h3>Password</h3>
-                    <input type="text" value={this.state.password} onChange={this.handlePasswordChange} />
+                    <input type="password" value={this.state.password} onChange={this.handlePasswordChange} />
                     <button onClick={() => { this.validateLogin() }}>login</button>
                 </div>
                 <div>

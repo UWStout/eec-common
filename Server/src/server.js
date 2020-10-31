@@ -4,6 +4,9 @@ import dotenv from 'dotenv'
 // Using express for basic HTTP
 import Express from 'express'
 
+// enabling cross-origin requests
+import Cors from 'cors'
+
 // Custom data router for our RESTFull data API
 import dataRouter from './routes/data.js'
 
@@ -15,6 +18,9 @@ dotenv.config()
 
 // Make a standard express app server
 const app = new Express()
+
+// Cors configuration to allow any origin and echo it back
+app.use(Cors({ origin: true }))
 
 // Log all server requests to the console
 app.use((req, res, next) => {
