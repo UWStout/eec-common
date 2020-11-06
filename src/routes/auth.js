@@ -9,14 +9,18 @@ import * as DB from '../sqlite/sqliteAuthController.js'
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
-  // Gather the jwt access token from the request header
-  const authHeader = req.headers.authorization
-  const type = authHeader && authHeader.split(' ')[0]
-  const token = authHeader && authHeader.split(' ')[1]
-  if (!type || type.toLowerCase() !== 'digest' || !token) {
-    return res.status(401).json({
-      error: true, message: 'not authorized'
-    })
+  // Check for cookie first
+  let token = req.cookies && req.cookies.JWT
+  if (!token) {
+    // Try the authorization header next
+    const authHeader = req.headers.authorization
+    const type = authHeader && authHeader.split(' ')[0]
+    token = authHeader && authHeader.split(' ')[1]
+    if (!type || type.toLowerCase() !== 'digest' || !token) {
+      return res.status(401).json({
+        error: true, message: 'not authorized'
+      })
+    }
   }
 
   // Attempt to verify the token
@@ -29,6 +33,35 @@ export function authenticateToken (req, res, next) {
 
     // Append payload to the request
     req.user = payload
+    next()
+  })
+}
+
+// Express middleware to authenticate a user
+export function decodeToken (req, res, next) {
+  // Check for cookie first
+  let token = req.cookies && req.cookies.JWT
+  if (!token) {
+    // Try the authorization header next
+    const authHeader = req.headers.authorization
+    const type = authHeader && authHeader.split(' ')[0]
+    token = authHeader && authHeader.split(' ')[1]
+    if (!type || type.toLowerCase() !== 'digest' || !token) {
+      req.user = { error: true, message: 'Malformed Token' }
+    }
+  }
+
+  // Attempt to verify the token
+  console.log('Verifying: ' + token)
+  JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
+    // Append payload to the request
+    req.user = { ...payload }
+
+    // Check for error on verification
+    if (err) {
+      req.user = { ...req.user, error: true, message: 'Invalid Token' }
+    }
+
     next()
   })
 }
