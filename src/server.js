@@ -1,3 +1,5 @@
+import path from 'path'
+
 // Read extra environment variables from the .env file
 import dotenv from 'dotenv'
 
@@ -12,6 +14,9 @@ import dataRouter from './routes/data.js'
 
 // Custom router for user authentication API
 import authRouter from './routes/auth.js'
+
+// Custom router for the back-end wizard
+import wizardRouter from './routes/wizard.js'
 
 // Update environment variables
 dotenv.config()
@@ -36,6 +41,12 @@ app.use('/auth', authRouter)
 
 // All data routes are under '/data/'
 app.use('/data', dataRouter)
+
+// All wizard routes are under '/oz/'
+app.use('/oz', wizardRouter)
+
+// Everything else is a static file
+app.use('/', Express.static(path.resolve('./public')))
 
 // If this is a dev run, use 'reload' else just bind to port 8000
 if (process.argv.find((arg) => { return arg === 'dev' })) {
