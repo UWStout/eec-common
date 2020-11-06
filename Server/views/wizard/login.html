@@ -1,56 +1,56 @@
-<!--
-  This page and its styling is derived from the example Bootstrap 4 login page
-  available here: https://getbootstrap.com/docs/4.5/examples/sign-in/
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Karuna Sign In Form</title>
 
-  It is designed to be dropped into our local-server template base. -->
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="utf-8">
-      <title>Karuna Sign In Form</title>
-  
-      <!-- Bootstrap CSS -->
-      <link rel="stylesheet" href="/lib/bootstrap.min.css">
-  
-      <!-- Our Custom CSS -->
-      <link rel="stylesheet" href="/style/accounts.css">
-    </head>
-  
-    <body class="text-center">
-      <!-- Show while checking for login -->
-      <div id="preValidate">
-        <p id="validateMsg">Checking for prior login ...</p>
-      </div>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/lib/bootstrap.min.css">
 
-      <!-- Login form -->
-      <form class="form-signin needs-validation" novalidate hidden>
-        <img class="mb-4" src="/media/Karuna.png" alt="Stylized logo of the Karuna project." width="140" />
-        <h1 class="h3 mb-3 font-weight-normal">Please Sign In</h1>
-    
-        <!-- Lone email input -->
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control upper-input" placeholder="Email address" required>
-  
-        <!-- Two password fields grouped as upper and lower -->
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control lower-input" placeholder="Password" required>
-    
-        <!-- Button to create account -->
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In to Account</button>
-      </form>
-  
-      <!-- Bootstrap JS, with dependencies Popper.js and jQuery -->
-      <script src="/lib/jquery-3.5.1.slim.min.js"></script>
-      <script src="/lib/bootstrap.bundle.min.js"></script>
-  
-      <!-- Axios for ajax requests -->
-      <script src="/lib/axios.min.js"></script>
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="/style/accounts.css">
+  </head>
 
-      <!-- Store2 for local storage -->
-      <script src="/lib/store2.min.js"></script>
+  <body class="text-center">
+    <!-- Show while checking for login -->
+    <div id="preValidate">
+      <p id="validateMsg">Checking for prior login ...</p>
+    </div>
 
-      <!-- Our custom javascript -->
-      <script src="login.js"></script>
-    </body>
-  </html>
-    
+    <!-- Login form -->
+    <form class="form-signin needs-validation" novalidate hidden>
+      <img class="mb-4" src="/media/Karuna.png" alt="Stylized logo of the Karuna project." width="140" />
+      <h1 class="h3 mb-3 font-weight-normal">Please Sign In</h1>
+  
+      <!-- Lone email input -->
+      <label for="inputEmail" class="sr-only">Email address</label>
+      <input type="email" id="inputEmail" class="form-control upper-input" placeholder="Email address" required>
+
+      <!-- Two password fields grouped as upper and lower -->
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input type="password" id="inputPassword" class="form-control lower-input" placeholder="Password" required>
+  
+      <!-- Button to create account -->
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In to Account</button>
+
+      <!-- Link to registration form -->
+      <p class="mt-4"><a href="register.html">Create new account</a></p>
+
+    </form>
+
+    <!-- Bootstrap JS, with dependencies Popper.js and jQuery -->
+    <script src="/lib/jquery-3.5.1.slim.min.js"></script>
+    <script src="/lib/bootstrap.bundle.min.js"></script>
+
+    <!-- Axios for ajax requests -->
+    <script src="/lib/axios.min.js"></script>
+
+    <!-- Store2 and js.cookie for storage -->
+    <script src="/lib/store2.min.js"></script>
+    <script src="/lib/js.cookie.min.js"></script>
+
+    <!-- Our custom javascript -->
+    <script src="authHelper.js"></script>
+    <script src="login.js"></script>
+  </body>
+</html>

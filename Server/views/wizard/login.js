@@ -1,39 +1,24 @@
-/* globals $, axios, store */
+/* globals $, axios, store, Cookies, preValidate */
 let accountForm
-let token = ''
 
-// Update submit event once page is loaded
-$(document).ready(() => {
-  if (checkForToken()) {
-    // Validate and redirect
-    axios.get('/auth/validate', {
-      headers: {
-        Authorization: `digest ${token}`
-      }
-    }).then((response) => {
-      $('#validateMsg').text('Login valid. Redirecting ...')
-      setTimeout(() => { window.location.href = '/oz/' }, 1500)
-    }).catch((error) => {
-      // Validation error just indicates an invalid token
-      $('#validateMsg').text('Invalid, please login')
-      console.log('Validation error - clearing token')
-      console.log(error)
-      store.local.remove('JWT')
-      showLogin()
-    })
-  } else {
-    showLogin()
+// Pre-validate based on stored token
+$(document).ready(() => { preValidate(showLogin) })
+
+// Callback from pre-validate method
+function showLogin (result, message) {
+  // Show message
+  $('#validateMsg').text(message)
+
+  // If token was invalid, show the login form
+  if (!result) {
+    // Initialize and show the login form
+    accountForm = $('.form-signin')
+    accountForm.on('submit', formSubmit)
+
+    // Show the form
+    $('#preValidate').prop('hidden', true)
+    $('.form-signin').prop('hidden', false)
   }
-})
-
-function showLogin () {
-  // Initialize and show the login form
-  accountForm = $('.form-signin')
-  accountForm.on('submit', formSubmit)
-
-  // Show the form
-  $('#preValidate').prop('hidden', true)
-  $('.form-signin').prop('hidden', false)
 }
 
 // Runs when form is submitted
@@ -74,13 +59,6 @@ function addAlert (text, style) {
   accountForm.append(alertDiv)
 }
 
-// Check the token
-function checkForToken () {
-  token = store.local.get('JWT')
-  if (!token || token === '') { return false }
-  return true
-}
-
 // Create the account using the back-end RESTful api
 async function validateLogin () {
   // Get info user
@@ -100,6 +78,7 @@ async function validateLogin () {
 
     // Set the token and redirect
     store.local.set('JWT', response.data.token)
+    Cookies.set('JWT', response.data.token)
     setTimeout(() => { window.location.href = '/oz/' }, 1500)
   } catch (err) {
     // Show a failed alert message

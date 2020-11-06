@@ -6,6 +6,9 @@ import dotenv from 'dotenv'
 // Using express for basic HTTP
 import Express from 'express'
 
+// Middleware for parsing cookie headers
+import CookieParser from 'cookie-parser'
+
 // enabling cross-origin requests
 import Cors from 'cors'
 
@@ -26,6 +29,9 @@ const app = new Express()
 
 // Cors configuration to allow any origin and echo it back
 app.use(Cors({ origin: true }))
+
+// Install the cookie parser
+app.use(CookieParser())
 
 // Log all server requests to the console
 app.use((req, res, next) => {
