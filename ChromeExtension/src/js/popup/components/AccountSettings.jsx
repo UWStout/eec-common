@@ -52,9 +52,11 @@ export default class AccountSettings extends Component {
             const response = await Axios.post('http://localhost:3000/auth/login',
                 { email: this.state.email, password: this.state.password }
             )
-            const token = response.data.token
-            const tokenInfo = JSON.parse(atob(token.split('.')[1]))
-            console.log(tokenInfo)
+            chrome.runtime.sendMessage({
+              type: 'write',
+              key: 'JWT',
+              data: response.data.token
+            })
         } catch (error) {
             window.alert(error.toString())
             console.log(error)

@@ -1,26 +1,36 @@
-/* background.js
- *
- * This file has an example of how to make variables accessible to other scripts of the extension.
- *
- * It also shows how to handle short lived messages from other scripts, in this case, from in-content.js
- *
- * Note that not all extensions need of a background.js file, but extensions that need to persist data
- * after a popup has closed may need of it.
- */
-
-// A sample object that will be exposed further down and used on popup.js
-const sampleBackgroundGlobal = {
-  message: 'This object comes from background.js'
-}
+// Store2 stor
+import store from 'store2'
 
 // Listen to short lived messages from in-content.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  // Perform any other actions depending on the message
-  console.log('background.js - received message from in-content.js:', message)
+  // Parse out the message structure
+  if (!message.type && typeof message === 'string') {
+    try {
+      message = JSON.parse(message)
+    } catch (error) {
+      console.log('BACKGROUND: Failed to parse message')
+      console.log(message)
+      return
+    }
+  }
 
-  // Respond message
-  sendResponse('👍')
+  // check message structure
+  if (!message.type || !message.key) {
+    console.log('BACKGROUND: message missing type or key')
+    console.log(message)
+    return
+  }
+
+  // Execute message
+  switch (message.type.toLowerCase()) {
+    // Read a value from storage
+    case 'read':
+      sendResponse(store.local.get(message.key))
+      break
+
+    // Write a value to storage
+    case 'write':
+      store.local.set(message.key, message.data, true)
+      break
+  }
 })
-
-// Make variables accessible from chrome.extension.getBackgroundPage()
-window.sampleBackgroundGlobal = sampleBackgroundGlobal

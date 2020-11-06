@@ -11,8 +11,9 @@ import * as DB from '../sqlite/sqliteAuthController.js'
 export function authenticateToken (req, res, next) {
   // Gather the jwt access token from the request header
   const authHeader = req.headers.authorization
+  const type = authHeader && authHeader.split(' ')[0]
   const token = authHeader && authHeader.split(' ')[1]
-  if (token == null) {
+  if (!type || type.toLowerCase() !== 'digest' || !token) {
     return res.status(401).json({
       error: true, message: 'not authorized'
     })
@@ -101,6 +102,11 @@ router.post('/register', async (req, res) => {
     console.error(error)
     return res.status(500).json({ error: true, message: 'Error while creating account' })
   }
+})
+
+// A simple validation route (returns 200 and 'OK' if token is valid)
+router.get('/validate', authenticateToken, (req, res) => {
+  res.send('OK')
 })
 
 // Expose the router for use in other files
