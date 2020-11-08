@@ -3,6 +3,9 @@ import path from 'path'
 // Read extra environment variables from the .env file
 import dotenv from 'dotenv'
 
+// Import the base http library
+import http from 'http'
+
 // Using express for basic HTTP
 import Express from 'express'
 
@@ -11,6 +14,9 @@ import CookieParser from 'cookie-parser'
 
 // enabling cross-origin requests
 import Cors from 'cors'
+
+// Our websockets events and management
+import { makeSocket } from './sockets.js'
 
 // Custom data router for our RESTFull data API
 import dataRouter from './routes/data.js'
@@ -26,6 +32,7 @@ dotenv.config()
 
 // Make a standard express app server
 const app = new Express()
+const server = http.createServer(app)
 
 // Cors configuration to allow any origin and echo it back
 app.use(Cors({ origin: true }))
@@ -53,6 +60,9 @@ app.use('/oz', wizardRouter)
 
 // Everything else is a static file
 app.use('/', Express.static(path.resolve('./public')))
+
+// Setup web-sockets
+makeSocket(server)
 
 // If this is a dev run, use 'reload' else just bind to port 8000
 if (process.argv.find((arg) => { return arg === 'dev' })) {

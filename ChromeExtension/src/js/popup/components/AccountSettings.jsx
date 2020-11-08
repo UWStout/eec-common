@@ -38,7 +38,7 @@ export default class AccountSettings extends Component {
     }
 
     addClick() {
-        this.setState(prevState => ({ values: [...prevState.values, '']}))
+        this.setState(prevState => ({ values: [...prevState.values, ''] }))
     }
 
     removeClick(i) {

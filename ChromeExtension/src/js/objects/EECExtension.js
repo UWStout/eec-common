@@ -1,4 +1,7 @@
-import EECExtensionCSS from './EECExtension.css'
+import Axios from 'axios'
+
+import EECExtensionCSS from './EECExtension.raw'
+
 import { computeWordRects, makeFixedPositionChildDiv } from './TextUtility.js'
 import { ResizeObserver as ROPolyfill } from '@juggle/resize-observer'
 
@@ -11,6 +14,12 @@ class EECExtension extends HTMLElement {
 
     // Create a shadow root
     this.attachShadow({ mode: 'open' })
+
+    // Read the JWT for later use
+    chrome.runtime.sendMessage({ type: 'read', key: 'JWT' }, (response) => {
+      console.log('[[IN-CONTENT]] Received token')
+      this.JWT = response
+    })
   }
 
   setupElement () {
@@ -34,15 +43,15 @@ class EECExtension extends HTMLElement {
     this.iconElem.appendChild(this.infoElem)
 
     // Take attribute content and put it inside the info span
-    this.infoElem.textContent = 'It looks like you\'re asking if @Jillian has look at the player-character state machine. Consider revising.'
+    this.infoElem.textContent = 'It looks like you\'re asking if @Jillian has looked at the player-character state machine. Consider revising.'
     this.iconElem.onclick = () => {
-      console.log('EEC ICON CLICKED')
+      console.log('[[IN-CONTENT]] EEC ICON CLICKED')
       if (this.infoElem.style.opacity > 0) {
         this.infoElem.style.opacity = 0
-        console.log('\tHiding')
+        console.log('[[IN-CONTENT]] \tHiding')
       } else {
         this.infoElem.style.opacity = 1
-        console.log('\tShowing')
+        console.log('[[IN-CONTENT]] \tShowing')
       }
     }
 
@@ -69,12 +78,12 @@ class EECExtension extends HTMLElement {
 
   // Custom Element is unmounted from the DOM
   disconnectedCallback () {
-    console.log('EEC-Extension element removed from page.')
+    console.log('[[IN-CONTENT]] EEC-Extension element removed from page.')
   }
 
   // Custom Element is moved to a different DOM
   adoptedCallback () {
-    console.log('EEC-Extension element moved to new page.')
+    console.log('[[IN-CONTENT]] EEC-Extension element moved to new page.')
   }
 
   // Update the textBox we are watching
@@ -109,6 +118,50 @@ class EECExtension extends HTMLElement {
 
   textBoxInput (event) {
     this.updateUnderlinedWords(this._wordList)
+    this.sendTextToServer(event.target.textContent)
+  }
+
+  textHasChanged (newText) {
+    // Remove repeated or unneeded spaces
+    const normedText = newText.replace(/\s+/g, ' ').toLowerCase()
+
+    // Convert to words and remove last word
+    const words = normedText.split(' ')
+    words.splice(words.length - 1, 1)
+
+    if (this.lastWordsSent) {
+      // Compare with last words sent
+      let same = true
+      if (this.lastWordsSent.length !== words.length) {
+        // Length's don't match so set same to false
+        same = false
+      } else {
+        for (let i = 0; i < words.length; i++) {
+          // Compare each word
+          if (words[i] !== this.lastWordsSent[i]) {
+            same = false
+            break
+          }
+        }
+      }
+
+      // They match so return false
+      if (same) { return false }
+    }
+
+    // Words don't match so cache them and return false
+    this.lastWordsSent = words
+    return true
+  }
+
+  sendTextToServer (newText) {
+    if (this.textHasChanged(newText)) {
+      console.log('[[IN-CONTENT]] Text: ' + newText)
+    }
+    // Axios.post('http://localhost:3000/data/msgUpdate',
+    //   { messageText: newText },
+    //   { headers: { Authorization: `token ${this.JWT}` } }
+    // )
   }
 
   get wordList () { return this._wordList }

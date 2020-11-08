@@ -36,7 +36,12 @@ module.exports = (env, argv) => {
           }
         }
       }, {
-        // CSS files: imports CSS files as a raw string
+        // RAW files: import any file as raw string (handy for CSS parsing)
+        test: /\.raw$/,
+        include: [path.resolve(__dirname, 'src')],
+        use: 'raw-loader'
+      }, {
+        // CSS files: imports CSS files as JS objects
         test: /\.css$/,
         include: [path.resolve(__dirname, 'src')],
         use: [

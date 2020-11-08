@@ -1,6 +1,92 @@
 // Store2 stor
 import store from 'store2'
 
+// Only intercept websocket messages to these urls
+const discordFilters = {
+  urls: ['http://discord.com/*', 'https://discord.com/*'],
+  types: ['xmlhttprequest', 'websocket']
+}
+
+const discordTypeFilters = [
+  'typing', 'messages'
+]
+
+const msTeamsFilters = {
+  urls: ['*://*.msg.teams.microsoft.com/*'],
+  types: ['xmlhttprequest', 'websocket']
+}
+
+const msTeamsTypeFilters = [
+  'properties', 'messages'
+]
+
+// Listen for all websocket & xhr messages to the discord server
+chrome.webRequest.onBeforeRequest.addListener((details) => {
+  // Examine and extract request identifying parts
+  const URLParts = details.url.split('/')
+  let requestTypePart = ''
+  if (URLParts.length > 7) {
+    requestTypePart = URLParts[7].toLowerCase()
+  }
+
+  let requestSubTypePart = ''
+  if (URLParts.length > 9) {
+    requestSubTypePart = URLParts[9]
+  }
+
+  // Respond to request types and sub-types
+  let requestContent = ''
+  switch (requestTypePart) {
+    case 'messages':
+      // Decode any reaction emoji's and target names
+      if (requestSubTypePart === 'reactions') {
+        // Ignore reaction get requests
+        if (details.method === 'GET') {
+          requestTypePart = ''
+        }
+        requestContent = decodeURI(URLParts[10])
+      } else {
+        // Look for and decode message text
+        if (details.requestBody) {
+          const utf8decoder = new TextDecoder()
+          const dataSent = JSON.parse(utf8decoder.decode(details.requestBody.raw[0].bytes))
+          requestContent = dataSent.content
+        }
+      }
+      break
+  }
+
+  // Only respond to matched message types
+  if (discordTypeFilters.find((curFilter) => { return requestTypePart.startsWith(curFilter) })) {
+    console.log(`[[IN-CONTENT]] Discord Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}  (${details.method})`)
+    if (requestContent) {
+      console.log(`[[IN-CONTENT]] Discord Message:    > "${requestContent}"`)
+    }
+  }
+}, discordFilters, ['blocking', 'requestBody'])
+
+// Listen for all websocket & xhr messages to the teams server
+chrome.webRequest.onBeforeRequest.addListener((details) => {
+  // Ignore requests that end with a file extension
+  const URLParts = details.url.split('/')
+  let requestTypePart = URLParts[URLParts.length - 1].toLowerCase()
+  let requestSubTypePart = ''
+  if (requestTypePart.includes('?')) {
+    const requestParts = requestTypePart.split('?')
+    requestTypePart = requestParts[0]
+    if (requestParts[1]) {
+      const matches = requestParts[1].match(/name=(.+)/)
+      requestSubTypePart = matches[1] ? matches[1] : ''
+    }
+  }
+
+  // Only respond to matched message types
+  if (msTeamsTypeFilters.find((curFilter) => { return requestTypePart.startsWith(curFilter) })) {
+    // Log activity
+    console.log(`[[IN-CONTENT]] MSTeams Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}`)
+  }
+}, msTeamsFilters, ['blocking', 'requestBody'])
+
 // Listen to short lived messages from in-content.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // Parse out the message structure

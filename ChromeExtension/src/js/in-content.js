@@ -11,10 +11,10 @@ import './objects/EECExtension.js'
 
 // Detect discord or teams
 const IS_DISCORD = window.location.host.includes('discord')
-if (IS_DISCORD) { console.log('DISCORD DETECTED') }
+if (IS_DISCORD) { console.log('[[IN-CONTENT]] DISCORD DETECTED') }
 
 const IS_TEAMS = window.location.host.includes('teams.microsoft.')
-if (IS_TEAMS) { console.log('MS TEAMS DETECTED') }
+if (IS_TEAMS) { console.log('[[IN-CONTENT]] MS TEAMS DETECTED') }
 
 const EECElementList = new Map()
 function updateTextBoxes () {
@@ -35,7 +35,7 @@ function updateTextBoxes () {
       key = textBox.getAttribute('aria-label')
     }
     if (!EECElementList.has(key)) {
-      console.log(`Adding New EEC Extension for (${EECElementList.size + 1} added)`)
+      console.log(`[[IN-CONTENT]] Adding New EEC Extension for (${EECElementList.size + 1} added)`)
 
       // Build extension
       const extensionElem = document.createElement('eec-extension')

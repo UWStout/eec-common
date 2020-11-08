@@ -9,20 +9,18 @@ import ReactDOM from 'react-dom'
 import MainMenu from './popup/components/MainMenu.jsx'
 
 // Function to initialize communication between contexts
-// (automatically run after content loads)
-import { initPopupScript } from './popup/communication.js'
+import { attachBackgroundPage } from './popup/communication.js'
 
 // Retrieve the background context
 document.addEventListener('DOMContentLoaded',
-  () => {
-    initPopupScript().then((newBackground) => {
-      window.extBackground = newBackground
-    }).catch((error) => {
-      window.extBackground = null
-      console.error(error)
-    })
-  }
+  attachBackgroundPage(messageReceived)
 )
+
+// Just log messages received for now
+function messageReceived (message, sender, sendResponse) {
+  console.log(`POPUP: Message from ${sender.url} => ${sender.id}`)
+  console.log(message)
+}
 
 // <DISABLED UNTIL FIXED>
 // // Experimental radial menu widget

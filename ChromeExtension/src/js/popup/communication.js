@@ -1,7 +1,17 @@
-// Start the popup script, this could be anything from a simple script to a webapp
-export function initPopupScript () {
+// Retrieve background page and attach to global callback
+export function attachBackgroundPage (receiveCallback) {
+  initScriptCommunication(receiveCallback).then((newBackground) => {
+    window.extBackground = newBackground
+  }).catch((error) => {
+    window.extBackground = null
+    console.error(error)
+  })
+}
+
+// Listen for messages and retrieve the background page context
+export function initScriptCommunication (receiveCallback) {
   // Setup a extension message listener
-  chrome.runtime.onMessage.addListener(messageReceived)
+  chrome.runtime.onMessage.addListener(receiveCallback)
 
   // Access the background window object
   return new Promise((resolve, reject) => {
@@ -16,16 +26,4 @@ export function initPopupScript () {
       return resolve(background)
     })
   })
-}
-
-// callback for messages received from other parts of the extension
-function messageReceived (message, sender, sendResponse) {
-  console.log(`POPUP: Message from ${sender.url} => ${sender.id}`)
-  console.log(message)
-}
-
-// callback for messages received from other parts of the extension
-function responseReceived (message) {
-  console.log('POPUP: Response from background')
-  console.log(message)
 }
