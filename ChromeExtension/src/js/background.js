@@ -22,7 +22,12 @@ const msTeamsTypeFilters = [
 
 // Listen for all websocket & xhr messages to the discord server
 chrome.webRequest.onBeforeRequest.addListener((details) => {
-  // Examine and extract request identifying parts
+  // Ignore all OPTIONS requests (part of cors)
+  if (details.method.toLowerCase() === 'options') {
+    return
+  }
+
+  // Determine type and sub-type of request
   const URLParts = details.url.split('/')
   let requestTypePart = ''
   if (URLParts.length > 7) {
@@ -67,7 +72,12 @@ chrome.webRequest.onBeforeRequest.addListener((details) => {
 
 // Listen for all websocket & xhr messages to the teams server
 chrome.webRequest.onBeforeRequest.addListener((details) => {
-  // Ignore requests that end with a file extension
+  // Ignore all OPTIONS requests (part of cors)
+  if (details.method.toLowerCase() === 'options') {
+    return
+  }
+
+  // Determine the type and sub-type of the request
   const URLParts = details.url.split('/')
   let requestTypePart = URLParts[URLParts.length - 1].toLowerCase()
   let requestSubTypePart = ''
@@ -76,14 +86,41 @@ chrome.webRequest.onBeforeRequest.addListener((details) => {
     requestTypePart = requestParts[0]
     if (requestParts[1]) {
       const matches = requestParts[1].match(/name=(.+)/)
-      requestSubTypePart = matches[1] ? matches[1] : ''
+      requestSubTypePart = (matches && matches[1]) ? matches[1] : ''
     }
+  }
+
+  // Decode message content
+  let requestContent = ''
+  switch (requestTypePart) {
+    case 'messages':
+      // Look for and decode message text
+      if (details.requestBody) {
+        const utf8decoder = new TextDecoder()
+        const dataSent = JSON.parse(utf8decoder.decode(details.requestBody.raw[0].bytes))
+        requestContent = dataSent.content
+      }
+      break
+
+    case 'properties':
+      // Decode emoji reaction type
+      if (requestSubTypePart === 'emotions' && details.requestBody) {
+        const utf8decoder = new TextDecoder()
+        const dataSent = JSON.parse(utf8decoder.decode(details.requestBody.raw[0].bytes))
+        requestContent = JSON.parse(dataSent.emotions).key
+      } else if (requestSubTypePart === 'emotions') {
+        console.log(details)
+      }
+      break
   }
 
   // Only respond to matched message types
   if (msTeamsTypeFilters.find((curFilter) => { return requestTypePart.startsWith(curFilter) })) {
     // Log activity
-    console.log(`[[IN-CONTENT]] MSTeams Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}`)
+    console.log(`[[IN-CONTENT]] MSTeams Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}  (${details.method})`)
+    if (requestContent) {
+      console.log(`[[IN-CONTENT]] MSTeams Message:    > "${requestContent}"`)
+    }
   }
 }, msTeamsFilters, ['blocking', 'requestBody'])
 
@@ -107,16 +144,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return
   }
 
+  // Build message key-name
+  let keyContext = message.key
+  if (message.context) {
+    keyContext = `${message.context}/${message.key}`
+  }
+
   // Execute message
   switch (message.type.toLowerCase()) {
     // Read a value from storage
     case 'read':
-      sendResponse(store.local.get(message.key))
+      sendResponse(store.local.get(keyContext))
       break
 
     // Write a value to storage
     case 'write':
-      store.local.set(message.key, message.data, true)
+      store.local.set(keyContext, message.data, true)
       break
   }
 })
