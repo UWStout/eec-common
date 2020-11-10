@@ -11,9 +11,11 @@
 
     <style>
       /* Styling for the chat history list */
-      .messageList { list-style-type: none; height: 88%; margin: 0; padding: 0; background-color: bisque; }
+      .messageList { list-style-type: none; height: 68%; margin: 0; padding: 0; background-color: bisque; }
       .messageList li { padding: 5px 10px; }
       .messageList li:nth-child(odd) { background: #eee; }
+      /* Styling for the active message box */
+      .activeTyping { height: 20%; margin: 0; padding: 0; border: 1px solid black; }
     </style>
   </head>
   <body>
@@ -58,6 +60,7 @@
 
                   <!-- Chat Interface Widget -->
                   <ul class="messageList" id="messageList1"></ul>
+                  <div class="activeTyping" id="activeTyping1"></div>
                   <div class="input-group mt-3 mb-3">
                     <div class="input-group-prepend">
                       <!-- Canned Responses Dropdown -->
@@ -96,6 +99,9 @@
 
     <!-- Store2 for local storage -->
     <script src="/lib/store2.min.js"></script>
+
+    <!-- Web sockets served from local server -->
+    <script src="/lib/socket.io.min.js"></script>
 
     <!-- Custom Scripting -->
     <script src="emeraldCity.js" type="module"></script>

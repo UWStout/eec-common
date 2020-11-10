@@ -28,18 +28,15 @@ router.get('/*', decodeToken, (req, res, next) => {
   // Non-authorized paths
   if (unauthPages.indexOf(req.url) >= 0) {
     // Attempt to send file in response
-    console.log('>  unauth page')
     return res.sendFile(req.path, { root: path.resolve(VIEW_PATH) })
   } else {
     // All remaining paths require authorization or redirect to logout
     if (!req.user || req.user.error) {
       // Send to logout
-      console.log('>  auth page failure')
       return res.redirect('/oz/logout.html')
     }
 
     // Attempt to send file in response
-    console.log('>  auth page success')
     return res.sendFile(req.path, { root: path.resolve(VIEW_PATH) })
   }
 })
