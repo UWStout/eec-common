@@ -35,11 +35,13 @@ function socketDisconnect (reason) {
 // Updated text of message being written
 // - 'this' = current socket
 function socketMessageUpdate (text) {
-  console.log(`[WS:${this.id}] message update "${text}"`)
+  console.log(`[WS:${this.id}] message update:`)
+  console.log(JSON.stringify(text, null, 2))
 }
 
 // Attempt to send message
 // - 'this' = current socket
 function socketMessageSend (message) {
-  console.log(`[WS:${this.id}] message sent "${message}"`)
+  console.log(`[WS:${this.id}] message send:`)
+  console.log(JSON.stringify(message, null, 2))
 }
