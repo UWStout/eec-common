@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
+import Modal from '../modal.jsx'
+import Portal from '../portal.js'
 
 export default class AccountSettings extends Component {
     constructor(props) {
@@ -8,11 +10,27 @@ export default class AccountSettings extends Component {
         this.state = {
             values: [],
             email: '',
-            password: ''
+            password: '',
+            showModal: false,
+            removeTeam: false
         }
 
         this.handleEmailChange = this.handleEmailChange.bind(this)
         this.handlePasswordChange = this.handlePasswordChange.bind(this)
+        this.confirmRemoveTeam = this.confirmRemoveTeam.bind(this)
+        this.denyRemoveTeam = this.denyRemoveTeam.bind(this)
+    }
+
+    confirmRemoveTeam() {
+        this.setState({
+            removeTeam: true
+        })
+    }
+
+    denyRemoveTeam() {
+        this.setState({
+            removeTeam: false
+        })
     }
 
     createUI() {
@@ -42,9 +60,23 @@ export default class AccountSettings extends Component {
     }
 
     removeClick(i) {
-        let values = [...this.state.values];
-        values.splice(i,1);
-        this.setState({ values });
+        if (this.state.removeTeam) {
+            let values = [...this.state.values];
+            values.splice(i,1);
+            this.setState({ 
+                values,
+                showModal: false,
+                removeTeam: false
+            })
+        } else if (!this.state.removeTeam && !this.state.showModal) {
+            this.setState({
+                showModal: true
+            })
+        } else if (!this.state.removeTeam && this.state.showModal) {
+            this.setState({
+                showModal: false
+            })
+        }
     }
 
     async validateLogin() {
@@ -78,7 +110,14 @@ export default class AccountSettings extends Component {
                 <div>
                     <h3>Current Teams</h3>
                     { this.createUI() }
-                    <input type='button' value='add team' onClick={this.addClick.bind(this)} />
+                    <button onClick={this.addClick.bind(this)} >
+                        add team
+                    </button>
+                    <Portal>
+                        <Modal onConfirm={this.confirmRemoveTeam} onDeny={this.denyRemoveTeam} show={this.state.showModal}>
+                            Are you sure?
+                        </Modal>
+                    </Portal>
                 </div>
             </div>
         );
