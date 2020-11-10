@@ -36,11 +36,20 @@ module.exports = (env, argv) => {
           }
         }
       }, {
-        // CSS files: imports CSS files as a raw string
-        test: /\.css$/,
+        // RAW files: import any file as raw string (handy for CSS parsing)
+        test: /\.raw$/,
         include: [path.resolve(__dirname, 'src')],
         use: 'raw-loader'
       }, {
+        // CSS files: imports CSS files as JS objects
+        test: /\.css$/,
+        include: [path.resolve(__dirname, 'src')],
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      }, {
+        // Processing of SASS files into JSS
         test: /\.s[ac]ss$/i,
         use: [
           // Creates `style` nodes from JS strings
@@ -56,10 +65,12 @@ module.exports = (env, argv) => {
     // Enable the copy plugin
     plugins: [
       new CopyWebpackPlugin({
+        // Copy html, images, and compiled+minified libraries into the dist folder
         patterns: [
           { from: './node_modules/webextension-polyfill/dist/browser-polyfill.min.js' },
           { from: './node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js' },
           { from: './node_modules/jquery/dist/jquery.slim.min.js' },
+          { from: './node_modules/store2/dist/store2.min.js' },
           { from: './manifest.json' },
           { from: './src/images' },
           { from: './src/views' }

@@ -1,12 +1,18 @@
 import React, { Component } from 'react'
+import Axios from 'axios'
 
 export default class AccountSettings extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            values: []
+            values: [],
+            email: '',
+            password: ''
         }
+
+        this.handleEmailChange = this.handleEmailChange.bind(this)
+        this.handlePasswordChange = this.handlePasswordChange.bind(this)
     }
 
     createUI() {
@@ -23,8 +29,16 @@ export default class AccountSettings extends Component {
         this.setState({ values });
     }
 
+    handleEmailChange (event) {
+        this.setState({ email: event.target.value })
+    }
+
+    handlePasswordChange (event) {
+        this.setState({ password: event.target.value })
+    }
+
     addClick() {
-        this.setState(prevState => ({ values: [...prevState.values, '']}))
+        this.setState(prevState => ({ values: [...prevState.values, ''] }))
     }
 
     removeClick(i) {
@@ -33,17 +47,33 @@ export default class AccountSettings extends Component {
         this.setState({ values });
     }
 
+    async validateLogin() {
+        try {
+            const response = await Axios.post('http://localhost:3000/auth/login',
+                { email: this.state.email, password: this.state.password }
+            )
+            chrome.runtime.sendMessage({
+              type: 'write',
+              key: 'JWT',
+              data: response.data.token
+            })
+        } catch (error) {
+            window.alert(error.toString())
+            console.log(error)
+        }
+    }
+
     render () {
         return (
             <div>
                 <div>
                     <h3>Email</h3>
-                    <input type="text" />
+                    <input type="text" value={this.state.email} onChange={this.handleEmailChange} />
                 </div>
                 <div>
                     <h3>Password</h3>
-                    <input type="text" />
-                    <button>reset</button>
+                    <input type="password" value={this.state.password} onChange={this.handlePasswordChange} />
+                    <button onClick={() => { this.validateLogin() }}>login</button>
                 </div>
                 <div>
                     <h3>Current Teams</h3>

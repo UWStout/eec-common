@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Manual Karuna Backend</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/lib/bootstrap.min.css">
+
+    <style>
+      /* Styling for the chat history list */
+      .messageList { list-style-type: none; height: 88%; margin: 0; padding: 0; background-color: bisque; }
+      .messageList li { padding: 5px 10px; }
+      .messageList li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+    <!-- Basic grid -->
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="pb-2 mt-4 mb-2 border-bottom">
+            <h1>Manual Karuna Backend Interface</h1>
+          </div>
+          <p class="pt-2 pb-2 mb-s">With this backend tool, you can view all active sessions and respond back with any text. Your response will be
+            shown to the connected user as if it was coming from the Karuna plugin. This tool is intended only for design
+            and debugging purposes and is not meant for use in a production environment.
+          </p>
+          <h3 class="pt-2 mb-4">Currently Active Sessions:</h3>
+      </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          
+          <!-- Display interactive tabs, one for each session -->
+          <ul id="tabHeader" class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="tab1" data-toggle="tab" href="#tab1Content" role="tab" aria-controls="tab1Content" aria-selected="true">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="tab2" data-toggle="tab" href="#tab2Content" role="tab" aria-controls="tab2Content" aria-selected="false">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="tab3" data-toggle="tab" href="#tab3Content" role="tab" aria-controls="tab3Content" aria-selected="false">Contact</a>
+            </li>
+          </ul>
+
+          <!-- All tab content -->
+          <div id="tabContent" class="tab-content">
+
+            <!-- Individual Tab -->
+            <div class="tab-pane fade show active" style="height: 500px;" id="tab1Content" role="tabpanel" aria-labelledby="tab1">
+              <div class="container h-100">
+                <div class="mt-2 mb-4 h-100">
+
+                  <!-- Chat Interface Widget -->
+                  <ul class="messageList" id="messageList1"></ul>
+                  <div class="input-group mt-3 mb-3">
+                    <div class="input-group-prepend">
+                      <!-- Canned Responses Dropdown -->
+                      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">This is an example message ...</a>
+                        <a class="dropdown-item" href="#">This is another example message ...</a>
+                        <a class="dropdown-item" href="#">This is yet another example message ...</a>
+                        <div role="separator" class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">This is one more example message ...</a>
+                      </div>
+                    </div>
+                    <!-- Message Text Input -->
+                    <input type="text" class="form-control" placeholder="Message Text" aria-label="Message to send">
+                    <!-- Send Button -->
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" type="button">Send</button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS, with dependencies Popper.js and jQuery -->
+    <script src="/lib/jquery-3.5.1.slim.min.js"></script>
+    <script src="/lib/bootstrap.bundle.min.js"></script>
+
+    <!-- Axios for ajax requests -->
+    <script src="/lib/axios.min.js"></script>
+
+    <!-- Store2 for local storage -->
+    <script src="/lib/store2.min.js"></script>
+
+    <!-- Custom Scripting -->
+    <script src="emeraldCity.js" type="module"></script>
+  </body>
+</html>

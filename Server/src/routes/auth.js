@@ -7,32 +7,20 @@ import JWT from 'jsonwebtoken'
 // Database controller
 import * as DB from '../sqlite/sqliteAuthController.js'
 
-// Temporary user data for testing
-// const users = [
-//   {
-//     firstName: 'John',
-//     lastName: 'Doe',
-//     email: 'johndoe@email.com',
-//     type: 'standard',
-//     password: '$2b$10$MSN/FDQAWJC9aJJ40Ewav.xRIzTUkjutfLFUrcVZ9daz0sogbIodq'
-//   }, {
-//     firstName: 'Seth',
-//     lastName: 'Berrier',
-//     email: 'berriers@uwstout.edu',
-//     type: 'admin',
-//     password: '$2b$10$MSN/FDQAWJC9aJJ40Ewav.xRIzTUkjutfLFUrcVZ9daz0sogbIodq'
-//   }
-// ]
-
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
-  // Gather the jwt access token from the request header
-  const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(' ')[1]
-  if (token == null) {
-    return res.status(401).json({
-      error: true, message: 'not authorized'
-    })
+  // Check for cookie first
+  let token = req.cookies && req.cookies.JWT
+  if (!token) {
+    // Try the authorization header next
+    const authHeader = req.headers.authorization
+    const type = authHeader && authHeader.split(' ')[0]
+    token = authHeader && authHeader.split(' ')[1]
+    if (!type || type.toLowerCase() !== 'digest' || !token) {
+      return res.status(401).json({
+        error: true, message: 'not authorized'
+      })
+    }
   }
 
   // Attempt to verify the token
@@ -45,6 +33,35 @@ export function authenticateToken (req, res, next) {
 
     // Append payload to the request
     req.user = payload
+    next()
+  })
+}
+
+// Express middleware to authenticate a user
+export function decodeToken (req, res, next) {
+  // Check for cookie first
+  let token = req.cookies && req.cookies.JWT
+  if (!token) {
+    // Try the authorization header next
+    const authHeader = req.headers.authorization
+    const type = authHeader && authHeader.split(' ')[0]
+    token = authHeader && authHeader.split(' ')[1]
+    if (!type || type.toLowerCase() !== 'digest' || !token) {
+      req.user = { error: true, message: 'Malformed Token' }
+    }
+  }
+
+  // Attempt to verify the token
+  console.log('Verifying: ' + token)
+  JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
+    // Append payload to the request
+    req.user = { ...payload }
+
+    // Check for error on verification
+    if (err) {
+      req.user = { ...req.user, error: true, message: 'Invalid Token' }
+    }
+
     next()
   })
 }
@@ -118,6 +135,11 @@ router.post('/register', async (req, res) => {
     console.error(error)
     return res.status(500).json({ error: true, message: 'Error while creating account' })
   }
+})
+
+// A simple validation route (returns 200 and 'OK' if token is valid)
+router.get('/validate', authenticateToken, (req, res) => {
+  res.send('OK')
 })
 
 // Expose the router for use in other files

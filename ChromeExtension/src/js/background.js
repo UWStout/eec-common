@@ -1,26 +1,122 @@
-/* background.js
- *
- * This file has an example of how to make variables accessible to other scripts of the extension.
- *
- * It also shows how to handle short lived messages from other scripts, in this case, from in-content.js
- *
- * Note that not all extensions need of a background.js file, but extensions that need to persist data
- * after a popup has closed may need of it.
- */
+// Store2 stor
+import store from 'store2'
 
-// A sample object that will be exposed further down and used on popup.js
-const sampleBackgroundGlobal = {
-  message: 'This object comes from background.js'
+// Only intercept websocket messages to these urls
+const discordFilters = {
+  urls: ['http://discord.com/*', 'https://discord.com/*'],
+  types: ['xmlhttprequest', 'websocket']
 }
+
+const discordTypeFilters = [
+  'typing', 'messages'
+]
+
+const msTeamsFilters = {
+  urls: ['*://*.msg.teams.microsoft.com/*'],
+  types: ['xmlhttprequest', 'websocket']
+}
+
+const msTeamsTypeFilters = [
+  'properties', 'messages'
+]
+
+// Listen for all websocket & xhr messages to the discord server
+chrome.webRequest.onBeforeRequest.addListener((details) => {
+  // Examine and extract request identifying parts
+  const URLParts = details.url.split('/')
+  let requestTypePart = ''
+  if (URLParts.length > 7) {
+    requestTypePart = URLParts[7].toLowerCase()
+  }
+
+  let requestSubTypePart = ''
+  if (URLParts.length > 9) {
+    requestSubTypePart = URLParts[9]
+  }
+
+  // Respond to request types and sub-types
+  let requestContent = ''
+  switch (requestTypePart) {
+    case 'messages':
+      // Decode any reaction emoji's and target names
+      if (requestSubTypePart === 'reactions') {
+        // Ignore reaction get requests
+        if (details.method === 'GET') {
+          requestTypePart = ''
+        }
+        requestContent = decodeURI(URLParts[10])
+      } else {
+        // Look for and decode message text
+        if (details.requestBody) {
+          const utf8decoder = new TextDecoder()
+          const dataSent = JSON.parse(utf8decoder.decode(details.requestBody.raw[0].bytes))
+          requestContent = dataSent.content
+        }
+      }
+      break
+  }
+
+  // Only respond to matched message types
+  if (discordTypeFilters.find((curFilter) => { return requestTypePart.startsWith(curFilter) })) {
+    console.log(`[[IN-CONTENT]] Discord Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}  (${details.method})`)
+    if (requestContent) {
+      console.log(`[[IN-CONTENT]] Discord Message:    > "${requestContent}"`)
+    }
+  }
+}, discordFilters, ['blocking', 'requestBody'])
+
+// Listen for all websocket & xhr messages to the teams server
+chrome.webRequest.onBeforeRequest.addListener((details) => {
+  // Ignore requests that end with a file extension
+  const URLParts = details.url.split('/')
+  let requestTypePart = URLParts[URLParts.length - 1].toLowerCase()
+  let requestSubTypePart = ''
+  if (requestTypePart.includes('?')) {
+    const requestParts = requestTypePart.split('?')
+    requestTypePart = requestParts[0]
+    if (requestParts[1]) {
+      const matches = requestParts[1].match(/name=(.+)/)
+      requestSubTypePart = matches[1] ? matches[1] : ''
+    }
+  }
+
+  // Only respond to matched message types
+  if (msTeamsTypeFilters.find((curFilter) => { return requestTypePart.startsWith(curFilter) })) {
+    // Log activity
+    console.log(`[[IN-CONTENT]] MSTeams Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}`)
+  }
+}, msTeamsFilters, ['blocking', 'requestBody'])
 
 // Listen to short lived messages from in-content.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  // Perform any other actions depending on the message
-  console.log('background.js - received message from in-content.js:', message)
+  // Parse out the message structure
+  if (!message.type && typeof message === 'string') {
+    try {
+      message = JSON.parse(message)
+    } catch (error) {
+      console.log('BACKGROUND: Failed to parse message')
+      console.log(message)
+      return
+    }
+  }
 
-  // Respond message
-  sendResponse('👍')
+  // check message structure
+  if (!message.type || !message.key) {
+    console.log('BACKGROUND: message missing type or key')
+    console.log(message)
+    return
+  }
+
+  // Execute message
+  switch (message.type.toLowerCase()) {
+    // Read a value from storage
+    case 'read':
+      sendResponse(store.local.get(message.key))
+      break
+
+    // Write a value to storage
+    case 'write':
+      store.local.set(message.key, message.data, true)
+      break
+  }
 })
-
-// Make variables accessible from chrome.extension.getBackgroundPage()
-window.sampleBackgroundGlobal = sampleBackgroundGlobal

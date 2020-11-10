@@ -43,7 +43,11 @@ class EECExtension extends HTMLElement {
     this.iconElem.appendChild(this.infoElem)
 
     // Take attribute content and put it inside the info span
+<<<<<<< HEAD
+    this.infoElem.textContent = 'It looks like you\'re asking if @Larissa has look at the player-character state machine. Consider revising.'
+=======
     this.infoElem.textContent = 'It looks like you\'re asking if @Jillian has looked at the player-character state machine. Consider revising.'
+>>>>>>> 1bdf936f88872941b387d82461c305534dd5661b
     this.iconElem.onclick = () => {
       console.log('[[IN-CONTENT]] EEC ICON CLICKED')
       if (this.infoElem.style.opacity > 0) {

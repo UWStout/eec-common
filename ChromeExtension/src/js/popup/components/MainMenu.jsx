@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import KarunaSettings from './KarunaSettings.jsx'
 import AccountSettings from './AccountSettings.jsx'
 import EmojiHistory from './EmojiHistory.jsx'
+import './Menu.css'
 
 export default class MainMenu extends Component {
     constructor(props) {
@@ -56,14 +57,23 @@ export default class MainMenu extends Component {
             emojiHistMenu = <EmojiHistory />
 
         return (
-            <div className="mainMenu">
+            <div id="mainMenu">
                 <div>
-                    <h3>Karuna</h3>
-                    {karunaClicked || accountClicked || emojiHistClicked
-                        ? <button onClick={() => this.handleReturnClick()}>back</button>
-                        : null
-                    }
-                    <button>X</button>
+                    <ul id="karunaHead">
+                        {karunaClicked || accountClicked || emojiHistClicked
+                            ? <li>
+                                <button 
+                                    id="returnButton" 
+                                    onClick={() => this.handleReturnClick()}
+                                >
+                                    back
+                                </button>
+                            </li>
+                            : null
+                        }
+                        <li><h3 id="karunaTitle">Karuna</h3></li>
+                        <li><button id="returnButton">X</button></li>
+                    </ul>
                 </div>
                 {!karunaClicked && !accountClicked && !emojiHistClicked ?
                 <div>
