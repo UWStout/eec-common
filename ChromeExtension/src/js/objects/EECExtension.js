@@ -157,11 +157,10 @@ class EECExtension extends HTMLElement {
   sendTextToServer (newText) {
     if (this.textHasChanged(newText)) {
       console.log('[[IN-CONTENT]] Text: ' + newText)
+      if (this.backgroundPort) {
+        this.backgroundPort.postMessage({ type: 'textUpdate', content: newText })
+      }
     }
-    // Axios.post('http://localhost:3000/data/msgUpdate',
-    //   { messageText: newText },
-    //   { headers: { Authorization: `token ${this.JWT}` } }
-    // )
   }
 
   get wordList () { return this._wordList }

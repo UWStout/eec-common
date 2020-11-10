@@ -1,5 +1,14 @@
-// Store2 stor
+// Store2 local storage library
 import store from 'store2'
+
+// Open socket to the karuna server
+import io from 'socket.io-client'
+const socket = io.connect('http://localhost:3000')
+
+// Listen for messages from the karuna server
+socket.on('karunaServer', (msg) => {
+  console.log(`[WS:${socket.id}] message received - ${msg}`)
+})
 
 // Only intercept websocket messages to these urls
 const discordFilters = {
@@ -63,6 +72,22 @@ chrome.webRequest.onBeforeRequest.addListener((details) => {
 
   // Only respond to matched message types
   if (discordTypeFilters.find((curFilter) => { return requestTypePart.startsWith(curFilter) })) {
+    // Send the socket data
+    if (requestTypePart === 'messages' && requestContent) {
+      console.log('[[IN-CONTENT]] Sending socket message for discord')
+      const wsMsg = {
+        type: requestTypePart,
+        subType: requestSubTypePart,
+        context: 'discord',
+        user: store.local.get('discord/userName'),
+        team: store.local.get('discord/teamName'),
+        channel: store.local.get('discord/channelName'),
+        data: requestContent
+      }
+      socket.emit('messageSend', wsMsg)
+    }
+
+    // Log the action
     console.log(`[[IN-CONTENT]] Discord Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}  (${details.method})`)
     if (requestContent) {
       console.log(`[[IN-CONTENT]] Discord Message:    > "${requestContent}"`)
@@ -116,6 +141,21 @@ chrome.webRequest.onBeforeRequest.addListener((details) => {
 
   // Only respond to matched message types
   if (msTeamsTypeFilters.find((curFilter) => { return requestTypePart.startsWith(curFilter) })) {
+    // Send the socket data
+    if (requestTypePart === 'messages' && requestContent) {
+      console.log('[[IN-CONTENT]] Sending socket message for MSTeams')
+      const wsMsg = {
+        type: requestTypePart,
+        subType: requestSubTypePart,
+        context: 'msteams',
+        user: store.local.get('msteams/userName'),
+        team: store.local.get('msteams/teamName'),
+        channel: store.local.get('msteams/channelName'),
+        data: requestContent
+      }
+      socket.emit('messageSend', wsMsg)
+    }
+
     // Log activity
     console.log(`[[IN-CONTENT]] MSTeams Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}  (${details.method})`)
     if (requestContent) {
@@ -123,6 +163,25 @@ chrome.webRequest.onBeforeRequest.addListener((details) => {
     }
   }
 }, msTeamsFilters, ['blocking', 'requestBody'])
+
+// Listen to long lived messages from in-content.js
+chrome.runtime.onConnect.addListener((port) => {
+  port.onMessage.addListener((message) => {
+    switch (message.type) {
+      case 'textUpdate':
+        socket.emit('messageUpdate', {
+          type: 'textUpdate',
+          subType: '',
+          context: 'msteams',
+          user: store.local.get('msteams/userName'),
+          team: store.local.get('msteams/teamName'),
+          channel: store.local.get('msteams/channelName'),
+          data: message.content
+        })
+        break
+    }
+  })
+})
 
 // Listen to short lived messages from in-content.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

@@ -1,12 +1,23 @@
 import './objects/EECExtension.js'
 
 // Detect discord or teams
+let contextName = 'NONE'
 const IS_DISCORD = window.location.host.includes('discord')
-if (IS_DISCORD) { console.log('[[IN-CONTENT]] DISCORD DETECTED') }
+if (IS_DISCORD) {
+  contextName = 'discord'
+  console.log('[[IN-CONTENT]] DISCORD DETECTED')
+}
 
 const IS_TEAMS = window.location.host.includes('teams.microsoft.')
-if (IS_TEAMS) { console.log('[[IN-CONTENT]] MS TEAMS DETECTED') }
+if (IS_TEAMS) {
+  contextName = 'msteams'
+  console.log('[[IN-CONTENT]] MS TEAMS DETECTED')
+}
 
+// Initialize communication with background page
+const extensionPort = chrome.runtime.connect({ name: contextName })
+
+// Track and inject the extension for each text-box
 const EECElementList = new Map()
 function updateTextBoxes () {
   // Get all text-box elements
@@ -31,6 +42,7 @@ function updateTextBoxes () {
 
       // Build extension
       const extensionElem = document.createElement('eec-extension')
+      extensionElem.backgroundPort = extensionPort
       extensionElem.wordList = ['test', 'seth', 'the', 'violence', 'meta']
       extensionElem.setTextBox(textBox)
 
@@ -50,14 +62,11 @@ const mutationCallback = (mutationsList, observer) => {
   updateTextBoxes()
 
   // Check team and channel names on any page mutation
-  let context = ''
   if (IS_TEAMS) {
-    context = 'msteams'
     userName = $('img.user-picture').first().attr('upn')
     teamServerName = $('.school-app-team-title').text()
     channelName = $('.channel-name').text()
   } else if (IS_DISCORD) {
-    context = 'discord'
     const userArea = $('section[aria-label="User area"]')
     userName = userArea.text()
     teamServerName = userArea.parent().children().first().children().first().text()
@@ -65,9 +74,9 @@ const mutationCallback = (mutationsList, observer) => {
   }
 
   // Update data in the background script
-  chrome.runtime.sendMessage({ type: 'write', key: 'userName', data: userName, context })
-  chrome.runtime.sendMessage({ type: 'write', key: 'teamName', data: teamServerName, context })
-  chrome.runtime.sendMessage({ type: 'write', key: 'channelName', data: channelName, context })
+  chrome.runtime.sendMessage({ type: 'write', key: 'userName', data: userName, contextName })
+  chrome.runtime.sendMessage({ type: 'write', key: 'teamName', data: teamServerName, contextName })
+  chrome.runtime.sendMessage({ type: 'write', key: 'channelName', data: channelName, contextName })
 }
 
 // Create an observer instance linked to the callback function
