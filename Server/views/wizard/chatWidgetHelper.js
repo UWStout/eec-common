@@ -57,6 +57,7 @@ function makeChatWidget (id) {
   const chatWidgetInnerHTML = `
     <!-- Chat Interface Widget -->
     <ul class="messageList" id="messageList${id}"></ul>
+    <div class="activeTyping" id="activeTyping${id}"></div>
     <div class="input-group mt-3 mb-3">
       <div class="input-group-prepend">
         <!-- Canned Responses Dropdown -->

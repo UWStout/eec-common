@@ -3,7 +3,14 @@ import store from 'store2'
 
 // Open socket to the karuna server
 import io from 'socket.io-client'
-const socket = io.connect('http://localhost:3000')
+
+// Establish connection
+const socket = io('http://localhost:3000')
+socket.on('connect', () => {
+  socket.emit('clientSession', {
+    token: store.local.get('JWT')
+  })
+})
 
 // Listen for messages from the karuna server
 socket.on('karunaServer', (msg) => {
