@@ -102,7 +102,7 @@ class EECExtension extends HTMLElement {
           this.markupWrapper.firstChild.style.height = `${newSize.blockSize}px`
           this.wrapperElem.firstChild.style.width = `${newSize.inlineSize}px`
           this.wrapperElem.firstChild.style.height = `${newSize.blockSize}px`
-          this.updateUnderlinedWords(this._wordList)
+          // this.updateUnderlinedWords(this._wordList)
         }
       })
       this.sizeObserver.observe(newTextBox)
@@ -110,15 +110,26 @@ class EECExtension extends HTMLElement {
   }
 
   textBoxFocused (event) {
-    this.updateUnderlinedWords(this._wordList)
+    // this.updateUnderlinedWords(this._wordList)
   }
 
   textBoxBlurred (event) {
   }
 
   textBoxInput (event) {
-    this.updateUnderlinedWords(this._wordList)
-    this.sendTextToServer(event.target.textContent)
+    // this.updateUnderlinedWords(this._wordList)
+    if (this.contextName === 'msteams') {
+      const tree = $.parseHTML(event.target.innerHTML)
+      if (!Array.isArray(tree)) {
+        this.sendTextToServer(event.target.textContent)
+      } else {
+        const text = []
+        tree.forEach((div) => { text.push(div.textContent) })
+        this.sendTextToServer(text.join('\n'))
+      }
+    } else {
+      this.sendTextToServer(event.target.textContent)
+    }
   }
 
   textHasChanged (newText) {

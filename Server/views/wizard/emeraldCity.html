@@ -11,11 +11,23 @@
 
     <style>
       /* Styling for the chat history list */
-      .messageList { list-style-type: none; height: 68%; margin: 0; padding: 0; background-color: bisque; }
-      .messageList li { padding: 5px 10px; }
-      .messageList li:nth-child(odd) { background: #eee; }
+      .messageList {
+        list-style-type: none; height: 78%;
+        margin: 0; padding: 0;
+        background-color: bisque;
+        overflow-y: auto;
+      }
+      .messageList li { padding: 5px 10px; font-size: 12px; white-space: pre-wrap; }
+      .messageList li.clientMessage { background-color: rgb(192, 240, 192); text-align: left; }
+      .messageList li.karunaMessage { background-color: rgb(240, 192, 192); text-align: right; }
+
       /* Styling for the active message box */
-      .activeTyping { height: 20%; margin: 0; padding: 0; border: 1px solid black; }
+      .activeTyping {
+        height: 10%; margin: 0; padding: 5px 10px;
+        border: 1px solid lightgrey; 
+        font-size: 12px; color: darkgrey;
+        overflow-y: auto; white-space: pre-wrap;
+      }
     </style>
   </head>
   <body>
@@ -49,9 +61,12 @@
               <a class="nav-link" id="tab3" data-toggle="tab" href="#tab3Content" role="tab" aria-controls="tab3Content" aria-selected="false">Contact</a>
             </li>
           </ul>
-
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
           <!-- All tab content -->
-          <div id="tabContent" class="tab-content">
+          <div id="tabContent" class="tab-content pt-1 pb-1" style="border: 1px solid #dee2e6; border-top: none;">
 
             <!-- Individual Tab -->
             <div class="tab-pane fade show active" style="height: 500px;" id="tab1Content" role="tabpanel" aria-labelledby="tab1">

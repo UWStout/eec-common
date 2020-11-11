@@ -131,6 +131,19 @@ chrome.webRequest.onBeforeRequest.addListener((details) => {
         const utf8decoder = new TextDecoder()
         const dataSent = JSON.parse(utf8decoder.decode(details.requestBody.raw[0].bytes))
         requestContent = dataSent.content
+
+        // Parse out any divs used to break lines
+        const domEl = document.createElement('body')
+        domEl.innerHTML = requestContent
+        console.log(domEl.children[0])
+        if (domEl.children[0] && domEl.children[0].children) {
+          console.log(domEl.children[0].children)
+          const text = []
+          Array.from(domEl.children[0].children).forEach((div) => {
+            text.push(div.textContent)
+          })
+          requestContent = text.join('\n')
+        }
       }
       break
 

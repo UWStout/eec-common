@@ -43,6 +43,7 @@ function updateTextBoxes () {
       // Build extension
       const extensionElem = document.createElement('eec-extension')
       extensionElem.backgroundPort = extensionPort
+      extensionElem.contextName = contextName
       extensionElem.wordList = ['test', 'seth', 'the', 'violence', 'meta']
       extensionElem.setTextBox(textBox)
 
