@@ -6,7 +6,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 // Prototype Karuna widget interface
-import MainMenu from './popup/components/MainMenu.jsx'
+import MainMenu from './popup/components/popup-menus/MainMenu.jsx'
 
 // Function to initialize communication between contexts
 import { attachBackgroundPage } from './popup/communication.js'

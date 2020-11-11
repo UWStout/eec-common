@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import KarunaSettings from './KarunaSettings.jsx'
 import AccountSettings from './AccountSettings.jsx'
 import EmojiHistory from './EmojiHistory.jsx'
-import './Menu.css'
+import '../CSS/Menu.css'
 
 export default class MainMenu extends Component {
     constructor(props) {
