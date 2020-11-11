@@ -12,7 +12,7 @@ const VIEW_PATH = './views/wizard'
 const router = new Express.Router()
 
 // List of pages that do not require authorization to access
-const unauthPages = [
+const unAuthPages = [
   '/login.html', '/logout.html', '/register.html',
   '/login.js', '/logout.js', '/register.js',
   '/authHelper.js'
@@ -20,13 +20,11 @@ const unauthPages = [
 
 // Account login or registration (no auth required)
 router.get('/*', decodeToken, (req, res, next) => {
-  console.log(`WIZ ${req.method} request for ${req.url}`)
-
   // Rewrite default path
   if (req.path === '/') { return res.redirect('/oz/emeraldCity.html') }
 
   // Non-authorized paths
-  if (unauthPages.indexOf(req.url) >= 0) {
+  if (unAuthPages.indexOf(req.url) >= 0) {
     // Attempt to send file in response
     return res.sendFile(req.path, { root: path.resolve(VIEW_PATH) })
   } else {
