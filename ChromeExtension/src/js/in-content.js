@@ -1,33 +1,81 @@
-/**
- * in-content.js
- *
- * This file has an example on how to communicate with other parts of the extension through a long
- * lived connection (port) and also through short lived connections (chrome.runtime.sendMessage).
- *
- * Note that in this scenario the port is open from the popup, but other extensions may open it from
- * the background page or not even have either background.js or popup.js.
- **/
+// Import out custom HTML Elements
 import './objects/EECExtension.js'
+import './objects/EECSidebar.js'
+
+// Avoid jQuery conflicts
+$.noConflict()
 
 // Detect discord or teams
+let contextName = 'NONE'
 const IS_DISCORD = window.location.host.includes('discord')
-if (IS_DISCORD) { console.log('[[IN-CONTENT]] DISCORD DETECTED') }
+if (IS_DISCORD) {
+  contextName = 'discord'
+  console.log('[[IN-CONTENT]] DISCORD DETECTED')
+}
 
 const IS_TEAMS = window.location.host.includes('teams.microsoft.')
-if (IS_TEAMS) { console.log('[[IN-CONTENT]] MS TEAMS DETECTED') }
+if (IS_TEAMS) {
+  contextName = 'msteams'
+  console.log('[[IN-CONTENT]] MS TEAMS DETECTED')
+}
 
+// Initialize communication with background page
+const extensionPort = chrome.runtime.connect({ name: contextName })
+
+// State variables
+let userName = ''
+let teamServerName = ''
+let channelName = ''
+
+jQuery(document).ready(() => {
+  // Setup global side-bar
+  const sideBarElem = document.createElement('eec-sidebar')
+  document.body.insertBefore(sideBarElem)
+
+  // Callback function to execute when mutations are observed
+  const mutationCallback = (mutationsList, observer) => {
+    // Attempt to update EEC text-boxes (if needed)
+    updateTextBoxes()
+
+    // Check team and channel names on any page mutation
+    if (IS_TEAMS) {
+      userName = jQuery('img.user-picture').first().attr('upn')
+      teamServerName = jQuery('.school-app-team-title').text()
+      channelName = jQuery('.channel-name').text()
+    } else if (IS_DISCORD) {
+      const userArea = jQuery('section[aria-label="User area"]')
+      userName = userArea.text()
+      teamServerName = userArea.parent().children().first().children().first().text()
+      channelName = document.title
+    }
+
+    // Update data in the background script
+    chrome.runtime.sendMessage({ type: 'write', key: 'userName', data: userName, contextName })
+    chrome.runtime.sendMessage({ type: 'write', key: 'teamName', data: teamServerName, contextName })
+    chrome.runtime.sendMessage({ type: 'write', key: 'channelName', data: channelName, contextName })
+  }
+
+  // Create an observer instance linked to the callback function
+  const observer = new MutationObserver(mutationCallback)
+
+  // Start observing the target node for configured mutations
+  observer.observe(document.body, { childList: true, subtree: true })  
+})
+
+// Track and inject the extension for each text-box
 const EECElementList = new Map()
 function updateTextBoxes () {
-  // Try slate editor first (for discord)
+  // Get all text-box elements
   let textBoxes
   if (IS_DISCORD) {
+    // Any element with the property 'data-slate-editor'
     textBoxes = document.querySelectorAll('[data-slate-editor]')
-  } else {
-    // Fall back to generic editable divs (with role 'textbox')
+  } else if (IS_TEAMS) {
+    // Any element with the role 'textbox'
     textBoxes = document.querySelectorAll('[role="textbox"]')
   }
 
-  // Loop over each textbox and install an extension element
+  // Loop over each text-box and install an extension element
   // for it if one does not already exist.
   textBoxes.forEach((textBox) => {
     let key = textBox
@@ -37,8 +85,10 @@ function updateTextBoxes () {
     if (!EECElementList.has(key)) {
       console.log(`[[IN-CONTENT]] Adding New EEC Extension for (${EECElementList.size + 1} added)`)
 
-      // Build extension
+      // Build in-line extension
       const extensionElem = document.createElement('eec-extension')
+      extensionElem.backgroundPort = extensionPort
+      extensionElem.contextName = contextName
       extensionElem.wordList = ['test', 'seth', 'the', 'violence', 'meta']
       extensionElem.setTextBox(textBox)
 
@@ -48,19 +98,3 @@ function updateTextBoxes () {
     }
   })
 }
-
-// Callback function to execute when mutations are observed
-const mutationCallback = (mutationsList, observer) => {
-  // Use traditional 'for loops' for IE 11
-  for (const mutation of mutationsList) {
-    if (mutation.type === 'childList') {
-      updateTextBoxes()
-    }
-  }
-}
-
-// Create an observer instance linked to the callback function
-const observer = new MutationObserver(mutationCallback)
-
-// Start observing the target node for configured mutations
-observer.observe(document.body, { childList: true, subtree: true })

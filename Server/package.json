@@ -6,7 +6,7 @@
   "scripts": {
     "start": "set DEBUG=app & node dist/server.js",
     "dev": "set DEBUG=app & node watchCode.mjs",
-    "build": "esbuild --platform=node --bundle --external:bcrypt --external:sqlite3 --minify --outfile=dist/server.js src/server.js"
+    "build": "esbuild --platform=node --bundle --external:bcrypt --external:sqlite3 --external:utf-8-validate --external:bufferutil --minify --outfile=dist/server.js src/server.js"
   },
   "license": "MIT",
   "private": true,

@@ -23,6 +23,7 @@
       "webcomponents-bundle.js",
       "browser-polyfill.min.js",
       "jquery.slim.min.js",
+      "popper.min.js",
       "in-content.js"
     ]
   }],

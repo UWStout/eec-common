@@ -71,6 +71,7 @@ module.exports = (env, argv) => {
           { from: './node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js' },
           { from: './node_modules/jquery/dist/jquery.slim.min.js' },
           { from: './node_modules/store2/dist/store2.min.js' },
+          { from: './node_modules/@popperjs/core/dist/umd/popper.min.js' },
           { from: './manifest.json' },
           { from: './src/images' },
           { from: './src/views' }

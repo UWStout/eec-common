@@ -3,8 +3,8 @@
 // Canned messages shown in the dropdown
 const cannedMessages = [
   'This is an example message ...',
-  'This is another example message ...</a>',
-  'This is yet another example message ...</a>',
+  'This is another example message ...',
+  'This is yet another example message ...',
   '__DIVIDER__',
   'This is one more example message'
 ]
@@ -57,23 +57,24 @@ function makeChatWidget (id) {
   const chatWidgetInnerHTML = `
     <!-- Chat Interface Widget -->
     <ul class="messageList" id="messageList${id}"></ul>
+    <div class="activeTyping" id="activeTyping${id}"></div>
     <div class="input-group mt-3 mb-3">
       <div class="input-group-prepend">
         <!-- Canned Responses Dropdown -->
-        ${makeCannedMessageDropdown()}
+        ${makeCannedMessageDropdown(id)}
       </div>
       <!-- Message Text Input -->
-      <input type="text" class="form-control" placeholder="Message Text" aria-label="Message to send" id="messageText${id}">
+      <input type="text" class="form-control messageText" placeholder="Message Text" aria-label="Message to send" data-target="#sendMessage${id}" id="messageText${id}">
       <!-- Send Button -->
       <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" id="sendMessage${id}">Send</button>
+        <button class="btn btn-outline-secondary sendMessage" type="button" data-source="#messageText${id}" data-target="#messageList${id}" id="sendMessage${id}">Send</button>
       </div>
     </div>`
 
   return $.parseHTML(chatWidgetInnerHTML)
 }
 
-function makeCannedMessageDropdown () {
+function makeCannedMessageDropdown (id) {
   const cannedMessageHTML = [
     '<button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>',
     '<div class="dropdown-menu">'
@@ -82,7 +83,7 @@ function makeCannedMessageDropdown () {
     if (msgText === '__DIVIDER__') {
       cannedMessageHTML.push('  <div role="separator" class="dropdown-divider"></div>')
     } else {
-      cannedMessageHTML.push(`  <a class="dropdown-item" href="#">${msgText}</a>`)
+      cannedMessageHTML.push(`  <a class="dropdown-item" href="#" data-target="#messageText${id}">${msgText}</a>`)
     }
   })
   cannedMessageHTML.push('</div>')
