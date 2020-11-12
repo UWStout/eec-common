@@ -82,7 +82,6 @@ makeSocket(server)
 // If this is a dev run, use 'reload' else just bind to port 8000
 if (process.argv.find((arg) => { return arg === 'dev' })) {
   // Start server listening on debug/dev port
-<<<<<<< HEAD
   app.listen(process.env.DEV_PORT, 'localhost', () => {
     debug(`Dev server listening on port ${process.env.DEV_PORT}`)
   })
@@ -90,15 +89,6 @@ if (process.argv.find((arg) => { return arg === 'dev' })) {
   // Start server listening on main/production port
   app.listen(process.env.PROD_PORT, 'localhost', () => {
     debug(`Production server listening on port ${process.env.PROD_PORT}`)
-=======
-  server.listen(process.env.DEV_PORT, 'localhost', () => {
-    console.log(`Dev server listening on port ${process.env.DEV_PORT}`)
-  })
-} else {
-  // Start server listening on main/production port
-  server.listen(process.env.PROD_PORT, 'localhost', () => {
-    console.log(`Production server listening on port ${process.env.PROD_PORT}`)
->>>>>>> d9fb04b7298d0f38a385f74ac1664397bd04c43e
   })
 }
 
