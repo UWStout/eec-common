@@ -52,7 +52,6 @@ export function decodeToken (req, res, next) {
   }
 
   // Attempt to verify the token
-  console.log('Verifying: ' + token)
   JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
     // Append payload to the request
     req.user = { ...payload }
