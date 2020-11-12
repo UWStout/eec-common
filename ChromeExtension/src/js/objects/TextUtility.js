@@ -32,7 +32,7 @@ function traverseAndSpanifyWords (sourceElement, destinationElement, searchWords
                 destinationChild
               )
               destinationChild.parentNode.insertBefore(
-                $('<span>').addClass('highlight-word-span').text(curWord)[0],
+                jQuery('<span>').addClass('highlight-word-span').text(curWord)[0],
                 destinationChild
               )
 
@@ -84,7 +84,7 @@ export function computeWordRects (textBox, searchWords) {
   // Retrieve the rects
   const textRect = ghostTextBox[0].getBoundingClientRect()
   const wordRects = []
-  $('.highlight-word-span').each((i, span) => {
+  jQuery('.highlight-word-span').each((i, span) => {
     const rect = span.getBoundingClientRect()
     wordRects.push({
       left: rect.left - textRect.left,

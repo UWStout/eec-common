@@ -1,0 +1,6 @@
+/* The Icon for the Sidebar Popup */
+.eec-sidebar-icon {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}

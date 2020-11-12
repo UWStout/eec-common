@@ -1,4 +1,9 @@
+// Import out custom HTML Elements
 import './objects/EECExtension.js'
+import './objects/EECSidebar.js'
+
+// Avoid jQuery conflicts
+$.noConflict()
 
 // Detect discord or teams
 let contextName = 'NONE'
@@ -16,6 +21,46 @@ if (IS_TEAMS) {
 
 // Initialize communication with background page
 const extensionPort = chrome.runtime.connect({ name: contextName })
+
+// State variables
+let userName = ''
+let teamServerName = ''
+let channelName = ''
+
+jQuery(document).ready(() => {
+  // Setup global side-bar
+  const sideBarElem = document.createElement('eec-sidebar')
+  document.body.insertBefore(sideBarElem)
+
+  // Callback function to execute when mutations are observed
+  const mutationCallback = (mutationsList, observer) => {
+    // Attempt to update EEC text-boxes (if needed)
+    updateTextBoxes()
+
+    // Check team and channel names on any page mutation
+    if (IS_TEAMS) {
+      userName = jQuery('img.user-picture').first().attr('upn')
+      teamServerName = jQuery('.school-app-team-title').text()
+      channelName = jQuery('.channel-name').text()
+    } else if (IS_DISCORD) {
+      const userArea = jQuery('section[aria-label="User area"]')
+      userName = userArea.text()
+      teamServerName = userArea.parent().children().first().children().first().text()
+      channelName = document.title
+    }
+
+    // Update data in the background script
+    chrome.runtime.sendMessage({ type: 'write', key: 'userName', data: userName, contextName })
+    chrome.runtime.sendMessage({ type: 'write', key: 'teamName', data: teamServerName, contextName })
+    chrome.runtime.sendMessage({ type: 'write', key: 'channelName', data: channelName, contextName })
+  }
+
+  // Create an observer instance linked to the callback function
+  const observer = new MutationObserver(mutationCallback)
+
+  // Start observing the target node for configured mutations
+  observer.observe(document.body, { childList: true, subtree: true })  
+})
 
 // Track and inject the extension for each text-box
 const EECElementList = new Map()
@@ -40,7 +85,7 @@ function updateTextBoxes () {
     if (!EECElementList.has(key)) {
       console.log(`[[IN-CONTENT]] Adding New EEC Extension for (${EECElementList.size + 1} added)`)
 
-      // Build extension
+      // Build in-line extension
       const extensionElem = document.createElement('eec-extension')
       extensionElem.backgroundPort = extensionPort
       extensionElem.contextName = contextName
@@ -53,35 +98,3 @@ function updateTextBoxes () {
     }
   })
 }
-
-// Callback function to execute when mutations are observed
-let userName = ''
-let teamServerName = ''
-let channelName = ''
-const mutationCallback = (mutationsList, observer) => {
-  // Attempt to update EEC text-boxes (if needed)
-  updateTextBoxes()
-
-  // Check team and channel names on any page mutation
-  if (IS_TEAMS) {
-    userName = $('img.user-picture').first().attr('upn')
-    teamServerName = $('.school-app-team-title').text()
-    channelName = $('.channel-name').text()
-  } else if (IS_DISCORD) {
-    const userArea = $('section[aria-label="User area"]')
-    userName = userArea.text()
-    teamServerName = userArea.parent().children().first().children().first().text()
-    channelName = document.title
-  }
-
-  // Update data in the background script
-  chrome.runtime.sendMessage({ type: 'write', key: 'userName', data: userName, contextName })
-  chrome.runtime.sendMessage({ type: 'write', key: 'teamName', data: teamServerName, contextName })
-  chrome.runtime.sendMessage({ type: 'write', key: 'channelName', data: channelName, contextName })
-}
-
-// Create an observer instance linked to the callback function
-const observer = new MutationObserver(mutationCallback)
-
-// Start observing the target node for configured mutations
-observer.observe(document.body, { childList: true, subtree: true })
