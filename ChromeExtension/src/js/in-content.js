@@ -2,6 +2,8 @@
 import './objects/EECExtension.js'
 import './objects/EECSidebar.js'
 
+import { CONTEXT } from './util/contexts.js'
+
 // Avoid jQuery conflicts
 $.noConflict()
 
@@ -9,18 +11,22 @@ $.noConflict()
 let contextName = 'NONE'
 const IS_DISCORD = window.location.host.includes('discord')
 if (IS_DISCORD) {
-  contextName = 'discord'
+  contextName = CONTEXT.DISCORD
   console.log('[[IN-CONTENT]] DISCORD DETECTED')
 }
 
 const IS_TEAMS = window.location.host.includes('teams.microsoft.')
 if (IS_TEAMS) {
-  contextName = 'msteams'
+  contextName = CONTEXT.MS_TEAMS
   console.log('[[IN-CONTENT]] MS TEAMS DETECTED')
 }
 
 // Initialize communication with background page
 const extensionPort = chrome.runtime.connect({ name: contextName })
+extensionPort.postMessage({
+  type: 'connect',
+  context: contextName
+})
 
 // State variables
 let userName = ''
@@ -32,6 +38,7 @@ jQuery(document).ready(() => {
   const sideBarElem = document.createElement('eec-sidebar')
   document.body.insertBefore(sideBarElem)
   sideBarElem.setBackgroundPort(extensionPort)
+  sideBarElem.setContextName(contextName)
 
   // Callback function to execute when mutations are observed
   const mutationCallback = (mutationsList, observer) => {

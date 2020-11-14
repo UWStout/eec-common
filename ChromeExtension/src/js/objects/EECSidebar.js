@@ -5,8 +5,10 @@ import tippy from 'tippy.js'
 
 /* eslint-disable */
 import TippyCSS from 'raw-loader!tippy.js/dist/tippy.css'
-import TippyCSSTheme from 'raw-loader!tippy.js/themes/light.css'
+import TippyCSSThemeLight from 'raw-loader!tippy.js/themes/light.css'
+import TippyCSSThemeDark from 'raw-loader!tippy.js/themes/material.css'
 import TippyCSSAnim from 'raw-loader!tippy.js/animations/perspective.css'
+import { CONTEXT } from '../util/contexts'
 /* eslint-enable */
 
 // Set some universal defaults for tippy
@@ -38,7 +40,7 @@ class EECSidebar extends HTMLElement {
   setupElement () {
     // Create 3rd party library CSS for the shadow dom
     this.libraryStyle = document.createElement('style')
-    this.libraryStyle.textContent = TippyCSS + TippyCSSTheme + TippyCSSAnim
+    this.libraryStyle.textContent = TippyCSS + TippyCSSThemeLight + TippyCSSThemeDark + TippyCSSAnim
 
     // Create some custom CSS to apply only within the shadow dom
     this.customStyle = document.createElement('style')
@@ -65,6 +67,13 @@ class EECSidebar extends HTMLElement {
     this.shadowRoot.append(this.libraryStyle, this.customStyle, this.popover)
   }
 
+  setContextName (newContext) {
+    this.contextName = newContext
+    this.popoverElem.setProps({
+      theme: (newContext === CONTEXT.DISCORD ? 'material' : 'light')
+    })
+  }
+
   // Update background communication port
   setBackgroundPort (extensionPort) {
     this.backgroundPort = extensionPort
@@ -77,7 +86,7 @@ class EECSidebar extends HTMLElement {
 
   // Respond to a message from the background script
   backgroundMessage (message) {
-    if (message.type === 'karunaMessage') {
+    if (message.type === 'karunaMessage' && message.context === this.contextName) {
       this.popoverElem.setContent(message.content)
       this.popoverElem.enable()
       this.popoverElem.show()

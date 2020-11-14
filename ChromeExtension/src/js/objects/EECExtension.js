@@ -1,7 +1,10 @@
 import EECExtensionCSS from './EECExtension.raw'
 
+import debounce from 'debounce'
+
 import { computeWordRects, makeFixedPositionChildDiv } from './TextUtility.js'
 import { ResizeObserver as ROPolyfill } from '@juggle/resize-observer'
+import { CONTEXT } from '../util/contexts'
 
 // Use polyfill only if needed
 const ResizeObserver = window.ResizeObserver || ROPolyfill
@@ -14,10 +17,12 @@ class EECExtension extends HTMLElement {
     this.attachShadow({ mode: 'open' })
 
     // Read the JWT for later use
-    chrome.runtime.sendMessage({ type: 'read', key: 'JWT' }, (response) => {
-      console.log('[[IN-CONTENT]] Received token')
-      this.JWT = response
-    })
+    chrome.runtime.sendMessage(
+      { type: 'read', key: 'JWT' },
+      (response) => {
+        this.JWT = response
+      }
+    )
   }
 
   setupElement () {
@@ -56,11 +61,23 @@ class EECExtension extends HTMLElement {
   setTextBox (newTextBox) {
     this.textBox = jQuery(newTextBox)
     if (this.textBox) {
+      // Create this element's html and styling
       this.setupElement()
+
+      // Setup event listeners for the text box
       this.textBox.on('focusin', this.textBoxFocused.bind(this))
       this.textBox.on('focusout', this.textBoxBlurred.bind(this))
-      this.textBox.on('input', this.textBoxInput.bind(this))
+      this.textBox.on('input', debounce(this.textBoxInput.bind(this), 400, false))
 
+      // Ensure backspace and delete keys trigger 'input' events
+      this.textBox.on('keydown', (event) => {
+        const key = event.keyCode || event.charCode
+        if (key === 8 || key === 46) {
+          this.textBox.trigger('input')
+        }
+      })
+
+      // Observe and respond to resize events
       this.sizeObserver = new ResizeObserver((entries) => {
         if (entries.length > 0) {
           const newSize = entries[0].borderBoxSize[0]
@@ -85,7 +102,7 @@ class EECExtension extends HTMLElement {
     // this.updateUnderlinedWords(this._wordList)
 
     // Send changed text to the server
-    if (this.contextName === 'msteams') {
+    if (this.contextName === CONTEXT.MS_TEAMS) {
       const tree = jQuery.parseHTML(event.target.innerHTML)
       if (!Array.isArray(tree)) {
         this.sendTextToServer(event.target.textContent)
@@ -99,45 +116,14 @@ class EECExtension extends HTMLElement {
     }
   }
 
-  textHasChanged (newText) {
-    // Remove repeated or unneeded spaces
-    const normedText = newText.replace(/\s+/g, ' ').toLowerCase()
-
-    // Convert to words and remove last word
-    const words = normedText.split(' ')
-    words.splice(words.length - 1, 1)
-
-    if (this.lastWordsSent) {
-      // Compare with last words sent
-      let same = true
-      if (this.lastWordsSent.length !== words.length) {
-        // Length's don't match so set same to false
-        same = false
-      } else {
-        for (let i = 0; i < words.length; i++) {
-          // Compare each word
-          if (words[i] !== this.lastWordsSent[i]) {
-            same = false
-            break
-          }
-        }
-      }
-
-      // They match so return false
-      if (same) { return false }
-    }
-
-    // Words don't match so cache them and return false
-    this.lastWordsSent = words
-    return true
-  }
-
   sendTextToServer (newText) {
-    if (this.textHasChanged(newText)) {
-      console.log('[[IN-CONTENT]] Text: ' + newText)
-      if (this.backgroundPort) {
-        this.backgroundPort.postMessage({ type: 'textUpdate', content: newText })
-      }
+    console.log('[[IN-CONTENT]] Text: ' + newText)
+    if (this.backgroundPort) {
+      this.backgroundPort.postMessage({
+        type: 'textUpdate',
+        context: this.contextName,
+        content: newText
+      })
     }
   }
 

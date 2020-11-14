@@ -16,7 +16,7 @@ const { startService } = esbuild
 const { watch } = chokidar
 
 // prints messages for debugging purposes
-const debug = Debug('app')
+const debug = Debug('watch')
 
 // Exit process cleanly
 function cleanExit () {
@@ -34,10 +34,10 @@ function spawnServerProcess () {
 
   // Echo server output
   serverProcess.stdout.on('data', (data) => {
-    process.stdout.write(`[SERVER]: ${data.toString()}`.green)
+    process.stdout.write(`${data.toString()}`.green)
   })
   serverProcess.stderr.on('data', (data) => {
-    process.stderr.write(`[SERVER]: ${data.toString()}`.red)
+    process.stderr.write(`${data.toString()}`)
   })
 
   // Setup clean exits that set child handle to null
@@ -103,7 +103,7 @@ async function build () {
     debug(`Built in ${timerEnd - timerStart}ms`.magenta)
   } catch (e) {
     // Output the error
-    debug('Error: build failed')
+    debug('Error: build failed'.red)
     buildSuccess = false
   }
 

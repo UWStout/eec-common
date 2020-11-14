@@ -5,6 +5,9 @@ import path from 'path'
 // JWT authorization middleware
 import { decodeToken } from './auth.js'
 
+import Debug from 'debug'
+const debug = Debug('server:wizard')
+
 // Path to raw view files
 const VIEW_PATH = './views/wizard'
 
@@ -26,6 +29,7 @@ router.get('/*', decodeToken, (req, res, next) => {
   // Non-authorized paths
   if (unAuthPages.indexOf(req.url) >= 0) {
     // Attempt to send file in response
+    debug(`serving insecure ${req.path}`)
     return res.sendFile(req.path, { root: path.resolve(VIEW_PATH) })
   } else {
     // All remaining paths require authorization or redirect to logout
@@ -35,6 +39,7 @@ router.get('/*', decodeToken, (req, res, next) => {
     }
 
     // Attempt to send file in response
+    debug(`serving secure ${req.path}`)
     return res.sendFile(req.path, { root: path.resolve(VIEW_PATH) })
   }
 })

@@ -1,16 +1,30 @@
 // Store2 local storage library
-import store from 'store2'
+import store, { set } from 'store2'
 
 // Open socket to the karuna server
 import io from 'socket.io-client'
 
+import { CONTEXT } from './util/contexts.js'
+
 // Establish connection
 const socket = io('http://localhost:3000')
-socket.on('connect', () => {
+socket.on('connect', () => { announceSession() })
+
+const activeContexts = new Set()
+function announceSession (context) {
+  let sendContext = 'global'
+  if (context) {
+    if (!activeContexts.has(context)) {
+      activeContexts.add(context)
+    }
+    sendContext = [...activeContexts]
+  }
+
   socket.emit('clientSession', {
+    context: sendContext,
     token: store.local.get('JWT')
   })
-})
+}
 
 // Only intercept websocket messages to these urls
 const discordFilters = {
@@ -80,10 +94,10 @@ chrome.webRequest.onBeforeRequest.addListener((details) => {
       const wsMsg = {
         type: requestTypePart,
         subType: requestSubTypePart,
-        context: 'discord',
-        user: store.local.get('discord/userName'),
-        team: store.local.get('discord/teamName'),
-        channel: store.local.get('discord/channelName'),
+        context: CONTEXT.DISCORD,
+        user: readValue(CONTEXT.DISCORD, 'userName'),
+        team: readValue(CONTEXT.DISCORD, 'teamName'),
+        channel: readValue(CONTEXT.DISCORD, 'channelName'),
         data: requestContent
       }
       socket.emit('messageSend', wsMsg)
@@ -162,10 +176,10 @@ chrome.webRequest.onBeforeRequest.addListener((details) => {
       const wsMsg = {
         type: requestTypePart,
         subType: requestSubTypePart,
-        context: 'msteams',
-        user: store.local.get('msteams/userName'),
-        team: store.local.get('msteams/teamName'),
-        channel: store.local.get('msteams/channelName'),
+        context: CONTEXT.MS_TEAMS,
+        user: readValue(CONTEXT.MS_TEAMS, 'userName'),
+        team: readValue(CONTEXT.MS_TEAMS, 'teamName'),
+        channel: readValue(CONTEXT.MS_TEAMS, 'channelName'),
         data: requestContent
       }
       socket.emit('messageSend', wsMsg)
@@ -183,14 +197,20 @@ chrome.webRequest.onBeforeRequest.addListener((details) => {
 chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((message) => {
     switch (message.type) {
+      // connection from an in-context script
+      case 'connect':
+        announceSession(message.context)
+        break
+
+      // Text is updating in an in-context script
       case 'textUpdate':
         socket.emit('messageUpdate', {
           type: 'textUpdate',
           subType: '',
-          context: 'msteams',
-          user: store.local.get('msteams/userName'),
-          team: store.local.get('msteams/teamName'),
-          channel: store.local.get('msteams/channelName'),
+          context: message.context,
+          user: readValue(message.context, 'userName'),
+          team: readValue(message.context, 'teamName'),
+          channel: readValue(message.context, 'channelName'),
           data: message.content
         })
         break
@@ -223,22 +243,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return
   }
 
-  // Build message key-name
-  let keyContext = message.key
-  if (message.context) {
-    keyContext = `${message.context}/${message.key}`
-  }
-
   // Execute message
   switch (message.type.toLowerCase()) {
     // Read a value from storage
     case 'read':
-      sendResponse(store.local.get(keyContext))
+      sendResponse(readValue(message.context, message.key))
       break
 
     // Write a value to storage
     case 'write':
-      store.local.set(keyContext, message.data, true)
+      writeValue(message.context, message.key, message.data)
       break
   }
 })
+
+function readValue (context, key) {
+  const keyContext = context ? `${context}/${key}` : key
+  return store.local.get(keyContext)
+}
+
+function writeValue (context, key, data, overwrite = true) {
+  const keyContext = context ? `${context}/${key}` : key
+
+  if (store.local.get(keyContext) !== undefined && !overwrite) {
+    return false
+  }
+
+  store.local.set(keyContext, data, true)
+  return true
+}

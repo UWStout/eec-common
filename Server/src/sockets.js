@@ -1,6 +1,10 @@
 // Import the socket.io library
 import SocketIO from 'socket.io'
 
+// Setup debug for output
+import Debug from 'debug'
+const debug = Debug('server:socket')
+
 // Useful global info
 const clientSessions = {}
 const clientSocketLookup = {}
@@ -43,14 +47,14 @@ export function makeSocket (serverListener) {
 // - 'this' = current socket
 function socketDisconnect (reason) {
   if (wizardSessions[this.id]) {
-    console.log(`[WS:${this.id}] wizard disconnected because - ${reason}`)
+    debug(`[WS:${this.id}] wizard disconnected because - ${reason}`)
     wizardSessions[this.id] = undefined
   } else if (clientSessions[this.id]) {
-    console.log(`[WS:${this.id}] client disconnected because - ${reason}`)
+    debug(`[WS:${this.id}] client disconnected because - ${reason}`)
     clientSocketLookup[clientSessions[this.id].email] = undefined
     clientSessions[this.id] = undefined
   } else {
-    console.log(`[WS:${this.id}] unknown connection disconnected because - ${reason}`)
+    debug(`[WS:${this.id}] unknown connection disconnected because - ${reason}`)
   }
 }
 
@@ -65,26 +69,31 @@ function decodeToken (token) {
 // - 'this' = current socket
 function socketClientSession (clientInfo) {
   if (clientSessions[this.id]) {
-    console.log(`[WS:${this.id}] updated client session`)
+    debug(`[WS:${this.id}] updated client session (${clientInfo.context})`)
     clientSocketLookup[clientSessions[this.id].email] = undefined // Incase the email has changed
   } else {
-    console.log(`[WS:${this.id}] new client session`)
+    debug(`[WS:${this.id}] new client session (${clientInfo.context})`)
+    this.join('clients')
   }
 
-  // Update sessions and broadcast change
-  clientSessions[this.id] = decodeToken(clientInfo.token)
+  // Write/Update session and broadcast change
+  clientSessions[this.id] = { email: decodeToken(clientInfo.token).email }
   clientSocketLookup[clientSessions[this.id].email] = this.id
-  this.join('clients')
-  mySocket.to('wizards').emit('updateSessions', clientSessions)
+
+  // If not a global connect, update context list and broadcast change
+  if (Array.isArray(clientInfo.context)) {
+    clientSessions[this.id].contexts = [...clientInfo.context]
+    mySocket.to('wizards').emit('updateSessions', clientSessions)
+  }
 }
 
 // Establish an in-memory session for a connected wizard
 // - 'this' = current socket
 function socketWizardSession (wizardInfo) {
   if (wizardSessions[this.id]) {
-    console.log(`[WS:${this.id}] updated wizard session`)
+    debug(`[WS:${this.id}] updated wizard session`)
   } else {
-    console.log(`[WS:${this.id}] new wizard session`)
+    debug(`[WS:${this.id}] new wizard session`)
   }
 
   wizardSessions[this.id] = wizardInfo
@@ -96,29 +105,32 @@ function socketWizardSession (wizardInfo) {
 function socketWizardMessage (messageInfo) {
   const destID = clientSocketLookup[messageInfo.clientEmail]
   if (destID) {
-    console.log(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail}`)
+    debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
     mySocket.to(destID).emit('karunaMessage', messageInfo)
   } else {
-    console.log(`[WS:${this.id}] wizard sending to UNKNOWN client ${messageInfo.clientEmail}`)
+    debug(`[WS:${this.id}] wizard sending to UNKNOWN client ${messageInfo.clientEmail} in ${messageInfo.context}`)
   }
 }
 
 // Updated text of message being written
 // - 'this' = current socket
-function socketMessageUpdate (text) {
-  console.log(`[WS:${this.id}] client typing`)
+function socketMessageUpdate (message) {
+  debug(`[WS:${this.id}] client typing in ${message.context}`)
+  console.error(JSON.stringify(message, null, 2))
   mySocket.to('wizards').emit('clientTyping', {
     clientEmail: clientSessions[this.id].email,
-    typing: text.data
+    context: message.context,
+    data: message.data
   })
 }
 
 // Attempt to send message
 // - 'this' = current socket
 function socketMessageSend (message) {
-  console.log(`[WS:${this.id}] message send:`)
+  debug(`[WS:${this.id}] message received from ${message.context}`)
   mySocket.to('wizards').emit('clientSend', {
     clientEmail: clientSessions[this.id].email,
-    message: message.data
+    context: message.context,
+    data: message.data
   })
 }

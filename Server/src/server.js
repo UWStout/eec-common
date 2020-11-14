@@ -41,7 +41,7 @@ const app = new Express()
 const server = http.createServer(app)
 
 // prints messages for debugging purposes
-const debug = Debug('app')
+const debug = Debug('server')
 
 // middleware
 
@@ -54,12 +54,6 @@ app.use(Cors({ origin: true }))
 
 // Install the cookie parser
 app.use(CookieParser())
-
-// Log all server requests to the console
-app.use((req, res, next) => {
-  debug(`${req.method} request for ${req.url}`)
-  next()
-})
 
 // Enable parsing of JSON-Encoded bodies
 app.use(Express.json())
@@ -82,12 +76,12 @@ makeSocket(server)
 // If this is a dev run, use 'reload' else just bind to port 8000
 if (process.argv.find((arg) => { return arg === 'dev' })) {
   // Start server listening on debug/dev port
-  app.listen(process.env.DEV_PORT, 'localhost', () => {
+  server.listen(process.env.DEV_PORT, 'localhost', () => {
     debug(`Dev server listening on port ${process.env.DEV_PORT}`)
   })
 } else {
   // Start server listening on main/production port
-  app.listen(process.env.PROD_PORT, 'localhost', () => {
+  server.listen(process.env.PROD_PORT, 'localhost', () => {
     debug(`Production server listening on port ${process.env.PROD_PORT}`)
   })
 }
