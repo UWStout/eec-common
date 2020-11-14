@@ -12,11 +12,6 @@ socket.on('connect', () => {
   })
 })
 
-// Listen for messages from the karuna server
-socket.on('karunaServer', (msg) => {
-  console.log(`[WS:${socket.id}] message received - ${msg}`)
-})
-
 // Only intercept websocket messages to these urls
 const discordFilters = {
   urls: ['http://discord.com/*', 'https://discord.com/*'],
@@ -200,6 +195,11 @@ chrome.runtime.onConnect.addListener((port) => {
         })
         break
     }
+  })
+
+  // Listen for messages from the karuna server and relay to in-content
+  socket.on('karunaMessage', (msg) => {
+    port.postMessage({ type: 'karunaMessage', ...msg })
   })
 })
 

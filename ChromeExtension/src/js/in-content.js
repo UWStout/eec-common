@@ -31,6 +31,7 @@ jQuery(document).ready(() => {
   // Setup global side-bar
   const sideBarElem = document.createElement('eec-sidebar')
   document.body.insertBefore(sideBarElem)
+  sideBarElem.setBackgroundPort(extensionPort)
 
   // Callback function to execute when mutations are observed
   const mutationCallback = (mutationsList, observer) => {
@@ -39,14 +40,14 @@ jQuery(document).ready(() => {
 
     // Check team and channel names on any page mutation
     if (IS_TEAMS) {
-      userName = jQuery('img.user-picture').first().attr('upn')
-      teamServerName = jQuery('.school-app-team-title').text()
-      channelName = jQuery('.channel-name').text()
+      userName = jQuery('img.user-picture').first().attr('upn').trim()
+      teamServerName = jQuery('.school-app-team-title').text().trim()
+      channelName = jQuery('.channel-name').text().trim()
     } else if (IS_DISCORD) {
       const userArea = jQuery('section[aria-label="User area"]')
-      userName = userArea.text()
-      teamServerName = userArea.parent().children().first().children().first().text()
-      channelName = document.title
+      userName = userArea.text().trim()
+      teamServerName = userArea.parent().children().first().children().first().text().trim()
+      channelName = document.title.trim()
     }
 
     // Update data in the background script
@@ -59,7 +60,7 @@ jQuery(document).ready(() => {
   const observer = new MutationObserver(mutationCallback)
 
   // Start observing the target node for configured mutations
-  observer.observe(document.body, { childList: true, subtree: true })  
+  observer.observe(document.body, { childList: true, subtree: true })
 })
 
 // Track and inject the extension for each text-box

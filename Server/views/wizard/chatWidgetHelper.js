@@ -29,7 +29,7 @@ export function makeTabHeader (id, text, isActive) {
   return tabListItem
 }
 
-export function makeTabContentPane (id, isActive) {
+export function makeTabContentPane (id, clientID, isActive) {
   // Make outmost tab content pane div
   const tabPaneDiv = $('<div></div>').addClass('tab-pane fade')
   if (isActive) {
@@ -45,7 +45,7 @@ export function makeTabContentPane (id, isActive) {
   const paneChild2 = $('<div></div>').addClass('mt-2 mb-4 h-100')
 
   // Add chat widget at inner-most child
-  paneChild2.append(makeChatWidget(id))
+  paneChild2.append(makeChatWidget(id, clientID))
 
   // Assemble hierarchy and return root
   tabPaneDiv.append(paneChild1)
@@ -53,7 +53,7 @@ export function makeTabContentPane (id, isActive) {
   return tabPaneDiv
 }
 
-function makeChatWidget (id) {
+function makeChatWidget (id, clientID) {
   const chatWidgetInnerHTML = `
     <!-- Chat Interface Widget -->
     <ul class="messageList" id="messageList${id}"></ul>
@@ -64,10 +64,10 @@ function makeChatWidget (id) {
         ${makeCannedMessageDropdown(id)}
       </div>
       <!-- Message Text Input -->
-      <input type="text" class="form-control messageText" placeholder="Message Text" aria-label="Message to send" data-target="#sendMessage${id}" id="messageText${id}">
+      <input type="text" class="form-control messageText" placeholder="Message Text" aria-label="Message to send" data-target="#sendMessage${id}" data-client="${clientID}" id="messageText${id}">
       <!-- Send Button -->
       <div class="input-group-append">
-        <button class="btn btn-outline-secondary sendMessage" type="button" data-source="#messageText${id}" data-target="#messageList${id}" id="sendMessage${id}">Send</button>
+        <button class="btn btn-outline-secondary sendMessage" type="button" data-source="#messageText${id}" data-target="#messageList${id}" data-client="${clientID}" id="sendMessage${id}">Send</button>
       </div>
     </div>`
 

@@ -1,9 +1,21 @@
 // Raw CSS strings to use in HTML construction
-import BootstrapCSS from './bootstrap.min.css.raw'
 import EECSidebarCSS from './EECSidebarStyle.raw'
 
 import tippy from 'tippy.js'
-// import 'tippy.js/dist/tippy.css'
+
+/* eslint-disable */
+import TippyCSS from 'raw-loader!tippy.js/dist/tippy.css'
+import TippyCSSTheme from 'raw-loader!tippy.js/themes/light.css'
+import TippyCSSAnim from 'raw-loader!tippy.js/animations/perspective.css'
+/* eslint-enable */
+
+// Set some universal defaults for tippy
+tippy.setDefaultProps({
+  arrow: true,
+  animation: 'perspective',
+  inertia: true,
+  theme: 'light'
+})
 
 class EECSidebar extends HTMLElement {
   constructor () {
@@ -24,9 +36,9 @@ class EECSidebar extends HTMLElement {
   }
 
   setupElement () {
-    // Create bootstrap CSS for the shadow dom
-    this.bootstrapStyle = document.createElement('style')
-    this.bootstrapStyle.textContent = BootstrapCSS
+    // Create 3rd party library CSS for the shadow dom
+    this.libraryStyle = document.createElement('style')
+    this.libraryStyle.textContent = TippyCSS + TippyCSSTheme + TippyCSSAnim
 
     // Create some custom CSS to apply only within the shadow dom
     this.customStyle = document.createElement('style')
@@ -42,14 +54,34 @@ class EECSidebar extends HTMLElement {
     this.popover = document.createElement('div')
     this.popover.append(this.imageIcon)
 
-    tippy(this.imageIcon, {
-      content: 'I see that you are trying to talk to Jillian about the following issues. Might I suggest ...',
-      arrow: true,
-      placement: 'top-start'
+    // Create the popover using tippy
+    this.popoverElem = tippy(this.imageIcon, {
+      placement: 'top-start',
+      appendTo: this.shadowRoot
     })
+    this.popoverElem.disable() // We will enable it manually
 
     // Attach the created elements to the shadow DOM
-    this.shadowRoot.append(this.bootstrapStyle, this.customStyle, this.popover)
+    this.shadowRoot.append(this.libraryStyle, this.customStyle, this.popover)
+  }
+
+  // Update background communication port
+  setBackgroundPort (extensionPort) {
+    this.backgroundPort = extensionPort
+    if (this.backgroundPort) {
+      this.backgroundPort.onMessage.addListener(
+        this.backgroundMessage.bind(this)
+      )
+    }
+  }
+
+  // Respond to a message from the background script
+  backgroundMessage (message) {
+    if (message.type === 'karunaMessage') {
+      this.popoverElem.setContent(message.content)
+      this.popoverElem.enable()
+      this.popoverElem.show()
+    }
   }
 
   // Custom Element is mounted to the DOM
