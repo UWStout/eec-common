@@ -4,6 +4,9 @@ import path from 'path'
 import childProcess from 'child_process'
 import 'colors'
 
+// added a replacement for debug
+import Debug from 'debug'
+
 // Import esbuild to build the code and chokidar for watching files
 import esbuild from 'esbuild'
 import chokidar from 'chokidar'
@@ -12,9 +15,12 @@ import chokidar from 'chokidar'
 const { startService } = esbuild
 const { watch } = chokidar
 
+// prints messages for debugging purposes
+const debug = Debug('app')
+
 // Exit process cleanly
 function cleanExit () {
-  console.log('== Server exited =='.yellow)
+  debug('== Server exited =='.yellow)
   serverProcess = null
 }
 
@@ -44,10 +50,10 @@ function spawnServerProcess () {
  */
 function startServer () {
   if (serverProcess === null) {
-    console.log('== Starting server =='.yellow)
+    debug('== Starting server =='.yellow)
     spawnServerProcess()
   } else {
-    console.log('== Re-starting server =='.yellow)
+    debug('== Re-starting server =='.yellow)
     try {
       serverProcess.off('close', cleanExit)
       serverProcess.off('error', cleanExit)
@@ -57,8 +63,8 @@ function startServer () {
       })
       serverProcess.kill('SIGINT')
     } catch (e) {
-      console.error('== Failed to stop server =='.red)
-      console.error(e)
+      debug('== Failed to stop server =='.red)
+      debug(e)
       spawnServerProcess()
     }
   }
@@ -94,10 +100,10 @@ async function build () {
 
     // Stop timer and output message
     const timerEnd = Date.now()
-    console.log(`Built in ${timerEnd - timerStart}ms`.magenta)
+    debug(`Built in ${timerEnd - timerStart}ms`.magenta)
   } catch (e) {
     // Output the error
-    console.log('Error: build failed')
+    debug('Error: build failed')
     buildSuccess = false
   }
 
@@ -114,15 +120,15 @@ async function rebuildAndStart () {
 // Start the watcher and setup to trigger rebuilds
 (async () => {
   // Do first build and start server
-  console.log('Building and starting server ...'.cyan)
+  debug('Building and starting server ...'.cyan)
   await rebuildAndStart()
 
   // Watch for changes
   const watcher = watch(['src/**/*'])
-  console.log('Watching files for changes ...'.cyan)
+  debug('Watching files for changes ...'.cyan)
   watcher.on('change', async (path) => {
     // Change was detected so rebuild
-    console.log(`Change detected in ${path}. Rebuilding ...`.cyan)
+    debug(`Change detected in ${path}. Rebuilding ...`.cyan)
     rebuildAndStart()
   })
 })()

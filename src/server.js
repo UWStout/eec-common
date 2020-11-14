@@ -27,12 +27,27 @@ import authRouter from './routes/auth.js'
 // Custom router for the back-end wizard
 import wizardRouter from './routes/wizard.js'
 
+// print messages only during debug
+import Debug from 'debug'
+
+// prints messages having to do with webtraffic
+import morgan from 'morgan'
+
 // Update environment variables
 dotenv.config()
 
 // Make a standard express app server
 const app = new Express()
 const server = http.createServer(app)
+
+// prints messages for debugging purposes
+const debug = Debug('app')
+
+// middleware
+
+// prints messages related to web traffic
+// app.use(morgan('combined')) //gives all the information
+app.use(morgan('tiny'))
 
 // Cors configuration to allow any origin and echo it back
 app.use(Cors({ origin: true }))
@@ -42,7 +57,7 @@ app.use(CookieParser())
 
 // Log all server requests to the console
 app.use((req, res, next) => {
-  console.log(`${req.method} request for ${req.url}`)
+  debug(`${req.method} request for ${req.url}`)
   next()
 })
 
@@ -67,19 +82,19 @@ makeSocket(server)
 // If this is a dev run, use 'reload' else just bind to port 8000
 if (process.argv.find((arg) => { return arg === 'dev' })) {
   // Start server listening on debug/dev port
-  server.listen(process.env.DEV_PORT, 'localhost', () => {
-    console.log(`Dev server listening on port ${process.env.DEV_PORT}`)
+  app.listen(process.env.DEV_PORT, 'localhost', () => {
+    debug(`Dev server listening on port ${process.env.DEV_PORT}`)
   })
 } else {
   // Start server listening on main/production port
-  server.listen(process.env.PROD_PORT, 'localhost', () => {
-    console.log(`Production server listening on port ${process.env.PROD_PORT}`)
+  app.listen(process.env.PROD_PORT, 'localhost', () => {
+    debug(`Production server listening on port ${process.env.PROD_PORT}`)
   })
 }
 
 // Log on SIGINT and SIGTERM before exiting
 function handleSignal (signal) {
-  console.log(`Received ${signal}, exiting.`)
+  debug(`Received ${signal}, exiting.`)
   process.exit(0)
 }
 process.on('SIGINT', handleSignal)
