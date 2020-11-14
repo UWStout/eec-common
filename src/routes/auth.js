@@ -7,6 +7,9 @@ import JWT from 'jsonwebtoken'
 // Database controller
 import * as DB from '../sqlite/sqliteAuthController.js'
 
+import Debug from 'debug'
+const debug = Debug('server:auth')
+
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
   // Check for cookie first
@@ -91,8 +94,8 @@ router.post('/login', async (req, res) => {
     return res.status(200).json({ message: 'success', token: token })
   } catch (err) {
     // Something went wrong so log it
-    console.log('Failed validation')
-    console.log(err)
+    debug('Failed validation')
+    debug(err)
 
     // Respond with invalid
     return res.status(400).json({ invalid: true, message: 'Invalid email or password' })
@@ -125,7 +128,7 @@ router.post('/register', async (req, res) => {
   }
 
   // Attempt to create user
-  console.log(`Making account for ${email}`)
+  debug(`Making account for ${email}`)
   try {
     const userID = await DB.createUser(firstName, lastName, email, userType, password)
     return res.status(200).json({ message: 'success', userID: userID })

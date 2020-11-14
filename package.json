@@ -2,10 +2,9 @@
   "name": "karuna-server",
   "version": "0.1.0",
   "description": "Backend server / RESTful API for the Karuna communication tool.",
-  "type": "module",
   "scripts": {
-    "start": "set DEBUG=app & node dist/server.js",
-    "dev": "set DEBUG=app & node watchCode.mjs",
+    "start": "node dist/server.js",
+    "dev": "set DEBUG=watch,server:* & node watchCode.mjs",
     "build": "esbuild --platform=node --bundle --external:bcrypt --external:sqlite3 --external:utf-8-validate --external:bufferutil --minify --outfile=dist/server.js src/server.js"
   },
   "license": "MIT",

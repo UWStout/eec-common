@@ -9,7 +9,16 @@ let tabContents
 
 // Session lookup
 let sessions = []
-let activeTabIndex = -1
+
+function addSession (userID, context, sessionID) {
+  const sessionKey = `${userID}${context}`
+  sessions[sessionKey] = sessionID
+}
+
+function getSessionID (userID, context) {
+  const sessionKey = `${userID}${context}`
+  return sessions[sessionKey]
+}
 
 // The socket.io socket
 const socket = io()
@@ -29,41 +38,51 @@ socket.on('updateSessions', (sessionData) => {
     tabs = []
     sessions = []
 
-    // Make new ones for each session
+    // Make new ones for each user and context
     for (const user in sessionData) {
-      const id = addTab(sessionData[user].email)
-      sessions[sessionData[user].email] = id
+      if (!Array.isArray(sessionData[user].contexts)) {
+        console.log('User session with NO contexts ' + sessionData[user].email)
+      } else {
+        sessionData[user].contexts.forEach((context) => {
+          const id = addTab(sessionData[user].email, context)
+          addSession(sessionData[user].email, context, id)
+        })
+      }
     }
   }
 })
 
-socket.on('clientTyping', (data) => {
+socket.on('clientTyping', (message) => {
   console.log('[WS] Client typing received')
 
   // Lookup the session index
-  const id = sessions[data.clientEmail]
+  const id = getSessionID(message.clientEmail, message.context)
   if (id !== undefined) {
     const typingBox = $(`#activeTyping${id}`)
-    typingBox.text(data.typing)
+    typingBox.text(message.data)
     typingBox[0].scrollTop = typingBox[0].scrollHeight
+  } else {
+    console.error(`Could find session id for ${message.clientEmail}, ${message.context}`)
   }
 })
 
-socket.on('clientSend', (data) => {
+socket.on('clientSend', (message) => {
   console.log('[WS] Client send received')
 
   // Lookup the session index
-  const id = sessions[data.clientEmail]
+  const id = getSessionID(message.clientEmail, message.context)
   if (id !== undefined) {
     // Build and append new message entry
     const newMsg = $('<li>').addClass('clientMessage')
-    newMsg.text(data.message)
+    newMsg.text(message.data)
     const messageBox = $(`#messageList${id}`)
     messageBox.append(newMsg)
     messageBox[0].scrollTop = messageBox[0].scrollHeight
 
     // Clear the typing box text
     $(`#activeTyping${id}`).text('')
+  } else {
+    console.error(`Could find session id for ${message.clientEmail}, ${message.context}`)
   }
 })
 
@@ -82,17 +101,14 @@ $(document).ready(() => {
 let tabs = []
 
 // Insert a new tab at end of list
-function addTab (tabName) {
+function addTab (userID, contextName) {
   // Get ID and setup 'isActive'
   const tabID = tabs.length + 1
   const isActive = (tabs.length === 0)
 
-  // Default tab name
-  tabName = tabName || `Tab ${tabID}`
-
   // Build new header and content HTML
-  const newHeader = makeTabHeader(tabID, tabName, isActive)
-  const newContent = makeTabContentPane(tabID, tabName, isActive)
+  const newHeader = makeTabHeader(tabID, `${userID} - ${contextName}`, isActive)
+  const newContent = makeTabContentPane(tabID, userID, contextName, isActive)
 
   // Store in array for tracking
   tabs.push({
@@ -109,8 +125,6 @@ function addTab (tabName) {
   $('.messageText').on('keydown', triggerMessage)
   $('.sendMessage').on('click', sendMessage)
 
-  // Calback for active tab changing
-  $('a[data-toggle="tab"]').on('shown.bs.tab', updateActiveTab)
   // Return the id
   return tabID
 }
@@ -158,18 +172,12 @@ function sendMessage (event) {
   messageBox[0].scrollTop = messageBox[0].scrollHeight
 
   // Broadcast to all sockets
-  console.log(`Broadcasting message to ${sendButton.data('client')}`)
+  console.log(`Broadcasting message to ${sendButton.data('client')} - ${sendButton.data('context')}`)
   socket.emit('wizardMessage', {
     clientEmail: sendButton.data('client'),
+    context: sendButton.data('context'),
     content: messageText
   })
-}
-
-// Keep track of the currently active tab
-function updateActiveTab (event) {
-  activeTabIndex = $(event.target).attr('id').substring(3)
-  activeTabIndex = parseInt(activeTabIndex) - 1
-  console.log('Active tab is ' + activeTabIndex)
 }
 
 // Remove tab at the given index

@@ -4,6 +4,9 @@ import Express from 'express'
 // JWT authorization middleware
 import { authenticateToken } from './auth.js'
 
+import Debug from 'debug'
+const debug = Debug('server:data')
+
 // Create a router to attach to an express server app
 const router = new Express.Router()
 
