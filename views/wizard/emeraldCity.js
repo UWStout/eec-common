@@ -92,7 +92,7 @@ function addTab (tabName) {
 
   // Build new header and content HTML
   const newHeader = makeTabHeader(tabID, tabName, isActive)
-  const newContent = makeTabContentPane(tabID, isActive)
+  const newContent = makeTabContentPane(tabID, tabName, isActive)
 
   // Store in array for tracking
   tabs.push({
@@ -138,8 +138,8 @@ function sendMessage (event) {
   event.preventDefault()
 
   // Retrieve message text
-  const textBox = $(event.target)
-  const source = $(textBox.data('source'))
+  const sendButton = $(event.target)
+  const source = $(sendButton.data('source'))
   const messageText = source.val()
 
   // Refuse to send empty message
@@ -153,9 +153,16 @@ function sendMessage (event) {
   // Build and append message to message area
   const newMsg = $('<li>').addClass('karunaMessage')
   newMsg.text(messageText)
-  const messageBox = $(textBox.data('target'))
+  const messageBox = $(sendButton.data('target'))
   messageBox.append(newMsg)
   messageBox[0].scrollTop = messageBox[0].scrollHeight
+
+  // Broadcast to all sockets
+  console.log(`Broadcasting message to ${sendButton.data('client')}`)
+  socket.emit('wizardMessage', {
+    clientEmail: sendButton.data('client'),
+    content: messageText
+  })
 }
 
 // Keep track of the currently active tab

@@ -3,6 +3,7 @@ import SocketIO from 'socket.io'
 
 // Useful global info
 const clientSessions = {}
+const clientSocketLookup = {}
 const wizardSessions = {}
 
 // Our root socket instance
@@ -17,6 +18,7 @@ export function makeSocket (serverListener) {
   mySocket.on('connection', (socket) => {
     // Wizard specific messages
     socket.on('wizardSession', socketWizardSession.bind(socket))
+    socket.on('wizardMessage', socketWizardMessage.bind(socket))
 
     // Client specific messages
     socket.on('clientSession', socketClientSession.bind(socket))
@@ -45,6 +47,7 @@ function socketDisconnect (reason) {
     wizardSessions[this.id] = undefined
   } else if (clientSessions[this.id]) {
     console.log(`[WS:${this.id}] client disconnected because - ${reason}`)
+    clientSocketLookup[clientSessions[this.id].email] = undefined
     clientSessions[this.id] = undefined
   } else {
     console.log(`[WS:${this.id}] unknown connection disconnected because - ${reason}`)
@@ -63,12 +66,14 @@ function decodeToken (token) {
 function socketClientSession (clientInfo) {
   if (clientSessions[this.id]) {
     console.log(`[WS:${this.id}] updated client session`)
+    clientSocketLookup[clientSessions[this.id].email] = undefined // Incase the email has changed
   } else {
     console.log(`[WS:${this.id}] new client session`)
   }
 
   // Update sessions and broadcast change
   clientSessions[this.id] = decodeToken(clientInfo.token)
+  clientSocketLookup[clientSessions[this.id].email] = this.id
   this.join('clients')
   mySocket.to('wizards').emit('updateSessions', clientSessions)
 }
@@ -85,6 +90,17 @@ function socketWizardSession (wizardInfo) {
   wizardSessions[this.id] = wizardInfo
   this.join('wizards')
   mySocket.to(this.id).emit('updateSessions', clientSessions)
+}
+
+// Broadcast a message from a wizard to a specific client
+function socketWizardMessage (messageInfo) {
+  const destID = clientSocketLookup[messageInfo.clientEmail]
+  if (destID) {
+    console.log(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail}`)
+    mySocket.to(destID).emit('karunaMessage', messageInfo)
+  } else {
+    console.log(`[WS:${this.id}] wizard sending to UNKNOWN client ${messageInfo.clientEmail}`)
+  }
 }
 
 // Updated text of message being written
