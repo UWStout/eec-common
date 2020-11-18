@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
+import Team from '../Team.jsx'
 import Axios from 'axios'
-import Modal from '../modal.jsx'
-import Portal from '../portal.js'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogActions from '@material-ui/core/DialogActions'
 
 export default class AccountSettings extends Component {
     constructor(props) {
@@ -17,34 +19,6 @@ export default class AccountSettings extends Component {
 
         this.handleEmailChange = this.handleEmailChange.bind(this)
         this.handlePasswordChange = this.handlePasswordChange.bind(this)
-        this.confirmRemoveTeam = this.confirmRemoveTeam.bind(this)
-        this.denyRemoveTeam = this.denyRemoveTeam.bind(this)
-    }
-
-    confirmRemoveTeam() {
-        this.setState({
-            removeTeam: true
-        })
-    }
-
-    denyRemoveTeam() {
-        this.setState({
-            removeTeam: false
-        })
-    }
-
-    createUI() {
-        return this.state.values.map((i) =>
-            <div key={ i }>
-                <input type='button' value='remove' onClick={ this.removeClick.bind(this, i) } />
-            </div>
-        )
-    }
-
-    handleChange(i, event) {
-        let values = [...this.state.values];
-        values[i] = event.target.value;
-        this.setState({ values });
     }
 
     handleEmailChange (event) {
@@ -53,30 +27,6 @@ export default class AccountSettings extends Component {
 
     handlePasswordChange (event) {
         this.setState({ password: event.target.value })
-    }
-
-    addClick() {
-        this.setState(prevState => ({ values: [...prevState.values, ''] }))
-    }
-
-    removeClick(i) {
-        if (this.state.removeTeam) {
-            let values = [...this.state.values];
-            values.splice(i,1);
-            this.setState({ 
-                values,
-                showModal: false,
-                removeTeam: false
-            })
-        } else if (!this.state.removeTeam && !this.state.showModal) {
-            this.setState({
-                showModal: true
-            })
-        } else if (!this.state.removeTeam && this.state.showModal) {
-            this.setState({
-                showModal: false
-            })
-        }
     }
 
     async validateLogin() {
@@ -109,15 +59,7 @@ export default class AccountSettings extends Component {
                 </div>
                 <div>
                     <h3>Current Teams</h3>
-                    { this.createUI() }
-                    <button onClick={this.addClick.bind(this)} >
-                        add team
-                    </button>
-                    <Portal>
-                        <Modal onConfirm={this.confirmRemoveTeam} onDeny={this.denyRemoveTeam} show={this.state.showModal}>
-                            Are you sure?
-                        </Modal>
-                    </Portal>
+                    <Team />
                 </div>
             </div>
         );
