@@ -1,1 +1,43 @@
-<mxfile host="app.diagrams.net" modified="2020-11-19T20:15:30.105Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36" etag="OXuMpeIKNUsn6gPaIJFZ" version="13.9.9" type="github"><diagram id="gYGimB_lef4zcPNBKloe" name="Page-1">7VlZc9s4DP41fnRGh6881kc32zabTO02M/tGS7DFrCRqScpHf/0CEiVZlj3rpuOjM3mxqA8gCZLAR0BuuaNo84dkSfAofAhbjuVvWu645Ti207fwQcjWIFbHzpGl5L7BKmDKf0ChaNCU+6BqilqIUPOkDnoijsHTNYxJKdZ1tYUI67MmbAkNYOqxsIm+cF8HBrUtqxI8AF8GZupB1wgiVigbQAXMF+sdyJ203JEUQuetaDOCkHav2Je838cj0tIwCbE+pcP379/s57/5Z/Vps1q104fAGrXbZpQVC1Oz4JbTC3G8YUIm663Zh96/Kdk5jJhc8rjlfkCplWzwF8FstYS3tUhyWW9HpmGj2yzkS9PPQ4NBVmNia2me2czzAvhKe2NAXNd8XxGxZB8L5D7ypoWEsNC5cEDCpqmkOxIxre0vFkGuq7Tk8bJcR8OUQwafz7wpRs6cyVxvMhkV71cxZrLRECsu4tKcCukOW93xlc16FtJoZ60Tj9CpGeYYJx/nUw/FCuQizGJ+wTEW0Tt1hI+xjU1fimSGlgIFr1WOhl3Qp46GuF0SB1IuiAi03KKK6VCwbUG29+Z9vcNcBRbskJZdsC0zbLksh64IBRuGU36CX5wD/LK3aciLCTU9ESUizlY6fAWttwXfDgqg5NnOqdt1nPOO7qHd2DLnwI4VmISQab6qXxaHdtHM9yw42lZO1nY6tRPr1AcQi4VC/9g/hNLot5+Le8u8f5Crbo79h8z7ZylFGvv/zx0n3BaX5b1PL7PrGvFb8qvbvTmC7dwgwbrvBNvuHiXYBpGlBfA0f8USRuF8FQPeveK71abpqMFi/HmYPX6ZhBDRKVRhkx4IpcZcVcDNAqCzlBwjlk5HFYxr6YDprF6h4oleSfEzk2nMyAystDJDfPz1uUpCtiW1CJTCWoiaCyminS7H3JGFoUjJlHXANUwT5hG8xkKyHskJoJFAV0fZ6bmCholQXGMG51Cc37l9hFReRmacVIgzaad/JiKwm0RQZmO7bj04Fw/03uBvyNMeXUqxrrwsr7ksHpMrAp2x8iRPfsHR/qyGwtAU+Bhz5Qnpl170OMWfGbBItfKCWpWiSPh8wcH4YXSHzw++T69eqnTmZpBHQtUHeS5KY+4xnfVbczyRwo3n5aVdruzuwh7au4iH2nsOap3ooPfnctD+jWecTUK9uYyTljcUm1zv8CVw0c8LP+BprkCuwHxj+ApqF7uKVb91Vv6CrPiFK12z5IpfR96rhLdQb++EzzAlP9eqhM65yHdwg1VC/71KaN//apVgboCzVQlPMWR5m9KY1mQ5XELMboHPNZuHYG4lyqzEhrKzRxFzLWRVOJAYZWV2RkeVFQwm9SQVcTQzs0bZWlioSAeFIEOe2bRGrlSZbdUkl07lLlNsNPjkjLkcvlb/SOVeXv2x507+Aw==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2020-11-19T21:50:27.326Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36" etag="KEEh4xi9MBvEgbh26DAZ" version="13.9.9" type="github">
+  <diagram id="gYGimB_lef4zcPNBKloe" name="Page-1">
+    <mxGraphModel dx="1408" dy="1041" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="VVU1PZiKsJxvv-uHh0C--1" value="&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;b&gt;Root&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ ContextName: string&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ Sidebar: EECSidebar&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ Extension: EECExtension[]&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ ExtensionPort: Port&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;" parent="1" vertex="1">
+          <mxGeometry x="130" y="200" width="190" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="VVU1PZiKsJxvv-uHh0C--2" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" parent="VVU1PZiKsJxvv-uHh0C--1" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VVU1PZiKsJxvv-uHh0C--3" value="&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;b&gt;EECSidebar&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ BackgroundPort: Port&lt;br&gt;+ ContextName: string&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ JWT: string&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;" parent="1" vertex="1">
+          <mxGeometry x="410" y="200" width="190" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="VVU1PZiKsJxvv-uHh0C--4" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" parent="VVU1PZiKsJxvv-uHh0C--3" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VVU1PZiKsJxvv-uHh0C--5" value="&lt;b&gt;&lt;u&gt;Objects/EECSidebar.js - is an HTMLElement&lt;/u&gt;&lt;/b&gt;&lt;br&gt;The primary sidebar that shows the Karuna icon and displays messages from Karuna" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.37;size=20;position=0.47;" parent="1" vertex="1">
+          <mxGeometry x="410" y="120" width="270" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="VVU1PZiKsJxvv-uHh0C--6" value="&lt;b&gt;&lt;u&gt;in-content.js - Root injected script&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Injected into Discord and MS Teams pages and modifies them. Adds custom elements and communicates with the background script." style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.67;size=20;position=0.47;" parent="1" vertex="1">
+          <mxGeometry x="70" y="110" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="VVU1PZiKsJxvv-uHh0C--7" value="&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;b&gt;EECElement&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ textBox: HTMLElement&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ SizeObserver: ResizeObserver&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ BackgroundPort: Port&lt;br&gt;+ ContextName: string&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ WordList: string[]&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ JWT: string&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;" parent="1" vertex="1">
+          <mxGeometry x="730" y="200" width="210" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="VVU1PZiKsJxvv-uHh0C--8" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" parent="VVU1PZiKsJxvv-uHh0C--7" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VVU1PZiKsJxvv-uHh0C--9" value="&lt;b&gt;&lt;u&gt;Objects/EECElement.js - is an HTMLElement&lt;/u&gt;&lt;/b&gt;&lt;br&gt;One installed per editable text box. Monitors the textbox and relays content to background script. Can also underline words in textbox." style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.37;size=20;position=0.47;" parent="1" vertex="1">
+          <mxGeometry x="730" y="110" width="270" height="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
