@@ -60,9 +60,19 @@ function socketDisconnect (reason) {
 
 // Helper function to decode a JWT payload
 function decodeToken (token) {
-  return JSON.parse(
-    Buffer.from(token.split('.')[1], 'base64').toString()
-  )
+  // Validate that token has a payload
+  if (typeof token !== 'string' || token.split('.').length < 2) {
+    return {}
+  }
+
+  // Attempt to decode and parse
+  try {
+    const payloadBuffer = Buffer.from(token.split('.')[1], 'base64')
+    return JSON.parse(payloadBuffer.toString())
+  } catch (e) {
+    debug('Failed to parse JWT payload %o', e)
+    return {}
+  }
 }
 
 // Establish an in-memory session for a connected client
