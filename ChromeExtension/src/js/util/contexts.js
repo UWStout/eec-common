@@ -4,3 +4,8 @@ export const CONTEXT = {
   DISCORD: 'discord',
   SLACK: 'slack'
 }
+
+// Verify a context string
+export function isValidContext (context) {
+  return Object.values(CONTEXT).find(curValue => (context === curValue))
+}

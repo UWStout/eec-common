@@ -4,7 +4,8 @@
   "description": "Backend server / RESTful API for the Karuna communication tool.",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "set DEBUG=watch,server:* & node watchCode.mjs",
+    "dev": "set DEBUG=watch,server:* DEBUG_HIDE_DATE=true DEBUG_COLORS=true & node watchCode.mjs",
+    "devbash": "bash -c 'DEBUG=watch,server:* DEBUG_HIDE_DATE=true DEBUG_COLORS=true node watchCode.mjs'",
     "build": "esbuild --platform=node --bundle --external:bcrypt --external:sqlite3 --external:utf-8-validate --external:bufferutil --minify --outfile=dist/server.js src/server.js"
   },
   "license": "MIT",
@@ -18,7 +19,8 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "supports-color": "^7.2.0"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",

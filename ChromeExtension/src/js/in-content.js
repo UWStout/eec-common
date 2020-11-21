@@ -7,25 +7,27 @@ import { CONTEXT } from './util/contexts.js'
 // Avoid jQuery conflicts
 $.noConflict()
 
-// Detect discord or teams
-let contextName = 'NONE'
-const IS_DISCORD = window.location.host.includes('discord')
-if (IS_DISCORD) {
+// Detect current context
+let contextName = 'UNKNOWN'
+if (window.location.host.includes('discord')) {
   contextName = CONTEXT.DISCORD
   console.log('[[IN-CONTENT]] DISCORD DETECTED')
-}
-
-const IS_TEAMS = window.location.host.includes('teams.microsoft.')
-if (IS_TEAMS) {
+} else if (window.location.host.includes('teams.microsoft.')) {
   contextName = CONTEXT.MS_TEAMS
   console.log('[[IN-CONTENT]] MS TEAMS DETECTED')
 }
 
+// Helpful booleans
+const IS_DISCORD = (contextName === CONTEXT.DISCORD)
+const IS_TEAMS = (contextName === CONTEXT.MS_TEAMS)
+// const IS_SLACK = (contextName === CONTEXT.SLACK)
+
 // Initialize communication with background page
 const extensionPort = chrome.runtime.connect({ name: contextName })
-extensionPort.postMessage({
-  type: 'connect',
-  context: contextName
+
+// Detect unloading of tab/page and send a disconnect to the communication port
+window.addEventListener('beforeunload', (event) => {
+  extensionPort.disconnect()
 })
 
 // State variables

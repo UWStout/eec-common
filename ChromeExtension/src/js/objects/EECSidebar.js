@@ -86,6 +86,8 @@ class EECSidebar extends HTMLElement {
 
   // Respond to a message from the background script
   backgroundMessage (message) {
+    console.log('Karuna Message:')
+    console.log(message)
     if (message.type === 'karunaMessage' && message.context === this.contextName) {
       this.popoverElem.setContent(message.content)
       this.popoverElem.enable()
