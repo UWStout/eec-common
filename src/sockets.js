@@ -76,6 +76,12 @@ function socketClientSession (clientInfo) {
     this.join('clients')
   }
 
+  // Is there a valid token
+  if (!clientInfo.token) {
+    debug(`[WS:${this.id}] invalid client session token missing`)
+    return
+  }
+
   // Write/Update session and broadcast change
   clientSessions[this.id] = { email: decodeToken(clientInfo.token).email }
   clientSocketLookup[clientSessions[this.id].email] = this.id
