@@ -15,12 +15,15 @@ if (window.location.host.includes('discord')) {
 } else if (window.location.host.includes('teams.microsoft.')) {
   contextName = CONTEXT.MS_TEAMS
   console.log('[[IN-CONTENT]] MS TEAMS DETECTED')
+} else if (window.location.host.includes('.slack.com')) {
+  contextName = CONTEXT.SLACK
+  console.log('[[IN-CONTENT]] SLACK DETECTED')
 }
 
 // Helpful booleans
 const IS_DISCORD = (contextName === CONTEXT.DISCORD)
 const IS_TEAMS = (contextName === CONTEXT.MS_TEAMS)
-// const IS_SLACK = (contextName === CONTEXT.SLACK)
+const IS_SLACK = (contextName === CONTEXT.SLACK)
 
 // Initialize communication with background page
 const extensionPort = chrome.runtime.connect({ name: contextName })
@@ -57,7 +60,14 @@ jQuery(document).ready(() => {
       userName = userArea.text().trim()
       teamServerName = userArea.parent().children().first().children().first().text().trim()
       channelName = document.title.trim()
+    } else if (IS_SLACK) {
+      userName = jQuery('[data-qa="channel_sidebar_name_you"]').parent().children().first().text().trim()
+      teamServerName = jQuery('.p-ia__sidebar_header__team_name_text').text().trim()
+      channelName = jQuery('[data-qa="channel_name"]').text().trim()
     }
+
+    // Print updated context info
+    console.log(`[[IN-CONTENT]] context updated: ${contextName}, ${teamServerName}/${channelName}/${userName}`)
 
     // Update data in the background script
     chrome.runtime.sendMessage({ type: 'write', key: 'userName', data: userName, contextName })
@@ -80,7 +90,7 @@ function updateTextBoxes () {
   if (IS_DISCORD) {
     // Any element with the property 'data-slate-editor'
     textBoxes = document.querySelectorAll('[data-slate-editor]')
-  } else if (IS_TEAMS) {
+  } else if (IS_TEAMS || IS_SLACK) {
     // Any element with the role 'textbox'
     textBoxes = document.querySelectorAll('[role="textbox"]')
   }
