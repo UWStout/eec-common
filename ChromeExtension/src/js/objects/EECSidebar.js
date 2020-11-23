@@ -74,10 +74,11 @@ class EECSidebar extends HTMLElement {
     this.shadowRoot.append(this.vendorStyle, this.customStyle, this.popover)
 
     // DEBUG: Test the animation
+    const self = this
     setTimeout(() => {
       self.alertIcon.classList.add('fas', 'fa-exclamation', 'fa-2x')
       self.alertIcon.classList.add('animate__animated', 'animate__tada')
-    }, 5000)
+    }, 3000)
   }
 
   setContextName (newContext) {

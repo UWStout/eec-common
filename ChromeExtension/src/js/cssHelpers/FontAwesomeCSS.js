@@ -7,7 +7,7 @@ import FontAwesomeCSSSolid from 'raw-loader!@fortawesome/fontawesome-free/css/so
 // Return all the CSS for this library as a string
 export function getCSSString () {
   // Rewrite the internal URLs
-  const baseURL = 'chrome-extension://__MSG_@@extension_id__/webfonts' // chrome.runtime.getURL('webfonts')
+  const baseURL = chrome.runtime.getURL('webfonts')
   const adjFontAwesomeCSS = FontAwesomeCSS.replace(/url\(\.\.\/webfonts\/(.+?)\)/g, `url(${baseURL}/$1)`)
   const adjFontAwesomeCSSBrands = FontAwesomeCSSBrands.replace(/url\(\.\.\/webfonts\/(.+?)\)/g, `url(${baseURL}/$1)`)
   const adjFontAwesomeCSSSolid = FontAwesomeCSSSolid.replace(/url\(\.\.\/webfonts\/(.+?)\)/g, `url(${baseURL}/$1)`)
