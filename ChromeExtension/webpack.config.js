@@ -1,7 +1,24 @@
 const path = require('path')
+const fs = require('fs')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
+// All the output folders
+const DEST_DIR = path.resolve(__dirname, 'dist')
+const OTHER_DIRS = [
+  path.join(DEST_DIR, 'images'),
+  path.join(DEST_DIR, 'lib'),
+  path.join(DEST_DIR, 'webfonts'),
+  path.join(DEST_DIR, 'css'),
+  path.join(DEST_DIR, 'css', 'tippy')
+]
+
 module.exports = (env, argv) => {
+  // Ensure output dirs exist
+  if (!fs.existsSync(DEST_DIR)) { fs.mkdirSync(DEST_DIR) }
+  OTHER_DIRS.forEach((curDir) => {
+    if (!fs.existsSync(curDir)) { fs.mkdirSync(curDir) }
+  })
+
   // Basic input and output config
   const config = {
     entry: {
@@ -67,14 +84,19 @@ module.exports = (env, argv) => {
       new CopyWebpackPlugin({
         // Copy html, images, and compiled+minified libraries into the dist folder
         patterns: [
-          { from: './node_modules/webextension-polyfill/dist/browser-polyfill.min.js' },
-          { from: './node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js' },
-          { from: './node_modules/jquery/dist/jquery.slim.min.js' },
-          { from: './node_modules/store2/dist/store2.min.js' },
-          { from: './node_modules/@popperjs/core/dist/umd/popper.min.js' },
-          { from: './manifest.json' },
-          { from: './src/images' },
-          { from: './src/views' }
+          { from: './node_modules/webextension-polyfill/dist/browser-polyfill.min.js', to: path.resolve(__dirname, 'dist/lib') },
+          { from: './node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js', to: path.resolve(__dirname, 'dist/lib') },
+          { from: './node_modules/jquery/dist/jquery.slim.min.js', to: path.resolve(__dirname, 'dist/lib') },
+          { from: './node_modules/store2/dist/store2.min.js', to: path.resolve(__dirname, 'dist/lib') },
+          { from: './node_modules/@popperjs/core/dist/umd/popper.min.js', to: path.resolve(__dirname, 'dist/lib') },
+          { from: './node_modules/animate.css/animate.min.css', to: path.resolve(__dirname, 'dist/css') },
+          { from: './node_modules/@fortawesome/fontawesome-free/webfonts/', to: path.resolve(__dirname, 'dist/webfonts/') },
+          { from: './node_modules/tippy.js/dist/tippy.css', to: path.resolve(__dirname, 'dist/css/tippy') },
+          { from: './node_modules/tippy.js/themes/', to: path.resolve(__dirname, 'dist/css/tippy') },
+          { from: './node_modules/tippy.js/animations/', to: path.resolve(__dirname, 'dist/css/tippy') },
+          { from: './src/images', to: path.resolve(__dirname, 'dist/images') },
+          { from: './src/views' },
+          { from: './manifest.json' }
         ]
       })
     ]

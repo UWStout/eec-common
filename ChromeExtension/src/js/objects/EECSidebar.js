@@ -1,15 +1,16 @@
 // Raw CSS strings to use in HTML construction
 import EECSidebarCSS from './EECSidebarStyle.raw'
 
+// Tooltip library for showing messages from Karuna
 import tippy from 'tippy.js'
 
-/* eslint-disable */
-import TippyCSS from 'raw-loader!tippy.js/dist/tippy.css'
-import TippyCSSThemeLight from 'raw-loader!tippy.js/themes/light.css'
-import TippyCSSThemeDark from 'raw-loader!tippy.js/themes/material.css'
-import TippyCSSAnim from 'raw-loader!tippy.js/animations/perspective.css'
+// Bring in all our CSS helpers
+import * as TippyCSS from '../cssHelpers/TippyCSS.js'
+import * as FontAwesomeCSS from '../cssHelpers/FontAwesomeCSS.js'
+import * as AnimateCSS from '../cssHelpers/animateCSS.js'
+
+// Accepted context strings
 import { CONTEXT } from '../util/contexts'
-/* eslint-enable */
 
 // Set some universal defaults for tippy
 tippy.setDefaultProps({
@@ -39,8 +40,8 @@ class EECSidebar extends HTMLElement {
 
   setupElement () {
     // Create 3rd party library CSS for the shadow dom
-    this.libraryStyle = document.createElement('style')
-    this.libraryStyle.textContent = TippyCSS + TippyCSSThemeLight + TippyCSSThemeDark + TippyCSSAnim
+    this.vendorStyle = document.createElement('style')
+    this.vendorStyle.textContent = FontAwesomeCSS.getCSSString() + AnimateCSS.getCSSString() + TippyCSS.getCSSString()
 
     // Create some custom CSS to apply only within the shadow dom
     this.customStyle = document.createElement('style')
@@ -52,9 +53,15 @@ class EECSidebar extends HTMLElement {
     this.imageIcon.setAttribute('class', 'eec-sidebar-icon')
     this.imageIcon.src = EECSidebar.DEFAULT_IMG
 
+    // Alert icon for when we need the user's attention
+    this.alertIcon = document.createElement('span')
+    this.alertIcon.setAttribute('id', 'EECAlert')
+    this.alertIcon.setAttribute('class', 'eec-sidebar-alert')
+
     // Container for the icon and popover
     this.popover = document.createElement('div')
-    this.popover.append(this.imageIcon)
+    this.popover.setAttribute('class', 'eec-sidebar')
+    this.popover.append(this.imageIcon, this.alertIcon)
 
     // Create the popover using tippy
     this.popoverElem = tippy(this.imageIcon, {
@@ -64,7 +71,13 @@ class EECSidebar extends HTMLElement {
     this.popoverElem.disable() // We will enable it manually
 
     // Attach the created elements to the shadow DOM
-    this.shadowRoot.append(this.libraryStyle, this.customStyle, this.popover)
+    this.shadowRoot.append(this.vendorStyle, this.customStyle, this.popover)
+
+    // DEBUG: Test the animation
+    setTimeout(() => {
+      self.alertIcon.classList.add('fas', 'fa-exclamation', 'fa-2x')
+      self.alertIcon.classList.add('animate__animated', 'animate__tada')
+    }, 5000)
   }
 
   setContextName (newContext) {
@@ -86,8 +99,6 @@ class EECSidebar extends HTMLElement {
 
   // Respond to a message from the background script
   backgroundMessage (message) {
-    console.log('Karuna Message:')
-    console.log(message)
     if (message.type === 'karunaMessage' && message.context === this.contextName) {
       this.popoverElem.setContent(message.content)
       this.popoverElem.enable()

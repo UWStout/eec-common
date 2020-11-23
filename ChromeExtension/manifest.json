@@ -4,11 +4,11 @@
   "version": "0.1.0",
   "description": "Chrome extension for the EEC system to help with empathetic communication over electronic tools.",
   "icons": {
-    "16": "icon-16.png",
-    "48": "icon-48.png",
-    "128": "icon-128.png",
-    "256": "icon-256.png",
-    "512": "icon-512.png"
+    "16": "images/icon-16.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png",
+    "256": "images/icon-256.png",
+    "512": "images/icon-512.png"
   },
   "browser_action": {
     "default_title": "EEC Extension Settings",
@@ -21,16 +21,27 @@
       "*://*.discord.gg/*",
       "*://*.slack.com/*"
     ], "js": [
-      "webcomponents-bundle.js",
-      "browser-polyfill.min.js",
-      "jquery.slim.min.js",
-      "popper.min.js",
+      "lib/webcomponents-bundle.js",
+      "lib/browser-polyfill.min.js",
+      "lib/jquery.slim.min.js",
+      "lib/popper.min.js",
       "in-content.js"
+    ], "css": [
+      "css/animate.min.css",
+      "css/tippy/tippy.css",
+      "css/tippy/light.css",
+      "css/tippy/material.css",
+      "css/tippy/perspective.css"
     ]
   }],
+  "web_accessible_resources": [
+    "css/*",
+    "css/tippy/*",
+    "webfonts/*"
+  ],
   "background": {
     "scripts": [
-      "browser-polyfill.min.js",
+      "lib/browser-polyfill.min.js",
       "background.js"
     ],
     "persistent": true
