@@ -64,7 +64,7 @@ class EECSidebar extends HTMLElement {
     this.popover.append(this.imageIcon, this.alertIcon)
 
     // Create the popover using tippy
-    this.popoverElem = tippy(this.imageIcon, {
+    this.popoverElem = tippy(this.popover, {
       placement: 'top-start',
       appendTo: this.shadowRoot
     })
@@ -77,8 +77,16 @@ class EECSidebar extends HTMLElement {
     const self = this
     setTimeout(() => {
       self.alertIcon.classList.add('fas', 'fa-exclamation', 'fa-2x')
-      self.alertIcon.classList.add('animate__animated', 'animate__tada')
+      self.popover.classList.add('animate__animated', 'animate__repeat-3', 'animate__tada')
     }, 3000)
+
+    setTimeout(() => {
+      this.backgroundMessage({
+        type: 'karunaMessage',
+        context: self.contextName,
+        content: 'Click here to log in to Karuna'
+      })
+    }, 6000)
   }
 
   setContextName (newContext) {
