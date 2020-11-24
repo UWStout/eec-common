@@ -20,24 +20,18 @@
       "*://*.discord.com/*",
       "*://*.discord.gg/*",
       "*://*.slack.com/*"
+    ], "css": [
+      "css/animate.min.css"
     ], "js": [
       "lib/webcomponents-bundle.js",
       "lib/browser-polyfill.min.js",
       "lib/jquery.slim.min.js",
       "lib/popper.min.js",
       "in-content.js"
-    ], "css": [
-      "css/animate.min.css",
-      "css/tippy/tippy.css",
-      "css/tippy/light.css",
-      "css/tippy/material.css",
-      "css/tippy/perspective.css"
     ]
   }],
   "web_accessible_resources": [
-    "css/*",
-    "css/tippy/*",
-    "webfonts/*"
+    "css/animate.min.css"
   ],
   "background": {
     "scripts": [
@@ -46,7 +40,7 @@
     ],
     "persistent": true
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; img-src * data: 'self' 'unsafe-eval'",
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; img-src * data: 'self'",
   "permissions": [
     "storage",
     "tabs",
