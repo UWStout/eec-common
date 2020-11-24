@@ -69,13 +69,26 @@ function oneTimeMessage (message, sender, sendResponse) {
     switch (message.type.toLowerCase()) {
       // Read a value from storage
       case 'read':
-        sendResponse()
+        sendResponse({ value: readValue(message.key, message.context) })
         resolve({ value: readValue(message.key, message.context) })
         break
 
       // Write a value to storage
       case 'write':
         resolve({ result: writeValue(message.key, message.data, message.context) })
+        break
+
+      // User successfully logged in (comes from popup)
+      case 'login':
+        // Announce the global session
+        announceSession()
+
+        // Send the token to each in-context session
+        for (const portName in portSessions) {
+          portSessions[portName].postMessage(
+            { type: 'login', token: message.data }
+          )
+        }
         break
 
       // Unknown messages
@@ -117,6 +130,9 @@ function portListener (port) {
 
   // Listen for standard messages
   port.onMessage.addListener((message) => {
+    // Do nothing if not logged in
+    if (!readValue('JWT')) { return }
+
     switch (message.type) {
       // Text is updating in an in-context script
       case 'textUpdate':

@@ -30,7 +30,9 @@ class EECSidebar extends HTMLElement {
     // Read the JWT for later use
     chrome.runtime.sendMessage({ type: 'read', key: 'JWT' }, (response) => {
       console.log('[[IN-CONTENT]] EEC-Sidebar Received token')
-      this.JWT = response
+      console.log(response)
+      this.JWT = response.value
+      this.sendGreetingMessage()
     })
 
     // Build the element HTML/CSS
@@ -72,22 +74,36 @@ class EECSidebar extends HTMLElement {
 
     // Attach the created elements to the shadow DOM
     jQuery(this.shadowRoot).append(this.vendorStyle, this.customStyle, this.popover)
+  }
 
-    // DEBUG: Test the animation
-    const self = this
-    setTimeout(() => {
-      self.alertIcon.attr('src', EECSidebar.ALERT_IMG)
-      self.alertIcon.addClass('animate__animated animate__fadein')
-      self.popover.addClass('animate__animated animate__repeat-3 animate__tada')
-    }, 3000)
+  sendGreetingMessage () {
+    console.log(this.JWT)
+    if (typeof this.JWT === 'string') {
+      this.payload = this.decodeTokenPayload(this.JWT)
+      setTimeout(() => {
+        this.showMessage(`Welcome back, ${this.payload.firstName}!`, false, 5000)
+      }, 3000)
+    } else {
+      setTimeout(() => {
+        this.showMessage('Please log in to use Karuna', true, 5000)
+      }, 3000)
+    }
+  }
 
-    setTimeout(() => {
-      this.backgroundMessage({
-        type: 'karunaMessage',
-        context: self.contextName,
-        content: 'Click here to log in to Karuna'
-      })
-    }, 6000)
+  // Decode JWT payload (without verification)
+  decodeTokenPayload (token) {
+    // Validate that token has a payload
+    if (typeof token !== 'string' || token.split('.').length < 2) {
+      return {}
+    }
+
+    // Attempt to decode and parse
+    try {
+      const payloadBuffer = Buffer.from(token.split('.')[1], 'base64')
+      return JSON.parse(payloadBuffer.toString())
+    } catch (e) {
+      return {}
+    }
   }
 
   setContextName (newContext) {
@@ -109,10 +125,38 @@ class EECSidebar extends HTMLElement {
 
   // Respond to a message from the background script
   backgroundMessage (message) {
-    if (message.type === 'karunaMessage' && message.context === this.contextName) {
-      this.popoverElem.setContent(message.content)
-      this.popoverElem.enable()
-      this.popoverElem.show()
+    switch (message.type) {
+      case 'login':
+        this.JWT = message.token
+        this.payload = this.decodeTokenPayload(this.JWT)
+        this.showMessage(`Welcome ${this.payload.firstName}!`, false, 5000)
+        break
+
+      case 'karunaMessage':
+        if (message.context === this.contextName) {
+          this.showMessage(message.content)
+        }
+        break
+    }
+  }
+
+  showMessage (messageText, alert = false, timeout = 0) {
+    if (alert) {
+      this.alertIcon.attr('src', EECSidebar.ALERT_IMG)
+      this.alertIcon.addClass('eec-sidebar-icon animate__animated animate__fadein')
+      this.popover.addClass('animate__animated animate__repeat-3 animate__tada')
+    }
+
+    this.popoverElem.setContent(messageText)
+    this.popoverElem.enable()
+    this.popoverElem.show()
+
+    if (timeout > 0) {
+      setTimeout(() => {
+        this.alertIcon.attr('src', EECSidebar.KARUNA_IMG)
+        this.alertIcon.addClass('eec-sidebar-icon animate__animated animate__fadein')
+        this.popoverElem.hide()
+      }, timeout)
     }
   }
 

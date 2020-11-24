@@ -39,6 +39,11 @@ const activeContexts = new Set()
  * @see {@link https://socket.io/docs/v3/client-api/#socket-emit-eventName-%E2%80%A6args-ack}
  */
 export function announceSession (context) {
+  // Don't announce sessions if not logged in
+  if (!readValue('JWT')) {
+    return
+  }
+
   // Determine list of contexts
   let sendContext = 'global'
   if (context) {
@@ -49,7 +54,7 @@ export function announceSession (context) {
   }
 
   // Update sessions & contexts on server
-  socket.emit('clientSession', {
+  getSocket().emit('clientSession', {
     context: sendContext,
     token: readValue('JWT')
   })
