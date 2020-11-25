@@ -8,6 +8,12 @@ import { decodeToken } from './auth.js'
 import Debug from 'debug'
 const debug = Debug('server:wizard')
 
+// Path for redirections
+const REDIR_PATH = '/karuna/oz/'
+if (process.argv.find((arg) => { return arg === 'DEV' })) {
+  REDIR_PATH = '/oz/'
+}
+
 // Path to raw view files
 const VIEW_PATH = './views/wizard'
 
@@ -24,7 +30,7 @@ const unAuthPages = [
 // Account login or registration (no auth required)
 router.get('/*', decodeToken, (req, res, next) => {
   // Rewrite default path
-  if (req.path === '/') { return res.redirect('/oz/emeraldCity.html') }
+  if (req.path === '/') { return res.redirect(REDIR_PATH + 'emeraldCity.html') }
 
   // Non-authorized paths
   if (unAuthPages.indexOf(req.url) >= 0) {
@@ -35,7 +41,7 @@ router.get('/*', decodeToken, (req, res, next) => {
     // All remaining paths require authorization or redirect to logout
     if (!req.user || req.user.error) {
       // Send to logout
-      return res.redirect('/oz/logout.html')
+      return res.redirect(REDIR_PATH + 'logout.html')
     }
 
     // Attempt to send file in response

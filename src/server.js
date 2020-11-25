@@ -81,6 +81,7 @@ if (process.argv.find((arg) => { return arg === 'dev' })) {
   })
 } else {
   // Start server listening on main/production port
+  app.set('trust proxy', 'loopback')
   server.listen(process.env.PROD_PORT, 'localhost', () => {
     console.log(`Karuna server listening on port ${process.env.PROD_PORT}`)
   })
