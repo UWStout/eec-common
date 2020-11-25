@@ -22,13 +22,13 @@ const router = new Express.Router()
 
 // List of pages that do not require authorization to access
 const unAuthPages = [
-  'login.html',
-  'logout.html',
-  'register.html',
-  'login.js',
-  'logout.js',
-  'register.js',
-  'authHelper.js'
+  '/login.html',
+  '/logout.html',
+  '/register.html',
+  '/login.js',
+  '/logout.js',
+  '/register.js',
+  '/authHelper.js'
 ]
 
 // Account login or registration (no auth required)
