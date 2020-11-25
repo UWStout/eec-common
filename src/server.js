@@ -35,6 +35,7 @@ import morgan from 'morgan'
 
 // Update environment variables
 dotenv.config()
+const SERVER_ROOT = process.env.SERVER_ROOT | '/'
 
 // Make a standard express app server
 const app = new Express()
@@ -59,16 +60,16 @@ app.use(CookieParser())
 app.use(Express.json())
 
 // All authentication routes are under '/auth/'
-app.use('/auth', authRouter)
+app.use(`${SERVER_ROOT}auth`, authRouter)
 
 // All data routes are under '/data/'
-app.use('/data', dataRouter)
+app.use(`${SERVER_ROOT}data`, dataRouter)
 
 // All wizard routes are under '/oz/'
-app.use('/oz', wizardRouter)
+app.use(`${SERVER_ROOT}oz`, wizardRouter)
 
 // Everything else is a static file
-app.use('/', Express.static(path.resolve('./public')))
+app.use(`${SERVER_ROOT}`, Express.static(path.resolve('./public')))
 
 // Setup web-sockets
 makeSocket(server)
