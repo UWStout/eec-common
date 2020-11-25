@@ -77,12 +77,12 @@ makeSocket(server)
 if (process.argv.find((arg) => { return arg === 'dev' })) {
   // Start server listening on debug/dev port
   server.listen(process.env.DEV_PORT, 'localhost', () => {
-    debug(`Dev server listening on port ${process.env.DEV_PORT}`)
+    debug(`Karuna DEV server listening on port ${process.env.DEV_PORT}`)
   })
 } else {
   // Start server listening on main/production port
   server.listen(process.env.PROD_PORT, 'localhost', () => {
-    debug(`Production server listening on port ${process.env.PROD_PORT}`)
+    console.log(`Karuna server listening on port ${process.env.PROD_PORT}`)
   })
 }
 

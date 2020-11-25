@@ -69,8 +69,8 @@ function oneTimeMessage (message, sender, sendResponse) {
     switch (message.type.toLowerCase()) {
       // Read a value from storage
       case 'read':
-        sendResponse({ value: readValue(message.key, message.context) })
-        resolve({ value: readValue(message.key, message.context) })
+        sendResponse({ value: readValue(message.key, message.context) }) // Chrome
+        resolve({ value: readValue(message.key, message.context) }) // Mozilla
         break
 
       // Write a value to storage
