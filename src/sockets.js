@@ -16,7 +16,7 @@ let mySocket = null
 // Integrate our web-sockets route with the express server
 export function makeSocket (serverListener) {
   // Setup web-sockets
-  mySocket = SocketIO(serverListener)
+  mySocket = SocketIO(serverListener, { path: '/karuna/socket.io' })
 
   // Respond to new socket connections
   mySocket.on('connection', (socket) => {
