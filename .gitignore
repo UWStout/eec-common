@@ -1,6 +1,9 @@
 # Secret info that should not be in the repo
 .env
 
+# Builds to ignore
+ChromeExtension/*.zip
+
 ## IDEs ###
 *.sublime-workspace
 .tag*
