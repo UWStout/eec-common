@@ -21,6 +21,7 @@ function getSessionID (userID, context) {
 }
 
 // The socket.io socket
+console.log(`Socket.io: connecting to ${window.location}`)
 const socket = io()
 socket.on('connect', () => {
   console.log('[WS] Connected to server')
