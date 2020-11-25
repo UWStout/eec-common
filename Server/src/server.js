@@ -35,7 +35,8 @@ import morgan from 'morgan'
 
 // Update environment variables
 dotenv.config()
-const SERVER_ROOT = process.env.SERVER_ROOT | '/'
+const SERVER_ROOT = process.env.SERVER_ROOT || '/'
+console.log(`Server root: ${SERVER_ROOT}`)
 
 // Make a standard express app server
 const app = new Express()
@@ -82,7 +83,7 @@ if (process.argv.find((arg) => { return arg === 'dev' })) {
   })
 } else {
   // Start server listening on main/production port
-  app.set('trust proxy', 'loopback')
+  app.set('trust proxy', ['localhost', 'loopback'])
   server.listen(process.env.PROD_PORT, 'localhost', () => {
     console.log(`Karuna server listening on port ${process.env.PROD_PORT}`)
   })
