@@ -5,6 +5,9 @@ import { isValidContext } from '../util/contexts.js'
 // Data storage functions
 import { readValue } from './DataStorage.js'
 
+// Server config
+import * as SERVER_CONFIG from '../util/serverConfig.js'
+
 // Establish connection
 let socket = null
 
@@ -16,7 +19,7 @@ let socket = null
  */
 export function setupSocketCommunication () {
   if (!socket || socket == null) {
-    socket = io('http://localhost:3000')
+    socket = io(`https://${SERVER_CONFIG.HOST_NAME}`, { path: '/karuna/socket.io' })
     socket.on('connect', () => { announceSession() })
   }
 }

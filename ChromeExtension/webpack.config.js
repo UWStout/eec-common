@@ -1,5 +1,7 @@
 const path = require('path')
 const fs = require('fs')
+
+const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 // All the output folders
@@ -101,11 +103,13 @@ module.exports = (env, argv) => {
   // Special options only for development mode
   if (argv.mode === 'development') {
     config.devtool = 'eval-cheap-module-source-map'
+    config.plugins.push(new webpack.DefinePlugin({ _DEV_: true }))
   }
 
   // Add minification of files when in production mode
   if (argv.mode === 'production') {
     config.module.rules[0].use.options.presets.push('minify')
+    config.plugins.push(new webpack.DefinePlugin({ _DEV_: false }))
   }
 
   // Return the completed configuration object
