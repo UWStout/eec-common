@@ -1,10 +1,12 @@
+// Essential file libraries
+import fs from 'fs'
 import path from 'path'
 
 // Read extra environment variables from the .env file
 import dotenv from 'dotenv'
 
 // Import the base http library
-import http from 'http'
+import https from 'https'
 
 // Using express for basic HTTP
 import Express from 'express'
@@ -38,9 +40,17 @@ dotenv.config()
 const SERVER_ROOT = process.env.SERVER_ROOT || '/'
 console.log(`Server root: ${SERVER_ROOT}`)
 
+// Configure SSL
+const SSL_KEY_FILE = process.env.SERVER_KEY || './certs/server.key'
+const SSL_CERT_FILE = process.env.SERVER_CERT || './certs/server.crt'
+const SSLOptions = {
+  key: fs.readFileSync(SSL_KEY_FILE),
+  cert: fs.readFileSync(SSL_CERT_FILE)
+}
+
 // Make a standard express app server
 const app = new Express()
-const server = http.createServer(app)
+const server = https.createServer(SSLOptions, app)
 
 // prints messages for debugging purposes
 const debug = Debug('server')
