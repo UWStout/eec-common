@@ -1,9 +1,6 @@
 # Secret info that should not be in the repo
 .env
 
-# Builds to ignore
-ChromeExtension/*.zip
-
 ## IDEs ###
 *.sublime-workspace
 .tag*
@@ -33,8 +30,12 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
+# Other ignore files
 dist/
 node_modules/
+Server/logs/*
+ChromeExtension/*.zip
 .tmp
+
 GumGumScreenshots_*.crx
 updates.xml
