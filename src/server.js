@@ -85,17 +85,19 @@ app.use(`${SERVER_ROOT}`, Express.static(path.resolve('./public')))
 // Setup web-sockets
 makeSocket(server)
 
-// If this is a dev run, use 'reload' else just bind to port 8000
+// Start listening on ports listed in .env
+const DEV_PORT = process.env.DEV_PORT || 3000
+const PROD_PORT = process.env.PROD_PORT || 42424
 if (process.argv.find((arg) => { return arg === 'dev' })) {
   // Start server listening on debug/dev port
-  server.listen(process.env.DEV_PORT, 'localhost', () => {
-    debug(`Karuna DEV server listening on port ${process.env.DEV_PORT}`)
+  server.listen(DEV_PORT, 'localhost', () => {
+    debug(`Karuna DEV server listening on port ${DEV_PORT}`)
   })
 } else {
   // Start server listening on main/production port
   app.set('trust proxy', ['loopback'])
-  server.listen(process.env.PROD_PORT, 'localhost', () => {
-    console.log(`Karuna server listening on port ${process.env.PROD_PORT}`)
+  server.listen(PROD_PORT, 'localhost', () => {
+    console.log(`Karuna server listening on port ${PROD_PORT}`)
   })
 }
 
