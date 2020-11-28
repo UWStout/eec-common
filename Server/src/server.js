@@ -80,7 +80,7 @@ app.use(`${SERVER_ROOT}data`, dataRouter)
 app.use(`${SERVER_ROOT}oz`, wizardRouter)
 
 // Everything else is a static file
-app.use(`${SERVER_ROOT}`, Express.static(path.resolve('./public')))
+app.use(`${SERVER_ROOT}`, Express.static(path.resolve('./public'), { index: 'instructions.html' }))
 
 // Setup web-sockets
 makeSocket(server)

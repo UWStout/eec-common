@@ -22,9 +22,10 @@ export function setupExtensionCommunication () {
   getSocket().on('karunaMessage', (msg) => {
     // Loop through active port names and look for matching context
     for (const portName in portSessions) {
-      const context = portName.split('/')[0]
+      const context = portName.split('-')[0]
       if (context === msg.context) {
         // Relay message to that port
+        console.log('[BACKGROUND] + Context matched, posting message')
         portSessions[portName].postMessage(
           { type: 'karunaMessage', ...msg }
         )

@@ -11,7 +11,7 @@
         "dev": "webpack --mode development",
         "prebuild": "rimraf dist",
         "build": "webpack --mode production",
-        "postbuild": "zip -r9 KarunaEEC.zip dist/*"
+        "postbuild": "bash postBuild.sh"
     },
     "nodemonConfig": {
         "ignore": [

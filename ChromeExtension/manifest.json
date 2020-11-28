@@ -49,6 +49,7 @@
     "*://*.discord.gg/*",
     "*://*.slack.com/*",
     "*://games.mscs.uwstout.edu/*",
+    "*://localhost/*",
     "webRequest",
     "webRequestBlocking"
   ]
