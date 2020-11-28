@@ -1,3 +1,3 @@
 #!/bin/bash
-cp ../Media/Instruction\ Images/*.png ./public/Media/
-cp ../ChromeExtension/KarunaEEC-Extension.zip ./public/Media/
+cp ../Media/Instruction\ Images/*.png ./public/media/
+cp ../ChromeExtension/KarunaEEC-Extension.zip ./public/media/
