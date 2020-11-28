@@ -1,5 +1,5 @@
 module.exports = {
-  apps : [{
+  apps: [{
     name: 'karuna',
     script: './dist/server.js',
     log_file: './logs/output.log',
@@ -12,4 +12,4 @@ module.exports = {
       DEBUG: 'watch,server:*'
     }
   }]
-};
+}
