@@ -80,18 +80,18 @@ async function listDatabases (client) {
 router.route('/:id')
   .get((req, res) => {
     const { id } = req.params
-    const url = 'mongodb://localhost:27017'
-    const dbName = 'eec-common';
+    const uri = 'mongodb+srv://testUser:7AkaGi94EKFaImP1@cluster0.uiraz.mongodb.net/test?retryWrites=true&w=majority';
 
     (async function mongo () {
       let client
       try {
-        client = await MongoClient.connect(url)
+        client = new MongoClient(uri, { useNewUrlParser: true })
+        await client.connect()
         debug('Connected correctly to server')
+        const database = client.db('sample_mflix')
+        const collection = await database.collection('movies')
 
-        const db = client.db(dbName)
-        const col = await db.collection('test')
-        const book = await col.findOne({ _id: new ObjectID(id) })
+        const book = await collection.findOne({ _id: new ObjectID(id) })
         debug(book)
         res.render(
           'dataView',
