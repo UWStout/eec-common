@@ -98,11 +98,7 @@ app.set('views', './views')
 app.set('view engine', 'ejs')
 
 // Everything else is a static file
-<<<<<<< HEAD
-app.use('/', Express.static(path.resolve('./public/')))
-=======
 app.use(`${SERVER_ROOT}`, Express.static(path.resolve('./public'), { index: 'instructions.html' }))
->>>>>>> 5a2f95df7ebc453cb1813c3091b9ee9986ccce1a
 
 // Setup web-sockets
 makeSocket(server)
