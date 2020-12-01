@@ -1,7 +1,7 @@
 {
-    "name": "chrome-extension-template",
+    "name": "karuna-eec-extension",
     "version": "0.0.1",
-    "description": "Chrome extension boilerplate, replace all values!",
+    "description": "Web browsers extension for the Karuna EEC project",
     "main": "src/popup/popup.html",
     "repository": "",
     "license": "MIT",
@@ -10,7 +10,8 @@
         "start": "nodemon --exec npm run dev",
         "dev": "webpack --mode development",
         "prebuild": "rimraf dist",
-        "build": "webpack --mode production"
+        "build": "webpack --mode production",
+        "postbuild": "bash postBuild.sh"
     },
     "nodemonConfig": {
         "ignore": [

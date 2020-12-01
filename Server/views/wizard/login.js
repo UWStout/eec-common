@@ -69,7 +69,7 @@ async function validateLogin () {
 
   try {
     // Try to send the login request
-    const response = await axios.post('/auth/login', userInfo)
+    const response = await axios.post('../auth/login', userInfo)
 
     // Show a successful alert message
     addAlert('Login Success, redirecting ...', 'alert-success')
@@ -79,7 +79,7 @@ async function validateLogin () {
     // Set the token and redirect
     store.local.set('JWT', response.data.token)
     Cookies.set('JWT', response.data.token)
-    setTimeout(() => { window.location.href = '/oz/' }, 1500)
+    setTimeout(() => { window.location.href = './emeraldCity.html' }, 1000)
   } catch (err) {
     // Show a failed alert message
     addAlert('Login Failed', 'alert-danger')

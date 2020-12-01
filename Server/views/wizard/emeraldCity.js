@@ -21,7 +21,8 @@ function getSessionID (userID, context) {
 }
 
 // The socket.io socket
-const socket = io()
+console.log(`Socket.io: connecting to ${window.location}`)
+const socket = io({ path: '/karuna/socket.io' })
 socket.on('connect', () => {
   console.log('[WS] Connected to server')
   socket.emit('wizardSession', {})

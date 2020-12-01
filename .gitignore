@@ -30,8 +30,12 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
+# Other ignore files
 dist/
 node_modules/
+Server/logs/*
+ChromeExtension/*.zip
 .tmp
+
 GumGumScreenshots_*.crx
 updates.xml

@@ -1,5 +1,5 @@
-// import path from 'path'
-
+// Essential file libraries
+import fs from 'fs'
 import path from 'path'
 // import  { dirname } from 'path'
 // import { fileURLToPath } from 'url'
@@ -8,7 +8,7 @@ import path from 'path'
 import dotenv from 'dotenv'
 
 // Import the base http library
-import http from 'http'
+import https from 'https'
 
 // Using express for basic HTTP
 import Express from 'express'
@@ -41,13 +41,23 @@ import morgan from 'morgan'
 
 // Update environment variables
 dotenv.config()
+const SERVER_ROOT = process.env.SERVER_ROOT || '/'
+console.log(`Server root: ${SERVER_ROOT}`)
+
+// Configure SSL
+const SSL_KEY_FILE = process.env.SERVER_KEY || './certs/server.key'
+const SSL_CERT_FILE = process.env.SERVER_CERT || './certs/server.crt'
+const SSLOptions = {
+  key: fs.readFileSync(SSL_KEY_FILE),
+  cert: fs.readFileSync(SSL_CERT_FILE)
+}
 
 // const __filename = fileURLToPath(import.meta.url)
 // const __dirname = dirname(__filename)
 
 // Make a standard express app server
 const app = new Express()
-const server = http.createServer(app)
+const server = https.createServer(SSLOptions, app)
 
 // prints messages for debugging purposes
 const debug = Debug('server')
@@ -71,13 +81,13 @@ app.use(Express.json())
 app.use('/admin', adminRouter)
 
 // All authentication routes are under '/auth/'
-app.use('/auth', authRouter)
+app.use(`${SERVER_ROOT}auth`, authRouter)
 
 // All data routes are under '/data/'
-app.use('/data', dataRouter)
+app.use(`${SERVER_ROOT}data`, dataRouter)
 
 // All wizard routes are under '/oz/'
-app.use('/oz', wizardRouter)
+app.use(`${SERVER_ROOT}oz`, wizardRouter)
 
 
 // for using the databaseView
@@ -88,21 +98,28 @@ app.set('views', './views')
 app.set('view engine', 'ejs')
 
 // Everything else is a static file
+<<<<<<< HEAD
 app.use('/', Express.static(path.resolve('./public/')))
+=======
+app.use(`${SERVER_ROOT}`, Express.static(path.resolve('./public'), { index: 'instructions.html' }))
+>>>>>>> 5a2f95df7ebc453cb1813c3091b9ee9986ccce1a
 
 // Setup web-sockets
 makeSocket(server)
 
-// If this is a dev run, use 'reload' else just bind to port 8000
+// Start listening on ports listed in .env
+const DEV_PORT = process.env.DEV_PORT || 3000
+const PROD_PORT = process.env.PROD_PORT || 42424
 if (process.argv.find((arg) => { return arg === 'dev' })) {
   // Start server listening on debug/dev port
-  server.listen(process.env.DEV_PORT, 'localhost', () => {
-    debug(`Dev server listening on port ${process.env.DEV_PORT}`)
+  server.listen(DEV_PORT, 'localhost', () => {
+    debug(`Karuna DEV server listening on port ${DEV_PORT}`)
   })
 } else {
   // Start server listening on main/production port
-  server.listen(process.env.PROD_PORT, 'localhost', () => {
-    debug(`Production server listening on port ${process.env.PROD_PORT}`)
+  app.set('trust proxy', ['loopback'])
+  server.listen(PROD_PORT, 'localhost', () => {
+    console.log(`Karuna server listening on port ${PROD_PORT}`)
   })
 }
 

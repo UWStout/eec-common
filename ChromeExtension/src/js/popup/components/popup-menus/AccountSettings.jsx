@@ -5,6 +5,9 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogActions from '@material-ui/core/DialogActions'
 
+// Server config
+import * as SERVER_CONFIG from '../../../util/serverConfig.js'
+
 export default class AccountSettings extends Component {
     constructor(props) {
         super(props);
@@ -29,13 +32,18 @@ export default class AccountSettings extends Component {
         this.setState({ password: event.target.value })
     }
 
-    async validateLogin() {
+    async validateLogin () {
         try {
-            const response = await Axios.post('http://localhost:3000/auth/login',
+            const response = await Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/karuna/auth/login`,
                 { email: this.state.email, password: this.state.password }
             )
             chrome.runtime.sendMessage({
               type: 'write',
+              key: 'JWT',
+              data: response.data.token
+            })
+            chrome.runtime.sendMessage({
+              type: 'login',
               key: 'JWT',
               data: response.data.token
             })

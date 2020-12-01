@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "empathetic-electronic-communication-extension",
+  "name": "karuna-eec-extension",
   "version": "0.1.0",
-  "description": "Chrome extension for the EEC system to help with empathetic communication over electronic tools.",
+  "description": "Chrome extension for the Karuna EEC system to help with empathetic communication over electronic tools.",
   "icons": {
     "16": "images/icon-16.png",
     "48": "images/icon-48.png",
@@ -11,7 +11,7 @@
     "512": "images/icon-512.png"
   },
   "browser_action": {
-    "default_title": "EEC Extension Settings",
+    "default_title": "Karuna Settings",
     "default_popup": "popup.html"
   },
   "content_scripts": [{
@@ -48,8 +48,8 @@
     "*://*.discord.com/*",
     "*://*.discord.gg/*",
     "*://*.slack.com/*",
-    "http://localhost:3000/",
-    "activeTab",
+    "*://games.mscs.uwstout.edu/*",
+    "*://localhost/*",
     "webRequest",
     "webRequestBlocking"
   ]

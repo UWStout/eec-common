@@ -5,6 +5,9 @@ import { isValidContext } from '../util/contexts.js'
 // Data storage functions
 import { readValue } from './DataStorage.js'
 
+// Server config
+import * as SERVER_CONFIG from '../util/serverConfig.js'
+
 // Establish connection
 let socket = null
 
@@ -16,7 +19,7 @@ let socket = null
  */
 export function setupSocketCommunication () {
   if (!socket || socket == null) {
-    socket = io('http://localhost:3000')
+    socket = io(`https://${SERVER_CONFIG.HOST_NAME}`, { path: '/karuna/socket.io' })
     socket.on('connect', () => { announceSession() })
   }
 }
@@ -39,6 +42,11 @@ const activeContexts = new Set()
  * @see {@link https://socket.io/docs/v3/client-api/#socket-emit-eventName-%E2%80%A6args-ack}
  */
 export function announceSession (context) {
+  // Don't announce sessions if not logged in
+  if (!readValue('JWT')) {
+    return
+  }
+
   // Determine list of contexts
   let sendContext = 'global'
   if (context) {
@@ -49,7 +57,7 @@ export function announceSession (context) {
   }
 
   // Update sessions & contexts on server
-  socket.emit('clientSession', {
+  getSocket().emit('clientSession', {
     context: sendContext,
     token: readValue('JWT')
   })

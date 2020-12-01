@@ -1,5 +1,7 @@
 const path = require('path')
 const fs = require('fs')
+
+const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 // All the output folders
@@ -7,7 +9,6 @@ const DEST_DIR = path.resolve(__dirname, 'dist')
 const OTHER_DIRS = [
   path.join(DEST_DIR, 'images'),
   path.join(DEST_DIR, 'lib'),
-  path.join(DEST_DIR, 'webfonts'),
   path.join(DEST_DIR, 'css')
 ]
 
@@ -89,7 +90,8 @@ module.exports = (env, argv) => {
           { from: './node_modules/store2/dist/store2.min.js', to: path.resolve(__dirname, 'dist/lib') },
           { from: './node_modules/@popperjs/core/dist/umd/popper.min.js', to: path.resolve(__dirname, 'dist/lib') },
           { from: './node_modules/animate.css/animate.min.css', to: path.resolve(__dirname, 'dist/css') },
-          { from: './src/images', to: path.resolve(__dirname, 'dist/images') },
+          { from: './src/images/icon-128.png', to: path.resolve(__dirname, 'dist/128.png') },
+          { from: './src/images/*.png', to: path.resolve(__dirname, 'dist/images') },
           { from: './src/views' },
           { from: './manifest.json' }
         ]
@@ -100,11 +102,13 @@ module.exports = (env, argv) => {
   // Special options only for development mode
   if (argv.mode === 'development') {
     config.devtool = 'eval-cheap-module-source-map'
+    config.plugins.push(new webpack.DefinePlugin({ _DEV_: true }))
   }
 
   // Add minification of files when in production mode
   if (argv.mode === 'production') {
     config.module.rules[0].use.options.presets.push('minify')
+    config.plugins.push(new webpack.DefinePlugin({ _DEV_: false }))
   }
 
   // Return the completed configuration object

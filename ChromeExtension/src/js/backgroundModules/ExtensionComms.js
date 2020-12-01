@@ -22,9 +22,10 @@ export function setupExtensionCommunication () {
   getSocket().on('karunaMessage', (msg) => {
     // Loop through active port names and look for matching context
     for (const portName in portSessions) {
-      const context = portName.split('/')[0]
+      const context = portName.split('-')[0]
       if (context === msg.context) {
         // Relay message to that port
+        console.log('[BACKGROUND] + Context matched, posting message')
         portSessions[portName].postMessage(
           { type: 'karunaMessage', ...msg }
         )
@@ -69,13 +70,26 @@ function oneTimeMessage (message, sender, sendResponse) {
     switch (message.type.toLowerCase()) {
       // Read a value from storage
       case 'read':
-        sendResponse()
-        resolve({ value: readValue(message.key, message.context) })
+        sendResponse({ value: readValue(message.key, message.context) }) // Chrome
+        resolve({ value: readValue(message.key, message.context) }) // Mozilla
         break
 
       // Write a value to storage
       case 'write':
         resolve({ result: writeValue(message.key, message.data, message.context) })
+        break
+
+      // User successfully logged in (comes from popup)
+      case 'login':
+        // Announce the global session
+        announceSession()
+
+        // Send the token to each in-context session
+        for (const portName in portSessions) {
+          portSessions[portName].postMessage(
+            { type: 'login', token: message.data }
+          )
+        }
         break
 
       // Unknown messages
@@ -117,6 +131,9 @@ function portListener (port) {
 
   // Listen for standard messages
   port.onMessage.addListener((message) => {
+    // Do nothing if not logged in
+    if (!readValue('JWT')) { return }
+
     switch (message.type) {
       // Text is updating in an in-context script
       case 'textUpdate':
