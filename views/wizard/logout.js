@@ -7,5 +7,5 @@ $(document).ready(() => {
   Cookies.remove('JWT')
 
   // Redirect to login
-  setTimeout(() => { window.location.href = '/oz/login.html' }, 1500)
+  setTimeout(() => { window.location.href = './login.html' }, 1500)
 })

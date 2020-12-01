@@ -77,12 +77,12 @@ async function createAccount () {
 
   try {
     // Try to send the register request
-    const response = await axios.post('/auth/register', newUser)
+    const response = await axios.post('../auth/register', newUser)
 
     // Show a success alert message
     addAlert('Register Succeeded', 'alert-success')
-    accountForm[0].reset()
     console.log(response.data)
+    setTimeout(() => { window.location.href = './login.html' }, 1000)
   } catch (err) {
     // Show a failed alert message
     addAlert('Register Failed', 'alert-danger')

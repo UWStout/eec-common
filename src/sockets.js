@@ -16,7 +16,7 @@ let mySocket = null
 // Integrate our web-sockets route with the express server
 export function makeSocket (serverListener) {
   // Setup web-sockets
-  mySocket = SocketIO(serverListener)
+  mySocket = SocketIO(serverListener, { path: '/karuna/socket.io' })
 
   // Respond to new socket connections
   mySocket.on('connection', (socket) => {
@@ -131,8 +131,12 @@ function socketWizardMessage (messageInfo) {
 // Updated text of message being written
 // - 'this' = current socket
 function socketMessageUpdate (message) {
+  if (!clientSessions[this.id]) {
+    debug(`[WS:${this.id}] typing message before login`)
+    return
+  }
+
   debug(`[WS:${this.id}] client typing in ${message.context}`)
-  console.error(JSON.stringify(message, null, 2))
   mySocket.to('wizards').emit('clientTyping', {
     clientEmail: clientSessions[this.id].email,
     context: message.context,
@@ -143,6 +147,11 @@ function socketMessageUpdate (message) {
 // Attempt to send message
 // - 'this' = current socket
 function socketMessageSend (message) {
+  if (!clientSessions[this.id]) {
+    debug(`[WS:${this.id}] sending message before login`)
+    return
+  }
+
   debug(`[WS:${this.id}] message received from ${message.context}`)
   mySocket.to('wizards').emit('clientSend', {
     clientEmail: clientSessions[this.id].email,
