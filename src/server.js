@@ -1,4 +1,8 @@
+// import path from 'path'
+
 import path from 'path'
+// import  { dirname } from 'path'
+// import { fileURLToPath } from 'url'
 
 // Read extra environment variables from the .env file
 import dotenv from 'dotenv'
@@ -24,6 +28,8 @@ import dataRouter from './routes/data.js'
 // Custom router for user authentication API
 import authRouter from './routes/auth.js'
 
+import adminRouter from './routes/adminRoutes.js'
+
 // Custom router for the back-end wizard
 import wizardRouter from './routes/wizard.js'
 
@@ -35,6 +41,9 @@ import morgan from 'morgan'
 
 // Update environment variables
 dotenv.config()
+
+// const __filename = fileURLToPath(import.meta.url)
+// const __dirname = dirname(__filename)
 
 // Make a standard express app server
 const app = new Express()
@@ -58,6 +67,9 @@ app.use(CookieParser())
 // Enable parsing of JSON-Encoded bodies
 app.use(Express.json())
 
+// used for MongoDB set up
+app.use('/admin', adminRouter)
+
 // All authentication routes are under '/auth/'
 app.use('/auth', authRouter)
 
@@ -67,8 +79,16 @@ app.use('/data', dataRouter)
 // All wizard routes are under '/oz/'
 app.use('/oz', wizardRouter)
 
+
+// for using the databaseView
+app.use('/css', Express.static(path.resolve('../ChromeExtension/node_modules/bootstrap/dist/css')))
+app.use('/js', Express.static(path.resolve('../ChromeExtension/node_modules/bootstrap/dist/js')))
+app.use('/js', Express.static(path.resolve('../ChromeExtension/node_modules/jquery/dist')))
+app.set('views', './views')
+app.set('view engine', 'ejs')
+
 // Everything else is a static file
-app.use('/', Express.static(path.resolve('./public')))
+app.use('/', Express.static(path.resolve('./public/')))
 
 // Setup web-sockets
 makeSocket(server)
