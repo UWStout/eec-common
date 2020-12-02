@@ -91,7 +91,7 @@ module.exports = (env, argv) => {
           { from: './node_modules/@popperjs/core/dist/umd/popper.min.js', to: path.resolve(__dirname, 'dist/lib') },
           { from: './node_modules/animate.css/animate.min.css', to: path.resolve(__dirname, 'dist/css') },
           { from: './src/images/icon-128.png', to: path.resolve(__dirname, 'dist/128.png') },
-          { from: './src/images/*.png', to: path.resolve(__dirname, 'dist/images') },
+          { from: './src/images/', to: path.resolve(__dirname, 'dist/images') },
           { from: './src/views' },
           { from: './manifest.json' }
         ]
