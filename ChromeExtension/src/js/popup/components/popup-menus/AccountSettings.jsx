@@ -34,7 +34,7 @@ export default class AccountSettings extends Component {
 
     async validateLogin () {
         try {
-            const response = await Axios.post(`https://${SERVER_CONFIG.HOST_NAME}${SERVER_CONFIG.ROOT}auth/login`,
+            const response = await Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}auth/login`,
                 { email: this.state.email, password: this.state.password }
             )
             chrome.runtime.sendMessage({
