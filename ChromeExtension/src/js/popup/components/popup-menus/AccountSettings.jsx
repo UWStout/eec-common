@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import Team from '../Team.jsx'
 import Axios from 'axios'
-import Dialog from '@material-ui/core/Dialog'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogActions from '@material-ui/core/DialogActions'
+import Button from '@material-ui/core/Button'
 
 // Server config
 import * as SERVER_CONFIG from '../../../util/serverConfig.js'
@@ -63,7 +61,7 @@ export default class AccountSettings extends Component {
                 <div>
                     <h3>Password</h3>
                     <input type="password" value={this.state.password} onChange={this.handlePasswordChange} />
-                    <button onClick={() => { this.validateLogin() }}>login</button>
+                    <Button onClick={() => { this.validateLogin() }}>login</Button>
                 </div>
                 <div>
                     <h3>Current Teams</h3>
