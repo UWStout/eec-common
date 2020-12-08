@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import Dialog from '@material-ui/core/Dialog'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogActions from '@material-ui/core/DialogActions'
+import Button from '@material-ui/core/Button'
 import './CSS/Menu.css'
 
 export default class Team extends Component {
@@ -44,7 +42,7 @@ export default class Team extends Component {
                         value = {this.state.teamName}
                         onChange = {(e) => {this.updateValue(e)}}
                     />
-                    <button type="submit">Add Team</button>
+                    <Button type="submit">Add Team</Button>
                 </form>
                 <TeamList team={this.state.team} removeTeam={this.removeTeam} />
             </div>
@@ -59,7 +57,7 @@ class TeamList extends Component {
                 { this.props.team.map((team, index) => {
                     return  <li  key={ team } >
                                 { team }
-                                <button onClick = { () => this.props.removeTeam(index) }>remove</button>
+                                <Button onClick = { () => this.props.removeTeam(index) }>remove</Button>
                             </li>
                 })}
             </ul>

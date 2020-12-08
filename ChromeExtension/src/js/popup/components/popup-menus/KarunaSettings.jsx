@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Button from '@material-ui/core/Button'
 
 export default class KarunaSettings extends Component {
 
@@ -13,8 +14,8 @@ export default class KarunaSettings extends Component {
                 </div>
                 <div>
                     <h3>Non project-related messages</h3>
-                    <button>thumbs down</button>
-                    <button>thumbs up</button>
+                    <Button>thumbs down</Button>
+                    <Button>thumbs up</Button>
                 </div>
             </div>
         );

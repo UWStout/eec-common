@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import KarunaSettings from './KarunaSettings.jsx'
 import AccountSettings from './AccountSettings.jsx'
 import EmojiHistory from './EmojiHistory.jsx'
+import Button from '@material-ui/core/Button'
 import '../CSS/Menu.css'
 
 export default class MainMenu extends Component {
@@ -62,37 +63,37 @@ export default class MainMenu extends Component {
                     <ul id="karunaHead">
                         {karunaClicked || accountClicked || emojiHistClicked
                             ? <li>
-                                <button 
+                                <Button 
                                     id="returnButton" 
                                     onClick={() => this.handleReturnClick()}
                                 >
                                     back
-                                </button>
+                                </Button>
                             </li>
                             : null
                         }
                         <li><h3 id="karunaTitle">Karuna</h3></li>
-                        <li><button id="returnButton">X</button></li>
+                        <li><Button id="returnButton">X</Button></li>
                     </ul>
                 </div>
                 {!karunaClicked && !accountClicked && !emojiHistClicked ?
                 <div>
                     <div>
-                        <h5>Current Mood</h5>
-                        <button>thumbs up</button>
-                        <button>thumbs down</button>
+                        <h3>Current Mood</h3>
+                        <Button>thumbs up</Button>
+                        <Button>thumbs down</Button>
                     </div>
                     <div>
-                        <h5>Emoji History</h5>
-                        <button onClick={() => this.handleEmojiHistoryClick()}>:)O</button>
+                        <h3>Emoji History</h3>
+                        <Button onClick={() => this.handleEmojiHistoryClick()}>:)O</Button>
                     </div>
                     <div>
-                        <h5>Karuna Settings</h5>
-                        <button onClick={() => this.handleKarunaClick()}>gear</button>
+                        <h3>Karuna Settings</h3>
+                        <Button onClick={() => this.handleKarunaClick()}>gear</Button>
                     </div>
                     <div>
-                        <h5>Account Settings</h5>
-                        <button onClick={() => this.handleAccountClick()}>:)</button>
+                        <h3>Account Settings</h3>
+                        <Button onClick={() => this.handleAccountClick()}>:)</Button>
                     </div>
                 </div>
                 : karunaSettingsMenu || accountSettingsMenu || emojiHistMenu
