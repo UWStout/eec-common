@@ -59,15 +59,10 @@ export function close (dbName) {
 }
 
 // Retrieve an existing DB connection (and possibly auto-connect if not found)
-export function retrieveDBHandle (dbName = 'eec-common', autoConnect = false, autoClose = true) {
+export function retrieveDBHandle (dbName = 'eec-common', autoClose = true) {
   // Is there an existing connection?
   if (dbHandle[dbName]) {
     return dbHandle[dbName]
-  }
-
-  // Can we connect if not already connect?
-  if (autoConnect) {
-    return connect(dbName, autoClose)
   }
 
   // Cannot retrieve handle
