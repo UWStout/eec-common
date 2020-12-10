@@ -62,7 +62,7 @@ export function close (dbName) {
 export function retrieveDBHandle (dbName = 'eec-common', autoClose = true) {
   // Is there an existing connection?
   if (dbHandle[dbName]) {
-    return dbHandle[dbName]
+    return dbHandle[dbName].db(dbName)
   }
 
   // Cannot retrieve handle

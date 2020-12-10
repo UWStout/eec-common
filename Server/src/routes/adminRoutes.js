@@ -75,6 +75,8 @@ router.route('/')
         debug('Connected correctly to server')
 
         const db = client.db(dbName)
+
+        // insert test objects to database for testing
         const response = await db.collection('test').insertMany(testObjects)
         res.json(response)
       } catch (err) {
