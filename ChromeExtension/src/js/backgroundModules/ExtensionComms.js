@@ -1,6 +1,8 @@
 // Functions from other background modules
 import { readValue, writeValue } from './DataStorage.js'
 import { getSocket, announceSession, endSession } from './SocketComms.js'
+import { processAjaxRequest } from './ServerAJAXComms.js'
+
 import { isValidContext } from '../util/contexts.js'
 
 // List of active extension communication ports
@@ -49,35 +51,43 @@ function oneTimeMessage (message, sender, sendResponse) {
   const senderID = sender.tab?.id || sender.id
 
   // Return as a promise per recommendations from Mozilla
-  return new Promise((resolve, reject) => {
+  const promise = new Promise((resolve, reject) => {
     // Parse out the message structure if it is JSON
     if (!message.type && typeof message === 'string') {
       try {
         message = JSON.parse(message)
       } catch (error) {
         console.log(`[BACKGROUND] Invalid one-time message from "${senderID}"`)
-        return reject(new Error(`Malformed message from ${senderID}`))
+        const error2 = new Error(`Malformed message from ${senderID}`)
+        sendResponse({ error: error2 })
+        return reject(error2)
       }
+    }
+
+    // Handle ajax request messages
+    if (message.type && message.type.startsWith('ajax-')) {
+      return processAjaxRequest(message, resolve, reject, sendResponse)
     }
 
     // check message structure
     if (!message.type || !message.key) {
       console.log(`[BACKGROUND] Incomplete one-time message from "${senderID}"`)
-      return reject(new Error(`Message from ${senderID} missing type or key`))
+      const error = new Error(`Message from ${senderID} missing type or key`)
+      sendResponse({ error })
+      return reject(error)
     }
 
     // Execute message
     switch (message.type.toLowerCase()) {
       // Read a value from storage
       case 'read':
-        sendResponse({ value: readValue(message.key, message.context) }) // Chrome
-        resolve({ value: readValue(message.key, message.context) }) // Mozilla
-        break
+        sendResponse({ value: readValue(message.key, message.context) })
+        return resolve({ value: readValue(message.key, message.context) }) // Mozilla
 
       // Write a value to storage
       case 'write':
-        resolve({ result: writeValue(message.key, message.data, message.context) })
-        break
+        sendResponse({ result: writeValue(message.key, message.data, message.context) })
+        return resolve({ result: writeValue(message.key, message.data, message.context) })
 
       // User successfully logged in (comes from popup)
       case 'login':
@@ -90,14 +100,19 @@ function oneTimeMessage (message, sender, sendResponse) {
             { type: 'login', token: message.data }
           )
         }
-        break
+        sendResponse('ok')
+        return resolve('ok')
 
       // Unknown messages
-      default:
+      default: {
         console.log(`[BACKGROUND] Unknown message type "${message.type}" from '${senderID}'`)
-        reject(new Error(`Message from ${senderID} has unknown type "${message.type}"`))
+        const error = new Error(`Message from ${senderID} missing type or key`)
+        sendResponse({ error })
+        return reject(error)
+      }
     }
   })
+  return true
 }
 
 /**
