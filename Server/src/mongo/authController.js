@@ -1,4 +1,6 @@
 import { retrieveDBHandle } from './connect.js'
+// for using the database
+import { ObjectID } from 'mongodb'
 
 // Password hashing library
 import bcrypt from 'bcrypt'
@@ -16,7 +18,12 @@ const SALT_ROUNDS = 10
  * @return {Promise} Resolves to an object with all the user data, rejects on error
  */
 export function getUserDetails (userID) {
-  // TODO
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  return new Promise((resolve, reject) => {
+    DBHandle
+      .collection('Users')
+      .findOne({ _id: new ObjectID(userID) })
+  })
 }
 
 /**
@@ -25,7 +32,12 @@ export function getUserDetails (userID) {
  * @return {Promise} Resolves to the userID or -1 if no user exists
  */
 export function emailExists (email) {
-  // TODO
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  DBHandle
+    .collection('Users')
+    .findOne({ email: { $exists: true, $eq: email } })
+    .then(result => {
+    })
 }
 
 /**
@@ -34,7 +46,17 @@ export function emailExists (email) {
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
 export function removeUser (userID) {
-  // TODO
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  DBHandle
+    .collection('Users')
+    .findOneAndDelete({ _id: new ObjectID(userID) })
+    .then(result => {
+      if (result.deletedCount !== 1) {
+        throw 'could not find user with userID of ' + userID
+      }
+      return new Promise((resolve, reject) => {
+      })
+    })
 }
 
 /**
@@ -44,7 +66,12 @@ export function removeUser (userID) {
  * @return {Promise} Resolves to object with basic user info, rejects if invalid
  */
 export function validateUser (email, password) {
-  // TODO
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  DBHandle
+    .collection('Users')
+    .findOne({ email: email, plainPassword: password })
+    .then(result => {
+    })
 }
 
 /**
@@ -57,5 +84,8 @@ export function validateUser (email, password) {
  * @return {Promise} Rejects on failure, resolves to the newly created ID on success
  */
 export function createUser (firstName, lastName, email, type, password) {
-  // TODO
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  DBHandle
+    .collection('Users')
+    .insertOne({ firstName: firstName, lastName: lastName, email: email, type: type, password: password })
 }
