@@ -33,11 +33,13 @@ export function getUserDetails (userID) {
  */
 export function emailExists (email) {
   const DBHandle = retrieveDBHandle('karunaData', true, true)
-  DBHandle
-    .collection('Users')
-    .findOne({ email: { $exists: true, $eq: email } })
-    .then(result => {
-    })
+  return new Promise((resolve, reject) => {
+    DBHandle
+      .collection('Users')
+      .findOne({ email: { $exists: true, $eq: email } })
+      .then(result => { resolve(result) })
+      .catch(() => { resolve(-1) })
+  })
 }
 
 /**
@@ -47,16 +49,17 @@ export function emailExists (email) {
  */
 export function removeUser (userID) {
   const DBHandle = retrieveDBHandle('karunaData', true, true)
-  DBHandle
+  return DBHandle
     .collection('Users')
     .findOneAndDelete({ _id: new ObjectID(userID) })
-    .then(result => {
-      if (result.deletedCount !== 1) {
-        throw 'could not find user with userID of ' + userID
-      }
-      return new Promise((resolve, reject) => {
-      })
-    })
+
+  // .then(result => {
+  //   if (result.deletedCount !== 1) {
+  //     throw 'could not find user with userID of ' + userID
+  //   }
+  //   return new Promise((resolve, reject) => {
+  //   })
+  // })
 }
 
 /**

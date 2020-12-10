@@ -37,6 +37,7 @@ export default class AccountSettings extends Component {
       password: this.state.password
     }
 
+    // Send message to background (which does the ajax request)
     chrome.runtime.sendMessage(message, (data) => {
       if (data.error) {
         window.alert('Login failed: ' + data.error.message)
