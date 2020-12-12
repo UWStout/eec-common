@@ -5,10 +5,14 @@ import Express from 'express'
 import JWT from 'jsonwebtoken'
 
 // Database controller
-import * as DB from '../sqlite/sqliteAuthController.js'
+import { getDBAuthController } from './dbSelector.js'
 
+// Create debug output object
 import Debug from 'debug'
 const debug = Debug('server:auth')
+
+// Get database auth routes controller object
+const DB = getDBAuthController()
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {

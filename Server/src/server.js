@@ -89,7 +89,6 @@ app.use(`${SERVER_ROOT}data`, dataRouter)
 // All wizard routes are under '/oz/'
 app.use(`${SERVER_ROOT}oz`, wizardRouter)
 
-
 // for using the databaseView
 app.use('/css', Express.static(path.resolve('../ChromeExtension/node_modules/bootstrap/dist/css')))
 app.use('/js', Express.static(path.resolve('../ChromeExtension/node_modules/bootstrap/dist/js')))
