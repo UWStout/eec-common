@@ -49,32 +49,47 @@ export function emailExists (email) {
  */
 export function removeUser (userID) {
   const DBHandle = retrieveDBHandle('karunaData', true, true)
-  return DBHandle
-    .collection('Users')
-    .findOneAndDelete({ _id: new ObjectID(userID) })
-
-  // .then(result => {
-  //   if (result.deletedCount !== 1) {
-  //     throw 'could not find user with userID of ' + userID
-  //   }
-  //   return new Promise((resolve, reject) => {
-  //   })
-  // })
+  return new Promise((resolve, reject) => {
+    return DBHandle
+      .collection('Users')
+      .findOneAndDelete({ _id: new ObjectID(userID) })
+      .then(result => { resolve() })
+      .catch(error => { reject(error) })
+  })
 }
 
 /**
  * Validate user credentials
  * @param {string} email The email of the user in the database
  * @param {string} plainPassword Plaintext password
- * @return {Promise} Resolves to object with basic user info, rejects if invalid
+ * @return {Promise} Resolves to object with basic user info but not the pass, rejects if invalid
  */
 export function validateUser (email, password) {
   const DBHandle = retrieveDBHandle('karunaData', true, true)
-  DBHandle
-    .collection('Users')
-    .findOne({ email: email, plainPassword: password })
-    .then(result => {
-    })
+  return new Promise((resolve, reject) => {
+    DBHandle
+      .collection('Users')
+      .findOne({ email: email }, function (err, result) {
+        // check if findOne failed
+        if (result == null) {
+          return reject(err('user not found'))
+        } else {
+          // Hash and validate the password (it is stored hashed)
+          bcrypt.compare(password, result.passwordHash, (error, valid) => {
+          // Check if an error occurred
+            if (error) { return reject(error) }
+            // Was the password valid
+            if (!valid) { return reject(new Error('Invalid email or password')) }
+
+            // Return the email and row data (without password) merged
+            result.passwordHash = undefined
+            // potentially could try to return result now that the password hash was set to undefined
+            return resolve({ passwordHash: 0 })
+          })
+        }
+      })
+      .catch(error => reject(error))
+  })
 }
 
 /**
