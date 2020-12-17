@@ -19,11 +19,9 @@ const SALT_ROUNDS = 10
  */
 export function getUserDetails (userID) {
   const DBHandle = retrieveDBHandle('karunaData', true, true)
-  return new Promise((resolve, reject) => {
-    DBHandle
-      .collection('Users')
-      .findOne({ _id: new ObjectID(userID) })
-  })
+  return DBHandle
+    .collection('Users')
+    .findOne({ _id: new ObjectID(userID) })
 }
 
 /**
@@ -50,7 +48,7 @@ export function emailExists (email) {
 export function removeUser (userID) {
   const DBHandle = retrieveDBHandle('karunaData', true, true)
   return new Promise((resolve, reject) => {
-    return DBHandle
+    DBHandle
       .collection('Users')
       .findOneAndDelete({ _id: new ObjectID(userID) })
       .then(result => { resolve() })
@@ -69,7 +67,12 @@ export function validateUser (email, password) {
   return new Promise((resolve, reject) => {
     DBHandle
       .collection('Users')
-      .findOne({ email: email }, function (err, result) {
+      .findOne({ email: email }, (err, result) => {
+        // Check for an error
+        if (err) {
+          return reject(err)
+        }
+
         // check if findOne failed
         if (result == null) {
           return reject(err('user not found'))
@@ -84,11 +87,10 @@ export function validateUser (email, password) {
             // Return the email and row data (without password) merged
             result.passwordHash = undefined
             // potentially could try to return result now that the password hash was set to undefined
-            return resolve({ passwordHash: 0 })
+            return resolve(result)
           })
         }
       })
-      .catch(error => reject(error))
   })
 }
 
@@ -103,7 +105,9 @@ export function validateUser (email, password) {
  */
 export function createUser (firstName, lastName, email, type, password) {
   const DBHandle = retrieveDBHandle('karunaData', true, true)
-  DBHandle
+  // TODO: hash the password with bcrypt (see sqlite version)
+
+  return DBHandle
     .collection('Users')
-    .insertOne({ firstName: firstName, lastName: lastName, email: email, type: type, password: password })
+    .insertOne({ firstName, lastName, email, type, passwordHash: password })
 }
