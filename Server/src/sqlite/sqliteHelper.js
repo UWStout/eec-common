@@ -1,5 +1,5 @@
 // Import connection helper functions
-import { retrieveDBHandle } from './sqliteConnect.js'
+import { retrieveDBHandle } from './connect.js'
 
 /**
  * Check if a particular value already exists for a field in a given table

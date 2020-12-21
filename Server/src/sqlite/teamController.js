@@ -1,5 +1,5 @@
 // Import sqlite helper functions
-import { retrieveDBHandle } from './sqliteConnect.js'
+import { retrieveDBHandle } from './connect.js'
 import * as SQLHelp from './sqliteHelper.js'
 
 /**

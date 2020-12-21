@@ -1,8 +1,8 @@
 // Possible database controllers
-import * as SQLITE_DB_AUTH from '../sqlite/sqliteAuthController.js'
+import * as SQLITE_DB_AUTH from '../sqlite/authController.js'
 import * as MONGO_DB_AUTH from '../mongo/authController.js'
 
-import * as SQLITE_DB_TEAM from '../sqlite/sqliteTeamController.js'
+import * as SQLITE_DB_TEAM from '../sqlite/teamController.js'
 import * as MONGO_DB_TEAM from '../mongo/teamController.js'
 
 // Create debug output object
