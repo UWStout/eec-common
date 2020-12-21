@@ -1,5 +1,5 @@
 // Library for managing file paths
-import path from 'path'
+import path, { resolve } from 'path'
 
 // Import and initialize sqlite library
 import sqlite3 from 'sqlite3'
@@ -14,53 +14,64 @@ const DB_FILE_PATH = path.join(__dirname, '../db')
 // List of active database connections
 const dbHandle = []
 
-// Initialize database connection
+/**
+ * Attempt to connect to the given database (asynchronous)
+ * @param {string} [dbName] Name of the database to open (defaults to 'datastore')
+ * @param {boolean} autoClose Should it setup to auto-close when server stops? (default true)
+ * @return {Promise} Resolves to the database handle or null if already connected. Rejects on error.
+ */
 export function connect (dbName = 'datastore', autoClose = true) {
-  // Is there an existing connection? Using retrieveDBHandle instead.
+  // If there an existing connection, just reuse it.
   if (dbHandle[dbName]) {
-    console.error(`Connection to ${dbName} already exists (use retrieveDBHandle instead?)`)
-    return null
+    return Promise.resolve(dbHandle[dbName])
   }
 
-  // Attempt to connect to the database
-  console.log(`Connecting to ${dbName} database using sqlite3 ...`)
-  const filename = path.join(DB_FILE_PATH, `${dbName}.sqlite3`)
-  const db = new sqlite.Database(
-    filename, (err) => {
-      // Log any errors or success
+  return new Promise((resolve, reject) => {
+    // Attempt to connect to the database
+    console.log(`Connecting to ${dbName} database using sqlite3 ...`)
+    const filename = path.join(DB_FILE_PATH, `${dbName}.sqlite3`)
+    const db = new sqlite.Database(filename, (err) => {
+      // Check for errors
       if (err) {
+        // Log error and reject promise
         console.error(`Failed to open ${filename} database (sqlite3)`)
         console.error(err)
+        return reject(err)
       } else {
-        console.log(`${dbName} database connection successful.`)
-        confirmSchema(db)
+        // Log success and validate the db
+        console.log(`${dbName} database connection successful. Validating.`)
         dbHandle[dbName] = db
+        confirmSchema(db).then(() => {
+          // Setup database to close cleanly before exiting
+          if (autoClose) {
+            process.on('beforeExit', () => {
+              console.log(`Auto-closing ${dbName} ...`)
+              close(dbName)
+            })
+          }
+
+          // Resolve with database handle
+          return resolve(db)
+        }, (err) => {
+          // Log error and reject
+          console.error('DB Schema failed to validate.')
+          console.error(err)
+          reject(err)
+        })
       }
-    }
-  )
-
-  if (autoClose) {
-    // Setup database to close cleanly before exiting
-    process.on('beforeExit', () => {
-      console.log(`Auto-closing ${dbName} ...`)
-      close(dbName)
     })
-  }
-
-  // Return the database connection
-  return db
+  })
 }
 
-// Retrieve an existing DB connection (and possibly auto-connect if not found)
-export function retrieveDBHandle (dbName = 'datastore', autoConnect = false, autoClose = true) {
+/**
+ * Retrieve a handle to a database that has already been connected to. Note: must call 'connect()' first.
+ * @param {string} [dbName] Name of the database to connect to (defaults to 'datastore')
+ * @return {object} The SQLite3 database handle for use with queries or null if none exists
+ */
+export function retrieveDBHandle (dbName = 'datastore') {
   // Is there an existing connection?
   if (dbHandle[dbName]) {
     return dbHandle[dbName]
-  }
-
-  // Can we connect if not already connect?
-  if (autoConnect) {
-    return connect(dbName, autoClose)
   }
 
   // Cannot retrieve handle
@@ -68,8 +79,11 @@ export function retrieveDBHandle (dbName = 'datastore', autoConnect = false, aut
   return null
 }
 
-// Attempt to close an existing database handle
-export function close (dbName) {
+/**
+ * Attempt to close a database connection.
+ * @param {string} [dbName] Name of database to close (defaults to 'datastore')
+ */
+export function close (dbName = 'datastore') {
   // Is there an open database handle to close
   if (!dbHandle[dbName]) {
     console.error(`Can't close ${dbName} database, no connection.`)
@@ -96,15 +110,25 @@ export function close (dbName) {
  * confirm that they exist (by name only). Use when the database is
  * new to ensure it has the proper schema.
  * @param {object} db Handle to the SQLite DB to confirm
+ * @return {Promise} Resolves when the schema is done confirming. Rejects on error.
  */
 function confirmSchema (db) {
   // Create or confirm the tables in the database
-  CREATE_QUERIES.forEach((createSQL, i) => {
-    db.run(createSQL, (err) => {
-      if (err) {
-        console.error(`Error during table ${i} creation`)
-        console.error(err)
-      }
+  return new Promise((resolve, reject) => {
+    let completeCount = 0
+    CREATE_QUERIES.forEach((createSQL, i) => {
+      db.run(createSQL, (err) => {
+        if (err) {
+          console.error(`Error during table ${i} creation`)
+          console.error(err)
+          return reject(err)
+        } else {
+          completeCount++
+          if (completeCount === CREATE_QUERIES.length) {
+            return resolve()
+          }
+        }
+      })
     })
   })
 }
@@ -117,7 +141,24 @@ const CREATE_QUERIES = [
     passwordHash CHAR(64) NOT NULL,
     firstName TEXT,
     lastName TEXT,
-    userType TEXT DEFAULT "standard" NOT NULL
+    userType TEXT DEFAULT "standard" NOT NULL,
+    meta TEXT DEFAULT "{}"
+  );`,
+
+  `CREATE TABLE IF NOT EXISTS Affects (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    characterCode TEXT(1) NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT
+  );`,
+
+  `CREATE TABLE IF NOT EXISTS UserAffectHistory (
+    userID INTEGER NOT NULL,
+    affectID INTEGER NOT NULL,
+    "timestamp" INTEGER NOT NULL,
+    CONSTRAINT UserAffectHistory_PK PRIMARY KEY (userID,affectID,"timestamp"),
+    CONSTRAINT UserAffectHistory_User_FK FOREIGN KEY (userID) REFERENCES Users(ID) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT UserAffectHistory_Affect_FK FOREIGN KEY (affectID) REFERENCES Affects(ID) ON DELETE CASCADE ON UPDATE CASCADE
   );`,
 
   `CREATE TABLE IF NOT EXISTS Units (
@@ -125,20 +166,43 @@ const CREATE_QUERIES = [
     name TEXT NOT NULL,
     description TEXT,
     adminID INTEGER,
-    CONSTRAINT Units_FK FOREIGN KEY (adminID) REFERENCES Users(ID) ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT Units_Users_FK FOREIGN KEY (adminID) REFERENCES Users(ID) ON DELETE SET NULL ON UPDATE CASCADE
   );`,
 
   `CREATE TABLE IF NOT EXISTS Teams (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     unitID INTEGER,
-    CONSTRAINT Teams_FK FOREIGN KEY (unitID) REFERENCES Units(ID) ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT Teams_Units_FK FOREIGN KEY (unitID) REFERENCES Units(ID) ON DELETE SET NULL ON UPDATE CASCADE
   );`,
 
   `CREATE TABLE IF NOT EXISTS UsersTeams (
     userID INTEGER NOT NULL,
     teamID INTEGER NOT NULL,
-    CONSTRAINT UsersTeams_FK_users FOREIGN KEY (userID) REFERENCES Users(ID) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT UsersTeams_FK_teams FOREIGN KEY (teamID) REFERENCES Teams(ID) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT UsersTeams_PK PRIMARY KEY (userID,teamID),
+    CONSTRAINT UsersTeams_Users_FK FOREIGN KEY (userID) REFERENCES Users(ID) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT UsersTeams_Teams_FK FOREIGN KEY (teamID) REFERENCES Teams(ID) ON DELETE CASCADE ON UPDATE CASCADE
+  );`,
+
+  `CREATE TABLE IF NOT EXISTS TeamAffectStandards (
+    teamID INTEGER NOT NULL,
+    affectID INTEGER NOT NULL,
+    meaning TEXT NOT NULL,
+    meaningDetails TEXT,
+    CONSTRAINT TeamAffectStandards_PK PRIMARY KEY (teamID,affectID),
+    CONSTRAINT TeamAffectStandards_Teams_FK FOREIGN KEY (teamID) REFERENCES Teams(ID) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT TeamAffectStandards_Affects_FK FOREIGN KEY (affectID) REFERENCES Affects(ID) ON DELETE CASCADE ON UPDATE CASCADE
+  );`,
+
+  `CREATE TABLE IF NOT EXISTS UserTeamAffectHistory (
+    userID INTEGER NOT NULL,
+    teamID INTEGER NOT NULL,
+    affectID INTEGER NOT NULL,
+    temestamp INTEGER NOT NULL,
+    visibility INTEGER DEFAULT 0 NOT NULL,
+    CONSTRAINT UserTeamAffectHistory_PK PRIMARY KEY (userID,teamID,affectID,temestamp),
+    CONSTRAINT UserTeamAffectHistory_Users_FK FOREIGN KEY (userID) REFERENCES Users(ID) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT UserTeamAffectHistory_Teams_FK FOREIGN KEY (teamID) REFERENCES Teams(ID) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT UserTeamAffectHistory_Affects_FK FOREIGN KEY (affectID) REFERENCES Affects(ID) ON DELETE CASCADE ON UPDATE CASCADE
   );`
 ]

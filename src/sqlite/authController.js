@@ -42,7 +42,7 @@ export function removeUser (userID) {
  * @return {Promise} Resolves to object with basic user info, rejects if invalid
  */
 export function validateUser (email, password) {
-  const userDBHandle = retrieveDBHandle('karunaData', true, true)
+  const userDBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     userDBHandle.get(
       `SELECT ID, firstName, lastName, userType, passwordHash

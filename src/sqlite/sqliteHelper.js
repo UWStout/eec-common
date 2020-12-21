@@ -13,7 +13,7 @@ export function checkValueExistence (tableName, fieldName, value) {
     return Promise.reject(new Error('Table and field names are required'))
   }
 
-  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     DBHandle.get(`SELECT ID FROM ${tableName} WHERE ${fieldName}=$value`, {
       $value: value
@@ -49,7 +49,7 @@ export function getEntryFromID (ID, tableName) {
   }
 
   // Asynchronously lookup entry
-  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     // Lookup the ID of the newly created user
     DBHandle.get(`SELECT * FROM ${tableName} WHERE ID=$ID;`,
@@ -86,7 +86,7 @@ export function deleteEntryFromID (ID, tableName) {
   }
 
   // Asynchronously delete entry
-  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     // Lookup the ID of the newly created user
     DBHandle.run(`DELETE FROM ${tableName} WHERE ID=$ID;`,
@@ -106,7 +106,7 @@ export function deleteEntryFromID (ID, tableName) {
 }
 
 export function createEntryAndReturnID (tableName, insertQuery, insertData, IDQuery, IDData) {
-  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     // Attempt to insert into DB
     DBHandle.run(insertQuery, insertData, (err) => {
