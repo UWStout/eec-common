@@ -96,7 +96,7 @@ export function listTeams (teamUnitID, userID) {
   }
 
   // Both IDs are defined
-  const teamDBHandle = retrieveDBHandle('karunaData', true, true)
+  const teamDBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     teamDBHandle.all(
       `SELECT Teams.ID as teamID, Teams.name as teamName, Unit.name as teamUnit
@@ -122,7 +122,7 @@ export function listTeams (teamUnitID, userID) {
 }
 
 export function listTeamsInOrg (teamUnitID) {
-  const teamDBHandle = retrieveDBHandle('karunaData', true, true)
+  const teamDBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     teamDBHandle.all(
       `SELECT Teams.ID as teamID, Teams.name as teamName, Unit.name as teamUnit
@@ -144,7 +144,7 @@ export function listTeamsInOrg (teamUnitID) {
 }
 
 export function listTeamsForUser (userID) {
-  const teamDBHandle = retrieveDBHandle('karunaData', true, true)
+  const teamDBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     teamDBHandle.all(
       `SELECT Teams.ID as teamID, Teams.name as teamName, Unit.name as teamUnit
@@ -175,7 +175,7 @@ export function listTeamsForUser (userID) {
  * @return {Promise} Resolves with 'true' on success, rejects on error
  */
 export function addToTeam (userID, teamID) {
-  const teamDBHandle = retrieveDBHandle('karunaData', true, true)
+  const teamDBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     teamDBHandle.run('INSERT INTO UsersTeams (userID, teamID) VALUES ($userID, $teamID);',
       { $userID: userID, $teamID: teamID }, (err) => {

@@ -1,8 +1,10 @@
 // Possible database controllers
+import * as SQLITE_CONNECT from '../sqlite/connect.js'
 import * as SQLITE_DB_AUTH from '../sqlite/authController.js'
-import * as MONGO_DB_AUTH from '../mongo/authController.js'
-
 import * as SQLITE_DB_TEAM from '../sqlite/teamController.js'
+
+import * as MONGO_CONNECT from '../mongo/connect.js'
+import * as MONGO_DB_AUTH from '../mongo/authController.js'
 import * as MONGO_DB_TEAM from '../mongo/teamController.js'
 
 // Create debug output object
@@ -19,10 +21,12 @@ export function getDBAuthController () {
         debug(`Warning: unknown DB_TYPE "${DB_TYPE}". Will fallback to "sqlite".`)
       }
       debug('Using "sqlite" auth database backend')
+      SQLITE_CONNECT.connect('karunaData')
       return SQLITE_DB_AUTH
 
     case 'mongo':
       debug('Using "mongodb" auth database backend')
+      MONGO_CONNECT.connect('karunaData')
       return MONGO_DB_AUTH
   }
 }
@@ -36,10 +40,12 @@ export function getDBTeamController () {
       if (DB_TYPE !== 'sqlite') {
         debug(`Warning: unknown DB_TYPE "${DB_TYPE}". Will fallback to "sqlite".`)
       }
+      SQLITE_CONNECT.connect('karunaData')
       debug('Using "sqlite" team database backend')
       return SQLITE_DB_TEAM
 
     case 'mongo':
+      MONGO_CONNECT.connect('karunaData')
       debug('Using "mongodb" team database backend')
       return MONGO_DB_TEAM
   }
