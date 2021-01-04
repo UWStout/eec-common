@@ -1,6 +1,7 @@
 // Import out custom HTML Elements
 import './objects/EECExtension.js'
 import './objects/EECSidebar.js'
+import './objects/EECConnect.js'
 
 import { CONTEXT } from './util/contexts.js'
 
@@ -44,6 +45,10 @@ jQuery(document).ready(() => {
   document.body.insertBefore(sideBarElem)
   sideBarElem.setBackgroundPort(extensionPort)
   sideBarElem.setContextName(contextName)
+
+  // Setup global Karuna Connect side-bar
+  const karunaConnectElem = document.createElement('eec-connect')
+  document.body.insertBefore(karunaConnectElem)
 
   // Callback function to execute when mutations are observed
   const mutationCallback = (mutationsList, observer) => {
