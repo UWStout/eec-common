@@ -1,5 +1,8 @@
 import { retrieveDBHandle } from './connect.js'
 
+// for using the database
+import { ObjectID } from 'mongodb'
+
 // print messages only during debug
 import Debug from 'debug'
 const debug = Debug('server:mongo')
@@ -10,7 +13,10 @@ const debug = Debug('server:mongo')
  * @return {Promise} Resolves to JS Object with all the team details, rejects on error
  */
 export function getTeamDetails (teamID) {
-  // TODO
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  return DBHandle
+    .collection('Teams')
+    .findOne({ _id: new ObjectID(teamID) })
 }
 
 /**
@@ -19,7 +25,10 @@ export function getTeamDetails (teamID) {
  * @return {Promise} Resolves to JS Object with all the org unit details, rejects on error
  */
 export function getOrgUnitDetails (unitID) {
-  // TODO
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  return DBHandle
+    .collection('Units')
+    .findOne({ _id: new ObjectID(unitID) })
 }
 
 /**
