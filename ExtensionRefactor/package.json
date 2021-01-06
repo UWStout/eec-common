@@ -1,0 +1,68 @@
+{
+  "name": "karuna-eec-extension",
+  "version": "0.0.1",
+  "description": "Web browsers extension for the Karuna EEC project (code refactor)",
+  "main": "src/popup.html",
+  "repository": "",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon --exec npm run devbuild",
+    "clean": "rimraf dist",
+
+    "predevbuild": "node preBuild.js",
+    "devbuild": "run-s clean devbuild-background devbuild-in-content devbuild-popup",
+    "devbuild-background": "esbuild --bundle --sourcemap --define:_DEV_=true --outfile=dist/js/background.js src/background/background.js",
+    "devbuild-in-content": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV='development' --outfile=dist/js/in-content.js src/in-content/in-content.js",
+    "devbuild-popup": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV='development' --outfile=dist/js/popup.js src/popup/popup.jsx",
+    "postdevbuild": "node postBuild.js",
+
+    "prebuild": "node preBuild.js",
+    "build": "run-s clean build-background build-in-content build-popup",
+    "build-background": "esbuild --bundle --minify --define:_DEV_=false --outfile=dist/js/background.js src/background/background.js",
+    "build-in-content": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV='production' --outfile=dist/js/in-content.js src/in-content/in-content.js",
+    "build-popup": "esbuild --bundle --minify --loader:.css=css --define:_DEV_=false --define:process.env.NODE_ENV='production' --outfile=dist/js/popup.js src/popup/popup.jsx",
+    "postbuild": "node postBuild.js"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "dist/",
+      "node_modules",
+      ".eslintrc.json",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ext": "json js jsx png html css",
+    "verbose": true
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.8.29",
+    "eslint": "^7.6.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.20.5",
+    "eslint-plugin-standard": "^4.0.1",
+    "nodemon": "^2.0.6",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.1",
+    "@juggle/resize-observer": "^3.2.0",
+    "@material-ui/core": "^4.11.2",
+    "@webcomponents/webcomponentsjs": "^2.5.0",
+    "animate.css": "^4.1.1",
+    "axios": "^0.21.1",
+    "debounce": "^1.2.0",
+    "jquery": "^3.5.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "socket.io-client": "^3.0.5",
+    "store2": "^2.12.0",
+    "tippy.js": "^6.2.7",
+    "webextension-polyfill": "^0.7.0"
+  }
+}
