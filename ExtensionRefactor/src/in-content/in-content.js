@@ -1,7 +1,7 @@
 // Import out custom HTML Elements
 import './objects/EECExtension.js'
 import './objects/EECSidebar.js'
-import './objects/EECConnect.js'
+import './objects/EECConnect.jsx'
 
 import { CONTEXT } from '../util/contexts.js'
 

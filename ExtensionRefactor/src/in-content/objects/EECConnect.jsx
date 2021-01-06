@@ -2,6 +2,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+// Material-UI Setup
+import { create as JSSCreate } from 'jss'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import { StylesProvider, jssPreset } from '@material-ui/core/styles'
+import { MuiPickersUtilsProvider } from '@material-ui/pickers'
+
+// pick a date util library
+import MomentUtils from '@date-io/moment'
+
 // Raw CSS strings to use in HTML construction
 import EECConnectCSS from './EECConnectStyle.txt'
 
@@ -58,10 +67,42 @@ class EECConnect extends HTMLElement {
     // Attach the elements to the shadow DOM
     jQuery(this.shadowRoot).append(this.customStyle, this.sidebar)
 
+    // Create a comment node for injection of Material-UI styles
+    this.insertionNode = jQuery('<noscript>').attr('id', 'jss-insertion-point')
+    this.shadowRoot.insertBefore(this.insertionNode[0], this.shadowRoot.firstChild)
+
+    // Create our own instance of JSS that will use our custom insertion point
+    const jss = JSSCreate({
+      ...jssPreset(),
+      insertionPoint: this.insertionNode[0]
+    })
+
+    // Create a custom Material-UI theme to direct portal containers to the shadow dom
+    const portalParent = jQuery('<div>').attr('id', 'muiPortalParent')
+    this.portalContainer = jQuery('<div>').attr('id', 'muiPortal')
+    portalParent.append(this.portalContainer)
+    this.shadowRoot.appendChild(portalParent[0])
+    const theme = createMuiTheme({
+      props: {
+        MuiPopover: {
+          container: () => { return this.portalContainer[0] }
+        },
+        MuiModal: {
+          container: () => { return this.portalContainer[0] }
+        }
+      }
+    })
+
     // Give React control of the root element
     console.log('[[IN-CONTENT EECConnect]] Building react component ...')
     ReactDOM.render(
-      React.createElement(ConnectComponent, null),
+      <StylesProvider jss={jss}>
+        <MuiThemeProvider theme={theme}>
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <ConnectComponent/>
+          </MuiPickersUtilsProvider>
+        </MuiThemeProvider>
+      </StylesProvider>,
       this.sidebar[0]
     )
     console.log('[[IN-CONTENT EECConnect]] ... mounted')
