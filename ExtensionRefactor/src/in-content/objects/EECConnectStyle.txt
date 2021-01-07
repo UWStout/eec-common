@@ -1,0 +1,13 @@
+/* The Icon for the Karuna Connect side-bar */
+.eec-connect {
+  position: absolute;
+  bottom: 400px;
+  right: 0px;
+  width: 160px;
+  height: 24px;
+}
+
+.eec-connect-icon {
+  display: block;
+  position: absolute;
+}

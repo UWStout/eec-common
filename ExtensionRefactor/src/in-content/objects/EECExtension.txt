@@ -1,0 +1,36 @@
+/* Wraps the in-situ icon */
+.eec-button-wrapper { position: relative; }
+
+/* The info popup by the in-situ icon */
+.eec-info {
+  position: absolute;
+  top: 0px;
+  right: 24px;
+  width: 200px;
+  padding: 3px;
+  z-index: 3;
+
+  color: black;
+  background: white;
+  opacity: 0;
+  transition: 0.6s all;
+
+  display: inline-block;
+  font-size: 0.8rem;
+  color: black;
+
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+/* The in-situ icon image tag */
+.eec-icon-img {
+  width: 1.5rem;
+  position: absolute;
+  top: 11px; right: 0px;
+}
+
+/* Fade in the info on mouse-hover */
+.eec-icon:hover + .info, .eec-icon:focus + .info {
+  opacity: 1;
+}
