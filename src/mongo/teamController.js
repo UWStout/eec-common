@@ -39,7 +39,19 @@ export function getOrgUnitDetails (unitID) {
  * @return {number} ID of the newly created team or null if creation fails
  */
 export function createTeam (teamName, teamUnitID, userID) {
-  // TODO
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+
+  return new Promise((resolve, reject) => {
+    DBHandle
+      .collection('Teams')
+      .insertOne({ teamName, teamUnitID }, (err, result) => {
+        if (err) {
+          return reject(err)
+        } else if (userID) { addToTeam(userID) }
+
+        return resolve(result)
+      })
+  })
 }
 
 /**
@@ -50,7 +62,12 @@ export function createTeam (teamName, teamUnitID, userID) {
  * @return {Promise} Resolves to ID of the newly created org unit, rejects if creation fails
  */
 export function createOrgUnit (unitName, description, adminID) {
-  // TODO
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  // TODO: hash the password with bcrypt (see sqlite version)
+
+  return DBHandle
+    .collection('Units')
+    .insertOne({ unitName, description, adminID })
 }
 
 /**
@@ -59,7 +76,14 @@ export function createOrgUnit (unitName, description, adminID) {
  * @return {boolean} Whether or not the removal was successful
  */
 export function removeTeam (teamID) {
-  // TODO
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  return new Promise((resolve, reject) => {
+    DBHandle
+      .collection('Teams')
+      .findOneAndDelete({ _id: new ObjectID(teamID) })
+      .then(result => { resolve(true) })
+      .catch(() => { resolve(false) })
+  })
 }
 
 /**
@@ -68,7 +92,14 @@ export function removeTeam (teamID) {
  * @return {boolean} Whether or not the removal was successful
  */
 export function removeOrgUnit (unitID) {
-  // TODO
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  return new Promise((resolve, reject) => {
+    DBHandle
+      .collection('Units')
+      .findOneAndDelete({ _id: new ObjectID(unitID) })
+      .then(result => { resolve(true) })
+      .catch(() => { resolve(false) })
+  })
 }
 
 /**
@@ -79,7 +110,13 @@ export function removeOrgUnit (unitID) {
  *                    match the given filters
  */
 export function listTeams (teamUnitID, userID) {
-  // TODO
+  if (!teamUnitID && !userID) {
+    return Promise.reject(new Error('Can\'t list teams. At least one of the IDs must be defined.'))
+  } else if (!teamUnitID) {
+    return listTeamsForUser(userID)
+  } else if (!userID) {
+    return listTeamsInOrg(teamUnitID)
+  }
 }
 
 export function listTeamsInOrg (teamUnitID) {
