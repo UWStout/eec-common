@@ -9,14 +9,12 @@
   "scripts": {
     "dev": "nodemon --exec npm run devbuild",
     "clean": "rimraf dist",
-
     "predevbuild": "node preBuild.js",
     "devbuild": "run-s clean devbuild-background devbuild-in-content devbuild-popup",
     "devbuild-background": "esbuild --bundle --sourcemap --define:_DEV_=true --outfile=dist/js/background.js src/background/background.js",
     "devbuild-in-content": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV='development' --outfile=dist/js/in-content.js src/in-content/in-content.js",
     "devbuild-popup": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV='development' --outfile=dist/js/popup.js src/popup/popup.jsx",
     "postdevbuild": "node postBuild.js",
-    
     "prebuild": "node preBuild.js",
     "build": "run-s clean build-background build-in-content build-popup",
     "build-background": "esbuild --bundle --minify --define:_DEV_=false --outfile=dist/js/background.js src/background/background.js",
