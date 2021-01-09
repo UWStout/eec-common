@@ -34,9 +34,16 @@ export function emailExists (email) {
   return new Promise((resolve, reject) => {
     DBHandle
       .collection('Users')
-      .findOne({ email: { $exists: true, $eq: email } })
-      .then(result => { resolve(result) })
-      .catch(() => { resolve(-1) })
+      .findOne({ email: email }, { _id: 1 }, (err, result) => {
+        // Check for an error
+        if (err) {
+          return resolve(-1)
+        }
+        // check if findOne failed
+        if (result == null) {
+          return resolve(-1)
+        } else { return resolve(result) }
+      })
   })
 }
 

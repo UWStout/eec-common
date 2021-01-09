@@ -28,6 +28,9 @@ import dataRouter from './routes/data.js'
 // Custom router for user authentication API
 import authRouter from './routes/auth.js'
 
+// custom router for testing purposes
+import testRouter from './routes/test.js'
+
 import adminRouter from './routes/adminRoutes.js'
 
 // Custom router for the back-end wizard
@@ -88,6 +91,9 @@ app.use(`${SERVER_ROOT}data`, dataRouter)
 
 // All wizard routes are under '/oz/'
 app.use(`${SERVER_ROOT}oz`, wizardRouter)
+
+// All testing routes are under '/test/'
+app.use(`${SERVER_ROOT}test`, testRouter)
 
 // for using the databaseView
 app.use('/css', Express.static(path.resolve('../ChromeExtension/node_modules/bootstrap/dist/css')))
