@@ -117,6 +117,14 @@ export function listTeams (teamUnitID, userID) {
   } else if (!userID) {
     return listTeamsInOrg(teamUnitID)
   }
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  return new Promise((resolve, reject) => {
+    DBHandle
+      .collection('Teams')
+      .find({ _id: new ObjectID(unitID), teamName, teamUnit })
+      .then(result => { resolve(true) })
+      .catch(() => { resolve(false) })
+  })
 }
 
 export function listTeamsInOrg (teamUnitID) {
