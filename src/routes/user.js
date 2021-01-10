@@ -72,21 +72,23 @@ router.post('/update', authenticateToken, async (req, res) => {
     const userDetails = await DBUser.getUserDetails(userID)
 
     // Update values or fall-back to previous value
-    const email = req.body.email || userDetails.email
     const firstName = req.body.firstName || userDetails.firstName
     const lastName = req.body.lastName || userDetails.lastName
 
-    // Merge any changes to 'meta' (and sanitize previous meta values)
-    if (typeof userDetails.meta === 'string') { userDetails.meta = {} }
-    if (userDetails.meta['0']) { delete userDetails.meta['0'] }
-    if (userDetails.meta['1']) { delete userDetails.meta['1'] }
+    // Merge any changes to 'meta' (and sanitize non-object meta values)
+    if (typeof userDetails.meta !== 'object') { userDetails.meta = {} }
     const userMeta = { ...userDetails.meta, ...req.body.meta }
 
-    // Sanitize teams array
+    // Sanitize non-array teams values and union with existing teams
     if (!Array.isArray(userDetails.teams)) { userDetails.teams = [] }
+    let teams = [...userDetails.teams]
+    if (Array.isArray(req.body.teams)) {
+      const uniqueTeams = req.body.teams.filter((item) => userDetails.teams.indexOf(item) < 0)
+      teams = [...teams, ...uniqueTeams]
+    }
 
     // Update the user in the DB
-    await DBUser.updateUser(userID, { email, firstName, lastName, teams: userDetails.teams, meta: userMeta })
+    await DBUser.updateUser(userID, { firstName, lastName, teams, meta: userMeta })
     res.send({ success: true })
   } catch (err) {
     checkAndReportError('Error updating user', res, err, debug)
