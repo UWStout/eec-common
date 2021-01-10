@@ -13,7 +13,15 @@ const dbHandle = []
 const DB_SERVER_URL = 'mongodb://localhost:27017'
 
 // Initialize database connection
+let CONNECTING_PROMISE = null
 export async function connect (dbName = 'eec-common', autoClose = true) {
+  // Are we already connecting?
+  if (CONNECTING_PROMISE) {
+    debug('Already connecting, awaiting result')
+    await CONNECTING_PROMISE
+    return dbHandle[dbName]
+  }
+
   // Is there an existing connection? Using retrieveDBHandle instead.
   if (dbHandle[dbName]) {
     debug(`Connection to ${dbName} already exists (use retrieveDBHandle instead?)`)
@@ -22,9 +30,13 @@ export async function connect (dbName = 'eec-common', autoClose = true) {
 
   // Attempt to connect
   try {
-    dbHandle[dbName] = await MongoClient.connect(DB_SERVER_URL)
+    debug(`Connecting to '${DB_SERVER_URL}'`)
+    CONNECTING_PROMISE = MongoClient.connect(DB_SERVER_URL, { useUnifiedTopology: true })
+    dbHandle[dbName] = await CONNECTING_PROMISE
+    CONNECTING_PROMISE = null
     debug('Connected to database')
   } catch (err) {
+    CONNECTING_PROMISE = null
     debug('Database connection failed')
     debug(err.stack)
     return null
