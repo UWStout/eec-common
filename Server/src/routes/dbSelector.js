@@ -7,15 +7,14 @@ import * as MONGO_CONNECT from '../mongo/connect.js'
 import * as MONGO_DB_AUTH from '../mongo/authController.js'
 import * as MONGO_DB_TEAM from '../mongo/teamController.js'
 
-// Read extra environment variables from the .env file
+import Debug from 'debug'
+
+// Load variables into process.env and read extra environment variables from the .env file
 import dotenv from 'dotenv'
+dotenv.config()
 
 // Create debug output object
-import Debug from 'debug'
 const debug = Debug('server:db')
-
-// Load variables into process.env
-dotenv.config()
 
 // Read database configuration and return matching auth object
 export function getDBAuthController () {

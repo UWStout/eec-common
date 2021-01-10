@@ -86,18 +86,21 @@ app.use(`${SERVER_ROOT}auth`, authRouter)
 // All data routes are under '/data/'
 app.use(`${SERVER_ROOT}data`, dataRouter)
 
-// All wizard routes are under '/oz/'
-app.use(`${SERVER_ROOT}oz`, wizardRouter)
-
 // All testing routes are under '/test/'
 app.use(`${SERVER_ROOT}test`, testRouter)
 
+// All wizard routes are under '/oz/'
+app.use(`${SERVER_ROOT}oz`, wizardRouter)
+
+// Login/out authorization routes from root
+app.use('/', Express.static(path.resolve('./views/auth')))
+
 // for using the databaseView
-app.use('/css', Express.static(path.resolve('../ChromeExtension/node_modules/bootstrap/dist/css')))
-app.use('/js', Express.static(path.resolve('../ChromeExtension/node_modules/bootstrap/dist/js')))
-app.use('/js', Express.static(path.resolve('../ChromeExtension/node_modules/jquery/dist')))
-app.set('views', './views')
-app.set('view engine', 'ejs')
+// app.use('/css', Express.static(path.resolve('../ChromeExtension/node_modules/bootstrap/dist/css')))
+// app.use('/js', Express.static(path.resolve('../ChromeExtension/node_modules/bootstrap/dist/js')))
+// app.use('/js', Express.static(path.resolve('../ChromeExtension/node_modules/jquery/dist')))
+// app.set('views', './views')
+// app.set('view engine', 'ejs')
 
 // Everything else is a static file
 app.use(`${SERVER_ROOT}`, Express.static(path.resolve('./public'), { index: 'instructions.html' }))
