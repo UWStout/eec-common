@@ -34,9 +34,14 @@ router.get('/list', authenticateToken, async (req, res) => {
     return res.status(400).send({ error: true, message: 'Invalid parameter' })
   }
 
+  // Sanitize any 'false-ish' values to be 'undefined'
+  if (req.query.fullInfo === false || req.query.fullInfo === 'false') {
+    req.query.fullInfo = undefined
+  }
+
   // Attempt to retrieve user list
   try {
-    const userList = await DBUser.listUserIDs(perPage, page)
+    const userList = await DBUser.listUsers(req.query.fullInfo === undefined, perPage, page)
     res.send(userList)
   } catch (err) {
     checkAndReportError('Error retrieving user list', res, err, debug)
