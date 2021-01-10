@@ -2,6 +2,12 @@
 /* extern preValidate */
 let token = ''
 
+/**
+ * A function to quickly check the validity of the stored JWT and bypass
+ * login if it is still valid. Runs asynchronously and requires callback.
+ * @param {string} destURL Destination for redirection if login is valid
+ * @param {function} result Callback, receives bool for if login is 'valid' and message as string
+ */
 function preValidate (destURL, result) {
   if (checkForToken()) {
     // Validate and redirect
