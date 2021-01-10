@@ -82,8 +82,11 @@ router.post('/update', authenticateToken, async (req, res) => {
     if (userDetails.meta['1']) { delete userDetails.meta['1'] }
     const userMeta = { ...userDetails.meta, ...req.body.meta }
 
+    // Sanitize teams array
+    if (!Array.isArray(userDetails.teams)) { userDetails.teams = [] }
+
     // Update the user in the DB
-    await DBUser.updateUser(userID, { email, firstName, lastName, meta: userMeta })
+    await DBUser.updateUser(userID, { email, firstName, lastName, teams: userDetails.teams, meta: userMeta })
     res.send({ success: true })
   } catch (err) {
     checkAndReportError('Error updating user', res, err, debug)
