@@ -1,8 +1,19 @@
 /* globals $, axios, store, Cookies, preValidate */
 let accountForm
+let destURL
 
 // Pre-validate based on stored token
-$(document).ready(() => { preValidate(showLogin) })
+$(document).ready(() => {
+  // Determine the destination URL to redirect to after login
+  destURL = (new URLSearchParams(window.location.search)).get('dest')
+  if (!destURL || destURL === '') {
+    destURL = 'oz/emeraldCity.html'
+  }
+  console.log('After login, will redirect to: ' + destURL)
+
+  // Check if already logged in then run 'showLogin'
+  preValidate(destURL, showLogin)
+})
 
 // Callback from pre-validate method
 function showLogin (result, message) {
@@ -79,7 +90,7 @@ async function validateLogin () {
     // Set the token and redirect
     store.local.set('JWT', response.data.token)
     Cookies.set('JWT', response.data.token)
-    setTimeout(() => { window.location.href = './emeraldCity.html' }, 1000)
+    setTimeout(() => { window.location.href = destURL }, 1000)
   } catch (err) {
     // Show a failed alert message
     addAlert('Login Failed', 'alert-danger')
