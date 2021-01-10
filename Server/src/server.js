@@ -22,11 +22,14 @@ import Cors from 'cors'
 // Our websockets events and management
 import { makeSocket } from './sockets.js'
 
-// Custom data router for our RESTFull data API
-import dataRouter from './routes/data.js'
-
-// Custom router for user authentication API
+// Custom router for authentication API
 import authRouter from './routes/auth.js'
+
+// Custom router for user data API
+import userRouter from './routes/user.js'
+
+// Custom router for user team API
+import teamRouter from './routes/team.js'
 
 // custom router for testing purposes
 import testRouter from './routes/test.js'
@@ -84,8 +87,11 @@ app.use('/admin', adminRouter)
 // All authentication routes are under '/auth/'
 app.use(`${SERVER_ROOT}auth`, authRouter)
 
-// All data routes are under '/data/'
-app.use(`${SERVER_ROOT}data`, dataRouter)
+// All user data routes are under '/data/user'
+app.use(`${SERVER_ROOT}data/user`, userRouter)
+
+// All team data routes are under '/data/team'
+app.use(`${SERVER_ROOT}data/team`, teamRouter)
 
 // All testing routes are under '/test/'
 app.use(`${SERVER_ROOT}test`, testRouter)

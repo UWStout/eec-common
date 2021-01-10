@@ -9,33 +9,6 @@ import * as SQLHelp from './sqliteHelper.js'
 const SALT_ROUNDS = 10
 
 /**
- * Retrieve all the details for a given userID
- * @param {number} userID ID of the user in the database
- * @return {Promise} Resolves to an object with all the user data, rejects on error
- */
-export function getUserDetails (userID) {
-  return SQLHelp.getEntryFromID(userID, 'Users')
-}
-
-/**
- * Check if a user already exists for the given email
- * @param {string} email ID of the user in the database
- * @return {Promise} Resolves to the userID or -1 if no user exists
- */
-export function emailExists (email) {
-  return SQLHelp.checkValueExistence('Users', 'email', email)
-}
-
-/**
- * Drop a user from the database
- * @param {number} userID ID of the user to remove
- * @return {Promise} Resolves with no data if successful, rejects on error
- */
-export function removeUser (userID) {
-  return SQLHelp.deleteEntryFromID(userID, 'Users')
-}
-
-/**
  * Validate user credentials
  * @param {string} email The email of the user in the database
  * @param {string} plainPassword Plaintext password
