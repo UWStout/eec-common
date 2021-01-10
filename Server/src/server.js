@@ -33,13 +33,14 @@ import testRouter from './routes/test.js'
 
 import adminRouter from './routes/adminRoutes.js'
 
-// Custom router for the back-end wizard
+// Custom router for admin-only backend routes
 import wizardRouter from './routes/wizard.js'
+import dbAdminRouter from './routes/dbAdmin.js'
 
 // print messages only during debug
 import Debug from 'debug'
 
-// prints messages having to do with webtraffic
+// prints messages having to do with web traffic
 import morgan from 'morgan'
 
 // Update environment variables
@@ -91,6 +92,9 @@ app.use(`${SERVER_ROOT}test`, testRouter)
 
 // All wizard routes are under '/oz/'
 app.use(`${SERVER_ROOT}oz`, wizardRouter)
+
+// All database administration routes are under '/dbAdmin/'
+app.use(`${SERVER_ROOT}dbAdmin`, dbAdminRouter)
 
 // Login/out authorization routes from root
 app.use('/', Express.static(path.resolve('./views/auth')))

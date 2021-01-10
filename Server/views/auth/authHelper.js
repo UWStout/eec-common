@@ -2,7 +2,7 @@
 /* extern preValidate */
 let token = ''
 
-function preValidate (result) {
+function preValidate (destURL, result) {
   if (checkForToken()) {
     // Validate and redirect
     axios.get('/auth/validate', {
@@ -11,7 +11,7 @@ function preValidate (result) {
       }
     }).then((response) => {
       result(true, 'Login valid. Redirecting ...')
-      setTimeout(() => { window.location.href = '/oz/' }, 1500)
+      setTimeout(() => { window.location.href = destURL }, 1500)
     }).catch(() => {
       // Token did not validate
       store.local.remove('JWT')
