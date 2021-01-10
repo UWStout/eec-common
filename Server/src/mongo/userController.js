@@ -44,18 +44,21 @@ export function emailExists (email) {
 
 /**
  * List users in the database with pagination
+ * @param {bool} IDsOnly Include only IDs in the results
  * @param {number} perPage Number of users per page (defaults to 25)
  * @param {number} page Page of results to skip to (defaults to 1)
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
-export function listUserIDs (perPage = 25, page = 1) {
+export function listUsers (IDsOnly = true, perPage = 25, page = 1) {
   const DBHandle = retrieveDBHandle('karunaData', true, true)
+  const projectedObj = {}
+  if (IDsOnly) { projectedObj._id = 1 }
   return new Promise((resolve, reject) => {
     const skip = (page - 1) * perPage
     const limit = perPage
     DBHandle.collection('Users')
-      // Empty query gets all items, project to just the IDs + skip and limit results
-      .find({}).skip(skip).limit(limit).project({ _id: 1 }).toArray((err, userIDArray) => {
+      // Empty query gets all items, project to just the IDs (if requested) + skip and limit results
+      .find({}).skip(skip).limit(limit).project(projectedObj).toArray((err, userIDArray) => {
         // Something went wrong
         if (err) {
           debug('Failed to retrieve user list')
