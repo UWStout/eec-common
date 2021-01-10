@@ -55,10 +55,7 @@ const SSLOptions = {
   cert: fs.readFileSync(SSL_CERT_FILE)
 }
 
-// const __filename = fileURLToPath(import.meta.url)
-// const __dirname = dirname(__filename)
-
-// Make a standard express app server
+// Make an HTTPS express server app
 const app = new Express()
 const server = https.createServer(SSLOptions, app)
 

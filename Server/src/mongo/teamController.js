@@ -46,6 +46,8 @@ export function createTeam (teamName, teamUnitID, userID) {
       .collection('Teams')
       .insertOne({ teamName, teamUnitID }, (err, result) => {
         if (err) {
+          debug('Failed to create team')
+          debug(err)
           return reject(err)
         } else if (userID) { addToTeam(userID) }
 
@@ -111,7 +113,9 @@ export function removeOrgUnit (unitID) {
  */
 export function listTeams (teamUnitID, userID) {
   if (!teamUnitID && !userID) {
-    return Promise.reject(new Error('Can\'t list teams. At least one of the IDs must be defined.'))
+    const err = new Error('Can\'t list teams. At least one of the IDs must be defined.')
+    debug(err)
+    return Promise.reject(err)
   } else if (!teamUnitID) {
     return listTeamsForUser(userID)
   } else if (!userID) {
@@ -121,7 +125,7 @@ export function listTeams (teamUnitID, userID) {
   return new Promise((resolve, reject) => {
     DBHandle
       .collection('Teams')
-      .find({ _id: new ObjectID(unitID), teamName, teamUnit })
+      .find({ _id: new ObjectID(teamUnitID) })
       .then(result => { resolve(true) })
       .catch(() => { resolve(false) })
   })
