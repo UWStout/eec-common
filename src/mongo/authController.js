@@ -59,7 +59,11 @@ export function removeUser (userID) {
       .collection('Users')
       .findOneAndDelete({ _id: new ObjectID(userID) })
       .then(result => { resolve() })
-      .catch(error => { reject(error) })
+      .catch(error => {
+        debug('Failed to remove user')
+        debug(error)
+        return reject(error)
+      })
   })
 }
 
@@ -77,19 +81,29 @@ export function validateUser (email, password) {
       .findOne({ email: email }, (err, result) => {
         // Check for an error
         if (err) {
+          debug('Error looking for user')
+          debug(err)
           return reject(err)
         }
 
         // check if findOne failed
         if (result == null) {
+          debug(`User not found "${email}"`)
           return reject(err('user not found'))
         } else {
           // Hash and validate the password (it is stored hashed)
           bcrypt.compare(password, result.passwordHash, (error, valid) => {
           // Check if an error occurred
-            if (error) { return reject(error) }
+            if (error) {
+              debug('Error hashing password')
+              debug(err)
+              return reject(error)
+            }
             // Was the password valid
-            if (!valid) { return reject(new Error('Invalid email or password')) }
+            if (!valid) {
+              debug('Password failed hash check')
+              return reject(new Error('Invalid email or password'))
+            }
 
             // Return the email and row data (without password) merged
             result.passwordHash = undefined
@@ -111,10 +125,26 @@ export function validateUser (email, password) {
  * @return {Promise} Rejects on failure, resolves to the newly created ID on success
  */
 export function createUser (firstName, lastName, email, type, password) {
-  const DBHandle = retrieveDBHandle('karunaData', true, true)
-  // TODO: hash the password with bcrypt (see sqlite version)
+  return new Promise((resolve, reject) => {
+    // Hash password
+    bcrypt.hash(password, SALT_ROUNDS, (err, passwordHash) => {
+      // Check if an error occurred
+      if (err) {
+        debug('Failed to hash password')
+        debug(err)
+        return reject(err)
+      }
 
-  return DBHandle
-    .collection('Users')
-    .insertOne({ firstName, lastName, email, type, passwordHash: password })
+      // Make new user data entry
+      const DBHandle = retrieveDBHandle('karunaData', true, true)
+      DBHandle.collection('Users')
+        .insertOne({ firstName, lastName, email, type, passwordHash, meta: {} })
+        .then((result) => { return resolve() })
+        .catch((error) => {
+          debug('Failed to insert new user')
+          debug(error)
+          return reject(error)
+        })
+    })
+  })
 }
