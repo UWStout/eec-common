@@ -5,14 +5,15 @@ import Express from 'express'
 import JWT from 'jsonwebtoken'
 
 // Database controller
-import { getDBAuthController } from './dbSelector.js'
+import { getDBAuthController, getDBUserController } from './dbSelector.js'
 
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('server:auth')
 
-// Get database auth routes controller object
-const DB = getDBAuthController()
+// Get database auth and user controller objects
+const DBAuth = getDBAuthController()
+const DBUser = getDBUserController()
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
@@ -33,7 +34,7 @@ export function authenticateToken (req, res, next) {
   // Attempt to verify the token
   JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
     if (err) {
-      return res.status(403).json({
+      return res.status(401).json({
         error: true, message: 'not authorized'
       })
     }
@@ -87,7 +88,7 @@ router.post('/login', async (req, res) => {
 
   try {
     // Attempt to validate user
-    const userData = await DB.validateUser(email, password)
+    const userData = await DBAuth.validateUser(email, password)
 
     // Generate token and return
     const token = JWT.sign(userData, process.env.TOKEN_SECRET, {
@@ -120,7 +121,7 @@ router.post('/register', async (req, res) => {
 
   // Check if user with the same email is already registered
   try {
-    const existingID = await DB.emailExists(email)
+    const existingID = await DBUser.emailExists(email)
     if (existingID !== -1) {
       return res.status(400).json({
         invalid: true, userID: existingID, message: 'Email already registered'
@@ -135,7 +136,7 @@ router.post('/register', async (req, res) => {
   // Attempt to create user
   debug(`Making account for ${email}`)
   try {
-    const userID = await DB.createUser(firstName, lastName, email, userType, password)
+    const userID = await DBAuth.createUser(firstName, lastName, email, userType, password)
     return res.status(200).json({ message: 'success', userID: userID })
   } catch (error) {
     console.error(`Failed to create account ${email}`)
