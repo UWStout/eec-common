@@ -1,3 +1,8 @@
+/*
+tests
+
+*/
+
 // Basic HTTP routing library
 import Express from 'express'
 
@@ -80,6 +85,8 @@ const router = new Express.Router()
 
 // ******* API routes **************
 
+// 1. tests authController validateUser function
+
 router.post('/login', async (req, res) => {
   // Extract and check for required fields
   const { email, password } = req.body
@@ -90,7 +97,7 @@ router.post('/login', async (req, res) => {
 
   try {
     // Attempt to validate user
-    const userData = await DB.validateUser(email, password)
+    const userData = await authDB.validateUser(email, password)
 
     // Generate token and return
     const token = JWT.sign(userData, process.env.TOKEN_SECRET, {
@@ -110,6 +117,8 @@ router.post('/login', async (req, res) => {
   }
 })
 
+// 2. test authController emailExists
+
 router.post('/register', async (req, res) => {
   // Extract and check required fields
   const { email, firstName, lastName, password } = req.body
@@ -123,7 +132,7 @@ router.post('/register', async (req, res) => {
 
   // Check if user with the same email is already registered
   try {
-    const existingID = await DB.emailExists(email)
+    const existingID = await authDB.emailExists(email)
     if (existingID !== -1) {
       return res.status(400).json({
         invalid: true, userID: existingID, message: 'Email already registered'
@@ -135,10 +144,12 @@ router.post('/register', async (req, res) => {
     })
   }
 
+  // 3. test authController createUser
+
   // Attempt to create user
   debug(`Making account for ${email}`)
   try {
-    const userID = await DB.createUser(firstName, lastName, email, userType, password)
+    const userID = await authDB.createUser(firstName, lastName, email, userType, password)
     return res.status(200).json({ message: 'success', userID: userID })
   } catch (error) {
     console.error(`Failed to create account ${email}`)
