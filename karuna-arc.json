@@ -1,8 +1,50 @@
 {
-  "createdAt": "2021-01-10T21:46:13.091Z",
+  "createdAt": "2021-01-11T21:02:12.942Z",
   "version": "15.0.7",
   "kind": "ARC#AllDataExport",
   "requests": [{
+    "url": "https://localhost:3000/data/user/5ff742f09bb9905f98eb348e",
+    "method": "GET",
+    "auth": null,
+    "authType": null,
+    "headers": "Authorization: digest eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmY3NDJmMDliYjk5MDVmOThlYjM0OGYiLCJlbWFpbCI6ImFueXdoZXJlQGVtYWlsLmNvbSIsImZpcnN0TmFtZSI6IkpvZSIsImxhc3ROYW1lIjoiQW55Ym9keSIsInVzZXJUeXBlIjoiYWRtaW4iLCJtZXRhIjoie30iLCJpYXQiOjE2MTAzMDc1MjAsImV4cCI6MTYxMjg5OTUyMCwiYXVkIjoiYW55d2hlcmVAZW1haWwuY29tIiwiaXNzIjoiS2FydW5hIiwic3ViIjoiYXV0aG9yaXphdGlvbiJ9.g9LQygRhMf7XxVIYrUR7QSng8K28NzuYfQ25ZqGE2TU",
+    "name": "User Basic Details",
+    "description": "Request basic user details\n- Requires valid JWT and matching ID or 'admin' status\n- UserID must be in URL\n- Returns basic user info as JSON on success\n- Return { error: true } and message on error or if doesn't exist",
+    "projects": ["1b50da82-8ddf-46a0-8a22-54bee1d65cd6"],
+    "type": "saved",
+    "updated": 1610315788677,
+    "created": 1610315788677,
+    "kind": "ARC#RequestData",
+    "key": "19879d14-11d0-43bc-8019-a408f1ad594c"
+  }, {
+    "updated": 1610315675709,
+    "created": 1610310774563,
+    "headers": "Authorization: digest eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmY3NDJmMDliYjk5MDVmOThlYjM0OGYiLCJlbWFpbCI6ImFueXdoZXJlQGVtYWlsLmNvbSIsImZpcnN0TmFtZSI6IkpvZSIsImxhc3ROYW1lIjoiQW55Ym9keSIsInVzZXJUeXBlIjoiYWRtaW4iLCJtZXRhIjoie30iLCJpYXQiOjE2MTAzMDc1MjAsImV4cCI6MTYxMjg5OTUyMCwiYXVkIjoiYW55d2hlcmVAZW1haWwuY29tIiwiaXNzIjoiS2FydW5hIiwic3ViIjoiYXV0aG9yaXphdGlvbiJ9.g9LQygRhMf7XxVIYrUR7QSng8K28NzuYfQ25ZqGE2TU",
+    "method": "GET",
+    "url": "https://localhost:3000/data/user/5ff742f09bb9905f98eb348e",
+    "type": "saved",
+    "auth": null,
+    "authType": null,
+    "name": "User Details",
+    "description": "Get details for a specific user\n- Include userID in the URL\n- Returns { error: true } and message if user not found or error\n- Return basic user details as JSON on success\n",
+    "projects": ["772a903e-10a3-45ee-840c-e7182ce25ad4"],
+    "kind": "ARC#RequestData",
+    "key": "219b6a6a-e4ba-47d1-ba38-35a6bc746929"
+  }, {
+    "updated": 1610316567340,
+    "created": 1610309074267,
+    "headers": "Authorization: digest eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmY3NDJmMDliYjk5MDVmOThlYjM0OGYiLCJlbWFpbCI6ImFueXdoZXJlQGVtYWlsLmNvbSIsImZpcnN0TmFtZSI6IkpvZSIsImxhc3ROYW1lIjoiQW55Ym9keSIsInVzZXJUeXBlIjoiYWRtaW4iLCJtZXRhIjoie30iLCJpYXQiOjE2MTAzMDc1MjAsImV4cCI6MTYxMjg5OTUyMCwiYXVkIjoiYW55d2hlcmVAZW1haWwuY29tIiwiaXNzIjoiS2FydW5hIiwic3ViIjoiYXV0aG9yaXphdGlvbiJ9.g9LQygRhMf7XxVIYrUR7QSng8K28NzuYfQ25ZqGE2TU",
+    "method": "GET",
+    "url": "https://localhost:3000/data/user/list?fullInfo=true&perPage=10&page=0",
+    "type": "saved",
+    "auth": null,
+    "authType": null,
+    "name": "List All Users",
+    "description": "List all users in the database\n- Requires valid JWT and 'admin' status\n- Accepts pagination variables (perPage and page)\n- Pass 'fullInfo=true' in query string for all info\n- Defaults to IDs only\n- Returns array with ID or fullInfo (See above)\n- Returns { error: true } and message on error",
+    "projects": ["1b50da82-8ddf-46a0-8a22-54bee1d65cd6"],
+    "kind": "ARC#RequestData",
+    "key": "8cad471b-df7a-4e36-9da5-dda2f47d536e"
+  }, {
     "updated": 1610314484716,
     "created": 1610313625333,
     "headers": "Authorization: digest eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZjc0MmYwOWJiOTkwNWY5OGViMzQ4ZiIsImVtYWlsIjoiYW55d2hlcmVAZW1haWwuY29tIiwiZmlyc3ROYW1lIjoiSm9lIiwibGFzdE5hbWUiOiJBbnlib2R5IiwidXNlclR5cGUiOiJhZG1pbiIsImlhdCI6MTYxMDMxMzMxMywiZXhwIjoxNjEyOTA1MzEzLCJhdWQiOiJhbnl3aGVyZUBlbWFpbC5jb20iLCJpc3MiOiJLYXJ1bmEiLCJzdWIiOiJhdXRob3JpemF0aW9uIn0.7uL7FBTY-Fp97fHSMMt3UnUS7kNQwQQTU98fHVCI-6M\nContent-Type: application/json\ncontent-length: 66",
@@ -32,11 +74,10 @@
   "projects": [{
     "updated": 1610314542391,
     "order": 0,
-    "requests": ["c786e4be-1d45-41f4-81f5-a28b14cc7875", "bd8b5634-4686-4600-9a31-3e9999a893d4"],
+    "requests": ["c786e4be-1d45-41f4-81f5-a28b14cc7875", "bd8b5634-4686-4600-9a31-3e9999a893d4", "19879d14-11d0-43bc-8019-a408f1ad594c", "8cad471b-df7a-4e36-9da5-dda2f47d536e"],
     "name": "Karuna",
     "description": "Backend API for the Karuna project",
     "kind": "ARC#ProjectData",
     "key": "1b50da82-8ddf-46a0-8a22-54bee1d65cd6"
-  }],
-  "history": []
+  }]
 }

@@ -111,17 +111,19 @@ export function removeOrgUnit (unitID) {
 
 /**
  * Get list of teams (ids, units, and names only)
- * @param {number} unitID Optional team unit to filter by (may be combined with user)
- * @param {number} userID Optional user to filter by (may be combined with team unit)
+ * @param {string} unitID Optional team unit to filter by (may be combined with user)
+ * @param {string} userID Optional user to filter by (may be combined with team unit)
+ * @param {number} page The current page of results (defaults to 1)
+ * @param {number} perPage The number of results per page (defaults to 25)
  * @return {[object]} Array of objects containing team ids, names, and unit names that
  *                    match the given filters
  */
-export function listTeams (unitID, userID) {
+export function listTeams (unitID, userID, page = 1, perPage = 25) {
   // Which ID was defined
   if (unitID) {
-    return listTeamsInUnit(unitID)
+    return listTeamsInUnit(unitID, page, perPage)
   } else if (userID) {
-    return listTeamsForUser(userID)
+    return listTeamsForUser(userID, page, perPage)
   }
 
   // Neither ID was defined
@@ -133,19 +135,35 @@ export function listTeams (unitID, userID) {
 /**
  * Return a list of all the teams under a given unit
  * @param {string} unitID Hashed ObjectID for the unit to list
+ * @param {number} page The current page of results (defaults to 1)
+ * @param {number} perPage The number of results per page (defaults to 25)
  */
-export function listTeamsInUnit (unitID) {
-  const DBHandle = retrieveDBHandle('karunaData')
-  return DBHandle
-    .collection('Teams')
-    .findAll({ unitID: new ObjectID(unitID) })
+export function listTeamsInUnit (unitID, page = 1, perPage = 25) {
+  return new Promise((resolve, reject) => {
+    const DBHandle = retrieveDBHandle('karunaData')
+    DBHandle.collection('Teams')
+      .find({ unitID: new ObjectID(unitID) })
+      .skip((page - 1) * perPage)
+      .limit(perPage)
+      .toArray((err, result) => {
+        if (err) {
+          debug('Error while retrieving list of teams in unit')
+          debug(err)
+          return reject(err)
+        }
+
+        return resolve(result)
+      })
+  })
 }
 
 /**
  * Return a list of all the teams a particular user belongs to
  * @param {string} userID Hashed ObjectID for the user to list
+ * @param {number} page The current page of results (defaults to 1)
+ * @param {number} perPage The number of results per page (defaults to 25)
  */
-export function listTeamsForUser (userID) {
+export function listTeamsForUser (userID, page = 1, perPage = 25) {
   return new Promise((resolve, reject) => {
     // Get database handle
     const DBHandle = retrieveDBHandle('karunaData')
