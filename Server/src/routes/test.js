@@ -163,5 +163,27 @@ router.get('/validate', authenticateToken, (req, res) => {
   res.send('OK')
 })
 
+// 4. test teamController getTeamList
+
+// List all teamIDs in the database
+router.get('/list', authenticateToken, async (req, res) => {
+  // Admin users only
+  if (req.user.userType !== 'admin') {
+    return res.status(403).send({ error: true, message: 'not authorized' })
+  } else if (req.user !== 'admin') {
+    return res.status(403).send({ error: true, message: 'not authorized' })
+  }
+
+  // Attempt to retrieve user list
+  try {
+    const teamList = teamDB.getTeamList(req.query.perPage, req.query.page)
+    req.res(teamList)
+  } catch (err) {
+    debug('Error retrieving team list')
+    debug(err)
+    req.status(500).res({ error: true, message: 'error retrieving team list' })
+  }
+})
+
 // Expose the router for use in other files
 export default router
