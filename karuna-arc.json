@@ -27,7 +27,7 @@
     "authType": null,
     "name": "User Details",
     "description": "Get details for a specific user\n- Include userID in the URL\n- Returns { error: true } and message if user not found or error\n- Return basic user details as JSON on success\n",
-    "projects": ["772a903e-10a3-45ee-840c-e7182ce25ad4"],
+    "projects": ["1b50da82-8ddf-46a0-8a22-54bee1d65cd6"],
     "kind": "ARC#RequestData",
     "key": "219b6a6a-e4ba-47d1-ba38-35a6bc746929"
   }, {
@@ -70,11 +70,25 @@
     "projects": ["1b50da82-8ddf-46a0-8a22-54bee1d65cd6"],
     "kind": "ARC#RequestData",
     "key": "c786e4be-1d45-41f4-81f5-a28b14cc7875"
+  }, {
+    "updated": 1610398834502,
+    "created": 1610398282592,
+    "headers": "Authorization: digest eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZjc0MmYwOWJiOTkwNWY5OGViMzQ4ZiIsImVtYWlsIjoiYW55d2hlcmVAZW1haWwuY29tIiwiZmlyc3ROYW1lIjoiSm9lIiwibGFzdE5hbWUiOiJBbnlib2R5IiwidXNlclR5cGUiOiJhZG1pbiIsImlhdCI6MTYxMDMxMzMxMywiZXhwIjoxNjEyOTA1MzEzLCJhdWQiOiJhbnl3aGVyZUBlbWFpbC5jb20iLCJpc3MiOiJLYXJ1bmEiLCJzdWIiOiJhdXRob3JpemF0aW9uIn0.7uL7FBTY-Fp97fHSMMt3UnUS7kNQwQQTU98fHVCI-6M",
+    "method": "GET",
+    "url": "https://localhost:3000/data/team/list",
+    "type": "saved",
+    "auth": null,
+    "authType": null,
+    "name": "List Teams",
+    "description": "This request tests the list Teams from team.js",
+    "projects": ["1b50da82-8ddf-46a0-8a22-54bee1d65cd6"],
+    "kind": "ARC#RequestData",
+    "key": "f8fee0d3-f6a0-454e-9e4c-d2f2f04aa5c4"
   }],
   "projects": [{
     "updated": 1610314542391,
     "order": 0,
-    "requests": ["c786e4be-1d45-41f4-81f5-a28b14cc7875", "bd8b5634-4686-4600-9a31-3e9999a893d4", "19879d14-11d0-43bc-8019-a408f1ad594c", "8cad471b-df7a-4e36-9da5-dda2f47d536e"],
+    "requests": ["c786e4be-1d45-41f4-81f5-a28b14cc7875", "bd8b5634-4686-4600-9a31-3e9999a893d4", "19879d14-11d0-43bc-8019-a408f1ad594c", "8cad471b-df7a-4e36-9da5-dda2f47d536e", "f8fee0d3-f6a0-454e-9e4c-d2f2f04aa5c4", "219b6a6a-e4ba-47d1-ba38-35a6bc746929"],
     "name": "Karuna",
     "description": "Backend API for the Karuna project",
     "kind": "ARC#ProjectData",
