@@ -17,7 +17,7 @@ export function retrieveUsers (page, perPage) {
 export function retrieveTeams (page, perPage) {
   // TODO: This endpoint doesn't exist yet, will always fail
   return new Promise((resolve, reject) => {
-    axios.get(`data/team/list?fullInfo=true&perPage=${perPage}&page=${page}`)
+    axios.get(`../data/team/list?fullInfo=true&perPage=${perPage}&page=${page}`)
       .then((response) => {
         console.log(response)
         return resolve(response.data)
