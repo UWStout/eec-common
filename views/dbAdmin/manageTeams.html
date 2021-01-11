@@ -21,14 +21,14 @@
             <h1>Karuna Database - Team Management</h1>
           </div>
           <h3 class="pt-2 mb-4">Teams currently in Karuna Database:</h3>
-      </div>
-      </div>
-
-      <div class="row">
-        <div class="col-12">
-          <p>TODO, show teams here</p>
         </div>
       </div>
+
+      <!-- Filled by JS -->
+      <div class="row" id="upperNav"></div>
+      <div class="row" id="dataTable"></div>
+      <div class="row" id="lowerNav"></div>
+
     </div>
 
     <!-- Bootstrap JS, with dependencies Popper.js and jQuery -->
@@ -38,10 +38,7 @@
     <!-- Axios for ajax requests -->
     <script src="../lib/axios.min.js"></script>
 
-    <!-- Store2 for local storage -->
-    <script src="../lib/store2.min.js"></script>
-
     <!-- Custom Scripting -->
-    <script src="dbManagement.js" type="module"></script>
+    <script src="manageTeams.js" type="module"></script>
   </body>
 </html>
