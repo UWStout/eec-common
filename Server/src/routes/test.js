@@ -1,6 +1,5 @@
 /*
-tests
-
+tests database functions within userController, teamController, and authController
 */
 
 // Basic HTTP routing library
@@ -88,106 +87,16 @@ const router = new Express.Router()
 // ******* API routes **************
 
 // 1. tests authController validateUser function
-
-router.post('/login', async (req, res) => {
-  // Extract and check for required fields
-  const { email, password } = req.body
-  if (!email || !password) {
-    res.status(400).json({ invalid: true, message: 'Missing required information' })
-    return
-  }
-
-  try {
-    // Attempt to validate user
-    const userData = await authDB.validateUser(email, password)
-
-    // Generate token and return
-    const token = JWT.sign(userData, process.env.TOKEN_SECRET, {
-      subject: 'authorization',
-      issuer: 'Karuna',
-      audience: userData.email,
-      expiresIn: '30d'
-    })
-    return res.status(200).json({ message: 'success', token: token })
-  } catch (err) {
-    // Something went wrong so log it
-    debug('Failed validation')
-    debug(err)
-
-    // Respond with invalid
-    return res.status(400).json({ invalid: true, message: 'Invalid email or password' })
-  }
-})
+// also tested in auth.js with https://localhost:3000/auth/login
 
 // 2. test userController emailExists and
 // 3. test authController createUser
-
-router.post('/register', async (req, res) => {
-  // Extract and check required fields
-  const { email, firstName, lastName, password } = req.body
-  if (!email || !firstName || !lastName || !password) {
-    res.status(400).json({ invalid: true, message: 'Missing required information' })
-    return
-  }
-
-  // Optional field (defaults to standard user)
-  const userType = req.body.userType || 'standard'
-
-  // Check if user with the same email is already registered
-  try {
-    const existingID = await userDB.emailExists(email)
-    if (existingID !== -1) {
-      return res.status(400).json({
-        invalid: true, userID: existingID, message: 'Email already registered'
-      })
-    }
-  } catch (err) {
-    return res.status(500).json({
-      error: true, message: 'Could not check email'
-    })
-  }
-
-  // Attempt to create user
-  debug(`Making account for ${email}`)
-  try {
-    const userID = await authDB.createUser(firstName, lastName, email, userType, password)
-    return res.status(200).json({ message: 'success', userID: userID })
-  } catch (error) {
-    console.error(`Failed to create account ${email}`)
-    console.error(error)
-    return res.status(500).json({ error: true, message: 'Error while creating account' })
-  }
-})
-
-// A simple validation route (returns 200 and 'OK' if token is valid)
-router.get('/validate', authenticateToken, (req, res) => {
-  res.send('OK')
-})
+// also tested in auth.js with https://localhost:3000/auth/register
 
 // 4. test teamController getTeamList
-// T0-DO: currently broken within test.js
-// tested within team.js with https://localhost:3000/data/team/list
-
-// List all teamIDs in the database
-router.get('/listTeams', authenticateToken, async (req, res) => {
-  // Admin users only
-  if (req.user.userType !== 'admin') {
-    return res.status(403).send({ error: true, message: 'not authorized' })
-  }
-
-  // Attempt to retrieve user list
-  try {
-    const teamList = teamDB.getTeamList(req.query.perPage, req.query.page)
-    req.res(teamList)
-  } catch (err) {
-    debug('Error retrieving team list')
-    debug(err)
-    req.status(500).res({ error: true, message: 'error retrieving team list' })
-  }
-})
+// also tested within team.js with https://localhost:3000/data/team/list
 
 // 5. test teamController createTeam
-
 router.post('/registerTeam', async (req, res) => {
   // Extract and check required fields
   const { teamName, unitID, userID } = req.body
@@ -210,9 +119,8 @@ router.post('/registerTeam', async (req, res) => {
   }
 })
 
-// 7. test teamController's addToTeam function
+// 6. test teamController's addToTeam function
 // T0-DO: currently broken
-
 router.post('/addToTeam', async (req, res) => {
   // Extract and check required fields
   const { userID, teamID } = req.body
@@ -235,8 +143,7 @@ router.post('/addToTeam', async (req, res) => {
   }
 })
 
-// 8. test teamController's createOrgUnit function
-
+// 7. test teamController's createOrgUnit function
 router.post('/registerOrg', async (req, res) => {
   // Extract and check required fields
   const { unitName, description, adminID } = req.body
@@ -257,9 +164,8 @@ router.post('/registerOrg', async (req, res) => {
   }
 })
 
-// 9. test teamController's removeTeam function
+// 8. test teamController's removeTeam function
 // T0-DO: currently broken
-
 router.post('/removeTeam', async (req, res) => {
   // Extract and check required fields
   const { teamID } = req.body
@@ -280,8 +186,7 @@ router.post('/removeTeam', async (req, res) => {
   }
 })
 
-// 10. test teamController's removeOrgUnit function
-
+// 9. test teamController's removeOrgUnit function
 router.post('/removeOrg', async (req, res) => {
   // Extract and check required fields
   const { unitID } = req.body
@@ -302,8 +207,7 @@ router.post('/removeOrg', async (req, res) => {
   }
 })
 
-// 11. test teamController's listTeamsInUnit (unitID, page = 1, perPage = 25) function
-
+// 10. test teamController's listTeamsInUnit (unitID, page = 1, perPage = 25) function
 router.post('/listTeamsInUnit', async (req, res) => {
   // Extract and check required fields
   const { unitID, page, perPage } = req.body
@@ -324,8 +228,7 @@ router.post('/listTeamsInUnit', async (req, res) => {
   }
 })
 
-// 12. test teamController's listTeamsForUser (userID, page = 1, perPage = 25) function
-
+// 11. test teamController's listTeamsForUser (userID, page = 1, perPage = 25) function
 router.post('/listTeamsForUser', async (req, res) => {
   // Extract and check required fields
   const { userID, page, perPage } = req.body
@@ -346,19 +249,19 @@ router.post('/listTeamsForUser', async (req, res) => {
   }
 })
 
-// 13. test userController's list user function with listUsers(req.query.fullInfo === undefined, perPage, page)
+// 12. test userController's list user function with listUsers(req.query.fullInfo === undefined, perPage, page)
 // done within user.js at https://localhost:3000/data/user/list?fullInfo=true&perPage=10&page=0
 
-// 14. test userController's update user function with updateUser(userID, { firstName, lastName, teams, meta: userMeta })
+// 13. test userController's update user function with updateUser(userID, { firstName, lastName, teams, meta: userMeta })
 // done within user.js at https://localhost:3000/data/user/update/
 
-// 15. test userController's promote user function with updateUser(userID, { userType: 'admin' })
+// 14. test userController's promote user function with updateUser(userID, { userType: 'admin' })
 // done within user.js at https://localhost:3000/data/user/promote/
 
-// 16. test userController's getUserDetails(userID) function
+// 15. test userController's getUserDetails(userID) function
 // done within user.js at https://localhost:3000/data/user/5ff742f09bb9905f98eb348e
 
-// 17. test userController's removeUser (userID) function
+// 16. test userController's removeUser (userID) function
 router.post('/removeUser', async (req, res) => {
   // Extract and check required fields
   const { userID } = req.body
