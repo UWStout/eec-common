@@ -8,7 +8,7 @@ import { authenticateToken } from './auth.js'
 import { getDBUserController } from './dbSelector.js'
 
 // Utility functions
-import { getPaginationValues, checkAndReportError } from './utils.js'
+import * as UTIL from './utils.js'
 
 // Create debug output object
 import Debug from 'debug'
@@ -21,6 +21,21 @@ const DBUser = getDBUserController()
 const router = new Express.Router()
 
 // ******* API routes **************
+router.get('/count', authenticateToken, async (req, res) => {
+  // Admin users only
+  if (req.user.userType !== 'admin') {
+    return res.status(403).send({ error: true, message: 'not authorized' })
+  }
+
+  // Attempt to retrieve user count
+  try {
+    const userCount = await DBUser.getUserCount()
+    res.send({ userCount })
+  } catch (err) {
+    UTIL.checkAndReportError('Error retrieving user count', res, err, debug)
+  }
+})
+
 // List all userIDs in the database
 router.get('/list', authenticateToken, async (req, res) => {
   // Admin users only
@@ -29,10 +44,16 @@ router.get('/list', authenticateToken, async (req, res) => {
   }
 
   // Try to get the pagination query string values
-  const [perPage, page] = getPaginationValues(req.query)
+  const [perPage, page] = UTIL.getPaginationValues(req.query)
   if (isNaN(perPage) || isNaN(page)) {
     return res.status(400).send({ error: true, message: 'Invalid parameter' })
   }
+
+  // Try to get sorting query string values
+  const [sortBy, sortOrder] = UTIL.getSortingValues(req.query)
+
+  // Try to get filtering query string values
+  const [filterBy, filter] = UTIL.getFilteringValues(req.query)
 
   // Sanitize any 'false-ish' values to be 'undefined'
   if (req.query.fullInfo === false || req.query.fullInfo === 'false') {
@@ -40,11 +61,12 @@ router.get('/list', authenticateToken, async (req, res) => {
   }
 
   // Attempt to retrieve user list
+  const IDsOnly = (req.query.fullInfo === undefined)
   try {
-    const userList = await DBUser.listUsers(req.query.fullInfo === undefined, perPage, page)
+    const userList = await DBUser.listUsers(IDsOnly, perPage, page, sortBy, sortOrder, filterBy, filter)
     res.send(userList)
   } catch (err) {
-    checkAndReportError('Error retrieving user list', res, err, debug)
+    UTIL.checkAndReportError('Error retrieving user list', res, err, debug)
   }
 })
 
@@ -91,7 +113,7 @@ router.post('/update', authenticateToken, async (req, res) => {
     await DBUser.updateUser(userID, { firstName, lastName, teams, meta: userMeta })
     res.send({ success: true })
   } catch (err) {
-    checkAndReportError('Error updating user', res, err, debug)
+    UTIL.checkAndReportError('Error updating user', res, err, debug)
   }
 })
 
@@ -114,7 +136,7 @@ router.post('/promote', authenticateToken, async (req, res) => {
     await DBUser.updateUser(userID, { userType: 'admin' })
     res.send({ success: true })
   } catch (err) {
-    checkAndReportError('Error promoting user', res, err, debug)
+    UTIL.checkAndReportError('Error promoting user', res, err, debug)
   }
 })
 
@@ -130,7 +152,7 @@ router.get('/:id', async (req, res) => {
     const userDetails = await DBUser.getUserDetails(userID)
     res.send(userDetails)
   } catch (err) {
-    checkAndReportError('Error retrieving user details', res, err, debug)
+    UTIL.checkAndReportError('Error retrieving user details', res, err, debug)
   }
 })
 

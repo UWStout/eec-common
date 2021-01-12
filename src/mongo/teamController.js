@@ -7,6 +7,14 @@ import { ObjectID } from 'mongodb'
 import Debug from 'debug'
 const debug = Debug('server:mongo')
 
+// Don't allow more than this many to be returned
+const MAX_PER_PAGE = 250
+
+// Function to escape special regex characters
+function escapeRegExp (text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+}
+
 /**
  * Retrieve details for the given team
  * @param {number} teamID ID of the team to lookup
@@ -110,73 +118,59 @@ export function removeOrgUnit (unitID) {
 }
 
 /**
- * Get list of teams (ids, units, and names only)
- * @param {string} unitID Optional team unit to filter by (may be combined with user)
- * @param {string} userID Optional user to filter by (may be combined with team unit)
- * @param {number} page The current page of results (defaults to 1)
- * @param {number} perPage The number of results per page (defaults to 25)
- * @return {[object]} Array of objects containing team ids, names, and unit names that
- *                    match the given filters
+ * List teams in the database with pagination, sorting, and filtering
+ * @param {bool} IDsOnly Include only IDs in the results
+ * @param {number} perPage Number of users per page (defaults to 25)
+ * @param {number} page Page of results to skip to (defaults to 1)
+ * @param {string} sortBy name of field to sort by (defaults to '')
+ * @param {number} sortOrder Ascending (1) or descending (-1) sort (defaults to 1)
+ * @param {string} filterBy name of field to filter on (defaults to '')
+ * @param {string} filter String to search for when filtering (defaults to '')
+ * @return {Promise} Resolves with data if successful, rejects on error
  */
-export function listTeams (unitID, userID, page = 1, perPage = 25) {
-  // Which ID was defined
-  if (unitID) {
-    return listTeamsInUnit(unitID, page, perPage)
-  } else if (userID) {
-    return listTeamsForUser(userID, page, perPage)
-  }
-
-  // Neither ID was defined
-  const err = new Error('Can\'t list teams. At least one of the IDs must be defined.')
-  debug(err)
-  return Promise.reject(err)
-}
-
-/**
- * Return a list of all the teams under a given unit
- * @param {string} unitID Hashed ObjectID for the unit to list
- * @param {number} page The current page of results (defaults to 1)
- * @param {number} perPage The number of results per page (defaults to 25)
- */
-export function listTeamsInUnit (unitID, page = 1, perPage = 25) {
+export function listTeams (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '') {
+  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  const project = {}
+  if (IDsOnly) { project._id = 1 }
   return new Promise((resolve, reject) => {
-    const DBHandle = retrieveDBHandle('karunaData')
+    // Check max per-page
+    if (perPage > MAX_PER_PAGE) {
+      return reject(new Error('Cannot request more than 250 results'))
+    }
+
+    // Possible filter query
+    const query = {}
+    if (filterBy && filter && filter.length >= 3) {
+      const regExStr = escapeRegExp(filter)
+      query[filterBy] = new RegExp(`.*${regExStr}.*`, 'i')
+    }
+
+    // Possible sort options
+    const options = {}
+    if (sortBy) {
+      options.sort = {}
+      options.sort[sortBy] = sortOrder
+    }
+
+    // Compute pagination values
+    const skip = (page - 1) * perPage
+    const limit = perPage
+
+    // Issue query
     DBHandle.collection('Teams')
-      .find({ unitID: new ObjectID(unitID) })
-      .skip((page - 1) * perPage)
-      .limit(perPage)
-      .toArray((err, result) => {
+      // Empty query gets all items, skip & limit pick a page, project will limit to just IDs
+      .find(query, options).skip(skip).limit(limit).project(project)
+      .toArray((err, resultsArray) => {
+        // Something went wrong
         if (err) {
-          debug('Error while retrieving list of teams in unit')
+          debug('Failed to retrieve user list')
           debug(err)
           return reject(err)
         }
 
-        return resolve(result)
+        // Return the array of results
+        return resolve(resultsArray)
       })
-  })
-}
-
-/**
- * Return a list of all the teams a particular user belongs to
- * @param {string} userID Hashed ObjectID for the user to list
- * @param {number} page The current page of results (defaults to 1)
- * @param {number} perPage The number of results per page (defaults to 25)
- */
-export function listTeamsForUser (userID, page = 1, perPage = 25) {
-  return new Promise((resolve, reject) => {
-    // Get database handle
-    const DBHandle = retrieveDBHandle('karunaData')
-
-    // Lookup the user
-    const userPromise = DBHandle
-      .collection('Users')
-      .findOne({ _id: new ObjectID(userID) })
-      .catch((err) => { return reject(err) })
-
-    userPromise.then((result) => {
-      return resolve(result.value.teams)
-    })
   })
 }
 
