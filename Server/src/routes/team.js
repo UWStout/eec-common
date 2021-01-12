@@ -7,6 +7,9 @@ import { authenticateToken } from './auth.js'
 // Database controller
 import { getDBTeamController } from './dbSelector.js'
 
+// Utility functions
+import * as UTIL from './utils.js'
+
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('server:user')
@@ -18,21 +21,37 @@ const DBTeam = getDBTeamController()
 const router = new Express.Router()
 
 // ******* API routes **************
-// List all teamIDs in the database
+// List all teams in the database
 router.get('/list', authenticateToken, async (req, res) => {
   // Admin users only
   if (req.user.userType !== 'admin') {
     return res.status(403).send({ error: true, message: 'not authorized' })
   }
 
+  // Try to get the pagination query string values
+  const [perPage, page] = UTIL.getPaginationValues(req.query)
+  if (isNaN(perPage) || isNaN(page)) {
+    return res.status(400).send({ error: true, message: 'Invalid parameter' })
+  }
+
+  // Try to get sorting query string values
+  const [sortBy, sortOrder] = UTIL.getSortingValues(req.query)
+
+  // Try to get filtering query string values
+  const [filterBy, filter] = UTIL.getFilteringValues(req.query)
+
+  // Sanitize any 'false-ish' values to be 'undefined'
+  if (req.query.fullInfo === false || req.query.fullInfo === 'false') {
+    req.query.fullInfo = undefined
+  }
+
   // Attempt to retrieve user list
+  const IDsOnly = (req.query.fullInfo === undefined)
   try {
-    const teamList = await DBTeam.listTeams(req.query.perPage, req.query.page)
-    res.send(teamList)
+    const userList = await DBTeam.listTeams(IDsOnly, perPage, page, sortBy, sortOrder, filterBy, filter)
+    res.send(userList)
   } catch (err) {
-    debug('Error retrieving team list')
-    debug(err)
-    res.status(500).send({ error: true, message: 'error retrieving team list' })
+    UTIL.checkAndReportError('Error retrieving user list', res, err, debug)
   }
 })
 

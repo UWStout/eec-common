@@ -1,12 +1,9 @@
 /* global axios */
 
-export function retrieveUsers (page, perPage) {
+export function retrieveUserCount () {
   return new Promise((resolve, reject) => {
-    axios.get(`../data/user/list?fullInfo=true&perPage=${perPage}&page=${page}`)
-      .then((response) => {
-        console.log(response)
-        return resolve(response.data)
-      })
+    axios.get('../data/user/count')
+      .then((response) => { return resolve(response.data) })
       .catch((error) => {
         console.log(error)
         return reject(error)
@@ -14,14 +11,24 @@ export function retrieveUsers (page, perPage) {
   })
 }
 
-export function retrieveTeams (page, perPage) {
-  // TODO: This endpoint doesn't exist yet, will always fail
+export function retrieveList (which, page, perPage, sortBy, sortOrder, filterBy, filter) {
   return new Promise((resolve, reject) => {
-    axios.get(`../data/team/list?fullInfo=true&perPage=${perPage}&page=${page}`)
-      .then((response) => {
-        console.log(response)
-        return resolve(response.data)
-      })
+    // Validate 'which' type
+    if (which !== 'user' && which !== 'team') {
+      return reject(new Error(`Invalid list type "${which}"`))
+    }
+
+    // Build URL with query parameters
+    let URL = `../data/${which}/list?fullInfo=true`
+    URL += `&perPage=${perPage}&page=${page}`
+    URL += (sortBy ? `&sortBy=${sortBy}` : '')
+    URL += (sortOrder ? `&sortOrder=${sortOrder}` : '')
+    URL += (filterBy ? `&filterBy=${filterBy}` : '')
+    URL += (filter ? `&filter=${filter}` : '')
+
+    // Start the GET request
+    axios.get(URL)
+      .then((response) => { return resolve(response.data) })
       .catch((error) => {
         console.log(error)
         return reject(error)
