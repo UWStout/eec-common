@@ -48,17 +48,26 @@ export function getOrgUnitDetails (unitID) {
  */
 export function createTeam (teamName, unitID, userID) {
   const DBHandle = retrieveDBHandle('karunaData')
+  let insertThis
+
+  if (!unitID) {
+    insertThis = { teamName }
+  } else insertThis = { teamName, unitID: new ObjectID(unitID) }
 
   return new Promise((resolve, reject) => {
     DBHandle
       .collection('Teams')
-      .insertOne({ teamName, unitID: new ObjectID(unitID) }, (err, result) => {
+      .insertOne(insertThis, (err, result) => {
         if (err) {
           debug('Failed to create team')
           debug(err)
           return reject(err)
         } else {
-          if (userID) { addToTeam(userID) }
+          if (userID) {
+            debug('adding ' + userID + ' to team')
+            addToTeam(userID)
+          }
+          debug('Creating team')
           return resolve(result)
         }
       })
@@ -74,9 +83,15 @@ export function createTeam (teamName, unitID, userID) {
  */
 export function createOrgUnit (unitName, description, adminID) {
   const DBHandle = retrieveDBHandle('karunaData')
+  let insertThis
+  if (!adminID && !description) {
+    insertThis = { unitName }
+  } else if (!adminID) {
+    insertThis = { unitName, description }
+  } else insertThis = { unitName, description, adminID: new ObjectID(adminID) }
   return DBHandle
     .collection('Units')
-    .insertOne({ unitName, description, adminID: new ObjectID(adminID) })
+    .insertOne(insertThis)
 }
 
 /**

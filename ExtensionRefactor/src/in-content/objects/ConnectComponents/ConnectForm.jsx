@@ -30,18 +30,22 @@ export default function ConnectForm (props) {
           </Grid>
           <Grid item>
             <div>
-              <span>
-                <Emoji symbol='🧑‍🤝‍🧑' label='People Holding Hands' />
-                My Collaborations
-              </span>
+              <Button size='small'>
+                <span>
+                  <Emoji symbol='🧑‍🤝‍🧑' label='People Holding Hands' />
+                  My Collaborations
+                </span>
+              </Button>
             </div>
           </Grid>
           <Grid item>
             <div>
-              <span>
-                <Emoji symbol='⏳' label='Hourglass Not Done' />
-                History
-              </span>
+              <Button size='small'>
+                <span>
+                  <Emoji symbol='⏳' label='Hourglass Not Done' />
+                  History
+                </span>
+              </Button>
             </div>
           </Grid>
           <Grid item>
