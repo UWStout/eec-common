@@ -171,7 +171,7 @@ export function listTeamsForUser (userID) {
 /**
  * Add a user to a given team
  * @param {number} userID The id of the user to add
- * @param {number} teamID The id of the team to add them too
+ * @param {number} teamID The id of the team to add them to
  * @return {Promise} Resolves with 'true' on success, rejects on error
  */
 export function addToTeam (userID, teamID) {
