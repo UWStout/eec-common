@@ -27,6 +27,7 @@ function escapeRegExp (text) {
  *        d) (optional) $project with the projection object (if not null)
  *
  * @param {string} collectionName Name of the collection in the database to query
+ * @param {object} lookup Optional $lookup stage to apply before projection (null skips this, default)
  * @param {object} projection Projection object to apply as a final stage (null skips projection, default)
  * @param {number} perPage Number of users per page (defaults to 25)
  * @param {number} page Page of results to skip to (defaults to 1)
@@ -36,8 +37,8 @@ function escapeRegExp (text) {
  * @param {string} filter String to search for when filtering (defaults to '')
  * @return {Promise} Resolves with facets { total, data } if successful, rejects on error
  */
-export function listCollection (collectionName, projection = null, perPage = 25, page = 1,
-  sortBy = '', sortOrder = 1, filterBy = '', filter = '') {
+export function listCollection (collectionName, lookup = null, projection = null,
+  perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '') {
   return new Promise((resolve, reject) => {
     // Check max per-page
     if (perPage > MAX_PER_PAGE) {
@@ -60,10 +61,9 @@ export function listCollection (collectionName, projection = null, perPage = 25,
     dataPipeline.push({ $skip: (page - 1) * perPage })
     dataPipeline.push({ $limit: perPage })
 
-    // Optional projection
-    if (projection) {
-      dataPipeline.push({ $project: projection })
-    }
+    // Optional lookup (aka join) and projection stages
+    if (lookup) { dataPipeline.push(lookup) }
+    if (projection) { dataPipeline.push({ $project: projection }) }
 
     // Optional Filtering before splitting pipeline
     const rootPipeline = []

@@ -134,9 +134,28 @@ export function removeOrgUnit (unitID) {
  * @param {bool} IDsOnly Include only IDs in the results
  */
 export function listTeams (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '') {
+  // Build projection object if needed
   let project = null
-  if (IDsOnly) { project = { _id: 1 } }
-  return listCollection('Teams', project, perPage, page, sortBy, sortOrder, filterBy, filter)
+  let lookup = null
+  if (IDsOnly) {
+    project = { _id: 1 }
+  } else {
+    // Build lookup object to merge 'unit' into results
+    lookup = {
+      $lookup: {
+        from: 'Units',
+        localField: 'orgId',
+        foreignField: '_id',
+        as: 'unit'
+      }
+    }
+
+    // Project out the orgID
+    project = { orgId: 0 }
+  }
+
+  // Execute collection list query
+  return listCollection('Teams', lookup, project, perPage, page, sortBy, sortOrder, filterBy, filter)
 }
 
 /**
