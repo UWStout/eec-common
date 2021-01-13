@@ -1,16 +1,5 @@
 /* global axios */
 
-export function retrieveUserCount () {
-  return new Promise((resolve, reject) => {
-    axios.get('../data/user/count')
-      .then((response) => { return resolve(response.data) })
-      .catch((error) => {
-        console.log(error)
-        return reject(error)
-      })
-  })
-}
-
 export function retrieveList (which, page, perPage, sortBy, sortOrder, filterBy, filter) {
   return new Promise((resolve, reject) => {
     // Validate 'which' type
@@ -28,8 +17,12 @@ export function retrieveList (which, page, perPage, sortBy, sortOrder, filterBy,
 
     // Start the GET request
     axios.get(URL)
-      .then((response) => { return resolve(response.data) })
-      .catch((error) => {
+      .then((response) => {
+        return resolve({
+          count: response.data.total[0].filteredCount,
+          data: response.data.data
+        })
+      }).catch((error) => {
         console.log(error)
         return reject(error)
       })
