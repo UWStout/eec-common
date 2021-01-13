@@ -24,7 +24,8 @@ function escapeRegExp (text) {
  *        a) (optional) $sort with sortBy and sortOrder
  *        b) $skip using page and perPage
  *        c) $limit using perPage
- *        d) (optional) $project with the projection object (if not null)
+ *        d) (optional) $lookup data from another collection (if lookup is not null)
+ *        e) (optional) $project with the projection object (if not null)
  *
  * @param {string} collectionName Name of the collection in the database to query
  * @param {object} lookup Optional $lookup stage to apply before projection (null skips this, default)
