@@ -39,11 +39,11 @@ function rebuildPage (page, perPage, sortBy, sortOrder, filterBy, filter) {
   return new Promise((resolve, reject) => {
     // Retrieve the new user data
     retrieveList('team', page, perPage, sortBy, sortOrder, filterBy, filter)
-      .then((values) => {
+      .then((response) => {
         // Update global values
         gPage = page
         gPerPage = perPage
-        gTotalTeams = 1000
+        gTotalTeams = response.count
         gPageCount = Math.ceil(gTotalTeams / gPerPage)
 
         gSortBy = sortBy
@@ -53,7 +53,7 @@ function rebuildPage (page, perPage, sortBy, sortOrder, filterBy, filter) {
         gFilter = filter
 
         // Re-make the central data list
-        gTeamData = values
+        gTeamData = response.data
         const dataList = makeListGroup(gTeamData, makeTeamListItem)
         $('#teamList').empty().append(dataList)
 
