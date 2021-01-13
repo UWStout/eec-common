@@ -52,6 +52,7 @@
     "@fortawesome/fontawesome-free": "^5.15.1",
     "@juggle/resize-observer": "^3.2.0",
     "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
     "@material-ui/pickers": "^3.2.10",
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "animate.css": "^4.1.1",
