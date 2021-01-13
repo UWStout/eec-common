@@ -93,7 +93,8 @@ const router = new Express.Router()
 // 3. test authController createUser
 // also tested in auth.js with https://localhost:3000/auth/register
 
-// 4. test teamController getTeamList
+// 4. test teamController listTeams
+// TO-DO: BROKEN
 // also tested within team.js with https://localhost:3000/data/team/list
 
 // 5. test teamController createTeam
