@@ -3,8 +3,8 @@
 export function makeListGroup (items, makeItemCallback) {
   // Build list group and append all items
   const listGroupElem = $('<div>').addClass('list-group')
-  items.forEach((item) => {
-    listGroupElem.append(makeItemCallback(item))
+  items.forEach((item, i) => {
+    listGroupElem.append(makeItemCallback(item, i))
   })
 
   // Build outer grid column, append, and return
@@ -13,7 +13,7 @@ export function makeListGroup (items, makeItemCallback) {
   return outerElem
 }
 
-export function makeUserListItem (user) {
+export function makeUserListItem (user, key) {
   // Build text elements
   const nameElem = $('<h5>').addClass('mb-1').text(`${user.lastName}, ${user.firstName} (${user.email})`)
   const idElem = $('<small>').text(`${user._id}`)
@@ -23,22 +23,25 @@ export function makeUserListItem (user) {
   innerDiv.append(nameElem, idElem)
 
   // Outer list-group-item a tag
-  const outerElem = $('<a>').addClass('list-group-item list-group-item-action').attr('href', '#')
+  const outerElem = $('<a>').addClass('list-group-item list-group-item-action userEditButton').attr('href', '#')
+  outerElem.attr('data-index', key)
   outerElem.append(innerDiv)
   return outerElem
 }
 
-export function makeTeamListItem (team) {
+export function makeTeamListItem (team, key) {
   // Build text elements
-  const nameElem = $('<h5>').addClass('mb-1').text(`${team.name} (${team._id})`)
-  const idElem = $('<small>').text(`${team.unit.name} (${team.unit._id})`)
+  const nameElem = $('<h5>').addClass('mb-1')
+  nameElem.text(`${team.name}${team.orgId ? ' (in org ' + team.orgId + ')' : ''}`)
+  const idElem = $('<small>').text(`(${team._id})`)
 
   // Inner formatting div
   const innerDiv = $('<div>').addClass('d-flex w-100 justify-content-between')
   innerDiv.append(nameElem, idElem)
 
   // Outer list-group-item a tag
-  const outerElem = $('<a>').addClass('list-group-item list-group-item-action').attr('href', '#')
+  const outerElem = $('<a>').addClass('list-group-item list-group-item-action teamEditButton').attr('href', '#')
+  outerElem.attr('data-index', key)
   outerElem.append(innerDiv)
   return outerElem
 }
