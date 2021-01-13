@@ -27,7 +27,7 @@ router.get('/list', authenticateToken, async (req, res) => {
 
   // Attempt to retrieve user list
   try {
-    const teamList = DBTeam.getTeamList(req.query.perPage, req.query.page)
+    const teamList = DBTeam.listTeams(req.query.perPage, req.query.page)
     req.res(teamList)
   } catch (err) {
     debug('Error retrieving team list')
