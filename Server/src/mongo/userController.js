@@ -81,9 +81,9 @@ export function listUsers (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
 }
 
 /**
- * Drop a user from the database
+ * Update a user entry in the database with new data
  * @param {number} userID ID of the user to update
- * @param {Object} newData New data for the user document
+ * @param {Object} newData New data for the user document (will be merged with existing document)
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
 export function updateUser (userID, newData) {
@@ -94,7 +94,11 @@ export function updateUser (userID, newData) {
         { _id: new ObjectID(userID) },
         { $set: { ...newData } },
         (err, result) => {
-          if (err) { return reject(err) }
+          if (err) {
+            debug('Failed to update user')
+            debug(err)
+            return reject(err)
+          }
           resolve()
         }
       )
