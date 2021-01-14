@@ -22,12 +22,12 @@ export function makeSocket (serverListener) {
   mySocket.on('connection', (socket) => {
     // Wizard specific messages
     socket.on('wizardSession', socketWizardSession.bind(socket))
-    socket.on('wizardMessage', socketWizardMessage.bind(socket))
+    socket.on('wizardMessage', socketWizardMessage.bind(socket)) // <-- LOG TO DATABASE
 
     // Client specific messages
     socket.on('clientSession', socketClientSession.bind(socket))
     socket.on('messageUpdate', socketMessageUpdate.bind(socket))
-    socket.on('messageSend', socketMessageSend.bind(socket))
+    socket.on('messageSend', socketMessageSend.bind(socket)) // <-- LOG TO DATABASE
 
     // General events
     socket.on('disconnect', socketDisconnect.bind(socket))
@@ -119,6 +119,8 @@ function socketWizardSession (wizardInfo) {
 
 // Broadcast a message from a wizard to a specific client
 function socketWizardMessage (messageInfo) {
+  // TODO: Insert 'messageInfo' into database
+  // TODO: Append a timestamp - (look at moment.js)
   const destID = clientSocketLookup[messageInfo.clientEmail]
   if (destID) {
     debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
@@ -151,6 +153,9 @@ function socketMessageSend (message) {
     debug(`[WS:${this.id}] sending message before login`)
     return
   }
+
+  // TODO: Insert 'message' into database
+  // TODO: Append a timestamp
 
   debug(`[WS:${this.id}] message received from ${message.context}`)
   mySocket.to('wizards').emit('clientSend', {
