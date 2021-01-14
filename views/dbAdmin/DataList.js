@@ -81,11 +81,16 @@ export default class DataList extends EventEmitter3 {
       // Cache returned data for local use
       this.totalItems = response.count
       this.data = response.data
+
+      // Update total page count to match updated total items
+      this.pageCount = Math.ceil(this.totalItems / this.perPage)
+
       this.emit('updateSuccess')
     } catch (err) {
       // Handle error
-      console.log('Error retrieving list data:')
-      console.log(err)
+      window.alert('An error ocurred while retrieving data. See the console for details.')
+      console.error('Error retrieving list data:')
+      console.error(err)
       this.emit('updateFailed')
     }
   }
@@ -125,15 +130,14 @@ export default class DataList extends EventEmitter3 {
     }
 
     // Rebuild the nav bars
-    const pageCount = Math.ceil(this.totalItems / this.perPage)
     if (this.upperNavElem) {
-      const upperPageNav = makePageNavBar(pageCount, this.page, 'upper')
+      const upperPageNav = makePageNavBar(this.pageCount, this.page, 'upper')
       const upperFilterSortBar = makeFilterSortBar(this.sortFilterOptions, 'upper')
       this.upperNavElem.empty().append([...upperPageNav, ...upperFilterSortBar])
     }
 
     if (this.lowerNavElem) {
-      const lowerPageNav = makePageNavBar(pageCount, this.page, 'lower')
+      const lowerPageNav = makePageNavBar(this.pageCount, this.page, 'lower')
       const lowerFilterSortBar = makeFilterSortBar(this.sortFilterOptions, 'lower')
       this.lowerNavElem.empty().append([...lowerPageNav, ...lowerFilterSortBar])
     }
@@ -210,7 +214,6 @@ export default class DataList extends EventEmitter3 {
       e.preventDefault()
       self.filterByText = $(e.currentTarget).text()
       self.filterBy = $(e.currentTarget).data('value')
-      console.log(`Filter By Update: ${self.filterByText}/${self.filterBy}`)
       self.emit('update')
     })
 
@@ -229,7 +232,6 @@ export default class DataList extends EventEmitter3 {
     $('.filterTextInput').on('change', (e) => {
       e.preventDefault()
       self.filter = $(e.currentTarget).val()
-      console.log(`Filtering: ${self.filter}`)
       self.emit('update')
     })
   }
