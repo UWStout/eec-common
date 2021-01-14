@@ -100,7 +100,7 @@ export function removeTeam (teamID) {
     DBHandle
       .collection('Teams')
       .findOneAndDelete({ _id: new ObjectID(teamID) })
-      .then(result => { resolve(true) })
+      .then(() => { resolve(true) })
       .catch(() => { resolve(false) })
   })
 }
@@ -187,8 +187,8 @@ export function addToTeam (userID, teamID) {
     DBHandle.collection('Users')
       .update(
         { _id: new ObjectID(userID) },
-        { $push: { $teams: new ObjectID(teamID) } }
-      ).then((result) => { return resolve(result) })
+        { $push: { teams: new ObjectID(teamID) } }
+      ).then(() => { return resolve('true') })
       .catch((err) => { return reject(err) })
   })
 }
