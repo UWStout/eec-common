@@ -17,18 +17,19 @@ function escapeRegExp (text) {
  * Aggregation pipeline is used.
  *
  * The query pipeline has the following form:
- *    1 (optional) $match with filterBy and filter
- *    2 $facet to split into 'total' and 'data'
+ *    1 (optional) lookup stages (intended for $lookup, only if lookup is not null)
+ *    2 (optional) $match with filterBy and filter
+ *    3 $facet to split into 'total' and 'data'
  *      - total branch with $count of filtered entries
  *      - data branch to sort and paginate:
  *        a) (optional) $sort with sortBy and sortOrder
  *        b) $skip using page and perPage
  *        c) $limit using perPage
- *        d) (optional) $lookup data from another collection (if lookup is not null)
- *        e) (optional) $project with the projection object (if not null)
+ *        d) (optional) $project with the projection object (if not null)
  *
  * @param {string} collectionName Name of the collection in the database to query
- * @param {object} lookup Optional $lookup stage to apply before projection (null skips this, default)
+ * @param {Object|Array(Object)} lookup Optional stage or array of stages to apply
+ *                                      before filter (null skips this, default)
  * @param {object} projection Projection object to apply as a final stage (null skips projection, default)
  * @param {number} perPage Number of users per page (defaults to 25)
  * @param {number} page Page of results to skip to (defaults to 1)
@@ -62,12 +63,18 @@ export function listCollection (collectionName, lookup = null, projection = null
     dataPipeline.push({ $skip: (page - 1) * perPage })
     dataPipeline.push({ $limit: perPage })
 
-    // Optional lookup (aka join) and projection stages
-    if (lookup) { dataPipeline.push(lookup) }
-    if (projection) { dataPipeline.push({ $project: projection }) }
+    // Optional projection stages
+    if (projection) {
+      dataPipeline.push({ $project: projection })
+    }
 
-    // Optional Filtering before splitting pipeline
+    // Optional lookup and Filtering before splitting pipeline
     const rootPipeline = []
+    if (lookup) {
+      if (!Array.isArray(lookup)) { lookup = [lookup] }
+      lookup.forEach((stage) => { rootPipeline.push(stage) })
+    }
+
     if (filterBy && filter && filter.length >= 3) {
       // Build proper filter query
       const query = {}
@@ -88,7 +95,7 @@ export function listCollection (collectionName, lookup = null, projection = null
     })
 
     // Perform the full query
-    const DBHandle = retrieveDBHandle('karunaData', true, true)
+    const DBHandle = retrieveDBHandle('karunaData')
     DBHandle.collection(collectionName).aggregate(rootPipeline, (err, cursor) => {
       // Check for pipeline error
       if (err) {
