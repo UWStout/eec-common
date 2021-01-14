@@ -32,7 +32,7 @@ export function makeUserListItem (user, key) {
 export function makeTeamListItem (team, key) {
   // Build text elements
   const nameElem = $('<h5>').addClass('mb-1')
-  nameElem.text(`${team.name}${team.unit[0] ? ' (in org ' + team.unit[0].name + ')' : ''}`)
+  nameElem.text(`${team.name}${team.unitName ? ' (in org ' + team.unitName + ')' : ''}`)
   const idElem = $('<small>').text(`(${team._id})`)
 
   // Inner formatting div
