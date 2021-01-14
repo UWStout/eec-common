@@ -62,8 +62,24 @@ export function emailExists (email) {
  */
 export function listUsers (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '') {
   let project = null
-  if (IDsOnly) { project = { _id: 1 } }
-  return listCollection('Users', null, project, perPage, page, sortBy, sortOrder, filterBy, filter)
+  let lookup = null
+  if (IDsOnly) {
+    project = { _id: 1 }
+  } else {
+    // Build lookup object to merge 'unit' into results
+    lookup = {
+      $lookup: {
+        from: 'Teams',
+        localField: 'teams',
+        foreignField: '_id',
+        as: 'teams'
+      }
+    }
+    // Project out the orgID
+    // project = { orgId: 0 }
+  }
+
+  return listCollection('Users', lookup, project, perPage, page, sortBy, sortOrder, filterBy, filter)
 }
 
 /**
