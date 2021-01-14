@@ -14,7 +14,7 @@ export default function ConnectComponent (props) {
   return (
     <React.Fragment>
       <Button onClick={handleClick}>K</Button>
-      <ConnectForm opened={formOpen} />
+      <ConnectForm opened={formOpen} handleClose={handleClick}/>
     </React.Fragment>
   )
 }

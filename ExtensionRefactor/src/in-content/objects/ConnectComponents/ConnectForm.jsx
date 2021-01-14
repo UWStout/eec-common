@@ -1,13 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 
-import { Slide, Paper, Grid, Button } from '@material-ui/core'
+import { Slide, Paper, Grid, Button, IconButton } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
 import MoodSelect from './MoodSelector.jsx'
 import Emoji from './Emoji.jsx'
-import CurrencySelect from './CurrencySelect.jsx'
-import DateTimeComponent from './DateTimeComponent.jsx'
-import DialogSlide from './DialogSlide.jsx'
+import History from './History.jsx'
 
 const useStyles = makeStyles((theme) => ({
   paperRoot: {
@@ -17,13 +16,27 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ConnectForm (props) {
   const classes = useStyles()
+  const [historyOpen, updateHistoryOpen] = useState(false)
+
+  const handleHistoryClick = (e) => {
+    const newHistoryOpen = !historyOpen
+    updateHistoryOpen(newHistoryOpen)
+  }
 
   return (
+    <div>
     <Slide direction="left" in={props.opened} mountOnEnter unmountOnExit>
       <Paper elevation={3} className={classes.paperRoot}>
         <Grid container spacing={2}>
           <Grid item>
-            <div>Karuna Connect</div>
+            <div>
+              <span>
+                <IconButton size='small' onClick={props.handleClose}>
+                  <CloseIcon />
+                </IconButton>
+                Karuna Connect
+              </span>
+            </div>
           </Grid>
           <Grid item>
             <MoodSelect />
@@ -40,7 +53,10 @@ export default function ConnectForm (props) {
           </Grid>
           <Grid item>
             <div>
-              <Button size='small'>
+              <Button size='small' onClick={() => {
+                handleHistoryClick()
+                props.handleClose()
+              }}>
                 <span>
                   <Emoji symbol='⏳' label='Hourglass Not Done' />
                   History
@@ -61,5 +77,8 @@ export default function ConnectForm (props) {
         </Grid>
       </Paper>
     </Slide>
+    
+    <History opened={historyOpen} handleClose={handleHistoryClick}/>
+    </div>
   )
 }
