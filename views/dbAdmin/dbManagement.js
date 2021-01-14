@@ -18,6 +18,12 @@ export function retrieveList (which, page, perPage, sortBy, sortOrder, filterBy,
     // Start the GET request
     axios.get(URL)
       .then((response) => {
+        // Deal with an empty data set
+        if (response.data.total.length < 1) {
+          return resolve({ count: 0, data: [] })
+        }
+
+        // Resolve the promise normally
         return resolve({
           count: response.data.total[0].filteredCount,
           data: response.data.data
