@@ -3,7 +3,7 @@
 export function retrieveList (which, page, perPage, sortBy, sortOrder, filterBy, filter) {
   return new Promise((resolve, reject) => {
     // Validate 'which' type
-    if (which !== 'user' && which !== 'team') {
+    if (which !== 'user' && which !== 'team' && which !== 'unit') {
       return reject(new Error(`Invalid list type "${which}"`))
     }
 
