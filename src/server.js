@@ -31,6 +31,9 @@ import userRouter from './routes/user.js'
 // Custom router for user team API
 import teamRouter from './routes/team.js'
 
+// Custom router for team org-unit API
+import orgUnitRouter from './routes/orgUnit.js'
+
 // custom router for testing purposes
 import testRouter from './routes/test.js'
 
@@ -92,6 +95,9 @@ app.use(`${SERVER_ROOT}data/user`, userRouter)
 
 // All team data routes are under '/data/team'
 app.use(`${SERVER_ROOT}data/team`, teamRouter)
+
+// All org-unit data routes are under '/data/unit'
+app.use(`${SERVER_ROOT}data/unit`, orgUnitRouter)
 
 // All testing routes are under '/test/'
 app.use(`${SERVER_ROOT}test`, testRouter)

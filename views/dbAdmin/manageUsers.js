@@ -28,7 +28,7 @@ $(document).ready(() => {
 
 function showUserEditModal (index, userObject) {
   // Set modal title
-  $('#modalTitle').text(`Editing '${userObject.firstName} ${userObject.lastName}'`)
+  $('#userEditModalTitle').text(`Editing '${userObject.firstName} ${userObject.lastName}'`)
 
   // Customize the form
   $('#firstNameInput').val(userObject.firstName)

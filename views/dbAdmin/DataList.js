@@ -92,7 +92,29 @@ export default class DataList extends EventEmitter3 {
 
   // Rebuild the central table
   rebuildTable () {
-    console.error('Abstract "DataList.rebuildTable()" called')
+    // Do nothing without a dataListElem
+    if (!this.dataListElem) { return }
+
+    // Remake the table
+    const dataList = this.makeListGroup()
+    this.dataListElem.empty().append(dataList)
+  }
+
+  makeListGroup () {
+    // Build list group and append all items
+    const listGroupElem = $('<div>').addClass('list-group')
+    this.data.forEach((item, i) => {
+      listGroupElem.append(this.makeListItem(item, i))
+    })
+
+    // Build outer grid column, append, and return
+    const outerElem = $('<div>').addClass('col-12')
+    outerElem.append(listGroupElem)
+    return outerElem
+  }
+
+  makeListItem (item, index) {
+    console.error('ERROR: Abstract function DataList.makeListItem() called')
   }
 
   // Rebuild the navigation bars

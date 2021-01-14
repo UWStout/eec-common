@@ -1,6 +1,7 @@
+/* global $ */
+
 // Import parent and list-group building methods
 import DataList from './DataList.js'
-import { makeListGroup, makeTeamListItem } from './listGroupItems.js'
 
 export default class TeamDataList extends DataList {
   constructor (sortFilterOptions, upperNavElem, lowerNavElem, dataListElem) {
@@ -9,13 +10,20 @@ export default class TeamDataList extends DataList {
     this.editButtonClassName = 'teamEditButton'
   }
 
-  // Rebuild the central table
-  rebuildTable () {
-    // Do nothing without a dataListElem
-    if (!this.dataListElem) { return }
+  makeListItem (team, key) {
+    // Build text elements
+    const nameElem = $('<h5>').addClass('mb-1')
+    nameElem.text(`${team.name}${team.unitName ? ' (in org ' + team.unitName + ')' : ''}`)
+    const idElem = $('<small>').text(`(${team._id})`)
 
-    // Remake the table
-    const dataList = makeListGroup(this.data, makeTeamListItem)
-    this.dataListElem.empty().append(dataList)
+    // Inner formatting div
+    const innerDiv = $('<div>').addClass('d-flex w-100 justify-content-between')
+    innerDiv.append(nameElem, idElem)
+
+    // Outer list-group-item a tag
+    const outerElem = $('<a>').addClass('list-group-item list-group-item-action teamEditButton').attr('href', '#')
+    outerElem.attr('data-index', key)
+    outerElem.append(innerDiv)
+    return outerElem
   }
 }

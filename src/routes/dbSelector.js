@@ -3,12 +3,14 @@ import * as SQLITE_CONNECT from '../sqlite/connect.js'
 import * as SQLITE_DB_AUTH from '../sqlite/authController.js'
 import * as SQLITE_DB_USER from '../sqlite/userController.js'
 import * as SQLITE_DB_TEAM from '../sqlite/teamController.js'
+// import * as SQLITE_DB_ORG_UNIT from '../sqlite/unitController.js'
 
 // Possible MongoDB controllers
 import * as MONGO_CONNECT from '../mongo/connect.js'
 import * as MONGO_DB_AUTH from '../mongo/authController.js'
 import * as MONGO_DB_USER from '../mongo/userController.js'
 import * as MONGO_DB_TEAM from '../mongo/teamController.js'
+import * as MONGO_DB_ORG_UNIT from '../mongo/unitController.js'
 
 // Debug output
 import Debug from 'debug'
@@ -51,4 +53,9 @@ export function getDBUserController () {
 // Convenience function for the 'team' controller
 export function getDBTeamController () {
   return getController('team', SQLITE_DB_TEAM, MONGO_DB_TEAM)
+}
+
+// Convenience function for the 'team' controller
+export function getDBUnitController () {
+  return getController('unit', null, MONGO_DB_ORG_UNIT)
 }
