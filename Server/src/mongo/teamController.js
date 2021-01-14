@@ -140,18 +140,32 @@ export function listTeams (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
   if (IDsOnly) {
     project = { _id: 1 }
   } else {
-    // Build lookup object to merge 'unit' into results
-    lookup = {
+    // Build lookup pipeline
+    lookup = [{
+      // Join with the matching 'orgId' in the 'Units' collection
       $lookup: {
         from: 'Units',
-        localField: 'orgId',
-        foreignField: '_id',
+        let: { unitID: '$orgId' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$_id', '$$unitID'] } } },
+          { $project: { _id: 0, orgId: '$_id', unitName: '$name' } }
+        ],
         as: 'unit'
       }
-    }
+    }, {
+      // Merge the fields of the Unit object into the root document
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: [
+            { $arrayElemAt: ['$unit', 0] },
+            '$$ROOT'
+          ]
+        }
+      }
+    }]
 
-    // Project out the orgID
-    project = { orgId: 0 }
+    // Remove the unit object that was merged in
+    project = { unit: 0 }
   }
 
   // Execute collection list query

@@ -15,7 +15,7 @@ const debug = Debug('server:mongo')
  * @return {Promise} Resolves to the number of users, rejects on error
  */
 export function getUserCount () {
-  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  const DBHandle = retrieveDBHandle('karunaData')
   return DBHandle.collection('Users').estimatedDocumentCount()
 }
 
@@ -25,7 +25,7 @@ export function getUserCount () {
  * @return {Promise} Resolves to an object with all the user data, rejects on error
  */
 export function getUserDetails (userID) {
-  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  const DBHandle = retrieveDBHandle('karunaData')
   return DBHandle
     .collection('Users')
     .findOne({ _id: new ObjectID(userID) }, { projection: { passwordHash: 0 } })
@@ -37,7 +37,7 @@ export function getUserDetails (userID) {
  * @return {Promise} Resolves to the userID or -1 if no user exists
  */
 export function emailExists (email) {
-  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     DBHandle
       .collection('Users')
@@ -73,7 +73,7 @@ export function listUsers (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
 export function updateUser (userID, newData) {
-  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     DBHandle.collection('Users')
       .findOneAndUpdate(
@@ -93,7 +93,7 @@ export function updateUser (userID, newData) {
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
 export function removeUser (userID) {
-  const DBHandle = retrieveDBHandle('karunaData', true, true)
+  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     DBHandle
       .collection('Users')
