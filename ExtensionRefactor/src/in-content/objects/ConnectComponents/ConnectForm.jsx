@@ -17,14 +17,25 @@ const useStyles = makeStyles((theme) => ({
 export default function ConnectForm (props) {
   const classes = useStyles()
   const [historyOpen, updateHistoryOpen] = useState(false)
+  const [collaboration, updateCollaboration] = useState(false)
 
   const handleHistoryClick = (e) => {
     const newHistoryOpen = !historyOpen
     updateHistoryOpen(newHistoryOpen)
   }
 
+  const handleCollaborationClick = (e) => {
+    const collaborateChange = !collaboration
+    updateCollaboration(collaborateChange)
+  }
+
+  const collaborationType = collaboration 
+    ? <Emoji symbol='🧑‍🤝‍🧑' label='People Holding Hands' /> 
+    : <Emoji symbol='🧍' label='Person Standing' />
+
   return (
     <div>
+    <History opened={historyOpen} handleClose={handleHistoryClick}/>
     <Slide direction="left" in={props.opened} mountOnEnter unmountOnExit>
       <Paper elevation={3} className={classes.paperRoot}>
         <Grid container spacing={2}>
@@ -43,25 +54,25 @@ export default function ConnectForm (props) {
           </Grid>
           <Grid item>
             <div>
-              <Button size='small'>
-                <span>
-                  <Emoji symbol='🧑‍🤝‍🧑' label='People Holding Hands' />
-                  My Collaborations
-                </span>
-              </Button>
+              <span>
+                <IconButton size='small' onClick={handleCollaborationClick}>
+                  {collaborationType}
+                </IconButton>
+                Collaborations
+              </span>
             </div>
           </Grid>
           <Grid item>
             <div>
-              <Button size='small' onClick={() => {
-                handleHistoryClick()
-                props.handleClose()
-              }}>
-                <span>
+              <span>
+                <IconButton size='small' onClick={() => {
+                  handleHistoryClick()
+                  props.handleClose()
+                }}>
                   <Emoji symbol='⏳' label='Hourglass Not Done' />
-                  History
-                </span>
-              </Button>
+                </IconButton>
+                History
+              </span>
             </div>
           </Grid>
           <Grid item>
@@ -77,8 +88,6 @@ export default function ConnectForm (props) {
         </Grid>
       </Paper>
     </Slide>
-    
-    <History opened={historyOpen} handleClose={handleHistoryClick}/>
     </div>
   )
 }
