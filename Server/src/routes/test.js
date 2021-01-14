@@ -94,7 +94,6 @@ const router = new Express.Router()
 // also tested in auth.js with https://localhost:3000/auth/register
 
 // 4. test teamController listTeams
-// TO-DO: BROKEN
 // also tested within team.js with https://localhost:3000/data/team/list
 
 // 5. test teamController createTeam
@@ -120,8 +119,7 @@ router.post('/registerTeam', async (req, res) => {
   }
 })
 
-// 6. test teamController's addToTeam function
-// T0-DO: currently broken
+// 6. test teamController's addToTeam function: works!
 router.post('/addToTeam', async (req, res) => {
   // Extract and check required fields
   const { userID, teamID } = req.body
@@ -130,13 +128,13 @@ router.post('/addToTeam', async (req, res) => {
     return
   }
 
-  // TO-DO: Check if already added to the team
+  // TO-DO: Check if already added to the team?
 
   // Attempt to add user to team
   debug(`adding ${userID} to ${teamID}`)
   try {
-    const teamID = await teamDB.addToTeam(userID, teamID)
-    return res.status(200).json({ message: 'success', teamID: teamID })
+    const team = await teamDB.addToTeam(userID, teamID)
+    return res.status(200).json({ message: 'success', teamID: team })
   } catch (error) {
     console.error(`Failed to add ${userID} to team ${teamID}`)
     console.error(error)
@@ -144,7 +142,7 @@ router.post('/addToTeam', async (req, res) => {
   }
 })
 
-// 7. test teamController's createOrgUnit function
+// 7. test teamController's createOrgUnit function: works!
 router.post('/registerOrg', async (req, res) => {
   // Extract and check required fields
   const { unitName, description, adminID } = req.body
@@ -165,8 +163,7 @@ router.post('/registerOrg', async (req, res) => {
   }
 })
 
-// 8. test teamController's removeTeam function
-// T0-DO: currently broken
+// 8. test teamController's removeTeam function: works!
 router.post('/removeTeam', async (req, res) => {
   // Extract and check required fields
   const { teamID } = req.body
@@ -178,8 +175,8 @@ router.post('/removeTeam', async (req, res) => {
   // attempt to remove team
   debug(`Removing Team ${teamID}`)
   try {
-    const teamID = await teamDB.removeTeam(teamID)
-    return res.status(200).json({ message: 'success', teamID: teamID })
+    const team = await teamDB.removeTeam(teamID)
+    return res.status(200).json({ message: 'success', teamID: team })
   } catch (error) {
     console.error(`Failed to remove Team ${teamID}`)
     console.error(error)
@@ -284,6 +281,11 @@ router.post('/removeUser', async (req, res) => {
     return res.status(500).json({ error: true, message: 'Error while removing user' })
   }
 })
+
+// 17. test teamController's getOrgUnitDetails (unitID)
+// TO-DO
+// 18. test teamControllers getTeamDetails (teamID)
+// TO-DO
 
 // Expose the router for use in other files
 export default router
