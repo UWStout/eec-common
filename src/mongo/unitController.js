@@ -65,6 +65,31 @@ export function removeOrgUnit (unitID) {
 }
 
 /**
+ * Update an org unit entry in the database with new data
+ * @param {number} userID ID of the user to update
+ * @param {Object} newData New data for the org unit document (will be merged with existing document)
+ * @return {Promise} Resolves with no data if successful, rejects on error
+ */
+export function updateOrgUnits (userID, newData) {
+  const DBHandle = retrieveDBHandle('karunaData')
+  return new Promise((resolve, reject) => {
+    DBHandle.collection('Units')
+      .findOneAndUpdate(
+        { _id: new ObjectID(userID) },
+        { $set: { ...newData } },
+        (err, result) => {
+          if (err) {
+            debug('Failed to update org unit')
+            debug(err)
+            return reject(err)
+          }
+          resolve()
+        }
+      )
+  })
+}
+
+/**
  * List units in the database with pagination, sorting, and filtering. See listCollection()
  * in 'commonHelper.js' for description of all the parameters and return value
  *

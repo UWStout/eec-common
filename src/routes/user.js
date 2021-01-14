@@ -21,22 +21,7 @@ const DBUser = getDBUserController()
 const router = new Express.Router()
 
 // ******* API routes **************
-router.get('/count', authenticateToken, async (req, res) => {
-  // Admin users only
-  if (req.user.userType !== 'admin') {
-    return res.status(403).send({ error: true, message: 'not authorized' })
-  }
-
-  // Attempt to retrieve user count
-  try {
-    const userCount = await DBUser.getUserCount()
-    res.send({ userCount })
-  } catch (err) {
-    UTIL.checkAndReportError('Error retrieving user count', res, err, debug)
-  }
-})
-
-// List all userIDs in the database
+// List all users in the database
 router.get('/list', authenticateToken, async (req, res) => {
   // Admin users only
   if (req.user.userType !== 'admin') {
@@ -73,7 +58,7 @@ router.get('/list', authenticateToken, async (req, res) => {
 // Update basic user data or metadata (no email, password, or userType)
 router.post('/update', authenticateToken, async (req, res) => {
   // Attempt to retrieve user ID (and check token payload for id)
-  const userID = req.body.id
+  const userID = req.body.id || req.body._id
   if (!userID || !req.user.id) {
     return res.status(400).send({ error: true, message: 'Invalid or missing user ID' })
   }

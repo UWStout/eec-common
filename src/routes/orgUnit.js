@@ -55,5 +55,34 @@ router.get('/list', authenticateToken, async (req, res) => {
   }
 })
 
+// Update team data
+router.post('/update', authenticateToken, async (req, res) => {
+  // Attempt to retrieve user ID (and check token payload for id)
+  const unitID = req.body.id || req.body._id
+  if (!unitID) {
+    return res.status(400).send({ error: true, message: 'Invalid or missing org unit ID' })
+  }
+
+  // Ensure this is an authorized update
+  debug(`User "${req.user.id}" wants to update org unit "${unitID}" and they are a/an "${req.user.userType}" user`)
+  if (req.user.userType !== 'admin') {
+    return res.status(403).send({ error: true, message: 'Admin accounts only' })
+  }
+
+  try {
+    // Attempt to retrieve current user details
+    const teamDetails = await DBUnit.getOrgUnitDetails(unitID)
+
+    // Update values or fall-back to previous value
+    const unitName = req.body.name || teamDetails.name
+
+    // Update the team in the DB
+    await DBUnit.updateOrgUnit(unitID, { name: unitName })
+    res.send({ success: true })
+  } catch (err) {
+    UTIL.checkAndReportError('Error updating org unit', res, err, debug)
+  }
+})
+
 // Expose the router for use in other files
 export default router
