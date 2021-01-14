@@ -66,7 +66,7 @@ export function listUsers (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
   if (IDsOnly) {
     project = { _id: 1 }
   } else {
-    // Build lookup object to merge 'unit' into results
+    // Build lookup object to merge 'teams' into results
     lookup = {
       $lookup: {
         from: 'Teams',
@@ -75,8 +75,6 @@ export function listUsers (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
         as: 'teams'
       }
     }
-    // Project out the orgID
-    // project = { orgId: 0 }
   }
 
   return listCollection('Users', lookup, project, perPage, page, sortBy, sortOrder, filterBy, filter)
