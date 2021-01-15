@@ -38,7 +38,7 @@ export function makeTabContentPane (id, clientID, contextName, isActive) {
   tabPaneDiv.attr('id', `tab${id}Content`)
   tabPaneDiv.attr('role', 'tabpanel')
   tabPaneDiv.attr('aria-labelledby', `tab${id}`)
-  tabPaneDiv.css('height', '500px')
+  tabPaneDiv.css('height', '310px')
 
   // Make inner containers for proper grid and formatting
   const paneChild1 = $('<div></div>').addClass('container h-100')
@@ -58,20 +58,9 @@ function makeChatWidget (id, clientID, contextName) {
     <!-- Chat Interface Widget -->
     <ul class="messageList" id="messageList${id}"></ul>
     <div class="activeTyping" id="activeTyping${id}"></div>
-    <div class="input-group mt-3 mb-3">
-      <div class="input-group-prepend">
-        <!-- Canned Responses Dropdown -->
-        ${makeCannedMessageDropdown(id)}
-      </div>
-      <!-- Message Text Input -->
-      <input type="text" class="form-control messageText" placeholder="Message Text" aria-label="Message to send" data-target="#sendMessage${id}" data-client="${clientID}" data-context="${contextName}" id="messageText${id}">
-      <!-- Send Button -->
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary sendMessage" type="button" data-source="#messageText${id}" data-target="#messageList${id}" data-client="${clientID}" data-context="${contextName}" id="sendMessage${id}">Send</button>
-      </div>
-    </div>`
-
-  return $.parseHTML(chatWidgetInnerHTML)
+    `
+  const chatWidget = $.parseHTML(chatWidgetInnerHTML)
+  return chatWidget
 }
 
 function makeCannedMessageDropdown (id) {

@@ -15,6 +15,8 @@ nodeLibs=(
   "js-cookie/src/js.cookie.js"
   "socket.io/client-dist/socket.io.min.js"
   "store2/dist/store2.min.js"
+  "tiny-markdown-editor/dist/tiny-mde.min.css"
+  "tiny-markdown-editor/dist/tiny-mde.min.js"
 )
 
 rm -rf ./public/lib
