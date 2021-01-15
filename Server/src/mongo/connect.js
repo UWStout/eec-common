@@ -30,9 +30,9 @@ export async function connect (dbName = 'eec-common', autoClose = true) {
       return dbHandle[dbName]
     }
   } catch (err) {
+    // Don't log tons as the original connection attempt will do that
     console.error('CRITICAL: MongoDB connection failed')
-    console.error(err)
-    process.exit(1)
+    return null
   }
 
   // Is there an existing connection? Using retrieveDBHandle instead.
@@ -51,9 +51,10 @@ export async function connect (dbName = 'eec-common', autoClose = true) {
     debug('Connected to database')
   } catch (err) {
     CONNECTING_PROMISE = null
-    debug('Database connection failed')
+    debug('CRITICAL: Database connection failed')
+    debug(err)
     debug(err.stack)
-    return null
+    process.exit(1)
   }
 
   // Setup database to close cleanly before exiting
