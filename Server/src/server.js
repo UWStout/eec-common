@@ -126,7 +126,7 @@ makeSocket(server)
 
 // Start listening on ports listed in .env
 const DEV_PORT = process.env.DEV_PORT || 3000
-const PROD_PORT = process.env.PROD_PORT || 42424
+const PROD_PORT = process.env.PORT || process.env.PROD_PORT || 42424
 if (process.argv.find((arg) => { return arg === 'dev' })) {
   // Start server listening on debug/dev port
   server.listen(DEV_PORT, 'localhost', () => {
@@ -134,7 +134,6 @@ if (process.argv.find((arg) => { return arg === 'dev' })) {
   })
 } else {
   // Start server listening on main/production port
-  app.set('trust proxy', ['loopback'])
   server.listen(PROD_PORT, 'localhost', () => {
     console.log(`Karuna server listening on port ${PROD_PORT}`)
   })
