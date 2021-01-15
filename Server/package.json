@@ -6,7 +6,7 @@
     "start": "node dist/server.js",
     "dev": "set DEBUG=watch,server:* DEBUG_HIDE_DATE=true DEBUG_COLORS=true & node watchCode.mjs",
     "devbash": "bash -c 'DEBUG=watch,server:* DEBUG_HIDE_DATE=true DEBUG_COLORS=true node watchCode.mjs'",
-    "build": "esbuild --platform=node --bundle --external:bcrypt --external:sqlite3 --external:utf-8-validate --external:bufferutil --minify --outfile=dist/server.js src/server.js",
+    "build": "esbuild --platform=node --bundle --external:saslprep --external:bcrypt --external:sqlite3 --external:utf-8-validate --external:bufferutil --minify --outfile=dist/server.js src/server.js",
     "postbuild": "bash postBuild.sh"
   },
   "license": "MIT",
@@ -45,6 +45,7 @@
     "mongodb": "3.6.3",
     "mongodb-client-encryption": "1.1.0",
     "morgan": "1.10.0",
+    "saslprep": "^1.0.3",
     "socket.io": "^3.0.0",
     "sqlite3": "^5.0.0",
     "store2": "^2.12.0",

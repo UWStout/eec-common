@@ -96,6 +96,19 @@ app.use(CookieParser())
 // Enable parsing of JSON-Encoded bodies
 app.use(Express.json())
 
+// Redirect all non-ssl traffic to HTTPS
+if (process.env.HEROKU && !process.env.LOCAL) {
+  console.log('Redirecting traffic to HTTPS')
+  app.use((req, res, next) => {
+    const reqType = req.headers['x-forwarded-proto']
+    if (reqType === 'https') {
+      next()
+    } else {
+      return res.redirect('https://' + req.headers.host + req.url)
+    }
+  })
+}
+
 // used for MongoDB set up
 app.use('/admin', adminRouter)
 
