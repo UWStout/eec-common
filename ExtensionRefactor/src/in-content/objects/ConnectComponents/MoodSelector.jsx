@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { MenuItem, Menu, Button } from '@material-ui/core'
+import { MenuItem, Menu, Button, IconButton } from '@material-ui/core'
 import Emoji from './Emoji.jsx'
-import { arrayIncludes } from '@material-ui/pickers/_helpers/utils'
 
 const emoji = [
   <Emoji symbol='😀' label='happy' />,
@@ -28,10 +27,12 @@ export default function MoodSelect () {
 
   return (
     <div>
-      <Button aria-controls='mood-menu' aria-haspopup='true' onClick={handleButtonClick}>
-        {emoji[mood]}
-        changeMood
-      </Button>
+      <span>
+        <IconButton size='small' aria-controls='mood-menu' aria-haspopup='true' onClick={handleButtonClick}>
+          {emoji[mood]}
+        </IconButton>
+        mood
+      </span>
       <Menu
         id='mood-menu'
         anchorEl={anchorEl}
