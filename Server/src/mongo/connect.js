@@ -2,15 +2,22 @@
 // import { ClientEncryption } from 'mongodb-client-encryption'
 import { MongoClient } from 'mongodb'
 
+// Read extra environment variables from the .env file
+import dotenv from 'dotenv'
+
 // print messages only during debug
 import Debug from 'debug'
 const debug = Debug('server:mongo')
+
+// Load .env config
+dotenv.config()
 
 // Client and db connection
 const dbHandle = []
 
 // URL of the database server
 const DB_SERVER_URL = 'mongodb://localhost:27017'
+const PROD_SERVER_URL = `mongodb+srv://${process.env.MONGO_USER}@karunacluster1.yb2nw.mongodb.net/karunaData?retryWrites=true&w=majority`
 
 // Initialize database connection
 let CONNECTING_PROMISE = null
@@ -30,8 +37,9 @@ export async function connect (dbName = 'eec-common', autoClose = true) {
 
   // Attempt to connect
   try {
-    debug(`Connecting to '${DB_SERVER_URL}'`)
-    CONNECTING_PROMISE = MongoClient.connect(DB_SERVER_URL, { useUnifiedTopology: true })
+    const URL = (process.argv.find((arg) => { return arg === 'dev' }) ? DB_SERVER_URL : PROD_SERVER_URL)
+    debug(`Connecting to '${URL}'`)
+    CONNECTING_PROMISE = MongoClient.connect(URL, { useUnifiedTopology: true })
     dbHandle[dbName] = await CONNECTING_PROMISE
     CONNECTING_PROMISE = null
     debug('Connected to database')
