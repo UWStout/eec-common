@@ -9,10 +9,13 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../lib/bootstrap.min.css">
 
+    <!-- Tiny Markdown Editor -->
+    <link rel="stylesheet" type="text/css" href="../lib/tiny-mde.min.css" />
+
     <style>
       /* Styling for the chat history list */
       .messageList {
-        list-style-type: none; height: 78%;
+        list-style-type: none; height: 250px;
         margin: 0; padding: 0;
         background-color: bisque;
         overflow-y: auto;
@@ -23,9 +26,8 @@
 
       /* Styling for the active message box */
       .activeTyping {
-        height: 10%; margin: 0; padding: 5px 10px;
-        border: 1px solid lightgrey; 
-        font-size: 12px; color: darkgrey;
+        height: 50px; margin: 0; padding: 5px 10px;
+        border: 1px solid lightgrey; font-size: 12px;
         overflow-y: auto; white-space: pre-wrap;
       }
     </style>
@@ -51,57 +53,30 @@
           
           <!-- Display interactive tabs, one for each session -->
           <ul id="tabHeader" class="nav nav-tabs" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="tab1" data-toggle="tab" href="#tab1Content" role="tab" aria-controls="tab1Content" aria-selected="true">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="tab2" data-toggle="tab" href="#tab2Content" role="tab" aria-controls="tab2Content" aria-selected="false">Profile</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="tab3" data-toggle="tab" href="#tab3Content" role="tab" aria-controls="tab3Content" aria-selected="false">Contact</a>
-            </li>
           </ul>
+
         </div>
       </div>
       <div class="row">
         <div class="col-12">
+
           <!-- All tab content -->
           <div id="tabContent" class="tab-content pt-1 pb-1" style="border: 1px solid #dee2e6; border-top: none;">
-
-            <!-- Individual Tab -->
-            <div class="tab-pane fade show active" style="height: 500px;" id="tab1Content" role="tabpanel" aria-labelledby="tab1">
-              <div class="container h-100">
-                <div class="mt-2 mb-4 h-100">
-
-                  <!-- Chat Interface Widget -->
-                  <ul class="messageList" id="messageList1"></ul>
-                  <div class="activeTyping" id="activeTyping1"></div>
-                  <div class="input-group mt-3 mb-3">
-                    <div class="input-group-prepend">
-                      <!-- Canned Responses Dropdown -->
-                      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                      <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">This is an example message ...</a>
-                        <a class="dropdown-item" href="#">This is another example message ...</a>
-                        <a class="dropdown-item" href="#">This is yet another example message ...</a>
-                        <div role="separator" class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">This is one more example message ...</a>
-                      </div>
-                    </div>
-                    <!-- Message Text Input -->
-                    <input type="text" class="form-control" placeholder="Message Text" aria-label="Message to send">
-                    <!-- Send Button -->
-                    <div class="input-group-append">
-                      <button class="btn btn-outline-secondary" type="button">Send</button>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
           </div>
+
         </div>
+      </div>
+ 
+      <div class="row">
+        <div class="col-12">
+          <div class="border rounded-bottom p-3 mt-2">
+            <div class="border border-secondary border-bottom-0" id="markdownToolbar"></div>
+            <div class="border border-secondary border-top-0" style="height: 150px; overflow-y: auto" id="markdownEditor"></div>
+            <button class="btn btn-outline-secondary w-100 mt-2 sendMessage" type="button"
+                    data-source="#messageText${id}" data-target="#messageList${id}" data-client="${clientID}"
+                    data-context="${contextName}" id="sendMessage${id}">Send</button>
+            </div>
+          </div>
       </div>
     </div>
 
@@ -117,6 +92,9 @@
 
     <!-- Web sockets served from local server -->
     <script src="../lib/socket.io.min.js"></script>
+
+    <!-- Tiny Markdown Editor-->
+    <script src="../lib/tiny-mde.min.js"></script>
 
     <!-- Custom Scripting -->
     <script src="emeraldCity.js" type="module"></script>

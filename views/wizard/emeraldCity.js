@@ -1,4 +1,4 @@
-/* globals $, io */
+/* globals $, io, TinyMDE */
 
 // Import chat widget making button
 import { makeTabHeader, makeTabContentPane } from './chatWidgetHelper.js'
@@ -6,6 +6,10 @@ import { makeTabHeader, makeTabContentPane } from './chatWidgetHelper.js'
 // Tab content holders
 let tabHeaders
 let tabContents
+
+// The markdown editor elements
+let editor
+let toolbar
 
 // Session lookup
 let sessions = []
@@ -96,6 +100,10 @@ $(document).ready(() => {
   tabHeaders.empty()
   tabContents.empty()
   tabs = []
+
+  // Make the markdown editor widget
+  editor = new TinyMDE.Editor({ element: 'markdownEditor', content: ' ' })
+  toolbar = new TinyMDE.CommandBar({ element: 'markdownToolbar', editor })
 })
 
 // Tab element storage

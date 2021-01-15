@@ -30,9 +30,10 @@ function preValidate (destURL, result) {
   }
 }
 
-// Check the token
+// Check the token and refresh the cookie
 function checkForToken () {
   token = store.local.get('JWT')
   if (!token || token === '') { return false }
+  Cookies.set('JWT', token)
   return true
 }
