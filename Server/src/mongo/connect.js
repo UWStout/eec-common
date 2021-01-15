@@ -44,16 +44,16 @@ export async function connect (dbName = 'eec-common', autoClose = true) {
   // Attempt to connect
   try {
     const URL = (process.env.HEROKU ? PROD_SERVER_URL : DB_SERVER_URL)
-    debug(`Connecting to '${URL}'`)
+    console.log(`Connecting to MongoDB at '${URL}'`)
     CONNECTING_PROMISE = MongoClient.connect(URL, { useUnifiedTopology: true })
     dbHandle[dbName] = await CONNECTING_PROMISE
     CONNECTING_PROMISE = null
-    debug('Connected to database')
+    console.log('Connected to database')
   } catch (err) {
     CONNECTING_PROMISE = null
-    debug('CRITICAL: Database connection failed')
-    debug(err)
-    debug(err.stack)
+    console.error('CRITICAL: Database connection failed')
+    console.error(err)
+    console.error(err.stack)
     process.exit(1)
   }
 
