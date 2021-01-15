@@ -37,7 +37,7 @@ export async function connect (dbName = 'eec-common', autoClose = true) {
 
   // Attempt to connect
   try {
-    const URL = (process.argv.find((arg) => { return arg === 'dev' }) ? DB_SERVER_URL : PROD_SERVER_URL)
+    const URL = (process.env.HEROKU ? PROD_SERVER_URL : DB_SERVER_URL)
     debug(`Connecting to '${URL}'`)
     CONNECTING_PROMISE = MongoClient.connect(URL, { useUnifiedTopology: true })
     dbHandle[dbName] = await CONNECTING_PROMISE

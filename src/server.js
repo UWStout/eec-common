@@ -7,7 +7,8 @@ import path from 'path'
 // Read extra environment variables from the .env file
 import dotenv from 'dotenv'
 
-// Import the base http library
+// Import the base http libraries
+import http from 'http'
 import https from 'https'
 
 // Using express for basic HTTP
@@ -54,20 +55,31 @@ dotenv.config()
 const SERVER_ROOT = process.env.SERVER_ROOT || '/'
 console.log(`Server root: ${SERVER_ROOT}`)
 
-// Configure SSL
-const SSL_KEY_FILE = process.env.SERVER_KEY || './certs/server.key'
-const SSL_CERT_FILE = process.env.SERVER_CERT || './certs/server.crt'
-const SSLOptions = {
-  key: fs.readFileSync(SSL_KEY_FILE),
-  cert: fs.readFileSync(SSL_CERT_FILE)
-}
-
-// Make an HTTPS express server app
-const app = new Express()
-const server = https.createServer(SSLOptions, app)
-
 // prints messages for debugging purposes
 const debug = Debug('server')
+
+// Initialize express app
+const app = new Express()
+
+// Build HTTP/HTTPS server
+let server
+if (process.env.HEROKU) {
+  // Create normal HTTP server (heroku handles SSL)
+  console.log('Production HTTP server for HEROKU dyno')
+  server = http.createServer(app)
+} else {
+  // Not HEROKU so make an HTTPS server
+  debug('Creating local HTTPS server for dev')
+  const SSL_KEY_FILE = process.env.SERVER_KEY || './certs/server.key'
+  const SSL_CERT_FILE = process.env.SERVER_CERT || './certs/server.crt'
+  const SSLOptions = {
+    key: fs.readFileSync(SSL_KEY_FILE),
+    cert: fs.readFileSync(SSL_CERT_FILE)
+  }
+
+  // Make an HTTPS express server app
+  server = https.createServer(SSLOptions, app)
+}
 
 // middleware
 
@@ -110,13 +122,6 @@ app.use(`${SERVER_ROOT}dbAdmin`, dbAdminRouter)
 
 // Login/out authorization routes from root
 app.use('/', Express.static(path.resolve('./views/auth')))
-
-// for using the databaseView
-// app.use('/css', Express.static(path.resolve('../ChromeExtension/node_modules/bootstrap/dist/css')))
-// app.use('/js', Express.static(path.resolve('../ChromeExtension/node_modules/bootstrap/dist/js')))
-// app.use('/js', Express.static(path.resolve('../ChromeExtension/node_modules/jquery/dist')))
-// app.set('views', './views')
-// app.set('view engine', 'ejs')
 
 // Everything else is a static file
 app.use(`${SERVER_ROOT}`, Express.static(path.resolve('./public'), { index: 'instructions.html' }))
