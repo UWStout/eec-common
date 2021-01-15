@@ -22,11 +22,17 @@ const PROD_SERVER_URL = `mongodb+srv://${process.env.MONGO_USER}@karunacluster1.
 // Initialize database connection
 let CONNECTING_PROMISE = null
 export async function connect (dbName = 'eec-common', autoClose = true) {
-  // Are we already connecting?
-  if (CONNECTING_PROMISE) {
-    debug('Already connecting, awaiting result')
-    await CONNECTING_PROMISE
-    return dbHandle[dbName]
+  try {
+    // Are we already connecting?
+    if (CONNECTING_PROMISE) {
+      debug('Already connecting, awaiting result')
+      await CONNECTING_PROMISE
+      return dbHandle[dbName]
+    }
+  } catch (err) {
+    console.error('CRITICAL: MongoDB connection failed')
+    console.error(err)
+    process.exit(1)
   }
 
   // Is there an existing connection? Using retrieveDBHandle instead.
