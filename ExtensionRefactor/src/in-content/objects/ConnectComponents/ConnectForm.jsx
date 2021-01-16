@@ -35,7 +35,7 @@ export default function ConnectForm (props) {
 
   return (
     <div>
-    <History opened={historyOpen} handleClose={handleHistoryClick}/>
+    <History opened={historyOpen} handleClose={handleHistoryClick} handleHistoryFormOpen={props.handleHistoryFormOpen}/>
     <Slide direction="left" in={props.opened} mountOnEnter unmountOnExit>
       <Paper elevation={3} className={classes.paperRoot}>
         <Grid container spacing={2}>
@@ -68,6 +68,7 @@ export default function ConnectForm (props) {
                 <IconButton size='small' onClick={() => {
                   handleHistoryClick()
                   props.handleClose()
+                  props.handleHistoryFormOpen()
                 }}>
                   <Emoji symbol='⏳' label='Hourglass Not Done' />
                 </IconButton>

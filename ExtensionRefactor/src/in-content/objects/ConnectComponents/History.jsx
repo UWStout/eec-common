@@ -30,7 +30,10 @@ export default function History (props) {
       <Paper elevations={3} className={classes.paperRoot}>
         <Grid container spacing={2}>
           <Grid item>
-            <IconButton size='small' onClick={props.handleClose}>
+            <IconButton size='small' onClick={() => {
+              props.handleClose()
+              props.handleHistoryFormOpen()
+            }}>
               <CloseIcon />
             </IconButton>
             Karuna History
@@ -51,7 +54,7 @@ export default function History (props) {
               style={{
                 height: '160px',
                 width: '150px',
-                overflow: 'scroll',
+                overflow: 'auto',
                 backgroundColor: '#cfcfcf'
               }}
             >
