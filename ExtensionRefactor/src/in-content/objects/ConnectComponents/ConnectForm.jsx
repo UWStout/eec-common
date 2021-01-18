@@ -19,11 +19,13 @@ export default function ConnectForm (props) {
   const [historyOpen, updateHistoryOpen] = useState(false)
   const [collaboration, updateCollaboration] = useState(false)
 
+  // Tracks the history panel state 
   const handleHistoryClick = (e) => {
     const newHistoryOpen = !historyOpen
     updateHistoryOpen(newHistoryOpen)
   }
 
+  // Tracks the collaboration button state
   const handleCollaborationClick = (e) => {
     const collaborateChange = !collaboration
     updateCollaboration(collaborateChange)

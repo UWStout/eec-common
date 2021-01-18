@@ -42,9 +42,8 @@ const rows = [
   },
 ]
 
+// Display team member mood history
 export default function HistoryOneOnOne (props) {
-
-
   return(
     <div>
       <TableContainer>

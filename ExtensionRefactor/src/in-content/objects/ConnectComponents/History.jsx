@@ -14,10 +14,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// History menu opens from main menu
 export default function History (props) {
   const classes = useStyles()
   const [switched, updateSwitched] = useState(false)
 
+  // Switches between team mood and member mood histories
   const handleSwitch = (event) => {
     const newSwitchedState = !switched
     updateSwitched(newSwitchedState)

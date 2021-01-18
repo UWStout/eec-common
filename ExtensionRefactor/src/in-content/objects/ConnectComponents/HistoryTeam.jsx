@@ -31,9 +31,8 @@ const rows = [
   },
 ]
 
+// Display team average mood history
 export default function HistoryTeam (props) {
-  
-
   return(
     <div>
       <TableContainer>

@@ -8,19 +8,23 @@ const emoji = [
   <Emoji symbol='🙁' label='sad' />
 ]
 
+// Menu of moods for user selection
 export default function MoodSelect () {
   const [mood, setMood] = useState(0)
   const [anchorEl, setAnchorEl] = useState(null)
 
+  // Sets the anchor element on click
   const handleButtonClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
 
+  // Sets mood and closes menu
   const handleMenuItemClick = (event, index) => {
     setMood(index)
     setAnchorEl(null)
   }
 
+  // Closes menu without setting mood
   const handleClose = () => {
     setAnchorEl(null)
   }
