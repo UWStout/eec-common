@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 
-import { Slide, Paper, Grid, Button, IconButton } from '@material-ui/core'
+import { Slide, Paper, Grid, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import MoodSelect from './MoodSelector.jsx'
 import Emoji from './Emoji.jsx'
@@ -37,60 +37,64 @@ export default function ConnectForm (props) {
 
   return (
     <div>
-    <History opened={historyOpen} handleClose={handleHistoryClick} handleHistoryFormOpen={props.handleHistoryFormOpen}/>
-    <Slide direction="left" in={props.opened} mountOnEnter unmountOnExit>
-      <Paper elevation={3} className={classes.paperRoot}>
-        <Grid container spacing={2}>
-          <Grid item>
-            <div>
-              <span>
-                <IconButton size='small' onClick={props.handleClose}>
-                  <CloseIcon />
-                </IconButton>
-                Karuna Connect
-              </span>
-            </div>
+      <History 
+        opened={historyOpen}
+        handleClose={handleHistoryClick}
+        handleHistoryFormOpen={props.handleHistoryFormOpen}
+      />
+      <Slide direction="left" in={props.opened} mountOnEnter unmountOnExit>
+        <Paper elevation={3} className={classes.paperRoot}>
+          <Grid container spacing={2}>
+            <Grid item>
+              <div>
+                <span>
+                  <IconButton size='small' onClick={props.handleClose}>
+                    <CloseIcon />
+                  </IconButton>
+                  Karuna Connect
+                </span>
+              </div>
+            </Grid>
+            <Grid item>
+              <MoodSelect />
+            </Grid>
+            <Grid item>
+              <div>
+                <span>
+                  <IconButton size='small' onClick={handleCollaborationClick}>
+                    {collaborationType}
+                  </IconButton>
+                  Collaborations
+                </span>
+              </div>
+            </Grid>
+            <Grid item>
+              <div>
+                <span>
+                  <IconButton size='small' onClick={() => {
+                    handleHistoryClick()
+                    props.handleClose()
+                    props.handleHistoryFormOpen()
+                  }}>
+                    <Emoji symbol='⏳' label='Hourglass Not Done' />
+                  </IconButton>
+                  History
+                </span>
+              </div>
+            </Grid>
+            <Grid item>
+              <div>
+                Our Team Culture
+              </div>
+            </Grid>
+            <Grid item>
+              <div>
+                More About NVC
+              </div>
+            </Grid>
           </Grid>
-          <Grid item>
-            <MoodSelect />
-          </Grid>
-          <Grid item>
-            <div>
-              <span>
-                <IconButton size='small' onClick={handleCollaborationClick}>
-                  {collaborationType}
-                </IconButton>
-                Collaborations
-              </span>
-            </div>
-          </Grid>
-          <Grid item>
-            <div>
-              <span>
-                <IconButton size='small' onClick={() => {
-                  handleHistoryClick()
-                  props.handleClose()
-                  props.handleHistoryFormOpen()
-                }}>
-                  <Emoji symbol='⏳' label='Hourglass Not Done' />
-                </IconButton>
-                History
-              </span>
-            </div>
-          </Grid>
-          <Grid item>
-            <div>
-              Our Team Culture
-            </div>
-          </Grid>
-          <Grid item>
-            <div>
-              More About NVC
-            </div>
-          </Grid>
-        </Grid>
-      </Paper>
-    </Slide>
+        </Paper>
+      </Slide>
     </div>
   )
 }

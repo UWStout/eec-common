@@ -29,7 +29,7 @@ export default function History (props) {
 
   return (
     <Slide direction='left' in={props.opened} mountOnEnter unmountOnExit>
-      <Paper elevations={3} className={classes.paperRoot}>
+      <Paper elevations={3} id='eec-history-panel' className={classes.paperRoot}>
         <Grid container spacing={2}>
           <Grid item>
             <IconButton size='small' onClick={() => {

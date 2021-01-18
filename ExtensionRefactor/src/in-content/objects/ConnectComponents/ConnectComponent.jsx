@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
-import { Button } from '@material-ui/core'
 import ConnectForm from './ConnectForm.jsx'
+import ConnectPanelButton from './ConnectPanelButton.jsx'
 
 // The sidebar Karuna Connect object
 export default function ConnectComponent (props) {
@@ -21,7 +21,7 @@ export default function ConnectComponent (props) {
   }
 
   // Tracks state of each panel and displays karuna button if neither panel is open
-  const PanelOpenButton = !formOpen && !historyFormOpen ? <Button onClick={handleClick}>K</Button> : null
+  const PanelOpenButton = !formOpen && !historyFormOpen ? <ConnectPanelButton onClick={handleClick} /> : null
 
   return (
     <React.Fragment>
