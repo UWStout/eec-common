@@ -2,9 +2,24 @@
 .eec-connect {
   position: absolute;
   bottom: 400px;
-  right: 0px;
+  right: -5px;
   width: 160px;
   height: 24px;
+}
+
+#eec-connect-button-paper {
+  position: absolute;
+  right: -10px;
+  width: 50;
+  height: 24;
+}
+
+.eec-connect-button {
+  font-weight: bold;
+}
+
+#eec-history-panel {
+  position: absolute;
 }
 
 .eec-connect-icon {

@@ -14,10 +14,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// History menu opens from main menu
 export default function History (props) {
   const classes = useStyles()
   const [switched, updateSwitched] = useState(false)
 
+  // Switches between team mood and member mood histories
   const handleSwitch = (event) => {
     const newSwitchedState = !switched
     updateSwitched(newSwitchedState)
@@ -27,10 +29,13 @@ export default function History (props) {
 
   return (
     <Slide direction='left' in={props.opened} mountOnEnter unmountOnExit>
-      <Paper elevations={3} className={classes.paperRoot}>
+      <Paper elevations={3} id='eec-history-panel' className={classes.paperRoot}>
         <Grid container spacing={2}>
           <Grid item>
-            <IconButton size='small' onClick={props.handleClose}>
+            <IconButton size='small' onClick={() => {
+              props.handleClose()
+              props.handleHistoryFormOpen()
+            }}>
               <CloseIcon />
             </IconButton>
             Karuna History
@@ -51,7 +56,7 @@ export default function History (props) {
               style={{
                 height: '160px',
                 width: '150px',
-                overflow: 'scroll',
+                overflow: 'auto',
                 backgroundColor: '#cfcfcf'
               }}
             >
