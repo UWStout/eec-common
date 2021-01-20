@@ -25,28 +25,28 @@ export function getAffectDetails (affectID) {
  * Create new affect
  * @param {string} affectName Name for the new Affect
  * @param {string} description Verbal description of this affect (may be null)
- * @param {string[]} characterCode Unicode emojis/characters for this affect (may be empty)
+ * @param {string[]} characterCodes Unicode emojis/characters for this affect (may be empty)
  * @param {string[]} relatedIDs Array of related affect IDs (may be empty)
  * @return {Promise} Resolves to ID of the newly created affect, rejects if creation fails
  */
-export function createAffect (affectName, description, characterCode, relatedIDs) {
+export function createAffect (affectName, description, characterCodes, relatedIDs) {
   return new Promise((resolve, reject) => {
     // Start to build the affect
-    const insertThis = { name: affectName, description, characterCode: [], related: [], active: true }
+    const insertThis = { name: affectName, description, characterCodes: [], related: [], active: true }
 
     // Ensure the character codes are in an array
-    if (!Array.isArray(characterCode)) {
-      if (characterCode) {
-        insertThis.characterCode.push(characterCode)
+    if (!Array.isArray(characterCodes)) {
+      if (characterCodes) {
+        insertThis.characterCodes.push(characterCodes)
       }
     } else {
-      insertThis.characterCode = [...characterCode]
+      insertThis.characterCodes = [...characterCodes]
     }
 
     // Ensure related IDs are an array and are proper ObjectIDs
     if (!Array.isArray(relatedIDs)) {
       if (relatedIDs) {
-        insertThis.related.push(new ObjectID(characterCode))
+        insertThis.related.push(new ObjectID(relatedIDs))
       }
     } else {
       insertThis.related = relatedIDs.map((relID) => (new ObjectID(relID)))
