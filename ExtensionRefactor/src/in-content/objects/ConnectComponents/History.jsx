@@ -52,14 +52,7 @@ export default function History (props) {
             </span>
           </Grid>
           <Grid item>
-            <div
-              style={{
-                height: '160px',
-                width: '150px',
-                overflow: 'auto',
-                backgroundColor: '#cfcfcf'
-              }}
-            >
+            <div className='eec-mood-history-body'>
               {bodyDisplay}
             </div>
           </Grid>
