@@ -8,8 +8,11 @@ import Express from 'express'
 // Authorization token library
 import JWT from 'jsonwebtoken'
 
+// Utility functions
+import * as UTIL from './utils.js'
+
 // Database controller
-import { getDBAuthController, getDBTeamController, getDBUserController } from './dbSelector.js'
+import { getDBAuthController, getDBTeamController, getDBUnitController, getDBUserController } from './dbSelector.js'
 
 // Create debug output object
 import Debug from 'debug'
@@ -22,6 +25,8 @@ const authDB = getDBAuthController()
 const teamDB = getDBTeamController()
 
 const userDB = getDBUserController()
+
+const unitDB = getDBUnitController()
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
@@ -97,7 +102,7 @@ const router = new Express.Router()
 // also tested within team.js with https://localhost:3000/data/team/list
 
 // 5. test teamController createTeam
-router.post('/registerTeam', async (req, res) => {
+router.put('/registerTeam', async (req, res) => {
   // Extract and check required fields
   const { teamName, unitID, userID } = req.body
   if (!teamName) {
@@ -143,7 +148,7 @@ router.post('/addToTeam', async (req, res) => {
 })
 
 // 7. test teamController's createOrgUnit function: works!
-router.post('/registerOrg', async (req, res) => {
+router.put('/registerOrg', async (req, res) => {
   // Extract and check required fields
   const { unitName, description, adminID } = req.body
   if (!unitName) {
@@ -154,7 +159,7 @@ router.post('/registerOrg', async (req, res) => {
   // Attempt to create org
   debug(`Creating ${unitName}`)
   try {
-    const teamID = await teamDB.createOrgUnit(unitName, description, adminID)
+    const teamID = await unitDB.createOrgUnit(unitName, description, adminID)
     return res.status(200).json({ message: 'success', teamID: teamID })
   } catch (error) {
     console.error(`Failed to create ${unitName}`)
@@ -164,7 +169,7 @@ router.post('/registerOrg', async (req, res) => {
 })
 
 // 8. test teamController's removeTeam function: works!
-router.post('/removeTeam', async (req, res) => {
+router.delete('/removeTeam', async (req, res) => {
   // Extract and check required fields
   const { teamID } = req.body
   if (!teamID) {
@@ -185,7 +190,7 @@ router.post('/removeTeam', async (req, res) => {
 })
 
 // 9. test teamController's removeOrgUnit function
-router.post('/removeOrg', async (req, res) => {
+router.delete('/removeOrg', async (req, res) => {
   // Extract and check required fields
   const { unitID } = req.body
   if (!unitID) {
@@ -204,14 +209,19 @@ router.post('/removeOrg', async (req, res) => {
     return res.status(500).json({ error: true, message: 'Error while removing Org Unit' })
   }
 })
-
+/*
 // 10. test teamController's listTeamsInUnit (unitID, page = 1, perPage = 25) function
-router.post('/listTeamsInUnit', async (req, res) => {
+router.get('/listTeamsInUnit/:unitID', async (req, res) => {
   // Extract and check required fields
-  const { unitID, page, perPage } = req.body
+  const unitID = req.params.unitID
   if (!unitID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
+  }
+  // Try to get the pagination query string values
+  const [perPage, page] = UTIL.getPaginationValues(req.query)
+  if (isNaN(perPage) || isNaN(page)) {
+    return res.status(400).send({ error: true, message: 'Invalid parameter' })
   }
 
   // attempt to list teams in org unit
@@ -225,7 +235,9 @@ router.post('/listTeamsInUnit', async (req, res) => {
     return res.status(500).json({ error: true, message: 'Error while listing teams in org unit' })
   }
 })
+*/
 
+/*
 // 11. test teamController's listTeamsForUser (userID, page = 1, perPage = 25) function
 router.post('/listTeamsForUser', async (req, res) => {
   // Extract and check required fields
@@ -246,6 +258,7 @@ router.post('/listTeamsForUser', async (req, res) => {
     return res.status(500).json({ error: true, message: 'Error while attempting to list teams for user' })
   }
 })
+*/
 
 // 12. test userController's list user function with listUsers(req.query.fullInfo === undefined, perPage, page)
 // done within user.js at https://localhost:3000/data/user/list?fullInfo=true&perPage=10&page=0
@@ -260,7 +273,7 @@ router.post('/listTeamsForUser', async (req, res) => {
 // done within user.js at https://localhost:3000/data/user/5ff742f09bb9905f98eb348e
 
 // 16. test userController's removeUser (userID) function
-router.post('/removeUser', async (req, res) => {
+router.delete('/removeUser', async (req, res) => {
   // Extract and check required fields
   const { userID } = req.body
   if (!userID) {
@@ -283,9 +296,49 @@ router.post('/removeUser', async (req, res) => {
 })
 
 // 17. test teamController's getOrgUnitDetails (unitID)
-// TO-DO
+router.get('/getOrgUnitDetails/:unitID', async (req, res) => {
+  // Extract and check required fields
+  const unitID = req.params.unitID
+  if (!unitID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // attempt to get org unit details
+  debug(`attempting to list teams for user ${unitID}`)
+  try {
+    const unit = await unitDB.getOrgUnitDetails(unitID)
+    return res.status(200).json({ message: 'success', unit: unit })
+  } catch (error) {
+    debug(`Failed to get org unit details ${unitID}`)
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while getting org unit details' })
+  }
+})
 // 18. test teamControllers getTeamDetails (teamID)
-// TO-DO
+// tested within update function at https://localhost:3000/data/team/update
+// tested singularly here:
+router.get('/getTeamDetails/:teamID', async (req, res) => {
+  // Extract and check required fields
+  const teamID = req.params.teamID
+  if (!teamID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // attempt to get team details
+  debug(`attempting to get team details ${teamID}`)
+  try {
+    const team = await teamDB.getTeamDetails(teamID)
+    return res.status(200).json({ message: 'success', team: team })
+  } catch (error) {
+    debug(`Failed to get team details ${teamID}`)
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while getting team details' })
+  }
+})
+// 19. test teamControllers updateTeam (userID, newData)
+// tested within https://localhost:3000/data/team/update
 
 // Expose the router for use in other files
 export default router

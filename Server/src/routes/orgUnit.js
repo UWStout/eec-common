@@ -21,7 +21,7 @@ const DBUnit = getDBUnitController()
 const router = new Express.Router()
 
 // ******* API routes **************
-// List all teams in the database
+// List all units in the database
 router.get('/list', authenticateToken, async (req, res) => {
   // Admin users only
   if (req.user.userType !== 'admin') {
