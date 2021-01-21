@@ -9,7 +9,10 @@ const cannedMessages = [
   'This is one more example message'
 ]
 
-export function makeTabHeader (id, text, isActive) {
+export function makeTabHeader (id, userID, contextName, isActive, tabShownCallback) {
+  // Make tab text
+  const text = `${userID} - ${contextName}`
+
   // Build elements
   const tabListItem = $('<li></li>').addClass('nav-item')
   const tabLink = $('<a></a>').addClass('nav-link')
@@ -23,6 +26,9 @@ export function makeTabHeader (id, text, isActive) {
     tabLink.addClass('active')
     tabLink.attr('aria-selected', 'true')
   }
+
+  // Register the CB
+  tabLink.on('shown.bs.tab', () => { tabShownCallback(id, userID, contextName) })
 
   // Assemble and return
   tabListItem.append(tabLink)

@@ -12,8 +12,8 @@ const debug = Debug('server:mongo')
 // Load .env config
 dotenv.config()
 
-// Client and db connection
-const dbHandle = []
+// Client connection
+let clientHandle
 
 // URL of the database server
 const DB_SERVER_URL = 'mongodb://localhost:27017'
@@ -27,18 +27,18 @@ export async function connect (dbName = 'eec-common', autoClose = true) {
     if (CONNECTING_PROMISE) {
       debug('Already connecting, awaiting result')
       await CONNECTING_PROMISE
-      return dbHandle[dbName]
+      return clientHandle.db(dbName)
     }
   } catch (err) {
     // Don't log tons as the original connection attempt will do that
     console.error('CRITICAL: MongoDB connection failed')
-    return null
+    return Promise.reject(err)
   }
 
   // Is there an existing connection? Using retrieveDBHandle instead.
-  if (dbHandle[dbName]) {
-    debug(`Connection to ${dbName} already exists (use retrieveDBHandle instead?)`)
-    return null
+  if (clientHandle) {
+    debug('Connection to client already exists (use retrieveDBHandle instead?)')
+    return Promise.reject(new Error('Client connection already exists'))
   }
 
   // Attempt to connect
@@ -46,14 +46,13 @@ export async function connect (dbName = 'eec-common', autoClose = true) {
     const URL = (process.env.HEROKU ? PROD_SERVER_URL : DB_SERVER_URL)
     console.log(`Connecting to MongoDB at '${URL}'`)
     CONNECTING_PROMISE = MongoClient.connect(URL, { useUnifiedTopology: true, useNewUrlParser: true })
-    dbHandle[dbName] = await CONNECTING_PROMISE
+    clientHandle = await CONNECTING_PROMISE
     CONNECTING_PROMISE = null
     console.log('Connected to database')
   } catch (err) {
     CONNECTING_PROMISE = null
     console.error('CRITICAL: Database connection failed')
     console.error(err)
-    console.error(err.stack)
     process.exit(1)
   }
 
@@ -66,33 +65,33 @@ export async function connect (dbName = 'eec-common', autoClose = true) {
   }
 
   // Return the database connection
-  return dbHandle[dbName]
+  return Promise.resolve(clientHandle.db(dbName))
 }
 
 // Attempt to close an existing database handle
 export function close (dbName) {
   // Is there an open database handle to close
-  if (!dbHandle[dbName]) {
-    console.error(`Can't close ${dbName} database, no connection.`)
+  if (!clientHandle) {
+    console.error('Can\'t close mongoDB client database, no connection.')
     return
   }
 
   // Close the handle
-  console.log(`Closing ${dbName} database ...`)
-  dbHandle[dbName].close().then(() => {
+  console.log('Closing mongoDB database ...')
+  clientHandle.close().then(() => {
     // Clear the handle
-    dbHandle[dbName] = undefined
+    clientHandle = undefined
   })
 }
 
 // Retrieve an existing DB connection (and possibly auto-connect if not found)
 export function retrieveDBHandle (dbName = 'eec-common', autoClose = true) {
   // Is there an existing connection?
-  if (dbHandle[dbName]) {
-    return dbHandle[dbName].db(dbName)
+  if (clientHandle) {
+    return clientHandle.db(dbName)
   }
 
   // Cannot retrieve handle
-  console.error(`No connection to ${dbName} database available.`)
+  console.error('No mongo client connection available.')
   return null
 }
