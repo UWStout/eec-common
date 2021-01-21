@@ -55,20 +55,21 @@ jQuery(document).ready(() => {
     // Attempt to update EEC text-boxes (if needed)
     updateTextBoxes()
 
-    // Check team and channel names on any page mutation
+    // Check team and channel names on any page mutation.
+    // We use optional chaining to avoid undefined errors
     if (IS_TEAMS) {
-      userName = jQuery('img.user-picture').first().attr('upn').trim()
-      teamServerName = jQuery('.school-app-team-title').text().trim()
-      channelName = jQuery('.channel-name').text().trim()
+      userName = jQuery('img.user-picture')?.first()?.attr('upn')?.trim()
+      teamServerName = jQuery('.school-app-team-title')?.text()?.trim()
+      channelName = jQuery('.channel-name')?.text()?.trim()
     } else if (IS_DISCORD) {
       const userArea = jQuery('section[aria-label="User area"]')
-      userName = userArea.text().trim()
-      teamServerName = userArea.parent().children().first().children().first().text().trim()
-      channelName = document.title.trim()
+      userName = userArea.text()?.trim()
+      teamServerName = userArea?.parent()?.children()?.first()?.children()?.first()?.text()?.trim()
+      channelName = document.title?.trim()
     } else if (IS_SLACK) {
-      userName = jQuery('[data-qa="channel_sidebar_name_you"]').parent().children().first().text().trim()
-      teamServerName = jQuery('.p-ia__sidebar_header__team_name_text').text().trim()
-      channelName = jQuery('[data-qa="channel_name"]').text().trim()
+      userName = jQuery('[data-qa="channel_sidebar_name_you"]')?.parent()?.children()?.first()?.text()?.trim()
+      teamServerName = jQuery('.p-ia__sidebar_header__team_name_text')?.text()?.trim()
+      channelName = jQuery('[data-qa="channel_name"]')?.text()?.trim()
     }
 
     // Print updated context info

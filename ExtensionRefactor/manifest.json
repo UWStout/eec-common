@@ -26,6 +26,7 @@
       "lib/webcomponents-bundle.js",
       "lib/browser-polyfill.min.js",
       "lib/jquery.slim.min.js",
+      "lib/commonmark.min.js",
       "js/in-content.js"
     ]
   }],

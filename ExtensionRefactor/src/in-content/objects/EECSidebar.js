@@ -1,3 +1,5 @@
+/* global commonmark */
+
 // Raw CSS strings to use in HTML construction
 import EECSidebarCSS from './EECSidebarStyle.txt'
 
@@ -14,6 +16,7 @@ import { CONTEXT } from '../../util/contexts'
 // Set some universal defaults for tippy
 tippy.setDefaultProps({
   arrow: true,
+  allowHTML: true,
   animation: 'perspective',
   inertia: true,
   theme: 'light'
@@ -34,6 +37,10 @@ class EECSidebar extends HTMLElement {
       this.JWT = response.value
       this.sendGreetingMessage()
     })
+
+    // Prepare to render markdown
+    this.MDReader = new commonmark.Parser({ smart: true })
+    this.MDWriter = new commonmark.HtmlRenderer()
 
     // Build the element HTML/CSS
     this.setupElement()
@@ -79,13 +86,13 @@ class EECSidebar extends HTMLElement {
   sendGreetingMessage () {
     console.log(this.JWT)
     if (typeof this.JWT === 'string') {
-      this.payload = this.decodeTokenPayload(this.JWT)
+      const payload = this.decodeTokenPayload(this.JWT)
       setTimeout(() => {
-        this.showMessage(`Welcome back, ${this.payload.firstName}!`, false, 5000)
+        this.showMessage(`Welcome back, **${payload.firstName}**!`, false, 5000)
       }, 3000)
     } else {
       setTimeout(() => {
-        this.showMessage('Please log in to use Karuna', true, 5000)
+        this.showMessage('Please **log in** to use Karuna', true, 5000)
       }, 3000)
     }
   }
@@ -97,13 +104,8 @@ class EECSidebar extends HTMLElement {
       return {}
     }
 
-    // Attempt to decode and parse
-    try {
-      const payloadBuffer = Buffer.from(token.split('.')[1], 'base64')
-      return JSON.parse(payloadBuffer.toString())
-    } catch (e) {
-      return {}
-    }
+    // Decode the JWT payload only
+    return JSON.parse(atob(token.split('.')[1]))
   }
 
   setContextName (newContext) {
@@ -126,11 +128,11 @@ class EECSidebar extends HTMLElement {
   // Respond to a message from the background script
   backgroundMessage (message) {
     switch (message.type) {
-      case 'login':
+      case 'login': {
         this.JWT = message.token
-        this.payload = this.decodeTokenPayload(this.JWT)
-        this.showMessage(`Welcome ${this.payload.firstName}!`, false, 5000)
-        break
+        const payload = this.decodeTokenPayload(this.JWT)
+        this.showMessage(`Welcome *${payload.firstName}**!`, false, 5000)
+      } break
 
       case 'karunaMessage':
         if (message.context === this.contextName) {
@@ -147,7 +149,11 @@ class EECSidebar extends HTMLElement {
       this.popover.addClass('animate__animated animate__repeat-3 animate__tada')
     }
 
-    this.popoverElem.setContent(messageText)
+    // Parse Markdown to HTML
+    const AST = this.MDReader.parse(messageText)
+    const messageHtml = this.MDWriter.render(AST)
+
+    this.popoverElem.setContent(messageHtml)
     this.popoverElem.enable()
     this.popoverElem.show()
 

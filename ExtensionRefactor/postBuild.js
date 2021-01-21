@@ -13,16 +13,16 @@ const imagesDir = path.join(distDir, 'images')
 const libsDir = path.join(distDir, 'lib')
 
 // Ensure all output directories exist
-function ensureExists(dirs) {
-  if (!Array.isArray(dirs)) { dirs = [ dirs ]}
+function ensureExists (dirs) {
+  if (!Array.isArray(dirs)) { dirs = [dirs] }
   dirs.forEach((dir) => {
     if (!fs.existsSync(dir)) { fs.mkdirSync(dir, { recursive: true }) }
   })
 }
-ensureExists([ distDir, cssDir, htmlDir, imagesDir, libsDir ])
+ensureExists([distDir, cssDir, htmlDir, imagesDir, libsDir])
 
 /* Copy files to their respective destinations (async) */
-function errCB (err) { if (err) { console.error(err) }}
+function errCB (err) { if (err) { console.error(err) } }
 
 // Essential Extension files
 fs.copyFile('./manifest.json', path.join(distDir, 'manifest.json'), errCB)
@@ -34,6 +34,7 @@ copyFiles(['./images/*.png', imagesDir], true, errCB)
 copyFiles(['./node_modules/webextension-polyfill/dist/browser-polyfill.min.js', libsDir], true, errCB)
 copyFiles(['./node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js', libsDir], true, errCB)
 copyFiles(['./node_modules/jquery/dist/jquery.slim.min.js', libsDir], true, errCB)
+copyFiles(['./node_modules/commonmark/dist/commonmark.min.js', libsDir], true, errCB)
 
 // 3rd party library CSS
 copyFiles(['./node_modules/animate.css/animate.min.css', cssDir], true, errCB)

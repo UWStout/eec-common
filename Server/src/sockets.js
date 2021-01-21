@@ -1,6 +1,9 @@
 // Import the socket.io library
 import SocketIO from 'socket.io'
 
+// Import the handlebars template library
+import Handlebars from 'handlebars'
+
 // Setup debug for output
 import Debug from 'debug'
 const debug = Debug('server:socket')
@@ -80,7 +83,7 @@ function decodeToken (token) {
 function socketClientSession (clientInfo) {
   if (clientSessions[this.id]) {
     debug(`[WS:${this.id}] updated client session (${clientInfo.context})`)
-    clientSocketLookup[clientSessions[this.id].email] = undefined // Incase the email has changed
+    clientSocketLookup[clientSessions[this.id].email] = undefined // In case the email has changed
   } else {
     debug(`[WS:${this.id}] new client session (${clientInfo.context})`)
     this.join('clients')
@@ -93,7 +96,7 @@ function socketClientSession (clientInfo) {
   }
 
   // Write/Update session and broadcast change
-  clientSessions[this.id] = { email: decodeToken(clientInfo.token).email }
+  clientSessions[this.id] = { ...decodeToken(clientInfo.token) }
   clientSocketLookup[clientSessions[this.id].email] = this.id
 
   // If not a global connect, update context list and broadcast change
@@ -119,10 +122,16 @@ function socketWizardSession (wizardInfo) {
 
 // Broadcast a message from a wizard to a specific client
 function socketWizardMessage (messageInfo) {
-  // TODO: Insert 'messageInfo' into database
-  // TODO: Append a timestamp - (look at moment.js)
   const destID = clientSocketLookup[messageInfo.clientEmail]
   if (destID) {
+    // Fill-in handlebars templates if they exist
+    if (messageInfo.content.includes('{{')) {
+      const msgTemplate = Handlebars.compile(messageInfo.content)
+      messageInfo.content = msgTemplate({ user: clientSessions[destID] })
+    }
+
+    // TODO: Insert 'messageInfo' into database
+    // TODO: Append a timestamp - (look at moment.js)
     debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
     mySocket.to(destID).emit('karunaMessage', messageInfo)
   } else {
