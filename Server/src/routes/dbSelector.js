@@ -1,8 +1,9 @@
+// WARNING: SQLite support has been deprecated
 // Possible SQLite database controllers
-import * as SQLITE_CONNECT from '../sqlite/connect.js'
-import * as SQLITE_DB_AUTH from '../sqlite/authController.js'
-import * as SQLITE_DB_USER from '../sqlite/userController.js'
-import * as SQLITE_DB_TEAM from '../sqlite/teamController.js'
+// import * as SQLITE_CONNECT from '../sqlite/connect.js'
+// import * as SQLITE_DB_AUTH from '../sqlite/authController.js'
+// import * as SQLITE_DB_USER from '../sqlite/userController.js'
+// import * as SQLITE_DB_TEAM from '../sqlite/teamController.js'
 // import * as SQLITE_DB_ORG_UNIT from '../sqlite/unitController.js'
 
 // Possible MongoDB controllers
@@ -32,7 +33,8 @@ function getController (name, sqliteDB, mongoDB) {
       if (DB_TYPE !== 'sqlite') {
         debug(`Warning: unknown DB_TYPE "${DB_TYPE}". Will fallback to "sqlite".`)
       }
-      SQLITE_CONNECT.connect('karunaData')
+      console.error('SQLITE is no longer supported')
+      // SQLITE_CONNECT.connect('karunaData')
       return sqliteDB
 
     case 'mongo':
@@ -61,17 +63,17 @@ function getLogController (name, sqliteDB, mongoDB) {
 
 // Convenience function for the 'auth' controller
 export function getDBAuthController () {
-  return getController('auth', SQLITE_DB_AUTH, MONGO_DB_AUTH)
+  return getController('auth', null, MONGO_DB_AUTH)
 }
 
 // Convenience function for the 'user' controller
 export function getDBUserController () {
-  return getController('user', SQLITE_DB_USER, MONGO_DB_USER)
+  return getController('user', null, MONGO_DB_USER)
 }
 
 // Convenience function for the 'team' controller
 export function getDBTeamController () {
-  return getController('team', SQLITE_DB_TEAM, MONGO_DB_TEAM)
+  return getController('team', null, MONGO_DB_TEAM)
 }
 
 // Convenience function for the 'unit' controller

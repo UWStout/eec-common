@@ -1,2 +1,2 @@
 #!/bin/bash
-mongorestore --db karunaData --drop ./mongo/karunaData/
+mongorestore --nsInclude "karuna*.*" --drop ./mongo

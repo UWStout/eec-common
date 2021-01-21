@@ -22,12 +22,17 @@ const PROD_SERVER_URL = `mongodb+srv://${process.env.MONGO_USER}@karunacluster1.
 // Initialize database connection
 let CONNECTING_PROMISE = null
 export async function connect (dbName = 'eec-common', autoClose = true) {
-  debug('dbName: ' + dbName);
-  // Are we already connecting?
-  if (CONNECTING_PROMISE) {
-    debug('Already connecting, awaiting result')
-    await CONNECTING_PROMISE
-    return dbHandle[dbName]
+  try {
+    // Are we already connecting?
+    if (CONNECTING_PROMISE) {
+      debug('Already connecting, awaiting result')
+      await CONNECTING_PROMISE
+      return dbHandle[dbName]
+    }
+  } catch (err) {
+    // Don't log tons as the original connection attempt will do that
+    console.error('CRITICAL: MongoDB connection failed')
+    return null
   }
 
   // Is there an existing connection? Using retrieveDBHandle instead.
@@ -39,16 +44,17 @@ export async function connect (dbName = 'eec-common', autoClose = true) {
   // Attempt to connect
   try {
     const URL = (process.env.HEROKU ? PROD_SERVER_URL : DB_SERVER_URL)
-    debug(`Connecting to '${URL}'`)
-    CONNECTING_PROMISE = MongoClient.connect(URL, { useUnifiedTopology: true })
+    console.log(`Connecting to MongoDB at '${URL}'`)
+    CONNECTING_PROMISE = MongoClient.connect(URL, { useUnifiedTopology: true, useNewUrlParser: true })
     dbHandle[dbName] = await CONNECTING_PROMISE
     CONNECTING_PROMISE = null
-    debug('Connected to database')
+    console.log('Connected to database')
   } catch (err) {
     CONNECTING_PROMISE = null
-    debug('Database connection failed')
-    debug(err.stack)
-    return null
+    console.error('CRITICAL: Database connection failed')
+    console.error(err)
+    console.error(err.stack)
+    process.exit(1)
   }
 
   // Setup database to close cleanly before exiting

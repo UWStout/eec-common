@@ -3,8 +3,13 @@ import React, { useState } from 'react'
 import KarunaSettings from './KarunaSettings.jsx'
 import AccountSettings from './AccountSettings.jsx'
 
-import Button from '@material-ui/core/Button'
+import { IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import SettingsIcon from '@material-ui/icons/Settings'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import CloseIcon from '@material-ui/icons/Close'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+
 const useStyles = makeStyles({
   karunaHead: {
     color: 'black',
@@ -17,7 +22,7 @@ const useStyles = makeStyles({
 
   karunaHeadLi: {
     display: 'inline-block',
-    padding: '20px'
+    padding: '12px'
   },
 
   karunaTitle: {
@@ -26,6 +31,10 @@ const useStyles = makeStyles({
 
   karunaMenuUl: {
     listStyleType: 'none'
+  },
+
+  mainMenu: {
+    width: '240px'
   }
 })
 
@@ -52,27 +61,35 @@ export default function mainMenu () {
 
   // Return proper state of menu
   return (
-    <div id="mainMenu">
+    <div className={classes.mainMenu}>
       <div>
         <ul id="karunaHead" className={classes.karunaHead}>
           { karunaClicked || accountClicked ?
             <li className={classes.karunaHeadLi}>
-              <Button id="returnButton" onClick={handleReturnClick}>back</Button>
+              <IconButton id="returnButton" onClick={handleReturnClick}><ArrowBackIcon /></IconButton>
             </li>
             : null }
           <li className={classes.karunaHeadLi}><h3 id="karunaTitle" className={classes.karunaTitle}>Karuna</h3></li>
-          <li className={classes.karunaHeadLi}><Button id="returnButton">X</Button></li>
+          <li className={classes.karunaHeadLi}><IconButton id="returnButton" onClick={window.close}><CloseIcon /></IconButton></li>
         </ul>
       </div>
       { !karunaClicked && !accountClicked ?
         <div>
           <div>
-            <h3>Karuna Settings</h3>
-            <Button onClick={handleKarunaClick}>gear</Button>
+            <span>
+              <IconButton onClick={handleAccountClick}>
+                <AccountCircleIcon />
+              </IconButton>
+              Account Settings
+            </span>
           </div>
           <div>
-            <h3>Account Settings</h3>
-            <Button onClick={handleAccountClick}> : ) </Button>
+            <span>
+              <IconButton onClick={handleKarunaClick}>
+                <SettingsIcon />
+              </IconButton>
+              Karuna Settings
+            </span>
           </div>
         </div>
         : karunaMenu || accountMenu }
