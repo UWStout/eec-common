@@ -12,7 +12,7 @@ import JWT from 'jsonwebtoken'
 import * as UTIL from './utils.js'
 
 // Database controller
-import { getDBAuthController, getDBTeamController, getDBUnitController, getDBUserController } from './dbSelector.js'
+import { getDBAuthController, getDBLogController, getDBTeamController, getDBUnitController, getDBUserController } from './dbSelector.js'
 
 // Create debug output object
 import Debug from 'debug'
@@ -27,6 +27,8 @@ const teamDB = getDBTeamController()
 const userDB = getDBUserController()
 
 const unitDB = getDBUnitController()
+
+const logDB = getDBLogController()
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
@@ -102,7 +104,7 @@ const router = new Express.Router()
 // also tested within team.js with https://localhost:3000/data/team/list
 
 // 5. test teamController createTeam
-router.put('/registerTeam', async (req, res) => {
+router.post('/registerTeam', async (req, res) => {
   // Extract and check required fields
   const { teamName, unitID, userID } = req.body
   if (!teamName) {
@@ -148,7 +150,7 @@ router.post('/addToTeam', async (req, res) => {
 })
 
 // 7. test teamController's createOrgUnit function: works!
-router.put('/registerOrg', async (req, res) => {
+router.post('/registerOrg', async (req, res) => {
   // Extract and check required fields
   const { unitName, description, adminID } = req.body
   if (!unitName) {
@@ -339,6 +341,27 @@ router.get('/getTeamDetails/:teamID', async (req, res) => {
 })
 // 19. test teamControllers updateTeam (userID, newData)
 // tested within https://localhost:3000/data/team/update
+
+// 20. test logController's logWizardMessage (message, correspondentID)
+router.post('/logWizardMessage', async (req, res) => {
+  // Extract and check required fields
+  const { message, correspondentID } = req.body
+  if (!message) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // Attempt to create org
+  debug('logging wizard message')
+  try {
+    const teamID = await logDB.logWizardMessage(message, correspondentID)
+    return res.status(200).json({ message: 'success', teamID: teamID })
+  } catch (error) {
+    console.error('Failed to log wizard message')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while logging wizard message' })
+  }
+})
 
 // Expose the router for use in other files
 export default router
