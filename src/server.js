@@ -152,7 +152,7 @@ if (process.argv.find((arg) => { return arg === 'dev' })) {
   })
 } else {
   // Start server listening on main/production port
-  server.listen(PROD_PORT, 'localhost', () => {
+  server.listen(PROD_PORT, '0.0.0.0', () => {
     console.log(`Karuna server listening on port ${PROD_PORT}`)
   })
 }
