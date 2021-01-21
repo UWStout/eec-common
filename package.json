@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "handlebars": "^4.7.6",
     "saslprep": "^1.0.3"
   }
 }

@@ -87,7 +87,7 @@ socket.on('clientTyping', (message) => {
     typingBox.text(message.data)
     typingBox[0].scrollTop = typingBox[0].scrollHeight
   } else {
-    console.error(`Could find session id for ${message.clientEmail}, ${message.context}`)
+    console.error(`Could not find session id for ${message.clientEmail}, ${message.context}`)
   }
 })
 
