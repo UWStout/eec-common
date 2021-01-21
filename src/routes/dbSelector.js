@@ -34,59 +34,36 @@ function getController (name, sqliteDB, mongoDB) {
         debug(`Warning: unknown DB_TYPE "${DB_TYPE}". Will fallback to "sqlite".`)
       }
       console.error('SQLITE is no longer supported')
-      // SQLITE_CONNECT.connect('karunaData')
+      // SQLITE_CONNECT.connect(name)
       return sqliteDB
 
     case 'mongo':
-      MONGO_CONNECT.connect('karunaData')
-      return mongoDB
-  }
-}
-
-// Read database configuration and return matching controller object
-function getLogController (name, sqliteDB, mongoDB) {
-  const DB_TYPE = process.env.DB_TYPE || 'sqlite'
-  switch (DB_TYPE) {
-    default:
-    case 'sqlite':
-      if (DB_TYPE !== 'sqlite') {
-        debug(`Warning: unknown DB_TYPE "${DB_TYPE}". Will fallback to "sqlite".`)
-      }
-      SQLITE_CONNECT.connect('karunaData')
-      return sqliteDB
-
-    case 'mongo':
-      MONGO_CONNECT.connect('karunaLogs')
+      MONGO_CONNECT.connect(name)
       return mongoDB
   }
 }
 
 // Convenience function for the 'auth' controller
 export function getDBAuthController () {
-  return getController('auth', null, MONGO_DB_AUTH)
+  return getController('karunaData', null, MONGO_DB_AUTH)
 }
 
 // Convenience function for the 'user' controller
 export function getDBUserController () {
-  return getController('user', null, MONGO_DB_USER)
+  return getController('karunaData', null, MONGO_DB_USER)
 }
 
 // Convenience function for the 'team' controller
 export function getDBTeamController () {
-  return getController('team', null, MONGO_DB_TEAM)
+  return getController('karunaData', null, MONGO_DB_TEAM)
 }
 
 // Convenience function for the 'unit' controller
 export function getDBUnitController () {
-  return getController('unit', null, MONGO_DB_ORG_UNIT)
+  return getController('karunaData', null, MONGO_DB_ORG_UNIT)
 }
 
 // Convenience function for the 'karunaLog' controller
 export function getDBLogController () {
-  return getLogController('wizardLogs', null, MONGO_DB_LOGS)
+  return getController('karunaLogs', null, MONGO_DB_LOGS)
 }
-/*
-export function getDBUserLogController () {
-  return getLogController('UserLog', null, MONGO_DB_LOGS)
-}
-*/
