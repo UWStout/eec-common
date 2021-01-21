@@ -12,6 +12,7 @@ import * as MONGO_DB_AUTH from '../mongo/authController.js'
 import * as MONGO_DB_USER from '../mongo/userController.js'
 import * as MONGO_DB_TEAM from '../mongo/teamController.js'
 import * as MONGO_DB_ORG_UNIT from '../mongo/unitController.js'
+import * as MONGO_DB_LOGS from '../mongo/LogController.js'
 
 // Debug output
 import Debug from 'debug'
@@ -42,6 +43,24 @@ function getController (name, sqliteDB, mongoDB) {
   }
 }
 
+// Read database configuration and return matching controller object
+function getLogController (name, sqliteDB, mongoDB) {
+  const DB_TYPE = process.env.DB_TYPE || 'sqlite'
+  switch (DB_TYPE) {
+    default:
+    case 'sqlite':
+      if (DB_TYPE !== 'sqlite') {
+        debug(`Warning: unknown DB_TYPE "${DB_TYPE}". Will fallback to "sqlite".`)
+      }
+      SQLITE_CONNECT.connect('karunaData')
+      return sqliteDB
+
+    case 'mongo':
+      MONGO_CONNECT.connect('karunaLogs')
+      return mongoDB
+  }
+}
+
 // Convenience function for the 'auth' controller
 export function getDBAuthController () {
   return getController('auth', null, MONGO_DB_AUTH)
@@ -57,7 +76,17 @@ export function getDBTeamController () {
   return getController('team', null, MONGO_DB_TEAM)
 }
 
-// Convenience function for the 'team' controller
+// Convenience function for the 'unit' controller
 export function getDBUnitController () {
   return getController('unit', null, MONGO_DB_ORG_UNIT)
 }
+
+// Convenience function for the 'karunaLog' controller
+export function getDBLogController () {
+  return getLogController('wizardLogs', null, MONGO_DB_LOGS)
+}
+/*
+export function getDBUserLogController () {
+  return getLogController('UserLog', null, MONGO_DB_LOGS)
+}
+*/
