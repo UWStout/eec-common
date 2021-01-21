@@ -13,6 +13,9 @@ let toolbar
 
 // Session lookup
 let sessions = []
+let activeUserID = ''
+let activeTabID = ''
+let activeContextName = ''
 
 function addSession (userID, context, sessionID) {
   const sessionKey = `${userID}${context}`
@@ -42,8 +45,12 @@ socket.on('updateSessions', (sessionData) => {
     tabContents.empty()
     tabs = []
     sessions = []
+    activeUserID = ''
+    activeTabID = -1
+    activeContextName = ''
 
     // Make new ones for each user and context
+    let tabCount = 0
     for (const user in sessionData) {
       if (!Array.isArray(sessionData[user].contexts)) {
         console.log('User session with NO contexts ' + sessionData[user].email)
@@ -51,8 +58,21 @@ socket.on('updateSessions', (sessionData) => {
         sessionData[user].contexts.forEach((context) => {
           const id = addTab(sessionData[user].email, context)
           addSession(sessionData[user].email, context, id)
+          tabCount++
+
+          if (tabCount === 1) {
+            activeTabID = 1
+            activeUserID = sessionData[user].email
+            activeContextName = context
+          }
         })
       }
+    }
+
+    // Are there no active valid sessions?
+    if (tabCount <= 0) {
+      console.log('Adding empty message')
+      tabContents.append(addEmptyMessage())
     }
   }
 })
@@ -104,10 +124,26 @@ $(document).ready(() => {
   // Make the markdown editor widget
   editor = new TinyMDE.Editor({ element: 'markdownEditor', content: ' ' })
   toolbar = new TinyMDE.CommandBar({ element: 'markdownToolbar', editor })
+
+  // Adjust the editable div to fill its parent
+  $('div.TinyMDE').css('height', '100%')
 })
+
+// A simple message to show when there are no active sessions
+function addEmptyMessage () {
+  const emptyPaneDiv = $('<div>').addClass('text-center')
+  emptyPaneDiv.text('No active sessions')
+  return emptyPaneDiv
+}
 
 // Tab element storage
 let tabs = []
+function tabShown (tabID, userID, contextName) {
+  activeTabID = tabID
+  activeUserID = userID
+  activeContextName = contextName
+  console.log(`New active tab: ${tabID} (${activeUserID}/${activeContextName})`)
+}
 
 // Insert a new tab at end of list
 function addTab (userID, contextName) {
@@ -116,7 +152,7 @@ function addTab (userID, contextName) {
   const isActive = (tabs.length === 0)
 
   // Build new header and content HTML
-  const newHeader = makeTabHeader(tabID, `${userID} - ${contextName}`, isActive)
+  const newHeader = makeTabHeader(tabID, userID, contextName, isActive, tabShown)
   const newContent = makeTabContentPane(tabID, userID, contextName, isActive)
 
   // Store in array for tracking
@@ -131,8 +167,8 @@ function addTab (userID, contextName) {
 
   // Set callbacks for various form-inputs
   $('.dropdown-item').on('click', cannedMessageClick)
-  $('.messageText').on('keydown', triggerMessage)
-  $('.sendMessage').on('click', sendMessage)
+  // $('.messageText').on('keydown', triggerMessage)
+  $('#sendMessage').on('click', sendMessage)
 
   // Return the id
   return tabID
@@ -161,9 +197,7 @@ function sendMessage (event) {
   event.preventDefault()
 
   // Retrieve message text
-  const sendButton = $(event.target)
-  const source = $(sendButton.data('source'))
-  const messageText = source.val()
+  const messageText = editor.getContent()
 
   // Refuse to send empty message
   if (messageText.trim() === '') {
@@ -171,20 +205,20 @@ function sendMessage (event) {
   }
 
   // Clear message text box
-  source.val('')
+  editor.setContent('')
 
   // Build and append message to message area
   const newMsg = $('<li>').addClass('karunaMessage')
   newMsg.text(messageText)
-  const messageBox = $(sendButton.data('target'))
+  const messageBox = $(`#messageList${activeTabID}`)
   messageBox.append(newMsg)
   messageBox[0].scrollTop = messageBox[0].scrollHeight
 
   // Broadcast to all sockets
-  console.log(`Broadcasting message to ${sendButton.data('client')} - ${sendButton.data('context')}`)
+  console.log(`Broadcasting message to ${activeUserID} - ${activeContextName}`)
   socket.emit('wizardMessage', {
-    clientEmail: sendButton.data('client'),
-    context: sendButton.data('context'),
+    clientEmail: activeUserID,
+    context: activeContextName,
     content: messageText
   })
 }

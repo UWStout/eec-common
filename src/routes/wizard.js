@@ -28,7 +28,6 @@ router.get('/*', decodeToken, (req, res) => {
   if (req.path === '/') { return res.redirect(REDIRECT_PATH + 'emeraldCity.html') }
 
   // All remaining paths require authorization so redirect if not logged in
-  console.log(req.user)
   if (!req.user || req.user.error) {
     // Send to login
     debug(`Redirecting ${req.path} to login.html`)
@@ -43,7 +42,6 @@ router.get('/*', decodeToken, (req, res) => {
   }
 
   // Attempt to send file in response
-  debug(`Serving admin page ${req.path}`)
   return res.sendFile(req.path, { root: path.resolve(WIZARD_VIEW_PATH) })
 })
 
