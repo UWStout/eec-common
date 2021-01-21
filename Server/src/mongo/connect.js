@@ -22,6 +22,7 @@ const PROD_SERVER_URL = `mongodb+srv://${process.env.MONGO_USER}@karunacluster1.
 // Initialize database connection
 let CONNECTING_PROMISE = null
 export async function connect (dbName = 'eec-common', autoClose = true) {
+  debug('dbName: ' + dbName);
   // Are we already connecting?
   if (CONNECTING_PROMISE) {
     debug('Already connecting, awaiting result')
