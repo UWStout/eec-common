@@ -4,6 +4,9 @@ import SocketIO from 'socket.io'
 // Import the handlebars template library
 import Handlebars from 'handlebars'
 
+// Database controller
+import { getDBLogController } from './routes/dbSelector.js'
+
 // Setup debug for output
 import Debug from 'debug'
 const debug = Debug('server:socket')
@@ -12,6 +15,9 @@ const debug = Debug('server:socket')
 const clientSessions = {}
 const clientSocketLookup = {}
 const wizardSessions = {}
+
+// database log controller object
+const DBLog = getDBLogController()
 
 // Our root socket instance
 let mySocket = null
@@ -123,15 +129,18 @@ function socketWizardSession (wizardInfo) {
 // Broadcast a message from a wizard to a specific client
 function socketWizardMessage (messageInfo) {
   const destID = clientSocketLookup[messageInfo.clientEmail]
+  let correspondentID
   if (destID) {
+    correspondentID = clientSessions[destID].id
     // Fill-in handlebars templates if they exist
     if (messageInfo.content.includes('{{')) {
       const msgTemplate = Handlebars.compile(messageInfo.content)
       messageInfo.content = msgTemplate({ user: clientSessions[destID] })
     }
 
-    // TODO: Insert 'messageInfo' into database
-    // TODO: Append a timestamp - (look at moment.js)
+    // Insert 'messageInfo' into database
+    DBLog.logWizardMessage(messageInfo, correspondentID) // currently not being waited on, can be turned asynchronous later if this causes issues
+
     debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
     mySocket.to(destID).emit('karunaMessage', messageInfo)
   } else {
@@ -155,16 +164,18 @@ function socketMessageUpdate (message) {
   })
 }
 
-// Attempt to send message
+// Attempt to send message from Client
 // - 'this' = current socket
 function socketMessageSend (message) {
   if (!clientSessions[this.id]) {
     debug(`[WS:${this.id}] sending message before login`)
     return
   }
+  const userID = clientSessions[this.id].id
 
   // TODO: Insert 'message' into database
-  // TODO: Append a timestamp
+  // TO-DO: get userID of the person sending the message
+  DBLog.logUserMessage(message, null, userID) // currently not being waited on, can be turned asynchronous later if this causes issues
 
   debug(`[WS:${this.id}] message received from ${message.context}`)
   mySocket.to('wizards').emit('clientSend', {

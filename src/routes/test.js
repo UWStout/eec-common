@@ -113,6 +113,31 @@ router.post('/registerTeam', async (req, res) => {
   }
 
   // TO-DO? Check if team with the same team name is already registered?
+  lookup = [{
+    // Join with the matching 'orgId' in the 'Units' collection
+    $lookup: {
+      from: 'Units',
+      let: { unitID: '$orgId' },
+      pipeline: [
+        { $match: { $expr: { $eq: ['$_id', '$$unitID'] } } },
+        { $project: { _id: 0, orgId: '$_id', unitName: '$name' } }
+      ],
+      as: 'unit'
+    }
+  }, {
+    // Merge the fields of the Unit object into the root document
+    $replaceRoot: {
+      newRoot: {
+        $mergeObjects: [
+          { $arrayElemAt: ['$unit', 0] },
+          '$$ROOT'
+        ]
+      }
+    }
+  }]
+
+  // Remove the unit object that was merged in
+  project = { unit: 0 }
 
   // Attempt to create user
   debug(`Making team ${teamName}`)
@@ -360,6 +385,27 @@ router.post('/logWizardMessage', async (req, res) => {
     console.error('Failed to log wizard message')
     console.error(error)
     return res.status(500).json({ error: true, message: 'Error while logging wizard message' })
+  }
+})
+
+// 21. test logController's logUserMessage (message, correspondentID, userID): TO-DO: BROKEN
+router.post('/logUserMessage', async (req, res) => {
+  // Extract and check required fields
+  const { message, correspondentID, userID } = req.body
+  if (!message || !userID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // Attempt to create org
+  debug('logging user message')
+  try {
+    const teamID = await logDB.logUserMessage(message, correspondentID, userID)
+    return res.status(200).json({ message: 'success', teamID: teamID })
+  } catch (error) {
+    console.error('Failed to log user message')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while logging user message' })
   }
 })
 
