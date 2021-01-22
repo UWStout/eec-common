@@ -1,4 +1,4 @@
-/* globals $, io, TinyMDE */
+/* globals $, store, Cookies, io, TinyMDE */
 
 // Import chat widget making button
 import { makeTabHeader, makeTabContentPane } from './chatWidgetHelper.js'
@@ -31,8 +31,9 @@ function getSessionID (userID, context) {
 console.log(`Socket.io: connecting to ${window.location}`)
 const socket = io({ path: '/karuna/socket.io' })
 socket.on('connect', () => {
+  const token = store.local.get('JWT') || Cookies.get('JWT')
   console.log('[WS] Connected to server')
-  socket.emit('wizardSession', {})
+  socket.emit('wizardSession', { token })
 })
 
 // Listen for messages from the karuna server
