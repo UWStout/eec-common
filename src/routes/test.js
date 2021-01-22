@@ -12,23 +12,20 @@ import JWT from 'jsonwebtoken'
 import * as UTIL from './utils.js'
 
 // Database controller
-import { getDBAuthController, getDBLogController, getDBTeamController, getDBUnitController, getDBUserController } from './dbSelector.js'
+import { getDBAffectController, getDBAffectHistoryController, getDBAuthController, getDBLogController, getDBTeamController, getDBUnitController, getDBUserController } from './dbSelector.js'
 
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('server:auth')
 
-// Get database auth routes controller object
+// Get database controllers
 const authDB = getDBAuthController()
-
-// Get database team routes controller object
 const teamDB = getDBTeamController()
-
 const userDB = getDBUserController()
-
 const unitDB = getDBUnitController()
-
 const logDB = getDBLogController()
+const affectDB = getDBAffectController()
+const affectHistoryDB = getDBAffectHistoryController()
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
@@ -93,11 +90,11 @@ const router = new Express.Router()
 
 // ******* API routes **************
 
-// 1. tests authController validateUser function
+// 1. tests authController validateUser (email, password) function
 // also tested in auth.js with https://localhost:3000/auth/login
 
 // 2. test userController emailExists and
-// 3. test authController createUser
+// 3. test authController function createUser (firstName, lastName, email, userType, password)
 // also tested in auth.js with https://localhost:3000/auth/register
 
 // 4. test teamController listTeams
@@ -112,7 +109,7 @@ router.post('/registerTeam', async (req, res) => {
     return
   }
 
-  // TO-DO? Check if team with the same team name is already registered?
+  /* // TO-DO? Check if team with the same team name is already registered?
   lookup = [{
     // Join with the matching 'orgId' in the 'Units' collection
     $lookup: {
@@ -138,6 +135,7 @@ router.post('/registerTeam', async (req, res) => {
 
   // Remove the unit object that was merged in
   project = { unit: 0 }
+ */
 
   // Attempt to create user
   debug(`Making team ${teamName}`)
@@ -408,6 +406,26 @@ router.post('/logUserMessage', async (req, res) => {
     return res.status(500).json({ error: true, message: 'Error while logging user message' })
   }
 })
+
+// 22. test userController's function getUserCount ()
+router.get('/getUserCount', async (req, res) => {
+  // Attempt to create org
+  debug('getting User Count')
+  try {
+    const userCount = await userDB.getUserCount()
+    return res.status(200).json({ message: 'success', userCount: userCount })
+  } catch (error) {
+    console.error('Failed to get User Count')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while getting user count' })
+  }
+})
+
+// 23. test unitController's function updateOrgUnits (userID, newData)
+// tested in orgUnit.js under endpoint 'data/unit/update'
+
+// 24. test unitController's listOrgUnits (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
+// tested in orgUnit.js under endpoint 'data/unit/list'
 
 // Expose the router for use in other files
 export default router
