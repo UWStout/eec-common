@@ -12,6 +12,9 @@ const debug = Debug('server:mongo')
 
 /**
  * Retrieve details for the given team
+ *
+ * tested in test 18 of test.js
+ *
  * @param {number} teamID ID of the team to lookup
  * @return {Promise} Resolves to JS Object with all the team details, rejects on error
  */
@@ -24,6 +27,9 @@ export function getTeamDetails (teamID) {
 
 /**
  * Create new team and optionally add user to the team.
+ *
+ * tested in test 5 of test.js
+ *
  * @param {string} teamName Name for the new team
  * @param {number} unitID ID of the related unit (may be empty)
  * @param {number} userID ID of a user to add to the team (may be empty)
@@ -59,6 +65,9 @@ export function createTeam (teamName, unitID, userID) {
 
 /**
  * Drop the given team from the database
+ *
+ * tested in test 8 of test.js
+ *
  * @param {number} teamID ID of the team to destroy (must exist in DB)
  * @return {boolean} Whether or not the removal was successful
  */
@@ -75,6 +84,9 @@ export function removeTeam (teamID) {
 
 /**
  * Update a team entry in the database with new data
+ *
+ * tested in test 19 of test.js
+ *
  * @param {number} userID ID of the user to update
  * @param {Object} newData New data for the team document (will be merged with existing document)
  * @return {Promise} Resolves with no data if successful, rejects on error
@@ -106,6 +118,8 @@ export function updateTeam (userID, newData) {
 /**
  * List users in the database with pagination, sorting, and filtering. See listCollection()
  * in 'commonHelper.js' for description of all the parameters and return value
+ *
+ * tested in test 4 of test.js
  *
  * @param {bool} IDsOnly Include only IDs in the results
  */
@@ -150,6 +164,9 @@ export function listTeams (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
 
 /**
  * Add a user to a given team
+ *
+ * tested in test 6 of test.js
+ *
  * @param {number} userID The id of the user to add
  * @param {number} teamID The id of the team to add them too
  * @return {Promise} Resolves with 'true' on success, rejects on error

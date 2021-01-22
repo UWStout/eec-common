@@ -12,6 +12,9 @@ const debug = Debug('server:mongo')
 
 /**
  * Retrieve details for the given organizational unit
+ *
+ * tested in test 17 of test.js
+ *
  * @param {number} unitID ID of the org unit to lookup
  * @return {Promise} Resolves to JS Object with all the org unit details, rejects on error
  */
@@ -24,6 +27,9 @@ export function getOrgUnitDetails (unitID) {
 
 /**
  * Create new organization unit (teams are housed under units)
+ *
+ * tested in test 7 of test.js
+ *
  * @param {string} unitName Name for the new org unit
  * @param {string} description Description of the org unit (may be null)
  * @param {string} adminID ID of admin user (may be null)
@@ -44,6 +50,9 @@ export function createOrgUnit (unitName, description, adminID) {
 
 /**
  * Drop the given organization unit from the database
+ *
+ * tested in test 9 of test.js
+ *
  * @param {number} unitID ID of the org unit to destroy (must exist in DB)
  * @return {boolean} Whether or not the removal was successful
  */
@@ -66,6 +75,9 @@ export function removeOrgUnit (unitID) {
 
 /**
  * Update an org unit entry in the database with new data
+ *
+ * tested in test 23 of test.js
+ *
  * @param {number} userID ID of the user to update
  * @param {Object} newData New data for the org unit document (will be merged with existing document)
  * @return {Promise} Resolves with no data if successful, rejects on error
@@ -92,6 +104,8 @@ export function updateOrgUnits (userID, newData) {
 /**
  * List units in the database with pagination, sorting, and filtering. See listCollection()
  * in 'commonHelper.js' for description of all the parameters and return value
+ *
+ * tested in test 24 of test.js
  *
  * @param {bool} IDsOnly Include only IDs in the results
  */

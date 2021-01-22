@@ -10,10 +10,11 @@ import { ObjectID } from 'mongodb'
 import Debug from 'debug'
 const debug = Debug('server:mongo')
 
-
-// TO-DO: make take email instead
 /**
  * Logs messages from the wizard
+ *
+ * tested in test 20 of test.js
+ *
  * @param {string} message the wizard message getting logged
  * @param {_id} correspondentID the id of the person being replied to, may be empty
  * @return A document containing:
@@ -33,6 +34,9 @@ export function logWizardMessage (message, correspondentID) {
 
 /**
  * Retrieve details for the given team
+ *
+ * tested in test 21 of test.js
+ *
  * @param {string} message the wizard message getting logged
  * @param {_id} correspondentID the id of the person being replied to, may be empty
  * @param {_id} userID the user sending the message

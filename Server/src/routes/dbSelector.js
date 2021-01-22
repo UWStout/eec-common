@@ -13,6 +13,8 @@ import * as MONGO_DB_USER from '../mongo/userController.js'
 import * as MONGO_DB_TEAM from '../mongo/teamController.js'
 import * as MONGO_DB_ORG_UNIT from '../mongo/unitController.js'
 import * as MONGO_DB_LOGS from '../mongo/LogController.js'
+import * as MONGO_DB_AFFECT from '../mongo/affectController.js'
+import * as MONGO_DB_AFFECT_HISTORY from '../mongo/affectHistoryController.js'
 
 // Debug output
 import Debug from 'debug'
@@ -66,4 +68,14 @@ export function getDBUnitController () {
 // Convenience function for the 'karunaLog' controller
 export function getDBLogController () {
   return getController('karunaLogs', null, MONGO_DB_LOGS)
+}
+
+// Convenience function for the 'affect' controller
+export function getDBAffectController () {
+  return getController('karunaData', null, MONGO_DB_AFFECT)
+}
+
+// Convenience function for the 'affect history' controller
+export function getDBAffectHistoryController () {
+  return getController('karunaData', null, MONGO_DB_AFFECT_HISTORY)
 }
