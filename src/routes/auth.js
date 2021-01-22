@@ -90,12 +90,16 @@ router.post('/login', async (req, res) => {
     // Attempt to validate user
     const userData = await DBAuth.validateUser(email, password)
 
+    // Set user's successful login timestamp
+    const address = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown'
+    DBUser.updateUserTimestamps(userData.id, address)
+
     // Generate token and return
     const token = JWT.sign(userData, process.env.TOKEN_SECRET, {
       subject: 'authorization',
       issuer: 'Karuna',
       audience: userData.email,
-      expiresIn: '30d'
+      expiresIn: '1d'
     })
     return res.status(200).json({ message: 'success', token: token })
   } catch (err) {
