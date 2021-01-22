@@ -12,7 +12,7 @@ import JWT from 'jsonwebtoken'
 import * as UTIL from './utils.js'
 
 // Database controller
-import { getDBAffectController, getDBAffectHistoryController, getDBAuthController, getDBLogController, getDBTeamController, getDBUnitController, getDBUserController } from './dbSelector.js'
+import { getDBAffectController, getDBAuthController, getDBLogController, getDBTeamController, getDBUnitController, getDBUserController } from './dbSelector.js'
 
 // Create debug output object
 import Debug from 'debug'
@@ -25,7 +25,6 @@ const userDB = getDBUserController()
 const unitDB = getDBUnitController()
 const logDB = getDBLogController()
 const affectDB = getDBAffectController()
-const affectHistoryDB = getDBAffectHistoryController()
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
@@ -424,8 +423,50 @@ router.get('/getUserCount', async (req, res) => {
 // 23. test unitController's function updateOrgUnits (userID, newData)
 // tested in orgUnit.js under endpoint 'data/unit/update'
 
-// 24. test unitController's listOrgUnits (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
+// 24. test unitController's function listOrgUnits (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
 // tested in orgUnit.js under endpoint 'data/unit/list'
+
+// 25. test affectController's function getAffectDetails (affectID)
+router.get('/getAffectDetails/:affectID', async (req, res) => {
+  // Extract and check required fields
+  const affectID = req.params.affectID
+  if (!affectID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // attempt to get affect details
+  debug(`attempting to get affect details ${affectID}`)
+  try {
+    const affect = await affectDB.getAffectDetails(affectID)
+    return res.status(200).json({ message: 'success', affect: affect })
+  } catch (error) {
+    debug(`Failed to get affect details ${affectID}`)
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while getting affect details' })
+  }
+})
+
+// 26. test affectController's function createAffect (affectName, description, characterCodes, relatedIDs)
+router.post('/createAffect', async (req, res) => {
+  // Extract and check required fields
+  const { affectName, description, characterCodes, relatedIDs } = req.body
+  if (!affectName) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // Attempt to create affect
+  debug('attempting to create an affect')
+  try {
+    const affect = await affectDB.createAffect(affectName, description, characterCodes, relatedIDs)
+    return res.status(200).json({ message: 'success', affect: affect, characterCodes })
+  } catch (error) {
+    console.error('Failed to to create an affect')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while creating an affect' })
+  }
+})
 
 // Expose the router for use in other files
 export default router
