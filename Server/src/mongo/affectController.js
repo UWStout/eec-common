@@ -69,6 +69,9 @@ export function createAffect (affectName, description, characterCodes, relatedID
 
 /**
  * Drop the given affect document from the database
+ *
+ * tested in test 27 of test.js
+ *
  * @param {string} affectID ID of the affect to destroy (must exist in DB)
  * @return {Promise} Resolves only if the removal was successful, rejects otherwise
  */
@@ -84,16 +87,19 @@ export function removeAffect (affectID) {
 
 /**
  * Update an affect entry in the database with new data
+ *
+ * tested within test 28 of test.js
+ *
  * @param {number} affectID ID of the user to update
  * @param {Object} newData New data for the affect document (will be merged with existing document)
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
-export function updateAffect (userID, newData) {
+export function updateAffect (affectID, newData) {
   const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     DBHandle.collection('Affects')
       .findOneAndUpdate(
-        { _id: new ObjectID(userID) },
+        { _id: new ObjectID(affectID) },
         { $set: { ...newData } },
         (err, result) => {
           if (err) {
@@ -110,6 +116,8 @@ export function updateAffect (userID, newData) {
 /**
  * List affects in the database with pagination, sorting, and filtering. See listCollection()
  * in 'commonHelper.js' for description of all the parameters and return value
+ *
+ * tested in test 29 of test.js
  *
  * @param {bool} IDsOnly Include only IDs in the results
  */
