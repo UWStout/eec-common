@@ -5,7 +5,7 @@ import SocketIO from 'socket.io'
 import Handlebars from 'handlebars'
 
 // Database controller
-import { getDBLogController } from './routes/dbSelector.js'
+import { getDBLogController, getDBUserController } from './routes/dbSelector.js'
 
 // Setup debug for output
 import Debug from 'debug'
@@ -16,8 +16,9 @@ const clientSessions = {}
 const clientSocketLookup = {}
 const wizardSessions = {}
 
-// database log controller object
+// database log and user controller objects
 const DBLog = getDBLogController()
+const DBUser = getDBUserController()
 
 // Our root socket instance
 let mySocket = null
@@ -106,24 +107,53 @@ function socketClientSession (clientInfo) {
   clientSocketLookup[clientSessions[this.id].email] = this.id
 
   // If not a global connect, update context list and broadcast change
-  if (Array.isArray(clientInfo.context)) {
+  if (clientInfo.context !== 'global') {
+    // Pack in array if not already
+    if (!Array.isArray(clientInfo.context)) {
+      clientInfo.context = [clientInfo.context]
+    }
+
+    // Update session list and broadcast
     clientSessions[this.id].contexts = [...clientInfo.context]
     mySocket.to('wizards').emit('updateSessions', clientSessions)
+
+    // Record the context connection in user entry in database
+    const req = this.request
+    const address = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown'
+    DBUser.updateUserTimestamps(clientSessions[this.id].id, address, clientSessions[this.id].contexts)
+      .catch((err) => {
+        console.error('WARNING: Failed to update context timestamp')
+        console.error(err)
+      })
   }
 }
 
 // Establish an in-memory session for a connected wizard
 // - 'this' = current socket
 function socketWizardSession (wizardInfo) {
-  if (wizardSessions[this.id]) {
-    debug(`[WS:${this.id}] updated wizard session`)
+  if (!wizardInfo.token) {
+    console.error('ERROR: Wizard session missing access token')
   } else {
-    debug(`[WS:${this.id}] new wizard session`)
-  }
+    wizardSessions[this.id] = { ...decodeToken(wizardInfo.token) }
 
-  wizardSessions[this.id] = wizardInfo
-  this.join('wizards')
-  mySocket.to(this.id).emit('updateSessions', clientSessions)
+    if (wizardSessions[this.id]) {
+      debug(`[WS:${this.id}] updated wizard session for ${wizardSessions[this.id].email}`)
+    } else {
+      debug(`[WS:${this.id}] new wizard session for ${wizardSessions[this.id].email}`)
+    }
+
+    this.join('wizards')
+    mySocket.to(this.id).emit('updateSessions', clientSessions)
+
+    // Record the wizard login in user entry in database
+    const req = this.request
+    const address = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown'
+    DBUser.updateUserTimestamps(wizardSessions[this.id].id, address, true)
+      .catch((err) => {
+        console.error('WARNING: Failed to update wizard login timestamp')
+        console.error(err)
+      })
+  }
 }
 
 // Broadcast a message from a wizard to a specific client
