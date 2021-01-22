@@ -10,6 +10,8 @@ import { ObjectID } from 'mongodb'
 import Debug from 'debug'
 const debug = Debug('server:mongo')
 
+
+// TO-DO: make take email instead
 /**
  * Logs messages from the wizard
  * @param {string} message the wizard message getting logged
@@ -24,7 +26,7 @@ export function logWizardMessage (message, correspondentID) {
 
   if (!correspondentID) {
     insertThis = { message: message }
-  } else insertThis = { message: message, correspondentID: new ObjectID(correspondentID) }
+  } else insertThis = { message: message, timestamp: new Date(), correspondentID: new ObjectID(correspondentID) }
   var c = DBHandle.collection('wizardLogs')
   return c.insertOne(insertThis)
 }
@@ -43,8 +45,8 @@ export function logUserMessage (message, correspondentID, userID) {
   let insertThis
 
   if (!correspondentID) {
-    insertThis = { message, userID: new ObjectID(userID) }
-  } else insertThis = { message: message, correspondentID: new ObjectID(correspondentID), userID: new ObjectID(userID) }
+    insertThis = { message, timestamp: new Date(), userID: new ObjectID(userID) }
+  } else insertThis = { message: message, timestamp: new Date(), correspondentID: new ObjectID(correspondentID), userID: new ObjectID(userID) }
   return DBHandle
     .collection('userLogs')
     .insertOne(insertThis)
