@@ -120,6 +120,101 @@ export function updateUser (userID, newData) {
 }
 
 /**
+ * Update a user's recent activity timestamps
+ * @param {number} userID ID of the user to update
+ * @param {string} remoteAddress New IP address to set as source of the activity.
+ * @param {string[]|bool} context Pass 'true' to indicate a wizard login, otherwise, pass array of
+ *                                active contexts. If empty or false-ish, will treat as a standard login.
+ * @return {Promise} Resolves with no data if successful, rejects on error
+ */
+export function updateUserTimestamps (userID, remoteAddress, context) {
+  // Ensure userID is defined
+  if (!userID) {
+    return Promise.reject(new Error('UserId must be defined'))
+  }
+
+  // Setup new data for database
+  const newData = {}
+  if (context === true) {
+    // Build last login object for a wizard
+    newData.lastWizardLogin = {
+      timestamp: new Date(),
+      remoteAddress
+    }
+  } else if (!Array.isArray(context) || context.length === 0) {
+    // Build last login object
+    newData.lastLogin = {
+      timestamp: new Date(),
+      remoteAddress
+    }
+  } else {
+    // Build updated context timestamp list
+    newData.lastContextLogin = {}
+    context.forEach((contextName) => {
+      newData.lastContextLogin[contextName] = {
+        timestamp: new Date(),
+        remoteAddress
+      }
+    })
+  }
+
+  // Update user record with the latest connection/login data
+  return new Promise((resolve, reject) => {
+    const DBHandle = retrieveDBHandle('karunaData')
+    DBHandle.collection('Users')
+      .findOneAndUpdate(
+        { _id: new ObjectID(userID) },
+        { $set: { ...newData } },
+        (err, result) => {
+          if (err) {
+            debug('Failed to update user with login/connect timestamp')
+            debug(err)
+            return reject(err)
+          }
+          resolve()
+        }
+      )
+  })
+}
+
+/**
+ * Update a user's most recently indicated affect
+ * @param {number} userID ID of the user to update
+ * @param {string} affectID ID of the most recently indicated affect
+ * @return {Promise} Resolves with no data if successful, rejects on error
+ */
+export function updateUserAffect (userID, affectID) {
+  // Ensure userID and affectID are defined
+  if (!userID || !affectID) {
+    return Promise.reject(new Error('Both the userID and affectID must be defined'))
+  }
+
+  // Setup new data for database
+  const lastAffect = {
+    timestamp: new Date(),
+    affectID: new ObjectID(affectID)
+  }
+
+  // Update user record with the latest affect data
+  return new Promise((resolve, reject) => {
+    const DBHandle = retrieveDBHandle('karunaData')
+    DBHandle.collection('Users')
+      .findOneAndUpdate(
+        { _id: new ObjectID(userID) },
+        { $set: { lastAffect } },
+        (err, result) => {
+          if (err) {
+            debug('Failed to update user with latest affect data')
+            debug(err)
+            return reject(err)
+          }
+          resolve()
+        }
+      )
+  })
+}
+
+/**
  * Drop a user from the database
  *
  * tested in test 16 of test.js
