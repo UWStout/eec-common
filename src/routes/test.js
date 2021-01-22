@@ -16,7 +16,7 @@ import { getDBAffectController, getDBAuthController, getDBLogController, getDBTe
 
 // Create debug output object
 import Debug from 'debug'
-const debug = Debug('server:auth')
+const debug = Debug('server:test')
 
 // Get database controllers
 const authDB = getDBAuthController()
