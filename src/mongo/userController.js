@@ -158,7 +158,7 @@ export function updateUserTimestamps (userID, remoteAddress, context) {
     })
   }
 
-  // Update user record with the new data
+  // Update user record with the latest connection/login data
   return new Promise((resolve, reject) => {
     const DBHandle = retrieveDBHandle('karunaData')
     DBHandle.collection('Users')
@@ -167,7 +167,44 @@ export function updateUserTimestamps (userID, remoteAddress, context) {
         { $set: { ...newData } },
         (err, result) => {
           if (err) {
-            debug('Failed to update user')
+            debug('Failed to update user with login/connect timestamp')
+            debug(err)
+            return reject(err)
+          }
+          resolve()
+        }
+      )
+  })
+}
+
+/**
+ * Update a user's most recently indicated affect
+ * @param {number} userID ID of the user to update
+ * @param {string} affectID ID of the most recently indicated affect
+ * @return {Promise} Resolves with no data if successful, rejects on error
+ */
+export function updateUserAffect (userID, affectID) {
+  // Ensure userID and affectID are defined
+  if (!userID || !affectID) {
+    return Promise.reject(new Error('Both the userID and affectID must be defined'))
+  }
+
+  // Setup new data for database
+  const lastAffect = {
+    timestamp: new Date(),
+    affectID: new ObjectID(affectID)
+  }
+
+  // Update user record with the latest affect data
+  return new Promise((resolve, reject) => {
+    const DBHandle = retrieveDBHandle('karunaData')
+    DBHandle.collection('Users')
+      .findOneAndUpdate(
+        { _id: new ObjectID(userID) },
+        { $set: { lastAffect } },
+        (err, result) => {
+          if (err) {
+            debug('Failed to update user with latest affect data')
             debug(err)
             return reject(err)
           }
