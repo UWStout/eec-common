@@ -26,6 +26,9 @@ export function getAffectDetails (affectID) {
 
 /**
  * Create new affect
+ *
+ * tested within test 26 of test.js
+ *
  * @param {string} affectName Name for the new Affect
  * @param {string} description Verbal description of this affect (may be null)
  * @param {string[]} characterCodes Unicode emojis/characters for this affect (may be empty)
