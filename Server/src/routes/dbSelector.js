@@ -74,8 +74,3 @@ export function getDBLogController () {
 export function getDBAffectController () {
   return getController('karunaData', null, MONGO_DB_AFFECT)
 }
-
-// Convenience function for the 'affect history' controller
-export function getDBAffectHistoryController () {
-  return getController('karunaData', null, MONGO_DB_AFFECT_HISTORY)
-}

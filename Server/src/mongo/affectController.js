@@ -12,6 +12,9 @@ const debug = Debug('server:mongo')
 
 /**
  * Retrieve details for the given Affect
+ *
+ * tested with test 25 in test.js
+ *
  * @param {number} affectID ID of the affect to lookup
  * @return {Promise} Resolves to JS Object with all the affect details, rejects on error
  */
