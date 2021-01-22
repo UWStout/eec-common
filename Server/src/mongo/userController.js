@@ -12,6 +12,9 @@ const debug = Debug('server:mongo')
 
 /**
  * Retrieve the number of users in the user table
+ *
+ * tested in test 22 of test.js
+ *
  * @return {Promise} Resolves to the number of users, rejects on error
  */
 export function getUserCount () {
@@ -21,6 +24,9 @@ export function getUserCount () {
 
 /**
  * Retrieve all the details for a given userID
+ *
+ * tested in test 15 of test.js
+ *
  * @param {number} userID ID of the user in the database
  * @return {Promise} Resolves to an object with all the user data, rejects on error
  */
@@ -33,6 +39,9 @@ export function getUserDetails (userID) {
 
 /**
  * Check if a user already exists for the given email
+ *
+ * tested in test 2 of test.js
+ *
  * @param {string} email ID of the user in the database
  * @return {Promise} Resolves to the userID or -1 if no user exists
  */
@@ -58,6 +67,8 @@ export function emailExists (email) {
  * List users in the database with pagination, sorting, and filtering. See listCollection()
  * in 'commonHelper.js' for description of all the parameters and return value
  *
+ * tested in test 12 of test.js
+ *
  * @param {bool} IDsOnly Include only IDs in the results
  */
 export function listUsers (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '') {
@@ -82,6 +93,9 @@ export function listUsers (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
 
 /**
  * Update a user entry in the database with new data
+ *
+ * tested in test 13 of test.js
+ *
  * @param {number} userID ID of the user to update
  * @param {Object} newData New data for the user document (will be merged with existing document)
  * @return {Promise} Resolves with no data if successful, rejects on error
@@ -107,6 +121,9 @@ export function updateUser (userID, newData) {
 
 /**
  * Drop a user from the database
+ *
+ * tested in test 16 of test.js
+ *
  * @param {number} userID ID of the user to remove
  * @return {Promise} Resolves with no data if successful, rejects on error
  */

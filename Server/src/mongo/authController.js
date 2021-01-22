@@ -12,6 +12,7 @@ const SALT_ROUNDS = 10
 
 /**
  * Validate user credentials
+ * tested in test 1 in test.js
  * @param {string} email The email of the user in the database
  * @param {string} plainPassword Plaintext password
  * @return {Promise} Resolves to object with basic user info, rejects if invalid
@@ -59,6 +60,7 @@ export function validateUser (email, password) {
 
 /**
  * Create a new user in the database
+ * tested in test 3 of test.js
  * @param {string} firstName First name of the user to create
  * @param {string} lastName Last name of the user to create
  * @param {string} email email of the user to create
