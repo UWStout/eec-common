@@ -468,5 +468,79 @@ router.post('/createAffect', async (req, res) => {
   }
 })
 
+// 27. test affectController's function removeAffect (affectID)
+router.delete('/removeAffect', async (req, res) => {
+  // Extract and check required fields
+  const { affectID } = req.body
+  if (!affectID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // attempt to remove affect
+  debug(`attempting to remove affect ${affectID}`)
+  try {
+    const affect = await affectDB.removeAffect(affectID)
+    // if user does not exist, function will succeed
+    debug('success: affect removed!')
+    return res.status(200).json({ message: 'success', affect: affect })
+  } catch (error) {
+    console.error(`Failed to remove affect ${affectID}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while attempting to remove affect' })
+  }
+})
+
+// 28. test affectController's function updateAffect (affectID, newData)
+router.post('/updateAffect', async (req, res) => {
+  // Extract and check required fields
+  const { affectID, newData } = req.body
+  if (!affectID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // Attempt to create affect
+  debug('attempting to update an affect')
+  try {
+    const affect = await affectDB.updateAffect(affectID, newData)
+    return res.status(200).json({ message: 'success', affect: affect })
+  } catch (error) {
+    console.error('Failed to to update an affect')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while updating an affect' })
+  }
+})
+
+// 29. test affectController's function listAffects (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
+router.get('/listAffects', async (req, res) => {
+  // Try to get the pagination query string values
+  const [perPage, page] = UTIL.getPaginationValues(req.query)
+  if (isNaN(perPage) || isNaN(page)) {
+    return res.status(400).send({ error: true, message: 'Invalid parameter' })
+  }
+
+  // Try to get sorting query string values
+  const [sortBy, sortOrder] = UTIL.getSortingValues(req.query)
+
+  // Try to get filtering query string values
+  const [filterBy, filter] = UTIL.getFilteringValues(req.query)
+
+  // Sanitize any 'false-ish' values to be 'undefined'
+  if (req.query.fullInfo === false || req.query.fullInfo === 'false') {
+    req.query.fullInfo = undefined
+  }
+
+  // Attempt to retrieve affect list
+  const IDsOnly = (req.query.fullInfo === undefined)
+  // const IDsOnly = false
+  try {
+    const affectList = await affectDB.listAffects(IDsOnly, perPage, page, sortBy, sortOrder, filterBy, filter)
+    res.send(affectList)
+  } catch (err) {
+    UTIL.checkAndReportError('Error retrieving affect list', res, err, debug)
+  }
+})
+
 // Expose the router for use in other files
 export default router

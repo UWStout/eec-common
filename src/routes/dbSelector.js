@@ -14,7 +14,6 @@ import * as MONGO_DB_TEAM from '../mongo/teamController.js'
 import * as MONGO_DB_ORG_UNIT from '../mongo/unitController.js'
 import * as MONGO_DB_LOGS from '../mongo/LogController.js'
 import * as MONGO_DB_AFFECT from '../mongo/affectController.js'
-import * as MONGO_DB_AFFECT_HISTORY from '../mongo/affectHistoryController.js'
 
 // Debug output
 import Debug from 'debug'
