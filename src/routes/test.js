@@ -5,84 +5,29 @@ tests database functions within userController, teamController, and authControll
 // Basic HTTP routing library
 import Express from 'express'
 
-// Authorization token library
-import JWT from 'jsonwebtoken'
+// Authorization token library (not currently in use)
+// import JWT from 'jsonwebtoken'
 
 // Utility functions
 import * as UTIL from './utils.js'
 
 // Database controller
-import { getDBAffectController, getDBAuthController, getDBLogController, getDBTeamController, getDBUnitController, getDBUserController } from './dbSelector.js'
+import * as DBSelector from './dbSelector.js'
+
+// Authentication helpers (not currently in use)
+// import { authenticateToken, decodeToken } from './auth.js'
 
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('server:test')
 
 // Get database controllers
-const authDB = getDBAuthController()
-const teamDB = getDBTeamController()
-const userDB = getDBUserController()
-const unitDB = getDBUnitController()
-const logDB = getDBLogController()
-const affectDB = getDBAffectController()
-
-// Express middleware to authenticate a user
-export function authenticateToken (req, res, next) {
-  // Check for cookie first
-  let token = req.cookies && req.cookies.JWT
-  if (!token) {
-    // Try the authorization header next
-    const authHeader = req.headers.authorization
-    const type = authHeader && authHeader.split(' ')[0]
-    token = authHeader && authHeader.split(' ')[1]
-    if (!type || type.toLowerCase() !== 'digest' || !token) {
-      return res.status(401).json({
-        error: true, message: 'not authorized'
-      })
-    }
-  }
-
-  // Attempt to verify the token
-  JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
-    if (err) {
-      return res.status(403).json({
-        error: true, message: 'not authorized'
-      })
-    }
-
-    // Append payload to the request
-    req.user = payload
-    next()
-  })
-}
-
-// Express middleware to authenticate a user
-export function decodeToken (req, res, next) {
-  // Check for cookie first
-  let token = req.cookies && req.cookies.JWT
-  if (!token) {
-    // Try the authorization header next
-    const authHeader = req.headers.authorization
-    const type = authHeader && authHeader.split(' ')[0]
-    token = authHeader && authHeader.split(' ')[1]
-    if (!type || type.toLowerCase() !== 'digest' || !token) {
-      req.user = { error: true, message: 'Malformed Token' }
-    }
-  }
-
-  // Attempt to verify the token
-  JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
-    // Append payload to the request
-    req.user = { ...payload }
-
-    // Check for error on verification
-    if (err) {
-      req.user = { ...req.user, error: true, message: 'Invalid Token' }
-    }
-
-    next()
-  })
-}
+// const authDB = getDBAuthController() // (not currently in use)
+const teamDB = DBSelector.getDBTeamController()
+const userDB = DBSelector.getDBUserController()
+const unitDB = DBSelector.getDBUnitController()
+const logDB = DBSelector.getDBLogController()
+const affectDB = DBSelector.getDBAffectController()
 
 // Create a router to attach to an express server app
 const router = new Express.Router()
@@ -233,8 +178,8 @@ router.delete('/removeOrg', async (req, res) => {
     return res.status(500).json({ error: true, message: 'Error while removing Org Unit' })
   }
 })
-/*
-// 10. test teamController's listTeamsInUnit (unitID, page = 1, perPage = 25) function
+
+// 10. test teamController's listTeamsInUnit (unitID) function
 router.get('/listTeamsInUnit/:unitID', async (req, res) => {
   // Extract and check required fields
   const unitID = req.params.unitID
@@ -242,47 +187,39 @@ router.get('/listTeamsInUnit/:unitID', async (req, res) => {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
   }
-  // Try to get the pagination query string values
-  const [perPage, page] = UTIL.getPaginationValues(req.query)
-  if (isNaN(perPage) || isNaN(page)) {
-    return res.status(400).send({ error: true, message: 'Invalid parameter' })
-  }
 
   // attempt to list teams in org unit
   debug(`attempt to list teams in Unit ${unitID}`)
   try {
-    const unit = await teamDB.listTeamsInUnit(unitID, page, perPage)
-    return res.status(200).json({ message: 'success', unit: unit })
+    const teams = await teamDB.listTeamsInUnit(unitID)
+    return res.status(200).json({ message: 'success', teams })
   } catch (error) {
     console.error(`Failed to list teams in org unit ${unitID}`)
     console.error(error)
     return res.status(500).json({ error: true, message: 'Error while listing teams in org unit' })
   }
 })
-*/
 
-/*
-// 11. test teamController's listTeamsForUser (userID, page = 1, perPage = 25) function
-router.post('/listTeamsForUser', async (req, res) => {
+// 11. test teamController's listUsersInTeam (teamID) function
+router.get('/listUsersInTeam/:teamID', async (req, res) => {
   // Extract and check required fields
-  const { userID, page, perPage } = req.body
-  if (!userID) {
+  const teamID = req.params.teamID
+  if (!teamID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
   }
 
-  // attempt to list teams for user
-  debug(`attempting to list teams for user ${userID}`)
+  // attempt to list users in the given team
+  debug(`attempt to list users in Team ${teamID}`)
   try {
-    const user = await teamDB.listTeamsInUnit(userID, page, perPage)
-    return res.status(200).json({ message: 'success', user: user })
+    const users = await userDB.listUsersInTeam(teamID)
+    return res.status(200).json({ message: 'success', users })
   } catch (error) {
-    console.error(`Failed to list teams in org unit ${userID}`)
+    console.error(`Failed to list users in team ${teamID}`)
     console.error(error)
-    return res.status(500).json({ error: true, message: 'Error while attempting to list teams for user' })
+    return res.status(500).json({ error: true, message: 'Error while listing users in team' })
   }
 })
-*/
 
 // 12. test userController's list user function with listUsers(req.query.fullInfo === undefined, perPage, page)
 // done within user.js at https://localhost:3000/data/user/list?fullInfo=true&perPage=10&page=0
