@@ -16,6 +16,7 @@ import EECConnectCSS from './EECConnectStyle.txt'
 
 // Custom React Component
 import ConnectComponent from './ConnectComponents/ConnectComponent.jsx'
+import ThreeIconStatus from './ThreeIconStatusComponents/ThreeIconStatus.jsx'
 
 class EECConnect extends HTMLElement {
   constructor () {
@@ -99,7 +100,8 @@ class EECConnect extends HTMLElement {
       <StylesProvider jss={jss}>
         <MuiThemeProvider theme={theme}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
-            <ConnectComponent/>
+            <ConnectComponent />
+            <ThreeIconStatus />
           </MuiPickersUtilsProvider>
         </MuiThemeProvider>
       </StylesProvider>,

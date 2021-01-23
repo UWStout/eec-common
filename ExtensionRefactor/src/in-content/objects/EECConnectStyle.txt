@@ -7,6 +7,12 @@
   height: 24px;
 }
 
+.eec-connect-status-icons {
+  position: absolute;
+  bottom: 200px;
+  right: 0px;
+}
+
 #eec-connect-button-paper {
   position: absolute;
   right: -10px;
