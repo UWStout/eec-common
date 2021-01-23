@@ -3,14 +3,14 @@ import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { Slide, Paper, Grid, IconButton } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close'
+import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import MoodSelect from './MoodSelector.jsx'
 import Emoji from './Emoji.jsx'
 import History from './History.jsx'
 
 const useStyles = makeStyles((theme) => ({
   paperRoot: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(2),
   }
 }))
 
@@ -41,6 +41,7 @@ export default function ConnectForm (props) {
         opened={historyOpen}
         handleClose={handleHistoryClick}
         handleHistoryFormOpen={props.handleHistoryFormOpen}
+        handleHistoryFormBack={props.handleHistoryFormBack}
       />
       <Slide direction="left" in={props.opened} mountOnEnter unmountOnExit>
         <Paper elevation={3} className={classes.paperRoot}>
@@ -48,10 +49,10 @@ export default function ConnectForm (props) {
             <Grid item>
               <div>
                 <span>
-                  <IconButton size='small' onClick={props.handleClose}>
-                    <CloseIcon />
-                  </IconButton>
                   Karuna Connect
+                  <IconButton size='small' onClick={props.handleClose}>
+                    <ChevronRightIcon />
+                  </IconButton>
                 </span>
               </div>
             </Grid>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import Button from '@material-ui/core/Button'
+import { Button, IconButton } from '@material-ui/core'
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 
 // Team list and adding/removing forms
 export default function TeamForm () {
@@ -46,7 +47,7 @@ function TeamList (props) {
           return (
             <li key={team}>
               {team}
-              <Button onClick={() => props.removeTeam(index)}>-</Button>
+              <IconButton size='small' onClick={() => props.removeTeam(index)}><DeleteOutlineOutlinedIcon /></IconButton>
             </li>
           )
         })

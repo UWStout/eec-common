@@ -3,14 +3,15 @@ import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { Slide, Paper, Grid, IconButton, Switch } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close'
+import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import Emoji from './Emoji.jsx'
 import HistoryOneOnOne from './HistoryOneOnOne'
 import HistoryTeam from './HistoryTeam'
 
 const useStyles = makeStyles((theme) => ({
   paperRoot: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(2),
   }
 }))
 
@@ -34,11 +35,17 @@ export default function History (props) {
           <Grid item>
             <IconButton size='small' onClick={() => {
               props.handleClose()
-              props.handleHistoryFormOpen()
+              props.handleHistoryFormBack()
             }}>
-              <CloseIcon />
+              <ArrowBackIcon />
             </IconButton>
             Karuna History
+            <IconButton size='small' onClick={() => {
+              props.handleClose()
+              props.handleHistoryFormOpen()
+            }}>
+              <ChevronRightIcon />
+            </IconButton>
           </Grid>
           <Grid item>
             <span>

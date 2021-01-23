@@ -1,8 +1,21 @@
 import React, { useState } from 'react'
+import MailOutlineIcon from '@material-ui/icons/MailOutline'
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import GroupOutlinedIcon from '@material-ui/icons/GroupOutlined'
+
+import { makeStyles } from '@material-ui/core/styles'
+
 import Team from '../Team.jsx'
 import Button from '@material-ui/core/Button'
 
+const useStyles = makeStyles({
+  AccountSettingsBody: {
+    padding: '5px 0px 5px 0px'
+  },
+})
+
 export default function AccountSettings () {
+  const classes = useStyles()
   // Create tracking state
   const [email, updateEmail] = useState('')
   const [password, updatePassword] = useState('')
@@ -36,18 +49,31 @@ export default function AccountSettings () {
 
   // Build the account settings form
   return (
-    <div>
-      <div>
-        <h3>Email</h3>
-        <input type="text" value={email} onChange={(e) => updateEmail(e.target.value)} />
+    <div >
+      <div className={classes.AccountSettingsBody}>
+        <span>
+          <MailOutlineIcon />
+          Email
+        </span>
+        <div>
+          <input type="text" value={email} onChange={(e) => updateEmail(e.target.value)} />
+        </div>
       </div>
-      <div>
-        <h3>Password</h3>
-        <input type="password" value={password} onChange={(e) => updatePassword(e.target.value)} />
+      <div className={classes.AccountSettingsBody}>
+        <span>
+          <LockOutlinedIcon />
+          Password
+        </span>
+        <div>
+          <input type="password" value={password} onChange={(e) => updatePassword(e.target.value)} />
+        </div>
         <Button onClick={validateLogin}>login</Button>
       </div>
       <div>
-        <h3>Current Teams</h3>
+        <span>
+          <GroupOutlinedIcon />
+          Current Teams
+        </span>
         <Team />
       </div>
     </div>

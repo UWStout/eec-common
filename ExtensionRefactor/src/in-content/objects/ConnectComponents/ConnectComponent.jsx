@@ -7,6 +7,7 @@ import ConnectPanelButton from './ConnectPanelButton.jsx'
 export default function ConnectComponent (props) {
   const [formOpen, updateFormOpen] = useState(false)
   const [historyFormOpen, updateHistoryFormOpen] = useState(false)
+  const [historyBackClick, updateHistoryBackClick] = useState(false)
 
   // Opens and closes main menu
   const handleClick = (e) => {
@@ -20,13 +21,23 @@ export default function ConnectComponent (props) {
     updateHistoryFormOpen(newHistoryFormOpen)
   }
 
+  const handleHistoryBackClick = () => {
+    updateHistoryFormOpen(false)
+    updateFormOpen(true)
+  }
+
   // Tracks state of each panel and displays karuna button if neither panel is open
   const PanelOpenButton = !formOpen && !historyFormOpen ? <ConnectPanelButton onClick={handleClick} /> : null
 
   return (
     <React.Fragment>
       {PanelOpenButton}
-      <ConnectForm opened={formOpen} handleClose={handleClick} handleHistoryFormOpen={handleHistoryClick} />
+      <ConnectForm 
+        opened={formOpen}
+        handleClose={handleClick}
+        handleHistoryFormOpen={handleHistoryClick}
+        handleHistoryFormBack={handleHistoryBackClick}
+      />
     </React.Fragment>
   )
 }
