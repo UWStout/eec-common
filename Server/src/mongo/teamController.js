@@ -92,13 +92,13 @@ export function removeTeam (teamID) {
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
 export function updateTeam (userID, newData) {
-  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     // Make sure foreign key is the proper ObjectID type (if its defined)
     if (newData.orgId && (typeof newData.orgId !== 'object' || !(newData.orgId instanceof 'ObjectID'))) {
       newData.orgId = new ObjectID(newData.orgId)
     }
 
+    const DBHandle = retrieveDBHandle('karunaData')
     DBHandle.collection('Teams')
       .findOneAndUpdate(
         { _id: new ObjectID(userID) },
@@ -116,7 +116,7 @@ export function updateTeam (userID, newData) {
 }
 
 /**
- * List users in the database with pagination, sorting, and filtering. See listCollection()
+ * List teams in the database with pagination, sorting, and filtering. See listCollection()
  * in 'commonHelper.js' for description of all the parameters and return value
  *
  * tested in test 4 of test.js
@@ -160,6 +160,71 @@ export function listTeams (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
 
   // Execute collection list query
   return listCollection('Teams', lookup, project, perPage, page, sortBy, sortOrder, filterBy, filter)
+}
+
+/**
+ * List all the teams that belong to a certain org-unit. This is a convenience function that calls
+ * listTeams with a pre-made filter for the org-unit ID.
+ *
+ * Tested in test 10 of test.js
+ *
+ * @param {string} unitID ObjectID string of an existing org-unit
+ * @returns {Promise} Resolves to list of units on success, rejects with error on failure
+ */
+export function listTeamsInUnit (unitID) {
+  // Check for proper UnitID
+  if (!unitID) {
+    return Promise.reject(new Error('UnitID must be defined'))
+  }
+
+  return new Promise((resolve, reject) => {
+    // Retrieve unit details
+    const DBHandle = retrieveDBHandle('karunaData')
+    DBHandle.collection('Units')
+      .findOne({ _id: new ObjectID(unitID) }, (err, result) => {
+        // Check for and handle error
+        if (err) {
+          debug('Error retrieving unit for "listTeamsInUnit"')
+          debug(err)
+          return reject(err)
+        }
+
+        // For invalid unitID (does not exist)
+        if (!result) { return resolve([]) }
+
+        // Reshape unit data (removing id)
+        const unitData = {
+          unitName: result.name,
+          unitAdmin: result.admin,
+          unitCulture: result.culture
+        }
+
+        // Retrieve filtered list of teams with unit info joined
+        DBHandle.collection('Teams').aggregate([
+          { $match: { orgId: new ObjectID(unitID) } },
+          { $addFields: unitData }
+        ], (err, cursor) => {
+          // Check for and handle error
+          if (err) {
+            debug('Error listing teams for "listTeamsInUnit"')
+            debug(err)
+            return reject(err)
+          }
+
+          // Convert to array and return
+          cursor.toArray((err, docs) => {
+            if (err) {
+              debug('Cursor toArray failed for "listTeamsInUnit"')
+              debug(err)
+              return reject(err)
+            }
+
+            // Resolve with the results
+            return resolve(docs)
+          })
+        })
+      })
+  })
 }
 
 /**

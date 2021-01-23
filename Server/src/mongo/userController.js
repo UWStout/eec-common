@@ -92,6 +92,72 @@ export function listUsers (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
 }
 
 /**
+ * List all the users that belong to a certain team.
+ *
+ * Tested in test 11 of test.js
+ *
+ * @param {string} teamID ObjectID string of an existing team
+ * @returns {Promise} Resolves to list of users on success, rejects with error on failure
+ */
+export function listUsersInTeam (teamID) {
+  // Check for proper TeamID
+  if (!teamID) {
+    return Promise.reject(new Error('TeamID must be defined'))
+  }
+
+  return new Promise((resolve, reject) => {
+    // Retrieve team details
+    const DBHandle = retrieveDBHandle('karunaData')
+    DBHandle.collection('Teams')
+      .findOne({ _id: new ObjectID(teamID) }, (err, result) => {
+        // Check for and handle error
+        if (err) {
+          debug('Error retrieving unit for "listUsersInTeam"')
+          debug(err)
+          return reject(err)
+        }
+
+        // For invalid teamID (does not exist)
+        if (!result) { return resolve([]) }
+
+        // Reshape unit data (removing id)
+        const teamData = {
+          teamName: result.name,
+          teamAdmin: result.admin,
+          teamCulture: result.culture,
+          orgId: result.orgId
+        }
+
+        // Retrieve filtered list of users with unit info joined
+        DBHandle.collection('Users').aggregate([
+          { $match: { teams: new ObjectID(teamID) } },
+          { $project: { passwordHash: 0, teams: 0 } },
+          { $addFields: teamData }
+        ], (err, cursor) => {
+          // Check for and handle error
+          if (err) {
+            debug('Error listing teams for "listUsersInTeam"')
+            debug(err)
+            return reject(err)
+          }
+
+          // Convert to array and return
+          cursor.toArray((err, docs) => {
+            if (err) {
+              debug('Cursor toArray failed for "listUsersInTeam"')
+              debug(err)
+              return reject(err)
+            }
+
+            // Resolve with the results
+            return resolve(docs)
+          })
+        })
+      })
+  })
+}
+
+/**
  * Update a user entry in the database with new data
  *
  * tested in test 13 of test.js
