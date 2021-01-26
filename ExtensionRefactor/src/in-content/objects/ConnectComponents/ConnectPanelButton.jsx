@@ -2,7 +2,7 @@ import React from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Paper } from '@material-ui/core'
-import { blueGrey } from '@material-ui/core/colors'
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 
 const useStyles = makeStyles((theme) => ({
   paperRoot: {
@@ -16,7 +16,8 @@ export default function ConnectPanelButton (props) {
   return (
     <Paper elevation={3} id='eec-connect-button-paper' className={classes.paperRoot}>
       <Button onClick={() => { props.onClick() }} className='eec-connect-button'>
-        k
+        <KeyboardArrowLeftIcon />
+        K
       </Button>
     </Paper>
   )

@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { Slide, Paper, Grid, IconButton } from '@material-ui/core'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import PermMediaIcon from '@material-ui/icons/PermMedia'
 import MoodSelect from './MoodSelector.jsx'
 import Emoji from './Emoji.jsx'
 import History from './History.jsx'
@@ -85,12 +86,18 @@ export default function ConnectForm (props) {
             </Grid>
             <Grid item>
               <div>
-                Our Team Culture
+                <span>
+                  <PermMediaIcon />
+                  Our Team Culture
+                </span>
               </div>
             </Grid>
             <Grid item>
               <div>
-                More About NVC
+                <span>
+                  <PermMediaIcon />
+                  More About NVC
+                </span>
               </div>
             </Grid>
           </Grid>
