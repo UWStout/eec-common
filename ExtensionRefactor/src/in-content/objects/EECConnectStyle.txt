@@ -21,7 +21,7 @@
 
 .mood-modal {
   position: absolute;
-  width: 80px;
+  width: 185px;
   bottom: 400px;
   right: 150px;
 }

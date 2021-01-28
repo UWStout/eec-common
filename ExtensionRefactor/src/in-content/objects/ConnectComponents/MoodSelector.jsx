@@ -1,11 +1,57 @@
 import React, { useState } from 'react'
-import { MenuItem, Modal, IconButton } from '@material-ui/core'
+import { Modal, IconButton } from '@material-ui/core'
 import Emoji from './Emoji.jsx'
 
+// placeholder for dynamic database filling
 const emoji = [
   <Emoji symbol='😀' label='happy' />,
   <Emoji symbol='😐' label='neutral' />,
-  <Emoji symbol='🙁' label='sad' />
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
+  <Emoji symbol='😀' label='happy' />,
+  <Emoji symbol='😐' label='neutral' />,
+  <Emoji symbol='🙁' label='sad' />,
 ]
 
 // Menu of moods for user selection
@@ -19,28 +65,33 @@ export default function MoodSelect () {
     setOpen(false)
   }
 
+  // Opens the modal
   const handleOpen = () => {
     setOpen(true)
   }
 
+  // Closes the modal
   const handleClose = () => {
     setOpen(false)
   }
 
+  // maps the modal body with the desired emotes
   const body = (
     <div className='mood-modal'>
       {emoji.map((emote, index) => (
-        <MenuItem
+        <IconButton
+          size='small'
           key={index}
           selected={index === mood}
           onClick={(event) => handleMenuItemClick(event, index)}
         >
           {emote}
-        </MenuItem>
+        </IconButton>
       ))}
     </div>
   )
 
+  // builds the mood selector and modal
   return (
     <div>
       <span>
