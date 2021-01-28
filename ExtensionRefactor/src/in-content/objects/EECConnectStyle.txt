@@ -19,6 +19,13 @@
   right: 950px;
 }
 
+.mood-modal {
+  position: absolute;
+  width: 80px;
+  bottom: 400px;
+  right: 150px;
+}
+
 #eec-connect-button-paper {
   position: absolute;
   right: -5px;
