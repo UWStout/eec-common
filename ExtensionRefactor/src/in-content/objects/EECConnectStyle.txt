@@ -26,6 +26,13 @@
   right: 150px;
 }
 
+#mood-share-modal {
+  position: absolute;
+  width: 250px;
+  bottom: 400px;
+  right: 75px;
+}
+
 #eec-connect-button-paper {
   position: absolute;
   right: -5px;
@@ -62,4 +69,9 @@
 .eec-connect-icon {
   display: block;
   position: absolute;
+}
+
+.small-text {
+  font-size: 12px;
+  font-style: italic;
 }
