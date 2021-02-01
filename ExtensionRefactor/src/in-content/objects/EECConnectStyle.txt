@@ -15,8 +15,9 @@
 
 .team-eec-connect-status-icons {
   position: absolute;
-  bottom: 700px;
-  right: 950px;
+  float: left;
+  top: -100px;
+  left: -200px;
 }
 
 .mood-modal {
