@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button, IconButton } from '@material-ui/core'
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 
 // Team list and adding/removing forms
@@ -32,7 +33,9 @@ export default function TeamForm () {
           value={teamName}
           onChange={(e) => updateTeamName(e.target.value)}
         />
-        <Button type="submit">Add Team</Button>
+        <IconButton type='submit' size='small'>
+          <AddCircleIcon/>
+        </IconButton>
       </form>
       <TeamList team={team} removeTeam={removeTeam} />
     </div>
