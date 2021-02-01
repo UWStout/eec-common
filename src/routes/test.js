@@ -19,6 +19,10 @@ import * as DBSelector from './dbSelector.js'
 
 // Create debug output object
 import Debug from 'debug'
+
+// for using the database
+import { ObjectID } from 'mongodb'
+
 const debug = Debug('server:test')
 
 // Get database controllers
@@ -51,6 +55,16 @@ router.post('/registerTeam', async (req, res) => {
   if (!teamName) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
+  }
+
+  // check if unitID is a reasonable parameter for ObjectID (hexadecimal)
+  if (unitID && !ObjectID.isValid(unitID)) {
+    res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
   /* // TO-DO? Check if team with the same team name is already registered?
@@ -102,6 +116,16 @@ router.post('/addToTeam', async (req, res) => {
     return
   }
 
+  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
+  if (teamID && !ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
   // TO-DO: Check if already added to the team?
 
   // Attempt to add user to team
@@ -125,6 +149,11 @@ router.post('/registerOrg', async (req, res) => {
     return
   }
 
+  // check if adminID is a reasonable parameter for ObjectID (hexadecimal)
+  if (adminID && !ObjectID.isValid(adminID)) {
+    res.status(400).json({ invalid: true, message: 'adminID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
   // Attempt to create org
   debug(`Creating ${unitName}`)
   try {
@@ -144,6 +173,11 @@ router.delete('/removeTeam', async (req, res) => {
   if (!teamID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
+  }
+
+  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
+  if (teamID && !ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
   // attempt to remove team
@@ -167,6 +201,11 @@ router.delete('/removeOrg', async (req, res) => {
     return
   }
 
+  // check if unitID is a reasonable parameter for ObjectID (hexadecimal)
+  if (unitID && !ObjectID.isValid(unitID)) {
+    res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
   // attempt to remove org unit
   debug(`Removing Organizational Unit ${unitID}`)
   try {
@@ -188,6 +227,10 @@ router.get('/listTeamsInUnit/:unitID', async (req, res) => {
     return
   }
 
+  if (unitID && !ObjectID.isValid(unitID)) {
+    res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
   // attempt to list teams in org unit
   debug(`attempt to list teams in Unit ${unitID}`)
   try {
@@ -207,6 +250,11 @@ router.get('/listUsersInTeam/:teamID', async (req, res) => {
   if (!teamID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
+  }
+
+  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
+  if (teamID && !ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
   // attempt to list users in the given team
@@ -242,6 +290,11 @@ router.delete('/removeUser', async (req, res) => {
     return
   }
 
+  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
   // attempt to remove user
   debug(`attempt to remove user ${userID}`)
   try {
@@ -265,6 +318,11 @@ router.get('/getOrgUnitDetails/:unitID', async (req, res) => {
     return
   }
 
+  // check if unitID is a reasonable parameter for ObjectID (hexadecimal)
+  if (unitID && !ObjectID.isValid(unitID)) {
+    res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
   // attempt to get org unit details
   debug(`attempting to list teams for user ${unitID}`)
   try {
@@ -285,6 +343,11 @@ router.get('/getTeamDetails/:teamID', async (req, res) => {
   if (!teamID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
+  }
+
+  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
+  if (teamID && !ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
   // attempt to get team details
@@ -310,6 +373,11 @@ router.post('/logWizardMessage', async (req, res) => {
     return
   }
 
+  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
+  if (correspondentID && !ObjectID.isValid(correspondentID)) {
+    res.status(400).json({ invalid: true, message: 'correspondentID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
   // Attempt to create org
   debug('logging wizard message')
   try {
@@ -329,6 +397,16 @@ router.post('/logUserMessage', async (req, res) => {
   if (!message || !userID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
+  }
+
+  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
+  if (correspondentID && !ObjectID.isValid(correspondentID)) {
+    res.status(400).json({ invalid: true, message: 'correspondentID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
   // Attempt to create org
@@ -372,6 +450,11 @@ router.get('/getAffectDetails/:affectID', async (req, res) => {
     return
   }
 
+  // check if affectID is a reasonable parameter for ObjectID
+  if (affectID && !ObjectID.isValid(affectID)) {
+    res.status(400).json({ invalid: true, message: 'affectID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
   // attempt to get affect details
   debug(`attempting to get affect details ${affectID}`)
   try {
@@ -391,6 +474,15 @@ router.post('/createAffect', async (req, res) => {
   if (!affectName) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
+  }
+
+  if (relatedIDs.length !== 0) {
+    for (let i = 0; i < relatedIDs.length; i++) {
+      // check if affectID is a reasonable parameter for ObjectID
+      if (!ObjectID.isValid(relatedIDs[i])) {
+        res.status(400).json({ invalid: true, message: 'One of relatedIDs affectID was not a single String of 12 bytes or a string of 24 hex characters' })
+      }
+    }
   }
 
   // Attempt to create affect
@@ -414,6 +506,11 @@ router.delete('/removeAffect', async (req, res) => {
     return
   }
 
+  // check if affectID is a reasonable parameter for ObjectID
+  if (affectID && !ObjectID.isValid(affectID)) {
+    res.status(400).json({ invalid: true, message: 'affectID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
   // attempt to remove affect
   debug(`attempting to remove affect ${affectID}`)
   try {
@@ -435,6 +532,11 @@ router.post('/updateAffect', async (req, res) => {
   if (!affectID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
+  }
+
+  // check if affectID is a reasonable parameter for ObjectID
+  if (affectID && !ObjectID.isValid(affectID)) {
+    res.status(400).json({ invalid: true, message: 'affectID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
   // Attempt to create affect
@@ -476,6 +578,116 @@ router.get('/listAffects', async (req, res) => {
     res.send(affectList)
   } catch (err) {
     UTIL.checkAndReportError('Error retrieving affect list', res, err, debug)
+  }
+})
+
+// 30. test affectController's function insertAffectHistoryEntry (affectID, relatedID, isUser)
+router.post('/insertAffectHistoryEntry', async (req, res) => {
+  // Extract and check required fields
+  const { affectID, userID, teamID } = req.body
+  if (!affectID || (!userID && !teamID)) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  } if (userID && teamID) {
+    res.status(400).json({ invalid: true, message: 'cannot submit both userID and teamID' })
+    return
+  }
+
+  // set relatedID
+  let relatedID, isUser
+  if (userID) {
+    relatedID = userID
+    isUser = true
+  } else {
+    relatedID = teamID
+    isUser = false
+  }
+
+  // check if relatedID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(relatedID)) {
+    res.status(400).json({ invalid: true, id: relatedID, message: 'teamID or userID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // check if affectID is a reasonable parameter for ObjectID
+  if (affectID && !ObjectID.isValid(affectID)) {
+    res.status(400).json({ invalid: true, message: 'affectID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // Attempt to insert affect history log
+  debug('attempting to insert affect history log')
+  try {
+    const log = await affectDB.insertAffectHistoryEntry(affectID, relatedID, isUser)
+    return res.status(200).json({ message: 'success', affectLog: log })
+  } catch (error) {
+    console.error('Failed to insert affect history log')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while inserting affect history log' })
+  }
+})
+
+// 31. test affectController's function listAffectHistory (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
+// TO-DO: make this a function to retrieve affect history with support to filter by date range and user/team ID
+router.get('/listAffectHistory/affectLogID/:affectLogID?/dateRange/:dateStart?/:dateEnd?', async (req, res) => {
+  // Extract and check required fields
+  const affectLogID = req.params.affectLogID
+  const dateStart = req.params.dateStart
+  const dateEnd = req.params.dateEnd
+
+  debug(affectLogID)
+
+
+  // check if affectLogID is a reasonable parameter for ObjectID
+  if (affectLogID && !ObjectID.isValid(affectLogID)) {
+    res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  
+  // TO-DO: check if date is valid
+
+  // attempt to get affect details
+  debug('attempting to list affect history')
+  try {
+    const affect = await affectDB.listAffectHistory(affectLogID, [dateStart, dateEnd])
+    return res.status(200).json({ message: 'success', affect: affect })
+  } catch (error) {
+    debug('Failed to list affect history')
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while listing affect history' })
+  }
+})
+
+// 32. test affectController's function removeAffectHistoryEntry (affectLogID)
+router.delete('/removeAffectHistoryEntry', async (req, res) => {
+  // Extract and check required fields
+  const { affectLogID, dateRange } = req.body
+  if (!affectLogID && !dateRange) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  if (affectLogID && dateRange) {
+    res.status(400).json({ invalid: true, message: 'cannot submit both affectLogID and dateRange' })
+    return
+  }
+
+  // TO-DO: check if date is valid
+
+  // check if affectLogID is a reasonable parameter for ObjectID
+  if (affectLogID && !ObjectID.isValid(affectLogID)) {
+    res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to remove affect log
+  debug(`attempting to remove affect log ${affectLogID}`)
+  try {
+    const affectLog = await affectDB.removeAffectHistoryEntry(affectLogID, dateRange)
+    // if user does not exist, function will succeed
+    debug('success: affect log removed!')
+    return res.status(200).json({ message: 'success', affectLog: affectLog })
+  } catch (error) {
+    console.error(`Failed to remove affect log ${affectLogID}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while attempting to remove affect log' })
   }
 })
 
