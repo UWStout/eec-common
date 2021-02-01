@@ -261,6 +261,9 @@ router.get('/listUsersInTeam/:teamID', async (req, res) => {
   debug(`attempt to list users in Team ${teamID}`)
   try {
     const users = await userDB.listUsersInTeam(teamID)
+    if (users.error) {
+      return res.status(400).json(users)
+    }
     return res.status(200).json({ message: 'success', users })
   } catch (error) {
     console.error(`Failed to list users in team ${teamID}`)

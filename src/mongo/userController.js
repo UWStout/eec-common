@@ -108,52 +108,57 @@ export function listUsersInTeam (teamID) {
   return new Promise((resolve, reject) => {
     // Retrieve team details
     const DBHandle = retrieveDBHandle('karunaData')
-    DBHandle.collection('Teams')
-      .findOne({ _id: new ObjectID(teamID) }, (err, result) => {
-        // Check for and handle error
-        if (err) {
-          debug('Error retrieving unit for "listUsersInTeam"')
-          debug(err)
-          return reject(err)
-        }
 
-        // For invalid teamID (does not exist)
-        if (!result) { return resolve([]) }
-
-        // Reshape unit data (removing id)
-        const teamData = {
-          teamName: result.name,
-          teamAdmin: result.admin,
-          teamCulture: result.culture,
-          orgId: result.orgId
-        }
-
-        // Retrieve filtered list of users with unit info joined
-        DBHandle.collection('Users').aggregate([
-          { $match: { teams: new ObjectID(teamID) } },
-          { $project: { passwordHash: 0, teams: 0 } },
-          { $addFields: teamData }
-        ], (err, cursor) => {
+    try {
+      DBHandle.collection('Teams')
+        .findOne({ _id: new ObjectID(teamID) }, (err, result) => {
           // Check for and handle error
           if (err) {
-            debug('Error listing teams for "listUsersInTeam"')
+            debug('Error retrieving unit for "listUsersInTeam"')
             debug(err)
             return reject(err)
           }
 
-          // Convert to array and return
-          cursor.toArray((err, docs) => {
+          // For invalid teamID (does not exist)
+          if (!result) { return resolve({ error: true, message: 'Team not found' }) }
+
+          // Reshape unit data (removing id)
+          const teamData = {
+            teamName: result.name,
+            teamAdmin: result.admin,
+            teamCulture: result.culture,
+            orgId: result.orgId
+          }
+
+          // Retrieve filtered list of users with unit info joined
+          DBHandle.collection('Users').aggregate([
+            { $match: { teams: new ObjectID(teamID) } },
+            { $project: { passwordHash: 0, teams: 0 } },
+            { $addFields: teamData }
+          ], (err, cursor) => {
+            // Check for and handle error
             if (err) {
-              debug('Cursor toArray failed for "listUsersInTeam"')
+              debug('Error listing teams for "listUsersInTeam"')
               debug(err)
               return reject(err)
             }
 
-            // Resolve with the results
-            return resolve(docs)
+            // Convert to array and return
+            cursor.toArray((err, docs) => {
+              if (err) {
+                debug('Cursor toArray failed for "listUsersInTeam"')
+                debug(err)
+                return reject(err)
+              }
+
+              // Resolve with the results
+              return resolve(docs)
+            })
           })
         })
-      })
+    } catch (err) {
+      return resolve({ error: true, message: err.toString() })
+    }
   })
 }
 
