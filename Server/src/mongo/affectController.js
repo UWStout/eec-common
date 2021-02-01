@@ -172,22 +172,23 @@ export function listAffectHistory (affectLogID, dateStart, dateEnd) {
 
   let findThis
   if (affectLogID) {
-    findThis = { _id: affectLogID }
-    debug('got here A')
-  } else if (dateStart && dateEnd) {
+    findThis = { _id: new ObjectID(affectLogID) }
+  } else if (dateStart && dateEnd) { // finds timestamps within (inclusive) two dates
     findThis = { timestamp: { $gte: new Date(dateStart), $lte: new Date(dateEnd) } }
-    debug(dateStart + ', ' + dateEnd)
-    debug('got here B')
-  } else findThis = {}
+  } else if (dateStart) { // finds timestamps after a certain date (inclusive)
+    findThis = { timestamp: { $gte: new Date(dateStart) } }
+  } else if (dateEnd) { // finds timestamps before a certain date (inclusive)
+    findThis = { timestamp: { $lte: new Date(dateEnd) } }
+  } else {
+    findThis = {}
+  }
 
   debug('trying to send promise')
   debug('findThis:' + findThis)
-
-  return DBHandle.collection('AffectHistory').find()
-
-  /* return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     DBHandle.collection('AffectHistory')
-      .find(findThis, (err, result) => {
+      .find(findThis)
+      .toArray(function (err, result) {
         if (err) {
           debug('Failed to find match')
           debug(err)
@@ -197,7 +198,6 @@ export function listAffectHistory (affectLogID, dateStart, dateEnd) {
         resolve(result)
       })
   })
-  */
 }
 
 /**
