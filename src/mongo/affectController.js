@@ -162,9 +162,13 @@ export function insertAffectHistoryEntry (affectID, relatedID, isUser) {
 
 /**
  * this is a function to retrieve affect history with support to filter by date range and user/team ID
+ * If affectLogID is given, it will search for this ID, else if two dates are given, it will look between them for timestamps
+ * If only dateStart is given, it will find all of the timestamps after this date (inclusive)
+ * If only dateEnd is given, it will find all of the timestamps before this date (inclusive)
  *
  * @param {_id} affectLogID the ID of the log being found (can be null)
- * @param {Array} dateRange an array of 2 strings that represents the range of dates to find affect History Logs within (can be null)
+ * @param {String} dateStart the Date to look for dates after this given date (can be null)
+ * @param {String} dateEnd the Date to look before for other dates (can be null)
  * @return {Promise} Resolves only if the query was successful, rejects otherwise
  */
 export function listAffectHistory (affectLogID, dateStart, dateEnd) {
@@ -183,18 +187,15 @@ export function listAffectHistory (affectLogID, dateStart, dateEnd) {
     findThis = {}
   }
 
-  debug('trying to send promise')
-  debug('findThis:' + findThis)
   return new Promise((resolve, reject) => {
     DBHandle.collection('AffectHistory')
       .find(findThis)
       .toArray(function (err, result) {
         if (err) {
-          debug('Failed to find match')
+          debug('Failed to find affect history')
           debug(err)
           return reject(err)
         }
-        debug(result)
         resolve(result)
       })
   })
