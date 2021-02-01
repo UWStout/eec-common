@@ -10,6 +10,8 @@ import { ObjectID } from 'mongodb'
 import Debug from 'debug'
 const debug = Debug('server:mongo')
 
+/* Affect Functions */
+
 /**
  * Retrieve details for the given Affect
  *
@@ -130,4 +132,98 @@ export function listAffects (IDsOnly = true, perPage = 25, page = 1, sortBy = ''
 
   // Execute collection list query
   return listCollection('Affects', null, project, perPage, page, sortBy, sortOrder, filterBy, filter)
+}
+
+/* Affect History functions */
+
+/**
+ * Insert an affect log into the affect history collection
+ *
+ * tested in test 30 of test.js in the routes folder
+ *
+ * Each entry needs, at a minimum, an affectID (from the affect table), a userID OR a teamID, and a timestamp
+ * @param {_id} affectID from the affect table
+ * @param {_id} relatedID can be either a userID or a teamID, but we will never log both. ONE needs to be given.
+ * @param {_bool} isUser true if it is a userID, else false if it is a teamID
+ */
+export function insertAffectHistoryEntry (affectID, relatedID, isUser) {
+  const DBHandle = retrieveDBHandle('karunaData')
+  let insertThis
+
+  if (isUser) { // relatedID is a userID
+    insertThis = { affectID: new ObjectID(affectID), userID: new ObjectID(relatedID), timestamp: new Date() }
+  } else { // relatedID is a teamID
+    insertThis = { affectID: new ObjectID(affectID), teamID: new ObjectID(relatedID), timestamp: new Date() }
+  }
+  return DBHandle
+    .collection('AffectHistory')
+    .insertOne(insertThis)
+}
+
+/**
+ * this is a function to retrieve affect history with support to filter by date range and user/team ID
+ *
+ * @param {_id} affectLogID the ID of the log being found (can be null)
+ * @param {Array} dateRange an array of 2 strings that represents the range of dates to find affect History Logs within (can be null)
+ * @return {Promise} Resolves only if the query was successful, rejects otherwise
+ */
+export function listAffectHistory (affectLogID, dateStart, dateEnd) {
+  const DBHandle = retrieveDBHandle('karunaData')
+
+  let findThis
+  if (affectLogID) {
+    findThis = { _id: affectLogID }
+    debug('got here A')
+  } else if (dateStart && dateEnd) {
+    findThis = { timestamp: { $gte: new Date(dateStart), $lte: new Date(dateEnd) } }
+    debug(dateStart + ', ' + dateEnd)
+    debug('got here B')
+  } else findThis = {}
+
+  debug('trying to send promise')
+  debug('findThis:' + findThis)
+
+  return DBHandle.collection('AffectHistory').find()
+
+  /* return new Promise((resolve, reject) => {
+    DBHandle.collection('AffectHistory')
+      .find(findThis, (err, result) => {
+        if (err) {
+          debug('Failed to find match')
+          debug(err)
+          return reject(err)
+        }
+        debug(result)
+        resolve(result)
+      })
+  })
+  */
+}
+
+/**
+ * function to remove a specific affect history entry
+ * function to prune affect history for a specific user/team ID in a certain date range
+ * will be given either, but not both nor neither, affectLogID or dateRange
+ *
+ * @param {_id} affectLogID the ID of the log being deleted (can be null if dateRange is not)
+ * @param {Array} dateRange an array of 2 strings that represents the range of dates to delete affect History Logs within (if null, delete only one affect log)
+ * @return {Promise} Resolves only if the removal was successful, rejects otherwise
+ */
+export function removeAffectHistoryEntry (affectLogID, dateRange) {
+  const DBHandle = retrieveDBHandle('karunaData')
+
+  let removeOne
+  if (dateRange) removeOne = false
+  else removeOne = true
+
+  let removeThis
+  if (removeOne) removeThis = { _id: new ObjectID(affectLogID) }
+  else removeThis = { timestamp: { $gte: new Date(dateRange[0]), $lte: new Date(dateRange[1]) } }
+
+  return new Promise((resolve, reject) => {
+    DBHandle.collection('AffectHistory')
+      .deleteMany(removeThis, { justOne: removeOne })
+      .then(result => { return resolve() })
+      .catch((err) => { return reject(err) })
+  })
 }
