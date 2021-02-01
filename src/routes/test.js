@@ -630,7 +630,7 @@ router.post('/insertAffectHistoryEntry', async (req, res) => {
 
 // 31. test affectController's function listAffectHistory (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
 // TO-DO: make this a function to retrieve affect history with support to filter by date range and user/team ID
-router.get('/listAffectHistory/affectLogID/:affectLogID?/dateRange/:dateStart?/:dateEnd?', async (req, res) => {
+router.get('/listAffectHistory/affectLogID/:affectLogID?/dateStart/:dateStart?/dateEnd/:dateEnd?', async (req, res) => {
   // Extract and check required fields
   const affectLogID = req.params.affectLogID
   const dateStart = req.params.dateStart
@@ -638,19 +638,17 @@ router.get('/listAffectHistory/affectLogID/:affectLogID?/dateRange/:dateStart?/:
 
   debug(affectLogID)
 
-
   // check if affectLogID is a reasonable parameter for ObjectID
   if (affectLogID && !ObjectID.isValid(affectLogID)) {
     res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
-  
   // TO-DO: check if date is valid
 
   // attempt to get affect details
   debug('attempting to list affect history')
   try {
-    const affect = await affectDB.listAffectHistory(affectLogID, [dateStart, dateEnd])
+    const affect = await affectDB.listAffectHistory(affectLogID, dateStart, dateEnd)
     return res.status(200).json({ message: 'success', affect: affect })
   } catch (error) {
     debug('Failed to list affect history')
