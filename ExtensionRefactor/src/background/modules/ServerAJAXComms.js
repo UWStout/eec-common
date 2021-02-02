@@ -12,6 +12,10 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       promise = validateAccount(message.email, message.password)
       break
 
+    case 'ajax-getEmojiList':
+      promise = getEmojiList()
+      break
+
     default: {
       console.log('Unknown ajax message:')
       console.log(message)
@@ -41,3 +45,22 @@ function validateAccount (email, password) {
     requestPromise.catch((error) => { reject(error) })
   })
 }
+
+function getEmojiList () {
+  return new Promise((resolve, reject) => {
+    // Request data from the server
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/listAffects?fullInfo&perPage=35`)
+
+    // Listen for server response or error
+    requestPromise.then((response) => {
+      const emojiList = response.data.data.map((entry) => {
+        return { name: entry.name, emoji: entry.characterCodes[0] }
+      })
+      resolve(emojiList)
+    })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
+// To put a stub in:
+// return Promise.reject(new Error('Not yet implemented'))
