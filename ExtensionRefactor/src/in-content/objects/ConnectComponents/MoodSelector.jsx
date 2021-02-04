@@ -3,9 +3,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Modal, IconButton, Button, Checkbox } from '@material-ui/core'
 import Emoji from './Emoji.jsx'
 
-import { defaultMessage } from '../AJAXHelper.js'
+import { backgroundMessage } from '../AJAXHelper.js'
 
-// placeholder for dynamic database filling
 const EMOJI = [<Emoji key='unknown' label='unknown' symbol='?' />]
 const EMOJI_STATE = {
   UNINITIALIZED: 0,
@@ -20,9 +19,9 @@ const useStyles = makeStyles((theme) => ({
     width: 400,
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2),
-  },
-}));
+    padding: theme.spacing(2)
+  }
+}))
 
 // Menu of moods for user selection
 export default function MoodSelect () {
@@ -51,7 +50,9 @@ export default function MoodSelect () {
     })
   }
 
-  function doWork (data) {
+  // pushes emojis from the database into an array of Emoji objects
+  function buildEmojiList (data) {
+    EMOJI.splice(0)
     data.forEach((entry) => {
       EMOJI.push(<Emoji key={entry.name} label={entry.name} symbol={entry.emoji} />)
     })
@@ -63,7 +64,7 @@ export default function MoodSelect () {
     // Indicate it is being retrieved
     currentState = EMOJI_STATE.RETRIEVING
     setEmojisReady(EMOJI_STATE.RETRIEVING)
-    defaultMessage('ajax-getEmojiList', 'Emoji Retrieval failed: ', doWork)
+    backgroundMessage({ type: 'ajax-getEmojiList' }, 'Emoji Retrieval failed: ', buildEmojiList)
   }
 
   // Sets mood and closes menu

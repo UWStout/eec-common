@@ -4,19 +4,19 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import GroupOutlinedIcon from '@material-ui/icons/GroupOutlined'
 
 import { makeStyles } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button'
 
 import Team from '../Team.jsx'
-import Button from '@material-ui/core/Button'
+import { backgroundMessage } from '../../../in-content/objects/AJAXHelper.js'
 
 const useStyles = makeStyles({
   AccountSettingsBody: {
     padding: '5px 0px 5px 0px'
-  },
+  }
 })
 
 export default function AccountSettings () {
   const classes = useStyles()
-  // Create tracking state
   const [email, updateEmail] = useState('')
   const [password, updatePassword] = useState('')
 
@@ -29,22 +29,18 @@ export default function AccountSettings () {
       password: password
     }
 
-    // Send message to background (which does the ajax request)
-    chrome.runtime.sendMessage(message, (data) => {
-      // Did an error occur
-      if (data.error) {
-        // Alert user and log error
-        window.alert('Login failed: ' + data.error.message)
-        console.log(data.error)
-      } else {
-        // Alert user
-        window.alert('Login succeeded')
+    // Saves the JWT and logs the user in.
+    function login (data) {
+      // Alert user
+      window.alert('Login succeeded')
 
-        // Store the token and broadcast a successful login
-        chrome.runtime.sendMessage({ type: 'write', key: 'JWT', data: data.token })
-        chrome.runtime.sendMessage({ type: 'login', key: 'JWT', data: data.token })
-      }
-    })
+      // Store the token and broadcast a successful login
+      chrome.runtime.sendMessage({ type: 'write', key: 'JWT', data: data.token })
+      chrome.runtime.sendMessage({ type: 'login', key: 'JWT', data: data.token })
+    }
+
+    // Send message to background (which does the ajax request)
+    backgroundMessage(message, 'Login Failed', login)
   }
 
   // Build the account settings form
