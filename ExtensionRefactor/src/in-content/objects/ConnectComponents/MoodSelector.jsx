@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Modal, IconButton, Button, Checkbox } from '@material-ui/core'
 import Emoji from './Emoji.jsx'
 
+import { defaultMessage } from '../AJAXHelper.js'
+
 // placeholder for dynamic database filling
 const EMOJI = [<Emoji key='unknown' label='unknown' symbol='?' />]
 const EMOJI_STATE = {
@@ -33,7 +35,7 @@ export default function MoodSelect () {
   // Initialize emoji list if not yet ready
   if (mood === 0) {
     // Send message to background to retrieve EMOJI list
-    chrome.runtime.sendMessage({ type: 'getUser' }, (data) => {
+    chrome.runtime.sendMessage({ type: 'getuser' }, (data) => {
       // Did an error occur
       if (data.error) {
         // Alert user and log error
@@ -49,27 +51,19 @@ export default function MoodSelect () {
     })
   }
 
-  // Initialize emoji list if not yet ready
+  function doWork (data) {
+    data.forEach((entry) => {
+      EMOJI.push(<Emoji key={entry.name} label={entry.name} symbol={entry.emoji} />)
+    })
+    currentState = EMOJI_STATE.READY
+    setEmojisReady(EMOJI_STATE.READY)
+  }
+
   if (emojisReady === EMOJI_STATE.UNINITIALIZED) {
     // Indicate it is being retrieved
     currentState = EMOJI_STATE.RETRIEVING
     setEmojisReady(EMOJI_STATE.RETRIEVING)
-
-    // Send message to background to retrieve EMOJI list
-    chrome.runtime.sendMessage({ type: 'ajax-getEmojiList' }, (data) => {
-      // Did an error occur
-      if (data.error) {
-        // Alert user and log error
-        window.alert('Emoji Retrieval failed: ' + data.error.message)
-        console.log(data.error)
-      } else {
-        data.forEach((entry) => {
-          EMOJI.push(<Emoji key={entry.name} label={entry.name} symbol={entry.emoji} />)
-        })
-        currentState = EMOJI_STATE.READY
-        setEmojisReady(EMOJI_STATE.READY)
-      }
-    })
+    defaultMessage('ajax-getEmojiList', 'Emoji Retrieval failed: ', doWork)
   }
 
   // Sets mood and closes menu
@@ -122,7 +116,7 @@ export default function MoodSelect () {
     <div id='mood-share-modal' className={classes.paper}>
       <p>Do you want to share your feelings with the rest of the team?</p>
       <span>
-      <Button onClick={handleShareClose} size='small'>
+        <Button onClick={handleShareClose} size='small'>
           No, Keep Private
         </Button>
         <Button onClick={handleShareClose} size='small'>
