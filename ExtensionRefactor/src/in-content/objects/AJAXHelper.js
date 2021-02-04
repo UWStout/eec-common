@@ -3,7 +3,7 @@
  * Background messages are processed in ServerAJAXComms.js which returns a promise.
  * @param {object} messageObject a message object which must at minimum include a type: string
  * @param {string} errorMessage message to return as an alert
- * @param {function} doWork function with parameter data to use the data object
+ * @param {function} doWork parameter(data), function defined within context to perform a basic message task
  */
 export function backgroundMessage (messageObject, errorMessage, doWork) {
   chrome.runtime.sendMessage(messageObject, (data) => {
