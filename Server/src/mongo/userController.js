@@ -331,3 +331,17 @@ export function getUserStatus (userID) {
       })
   })
 }
+
+/**
+ * updates the user's status.
+ *
+ * tested in test 34
+ *
+ * @param {ObjectID} userID the user whose status is being updated
+ * @param {ObjectID} lastAffectID can be null, the user's most recent mood
+ * @param {*} lastCollaborationStatus can be null, the user's most recent collaboration status
+ * @param {*} minutesToRespond can be null? the user's average minutes to respond
+ */
+export function updateUserStatus (userID, lastAffectID, lastCollaborationStatus, minutesToRespond) {
+// TO-DO
+}

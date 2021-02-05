@@ -713,6 +713,8 @@ router.get('/getUserStatus/affectLogID/:userID?', async (req, res) => {
   }
 })
 
+// 34. test userController's function updateUserStatus (userID, lastAffectID, lastCollaborationStatus, minutesToRespond)
+// TO-DO
 
 // Expose the router for use in other files
 export default router
