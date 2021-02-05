@@ -318,29 +318,20 @@ export function removeUser (userID) {
  */
 export function getUserStatus (userID) {
   const DBHandle = retrieveDBHandle('karunaData')
-  return new Promise((resolve, reject) => {
-    DBHandle.collection('Users')
-      .find({ _id: new ObjectID(userID) })
-      .toArray(function (err, result) {
-        if (err) {
-          debug('Failed to find user given ID ' + userID)
-          debug(err)
-          return reject(err)
-        }
-        resolve(result.status)
-      })
-  })
+  return DBHandle
+    .collection('Users')
+    .findOne({ _id: new ObjectID(userID) }, { projection: { status: 1, _id: 0 } })
 }
 
 /**
- * updates the user's status.
+ * updates the user's status. pushes updates to the status object of the user document with the given userID
  *
  * tested in test 34
  *
  * @param {ObjectID} userID the user whose status is being updated
  * @param {ObjectID} lastAffectID can be null, the user's most recent mood
- * @param {*} lastCollaborationStatus can be null, the user's most recent collaboration status
- * @param {*} minutesToRespond can be null? the user's average minutes to respond
+ * @param {String} lastCollaborationStatus can be null, the user's most recent collaboration status
+ * @param {String} minutesToRespond can be null? the user's average minutes to respond
  */
 export function updateUserStatus (userID, lastAffectID, lastCollaborationStatus, minutesToRespond) {
   const DBHandle = retrieveDBHandle('karunaData')

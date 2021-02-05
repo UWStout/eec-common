@@ -692,7 +692,7 @@ router.delete('/removeAffectHistoryEntry', async (req, res) => {
 })
 
 // 33. test userControllers function getUserStatus (userID)
-router.get('/getUserStatus/affectLogID/:userID?', async (req, res) => {
+router.get('/getUserStatus/:userID?', async (req, res) => {
   // Extract and check required fields
   const userID = req.params.userID
 
