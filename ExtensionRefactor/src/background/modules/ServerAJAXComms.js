@@ -16,6 +16,10 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       promise = getEmojiList()
       break
 
+    case 'ajax-getUserStatus':
+      promise = getUserStatus(message.userID)
+      break
+
     default: {
       console.log('Unknown ajax message:')
       console.log(message)
@@ -62,5 +66,17 @@ function getEmojiList () {
   })
 }
 
-// To put a stub in:
+// NOTE
+// To put a stub rejection in:
 // return Promise.reject(new Error('Not yet implemented'))
+
+// TODO: Implement this stub
+function getUserStatus (userID) {
+  // Just some dummy data for now, data structure may change after
+  // database entry gets designed.
+  return Promise.resolve({
+    collaboration: true,
+    recentAffect: { name: 'happy', emoji: ':-)' },
+    timeToRespondMinutes: 120
+  })
+}
