@@ -3,7 +3,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Modal, IconButton, Button, Checkbox } from '@material-ui/core'
 import Emoji from './Emoji.jsx'
 
-// placeholder for dynamic database filling
+import { backgroundMessage } from '../AJAXHelper.js'
+
 const EMOJI = [<Emoji key='unknown' label='unknown' symbol='?' />]
 const EMOJI_STATE = {
   UNINITIALIZED: 0,
@@ -18,9 +19,9 @@ const useStyles = makeStyles((theme) => ({
     width: 400,
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2),
-  },
-}));
+    padding: theme.spacing(2)
+  }
+}))
 
 // Menu of moods for user selection
 export default function MoodSelect () {
@@ -33,7 +34,7 @@ export default function MoodSelect () {
   // Initialize emoji list if not yet ready
   if (mood === 0) {
     // Send message to background to retrieve EMOJI list
-    chrome.runtime.sendMessage({ type: 'getUser' }, (data) => {
+    chrome.runtime.sendMessage({ type: 'getuser' }, (data) => {
       // Did an error occur
       if (data.error) {
         // Alert user and log error
@@ -49,27 +50,21 @@ export default function MoodSelect () {
     })
   }
 
-  // Initialize emoji list if not yet ready
+  // pushes emojis from the database into an array of Emoji objects
+  function buildEmojiList (data) {
+    EMOJI.splice(0)
+    data.forEach((entry) => {
+      EMOJI.push(<Emoji key={entry.name} label={entry.name} symbol={entry.emoji} />)
+    })
+    currentState = EMOJI_STATE.READY
+    setEmojisReady(EMOJI_STATE.READY)
+  }
+
   if (emojisReady === EMOJI_STATE.UNINITIALIZED) {
     // Indicate it is being retrieved
     currentState = EMOJI_STATE.RETRIEVING
     setEmojisReady(EMOJI_STATE.RETRIEVING)
-
-    // Send message to background to retrieve EMOJI list
-    chrome.runtime.sendMessage({ type: 'ajax-getEmojiList' }, (data) => {
-      // Did an error occur
-      if (data.error) {
-        // Alert user and log error
-        window.alert('Emoji Retrieval failed: ' + data.error.message)
-        console.log(data.error)
-      } else {
-        data.forEach((entry) => {
-          EMOJI.push(<Emoji key={entry.name} label={entry.name} symbol={entry.emoji} />)
-        })
-        currentState = EMOJI_STATE.READY
-        setEmojisReady(EMOJI_STATE.READY)
-      }
-    })
+    backgroundMessage({ type: 'ajax-getEmojiList' }, 'Emoji Retrieval failed: ', buildEmojiList)
   }
 
   // Sets mood and closes menu
@@ -122,7 +117,7 @@ export default function MoodSelect () {
     <div id='mood-share-modal' className={classes.paper}>
       <p>Do you want to share your feelings with the rest of the team?</p>
       <span>
-      <Button onClick={handleShareClose} size='small'>
+        <Button onClick={handleShareClose} size='small'>
           No, Keep Private
         </Button>
         <Button onClick={handleShareClose} size='small'>
