@@ -343,5 +343,21 @@ export function getUserStatus (userID) {
  * @param {*} minutesToRespond can be null? the user's average minutes to respond
  */
 export function updateUserStatus (userID, lastAffectID, lastCollaborationStatus, minutesToRespond) {
-// TO-DO
+  const DBHandle = retrieveDBHandle('karunaData')
+
+  return new Promise((resolve, reject) => {
+    return DBHandle
+      .collection('Users')
+      .findOneAndUpdate(
+        { _id: new ObjectID(userID) },
+        { $set: { status: { lastAffectID: new ObjectID(lastAffectID), lastCollaborationStatus, minutesToRespond } } },
+        (err, result) => {
+          if (err) {
+            debug('Failed to update user status')
+            debug(err)
+            return reject(err)
+          }
+          resolve()
+        })
+  })
 }
