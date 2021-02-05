@@ -585,7 +585,7 @@ router.get('/listAffects', async (req, res) => {
 })
 
 // 30. test affectController's function insertAffectHistoryEntry (affectID, relatedID, isUser)
-router.post('/insertAffectHistoryEntry/:isPrivate?', async (req, res) => {
+router.post('/insertAffectHistoryEntry', async (req, res) => {
   // Extract and check required fields
   const { affectID, userID, teamID, isPrivate } = req.body
   if (!affectID || (!userID && !teamID)) {
@@ -714,7 +714,35 @@ router.get('/getUserStatus/affectLogID/:userID?', async (req, res) => {
 })
 
 // 34. test userController's function updateUserStatus (userID, lastAffectID, lastCollaborationStatus, minutesToRespond)
-// TO-DO
+router.post('/updateUserStatus', async (req, res) => {
+  // Extract and check required fields
+  const { userID, lastAffectID, lastCollaborationStatus, minutesToRespond } = req.body
+  if (!userID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if userID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, id: userID, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // check if affectID is a reasonable parameter for ObjectID
+  if (lastAffectID && !ObjectID.isValid(lastAffectID)) {
+    res.status(400).json({ invalid: true, message: 'affectID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // Attempt to update user status
+  debug('attempting to update user status')
+  try {
+    const update = await userDB.updateUserStatus(userID, lastAffectID, lastCollaborationStatus, minutesToRespond)
+    return res.status(200).json({ message: 'success', update })
+  } catch (error) {
+    console.error('Failed to update user status')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while trying to update user status' })
+  }
+})
 
 // Expose the router for use in other files
 export default router
