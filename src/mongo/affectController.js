@@ -146,14 +146,20 @@ export function listAffects (IDsOnly = true, perPage = 25, page = 1, sortBy = ''
  * @param {_id} relatedID can be either a userID or a teamID, but we will never log both. ONE needs to be given.
  * @param {_bool} isUser true if it is a userID, else false if it is a teamID
  */
-export function insertAffectHistoryEntry (affectID, relatedID, isUser) {
+export function insertAffectHistoryEntry (affectID, relatedID, isUser, isPrivate) {
   const DBHandle = retrieveDBHandle('karunaData')
   let insertThis
 
+  // let isPrivateBool
+  // if (isPrivate) isPrivateBool = true
+  // else isPrivateBool = false
+  debug('isPrivate: ' + isPrivate)
+  if (isPrivate === undefined) isPrivate = false
+
   if (isUser) { // relatedID is a userID
-    insertThis = { affectID: new ObjectID(affectID), userID: new ObjectID(relatedID), timestamp: new Date() }
+    insertThis = { affectID: new ObjectID(affectID), userID: new ObjectID(relatedID), timestamp: new Date(), isPrivate }
   } else { // relatedID is a teamID
-    insertThis = { affectID: new ObjectID(affectID), teamID: new ObjectID(relatedID), timestamp: new Date() }
+    insertThis = { affectID: new ObjectID(affectID), teamID: new ObjectID(relatedID), timestamp: new Date(), isPrivate }
   }
   return DBHandle
     .collection('AffectHistory')

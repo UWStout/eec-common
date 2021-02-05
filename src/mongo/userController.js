@@ -307,3 +307,27 @@ export function removeUser (userID) {
       })
   })
 }
+
+/**
+ * Retrieves user status object given userID which contains user data for most recent mood, collaboration willingness, time to respond
+ *
+ * tested in test 33
+ *
+ * @param {ObjectID} userID
+ * @returns {Promise} resolves with status object from user field, else rejects with an error
+ */
+export function getUserStatus (userID) {
+  const DBHandle = retrieveDBHandle('karunaData')
+  return new Promise((resolve, reject) => {
+    DBHandle.collection('Users')
+      .find({ _id: new ObjectID(userID) })
+      .toArray(function (err, result) {
+        if (err) {
+          debug('Failed to find user given ID ' + userID)
+          debug(err)
+          return reject(err)
+        }
+        resolve(result.status)
+      })
+  })
+}
