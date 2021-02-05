@@ -585,9 +585,9 @@ router.get('/listAffects', async (req, res) => {
 })
 
 // 30. test affectController's function insertAffectHistoryEntry (affectID, relatedID, isUser)
-router.post('/insertAffectHistoryEntry', async (req, res) => {
+router.post('/insertAffectHistoryEntry/:isPrivate?', async (req, res) => {
   // Extract and check required fields
-  const { affectID, userID, teamID } = req.body
+  const { affectID, userID, teamID, isPrivate } = req.body
   if (!affectID || (!userID && !teamID)) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
@@ -619,7 +619,7 @@ router.post('/insertAffectHistoryEntry', async (req, res) => {
   // Attempt to insert affect history log
   debug('attempting to insert affect history log')
   try {
-    const log = await affectDB.insertAffectHistoryEntry(affectID, relatedID, isUser)
+    const log = await affectDB.insertAffectHistoryEntry(affectID, relatedID, isUser, isPrivate)
     return res.status(200).json({ message: 'success', affectLog: log })
   } catch (error) {
     console.error('Failed to insert affect history log')
@@ -629,7 +629,6 @@ router.post('/insertAffectHistoryEntry', async (req, res) => {
 })
 
 // 31. test affectController's function listAffectHistory (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
-// TO-DO: make this a function to retrieve affect history with support to filter by date range and user/team ID
 router.get('/listAffectHistory/affectLogID/:affectLogID?/dateStart/:dateStart?/dateEnd/:dateEnd?', async (req, res) => {
   // Extract and check required fields
   const affectLogID = req.params.affectLogID
@@ -691,6 +690,29 @@ router.delete('/removeAffectHistoryEntry', async (req, res) => {
     return res.status(500).json({ error: true, message: 'Error while attempting to remove affect log' })
   }
 })
+
+// 33. test userControllers function getUserStatus (userID)
+router.get('/getUserStatus/affectLogID/:userID?', async (req, res) => {
+  // Extract and check required fields
+  const userID = req.params.userID
+
+  // check if userID is a reasonable parameter for ObjectID
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to get user status
+  debug('attempting to get user status')
+  try {
+    const userStatus = await userDB.getUserStatus(userID)
+    return res.status(200).json({ message: 'success', userStatus })
+  } catch (error) {
+    debug('Failed to get user status')
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while trying to get user status' })
+  }
+})
+
 
 // Expose the router for use in other files
 export default router
