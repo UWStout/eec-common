@@ -35,3 +35,25 @@ export function writeValue (key, data, context, overwrite = true) {
   store.local.set(keyContext, data, true)
   return true
 }
+
+export function retrieveUser () {
+  const JWT = readValue('JWT')
+  if (!JWT) { return {} }
+
+  try {
+    // Base64 decode second field in the token (the payload)
+    const jsonStr = atob(JWT.split('.')[1])
+    const jsonObj = JSON.parse(jsonStr)
+    return {
+      id: jsonObj.id,
+      email: jsonObj.email,
+      firstName: jsonObj.firstName,
+      lastName: jsonObj.lastName,
+      userType: jsonObj.userType
+    }
+  } catch (err) {
+    console.log('[[BACKGROUND]]: Error decoding JWT')
+    console.log(err)
+    return {}
+  }
+}

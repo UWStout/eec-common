@@ -1,5 +1,5 @@
 // Functions from other background modules
-import { readValue, writeValue } from './DataStorage.js'
+import { readValue, writeValue, retrieveUser } from './DataStorage.js'
 import { getSocket, announceSession, endSession } from './SocketComms.js'
 import { processAjaxRequest } from './ServerAJAXComms.js'
 
@@ -70,8 +70,9 @@ function oneTimeMessage (message, sender, sendResponse) {
     }
 
     // check message structure
-    if (!message.type || !message.key) {
+    if (!message.type) {
       console.log(`[BACKGROUND] Incomplete one-time message from "${senderID}"`)
+      console.log(message)
       const error = new Error(`Message from ${senderID} missing type or key`)
       sendResponse({ error })
       return reject(error)
@@ -88,6 +89,13 @@ function oneTimeMessage (message, sender, sendResponse) {
       case 'write':
         sendResponse({ result: writeValue(message.key, message.data, message.context) })
         return resolve({ result: writeValue(message.key, message.data, message.context) })
+
+      // Write a value to storage
+      case 'getuser': {
+        const userData = retrieveUser()
+        sendResponse(userData)
+        return resolve(userData)
+      }
 
       // User successfully logged in (comes from popup)
       case 'login':
