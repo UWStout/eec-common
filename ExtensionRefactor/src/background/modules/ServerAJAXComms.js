@@ -70,13 +70,27 @@ function getEmojiList () {
 // To put a stub rejection in:
 // return Promise.reject(new Error('Not yet implemented'))
 
-// TODO: Implement this stub
 function getUserStatus (userID) {
+  return new Promise((resolve, reject) => {
+    // Request data from the server
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getUserStatus/${userID}`)
+
+    // Listen for server response or error
+    requestPromise.then((response) => {
+      const userStatus = response.data.data.map((entry) => {
+        return { collaboration: entry.lastCollaborationStatus, recentAffect: entry.lastAffectID, timeToRespondMinutes: entry.minutesToRespond }
+      })
+
+      resolve(userStatus)
+    })
+    requestPromise.catch((error) => { reject(error) })
+  })
+
   // Just some dummy data for now, data structure may change after
   // database entry gets designed.
-  return Promise.resolve({
-    collaboration: true,
-    recentAffect: { name: 'happy', emoji: ':-)' },
-    timeToRespondMinutes: 120
-  })
+  // return Promise.resolve({
+  //   collaboration: true,
+  //   recentAffect: { name: 'happy', emoji: ':-)' },
+  //   timeToRespondMinutes: 120
+  // })
 }
