@@ -75,22 +75,27 @@ function getUserStatus (userID) {
     // Request data from the server
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getUserStatus/${userID}`)
 
-    // Listen for server response or error
+    // Listen for server response
     requestPromise.then((response) => {
-      const userStatus = response.data.data.map((entry) => {
-        return { collaboration: entry.lastCollaborationStatus, recentAffect: entry.lastAffectID, timeToRespondMinutes: entry.minutesToRespond }
+      const affectID = response.data.lastAffectID
+
+      // Make second request from server
+      const affectPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getAffectDetails/${affectID}`)
+      affectPromise.then((response2) => {
+        // Build the status object and resolve with it
+        const userStatus = {
+          collaboration: response.data.lastCollaborationStatus,
+          recentAffect: response2.data,
+          timeToRespondMinutes: response.data.minutesToRespond
+        }
+        return resolve(userStatus)
       })
 
-      resolve(userStatus)
+      // Reject on error from the second request
+      affectPromise.catch((error) => { return reject(error) })
     })
-    requestPromise.catch((error) => { reject(error) })
-  })
 
-  // Just some dummy data for now, data structure may change after
-  // database entry gets designed.
-  // return Promise.resolve({
-  //   collaboration: true,
-  //   recentAffect: { name: 'happy', emoji: ':-)' },
-  //   timeToRespondMinutes: 120
-  // })
+    // Reject on error from the first request
+    requestPromise.catch((error) => { return reject(error) })
+  })
 }
