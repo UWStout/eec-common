@@ -74,15 +74,14 @@ function getUserStatus (userID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getUserStatus/${userID}`)
-
-    // Listen for server response
-    requestPromise.then((response) => {
+    requestPromise.then((response) => { // listen for server response
       const affectLogID = response.data.affectLogID
 
       // Make second request from server to get affect log entry
       const affectLogPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/listAffectHistory/affectLogID/${affectLogID}`)
-      affectLogPromise.then((response2) => {
+      affectLogPromise.then((response2) => { // listen for server response
         const affectID = response.data.affectID
+
         // Make third request from server to get affect data from affectID
         const affectPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getAffectDetails/${affectID}`)
         affectPromise.then((response3) => {
