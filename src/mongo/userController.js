@@ -329,7 +329,7 @@ export function getUserStatus (userID) {
  * tested in test 34
  *
  * @param {ObjectID} userID the user whose status is being updated
- * @param {ObjectID} lastAffectID can be null, the user's most recent mood
+ * @param {ObjectID} affectLogID can be null, the user's most recent mood from the affect history
  * @param {String} lastCollaborationStatus can be null, the user's most recent collaboration status
  * @param {Number} minutesToRespond can be null? the user's average minutes to respond
  */
