@@ -77,25 +77,30 @@ function getUserStatus (userID) {
 
     // Listen for server response
     requestPromise.then((response) => {
-      const affectID = response.data.lastAffectID
+      const affectLogID = response.data.affectLogID
 
-      // Make second request from server
-      const affectPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getAffectDetails/${affectID}`)
-      affectPromise.then((response2) => {
+      // Make second request from server to get affect log entry
+      const affectLogPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/listAffectHistory/affectLogID/${affectLogID}`)
+      affectLogPromise.then((response2) => {
+        const affectID = response.data.affectID
+        // Make third request from server to get affect data from affectID
+        const affectPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getAffectDetails/${affectID}`)
+        affectPromise.then((response3) => {
         // Build the status object and resolve with it
-        const userStatus = {
-          collaboration: response.data.lastCollaborationStatus,
-          recentAffect: response2.data,
-          timeToRespondMinutes: response.data.minutesToRespond
-        }
-        return resolve(userStatus)
+          const userStatus = {
+            collaboration: response.data.lastCollaborationStatus,
+            recentAffect: response3.data,
+            timeToRespondMinutes: response.data.minutesToRespond
+          }
+          return resolve(userStatus)
+        })
+        // Reject on error from the third request (request to get affect from affectID)
+        affectPromise.catch((error) => { return reject(error) })
       })
-
-      // Reject on error from the second request
-      affectPromise.catch((error) => { return reject(error) })
+      // Reject on error from second request (request to get affectLog from affectLogID)
+      affectLogPromise.catch((error) => { return reject(error) })
     })
-
-    // Reject on error from the first request
+    // Reject on error from the first request (request to get user status)
     requestPromise.catch((error) => { return reject(error) })
   })
 }
