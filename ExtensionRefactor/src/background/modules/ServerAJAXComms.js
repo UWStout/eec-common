@@ -78,7 +78,10 @@ function getUserStatus (userID) {
     // Listen for server response or error
     requestPromise.then((response) => {
       const userStatus = response.data.data.map((entry) => {
-        return { collaboration: entry.lastCollaborationStatus, recentAffect: entry.lastAffectID, timeToRespondMinutes: entry.minutesToRespond }
+        const requestPromiseWithEmoji = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getAffectDetails/${entry.lastAffectID}`)
+        requestPromiseWithEmoji.then((responseWithEmoji) => { // this seems very suspicious to me
+          return { collaboration: entry.lastCollaborationStatus, recentAffect: responseWithEmoji.data.data.characterCodes[0], timeToRespondMinutes: entry.minutesToRespond }
+        })
       })
 
       resolve(userStatus)

@@ -331,7 +331,7 @@ export function getUserStatus (userID) {
  * @param {ObjectID} userID the user whose status is being updated
  * @param {ObjectID} lastAffectID can be null, the user's most recent mood
  * @param {String} lastCollaborationStatus can be null, the user's most recent collaboration status
- * @param {String} minutesToRespond can be null? the user's average minutes to respond
+ * @param {Number} minutesToRespond can be null? the user's average minutes to respond
  */
 export function updateUserStatus (userID, lastAffectID, lastCollaborationStatus, minutesToRespond) {
   const DBHandle = retrieveDBHandle('karunaData')
@@ -341,14 +341,14 @@ export function updateUserStatus (userID, lastAffectID, lastCollaborationStatus,
       .collection('Users')
       .findOneAndUpdate(
         { _id: new ObjectID(userID) },
-        { $set: { status: { lastAffectID: new ObjectID(lastAffectID), lastCollaborationStatus, minutesToRespond } } },
+        { $set: { status: { lastAffectID: new ObjectID(lastAffectID), lastCollaborationStatus, minutesToRespond: parseInt(minutesToRespond) } } },
         (err, result) => {
           if (err) {
             debug('Failed to update user status')
             debug(err)
             return reject(err)
           }
-          resolve()
+          resolve(result)
         })
   })
 }
