@@ -333,7 +333,7 @@ export function getUserStatus (userID) {
  * @param {String} lastCollaborationStatus can be null, the user's most recent collaboration status
  * @param {Number} minutesToRespond can be null? the user's average minutes to respond
  */
-export function updateUserStatus (userID, lastAffectID, lastCollaborationStatus, minutesToRespond) {
+export function updateUserStatus (userID, affectLogID, lastCollaborationStatus, minutesToRespond) {
   const DBHandle = retrieveDBHandle('karunaData')
 
   return new Promise((resolve, reject) => {
@@ -341,7 +341,7 @@ export function updateUserStatus (userID, lastAffectID, lastCollaborationStatus,
       .collection('Users')
       .findOneAndUpdate(
         { _id: new ObjectID(userID) },
-        { $set: { status: { lastAffectID: new ObjectID(lastAffectID), lastCollaborationStatus, minutesToRespond: parseInt(minutesToRespond) } } },
+        { $set: { status: { affectLogID: new ObjectID(affectLogID), lastCollaborationStatus, minutesToRespond: parseInt(minutesToRespond) } } },
         (err, result) => {
           if (err) {
             debug('Failed to update user status')
