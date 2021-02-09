@@ -102,7 +102,7 @@ function oneTimeMessage (message, sender, sendResponse) {
 
           // Echo this message to all listening ports with the same 'context'
           for (const portName in portSessions) {
-            if (portName.includes(message.context)) {
+            if (portName.includes(message.context) && portSessions[portName]) {
               portSessions[portName].postMessage({ ...message })
             }
           }
