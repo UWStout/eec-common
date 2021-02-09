@@ -90,7 +90,26 @@ function oneTimeMessage (message, sender, sendResponse) {
         sendResponse({ result: writeValue(message.key, message.data, message.context) })
         return resolve({ result: writeValue(message.key, message.data, message.context) })
 
-      // Write a value to storage
+      // Context is updating for one tab
+      case 'context':
+        // Are the context values any different than before?
+        if (readValue('userName', message.context) !== message.userName ||
+            readValue('teamName', message.context) !== message.teamName ||
+            readValue('channelName', message.context) !== message.channelName) {
+          writeValue('userName', message.userName, message.context)
+          writeValue('teamName', message.teamName, message.context)
+          writeValue('channelName', message.channelName, message.context)
+
+          // Echo this message to all listening ports with the same 'context'
+          for (const portName in portSessions) {
+            if (portName.includes(message.context)) {
+              portSessions[portName].postMessage({ ...message })
+            }
+          }
+        }
+        break
+
+      // Retrieve data about logged in user
       case 'getuser': {
         const userData = retrieveUser()
         sendResponse(userData)

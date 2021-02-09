@@ -36,7 +36,7 @@ window.addEventListener('beforeunload', (event) => {
 
 // State variables
 let userName = ''
-let teamServerName = ''
+let teamName = ''
 let channelName = ''
 
 jQuery(document).ready(() => {
@@ -59,26 +59,24 @@ jQuery(document).ready(() => {
     // We use optional chaining to avoid undefined errors
     if (IS_TEAMS) {
       userName = jQuery('img.user-picture')?.first()?.attr('upn')?.trim()
-      teamServerName = jQuery('.school-app-team-title')?.text()?.trim()
+      teamName = jQuery('.school-app-team-title')?.text()?.trim()
       channelName = jQuery('.channel-name')?.text()?.trim()
     } else if (IS_DISCORD) {
       const userArea = jQuery('section[aria-label="User area"]')
       userName = userArea.text()?.trim()
-      teamServerName = userArea?.parent()?.children()?.first()?.children()?.first()?.text()?.trim()
+      teamName = userArea?.parent()?.children()?.first()?.children()?.first()?.text()?.trim()
       channelName = document.title?.trim()
     } else if (IS_SLACK) {
       userName = jQuery('[data-qa="channel_sidebar_name_you"]')?.parent()?.children()?.first()?.text()?.trim()
-      teamServerName = jQuery('.p-ia__sidebar_header__team_name_text')?.text()?.trim()
+      teamName = jQuery('.p-ia__sidebar_header__team_name_text')?.text()?.trim()
       channelName = jQuery('[data-qa="channel_name"]')?.text()?.trim()
     }
 
     // Print updated context info
-    console.log(`[[IN-CONTENT]] context updated: ${contextName}, ${teamServerName}/${channelName}/${userName}`)
+    console.log(`[[IN-CONTENT]] context updated: ${contextName}, ${teamName}/${channelName}/${userName}`)
 
     // Update data in the background script
-    chrome.runtime.sendMessage({ type: 'write', key: 'userName', data: userName, contextName })
-    chrome.runtime.sendMessage({ type: 'write', key: 'teamName', data: teamServerName, contextName })
-    chrome.runtime.sendMessage({ type: 'write', key: 'channelName', data: channelName, contextName })
+    chrome.runtime.sendMessage({ type: 'context', userName, teamName, channelName, context: contextName })
   }
 
   // Create an observer instance linked to the callback function

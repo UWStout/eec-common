@@ -1,27 +1,27 @@
-import React, { useState } from 'react'
+import React from 'react'
+
+import { Paper } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+
 import CollaborationPreference from './CollaborationPreference.jsx'
 import MoodStatus from './MoodStatus.jsx'
 import TypicalResponseTime from './TypicalResponseTime.jsx'
 
+const useStyles = makeStyles((theme) => ({
+  paperRoot: {
+    backgroundColor: '#7db2f0',
+    textAlign: 'center'
+  }
+}))
+
 export default function ThreeIconStatus (props) {
-  return(
-    <React.Fragment>
-      <div className='my-eec-connect-status-icons'>
-        <CollaborationPreference />
-        <MoodStatus />
-        <TypicalResponseTime />
-      </div>
-      {/* This is a holdover solution. 
-          It seems like the team member icon status will have to be hooked onto the correct element,
-          not necessarily in the shadowDOM. 
-      */}
-      <div className='team-eec-connect-status-icons'>
-        <span>
-          <CollaborationPreference />
-          <MoodStatus />
-          <TypicalResponseTime />
-        </span>
-      </div>
-    </React.Fragment>
+  const classes = useStyles()
+
+  return (
+    <Paper elevation={3} className={classes.paperRoot}>
+      <CollaborationPreference />
+      <MoodStatus />
+      <TypicalResponseTime />
+    </Paper>
   )
 }

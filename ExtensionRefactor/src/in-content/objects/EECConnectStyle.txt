@@ -7,17 +7,10 @@
   height: 24px;
 }
 
-.my-eec-connect-status-icons {
+.eec-status {
   position: absolute;
-  bottom: 200px;
-  right: 0px;
-}
-
-.team-eec-connect-status-icons {
-  position: absolute;
-  float: left;
-  top: -100px;
-  left: -200px;
+  top: 50px;
+  right: -5px;
 }
 
 .mood-modal {

@@ -32,7 +32,7 @@ export default function ConnectComponent (props) {
   return (
     <React.Fragment>
       {PanelOpenButton}
-      <ConnectForm 
+      <ConnectForm
         opened={formOpen}
         handleClose={handleClick}
         handleHistoryFormOpen={handleHistoryClick}

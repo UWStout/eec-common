@@ -12,6 +12,7 @@ import * as AnimateCSS from './cssHelpers/animateCSS.js'
 
 // Accepted context strings
 import { CONTEXT } from '../../util/contexts'
+import ThreeIconStatus from './ThreeIconStatusComponents/ThreeIconStatus'
 
 // Set some universal defaults for tippy
 tippy.setDefaultProps({
@@ -128,10 +129,22 @@ class EECSidebar extends HTMLElement {
   // Respond to a message from the background script
   backgroundMessage (message) {
     switch (message.type) {
+      case 'context':
+        console.log('[[SIDEBAR]] context update')
+        if (message.teamName.toLowerCase().includes('find or start')) {
+          // Not a valid team channel context
+          this.updateVisibility(false)
+          console.log('[[SIDEBAR]] >> HIDING')
+        } else {
+          this.updateVisibility(true)
+          console.log('[[SIDEBAR]] >> SHOWING')
+        }
+        break
+
       case 'login': {
         this.JWT = message.token
         const payload = this.decodeTokenPayload(this.JWT)
-        this.showMessage(`Welcome *${payload.firstName}**!`, false, 5000)
+        this.showMessage(`Welcome **${payload.firstName}**!`, false, 5000)
       } break
 
       case 'karunaMessage':
@@ -139,6 +152,18 @@ class EECSidebar extends HTMLElement {
           this.showMessage(message.content)
         }
         break
+    }
+  }
+
+  updateVisibility (show) {
+    if (!show) {
+      this.popoverElem.hide()
+      this.imageIcon.hide()
+      this.alertIcon.hide()
+    } else {
+      this.popoverElem.show()
+      this.imageIcon.show()
+      this.alertIcon.show()
     }
   }
 
