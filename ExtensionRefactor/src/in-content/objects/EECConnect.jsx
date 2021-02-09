@@ -17,6 +17,9 @@ import EECConnectCSS from './EECConnectStyle.txt'
 import ConnectComponent from './ConnectComponents/ConnectComponent.jsx'
 import ThreeIconStatus from './ThreeIconStatusComponents/ThreeIconStatus.jsx'
 
+// Utility enums and functions for app context management
+import * as CONTEXT_UTIL from '../../util/contexts.js'
+
 class EECConnect extends HTMLElement {
   constructor () {
     super()
@@ -102,6 +105,42 @@ class EECConnect extends HTMLElement {
       this.statusPanel[0]
     )
     console.log('[[IN-CONTENT EECConnect]] ... mounted')
+
+    // Start out hidden
+    this.updateVisibility(false)
+  }
+
+  // Update background communication port
+  setBackgroundPort (extensionPort) {
+    this.backgroundPort = extensionPort
+    if (this.backgroundPort) {
+      this.backgroundPort.onMessage.addListener(
+        this.backgroundMessage.bind(this)
+      )
+    }
+  }
+
+  // Respond to a message from the background script
+  backgroundMessage (message) {
+    switch (message.type) {
+      case 'context':
+        if (!CONTEXT_UTIL.isValidChannel(message.teamName, message.channelName, this.contextName)) {
+          this.updateVisibility(false)
+        } else {
+          this.updateVisibility(true)
+        }
+        break
+    }
+  }
+
+  updateVisibility (show) {
+    if (!show) {
+      this.statusPanel.hide()
+      this.connectPanel.hide()
+    } else {
+      this.statusPanel.show()
+      this.connectPanel.show()
+    }
   }
 
   setContextName (newContext) {

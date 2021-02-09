@@ -11,8 +11,7 @@ import * as TippyCSS from './cssHelpers/TippyCSS.js'
 import * as AnimateCSS from './cssHelpers/animateCSS.js'
 
 // Accepted context strings
-import { CONTEXT } from '../../util/contexts'
-import ThreeIconStatus from './ThreeIconStatusComponents/ThreeIconStatus'
+import * as CONTEXT_UTIL from '../../util/contexts'
 
 // Set some universal defaults for tippy
 tippy.setDefaultProps({
@@ -76,21 +75,34 @@ class EECSidebar extends HTMLElement {
     // Create the popover using tippy
     this.popoverElem = tippy(this.popover[0], {
       placement: 'top-start',
-      appendTo: this.shadowRoot
+      appendTo: this.shadowRoot,
+      hideOnClick: 'toggle',
+      trigger: 'click'
     })
     this.popoverElem.disable() // We will enable it manually
 
     // Attach the created elements to the shadow DOM
     jQuery(this.shadowRoot).append(this.vendorStyle, this.customStyle, this.popover)
+
+    // Start out hidden
+    this.updateVisibility(false)
   }
 
-  sendGreetingMessage () {
-    console.log(this.JWT)
+  sendGreetingMessage (teamName) {
     if (typeof this.JWT === 'string') {
-      const payload = this.decodeTokenPayload(this.JWT)
-      setTimeout(() => {
-        this.showMessage(`Welcome back, **${payload.firstName}**!`, false, 5000)
-      }, 3000)
+      if (this._welcomeShown) {
+        if (teamName) {
+          this.showMessage(`Karuna is active. Working in team **${teamName}**.`, false, 2000)
+        } else {
+          this.showMessage('Karuna is active.', false, 2000)
+        }
+      } else {
+        const payload = this.decodeTokenPayload(this.JWT)
+        setTimeout(() => {
+          this.showMessage(`Karuna is active. Welcome back **${payload.firstName}**!`, false, 5000)
+          this._welcomeShown = true
+        }, 3000)
+      }
     } else {
       setTimeout(() => {
         this.showMessage('Please **log in** to use Karuna', true, 5000)
@@ -112,7 +124,7 @@ class EECSidebar extends HTMLElement {
   setContextName (newContext) {
     this.contextName = newContext
     this.popoverElem.setProps({
-      theme: (newContext === CONTEXT.DISCORD ? 'material' : 'light')
+      theme: (newContext === CONTEXT_UTIL.CONTEXT.DISCORD ? 'material' : 'light')
     })
   }
 
@@ -130,14 +142,15 @@ class EECSidebar extends HTMLElement {
   backgroundMessage (message) {
     switch (message.type) {
       case 'context':
-        console.log('[[SIDEBAR]] context update')
-        if (message.teamName.toLowerCase().includes('find or start')) {
-          // Not a valid team channel context
-          this.updateVisibility(false)
-          console.log('[[SIDEBAR]] >> HIDING')
+        if (!CONTEXT_UTIL.isValidChannel(message.teamName, message.channelName, this.contextName)) {
+          if (!this._hidden) { this.updateVisibility(false) }
         } else {
-          this.updateVisibility(true)
-          console.log('[[SIDEBAR]] >> SHOWING')
+          if (this._hidden) {
+            this.updateVisibility(true)
+            this.sendGreetingMessage(message.teamName)
+          } else {
+            this.showMessage(`Working in team **${message.teamName}**`, false, 2000)
+          }
         }
         break
 
@@ -157,20 +170,26 @@ class EECSidebar extends HTMLElement {
 
   updateVisibility (show) {
     if (!show) {
+      this._hidden = true
       this.popoverElem.hide()
+      this.popoverElem.disable()
       this.imageIcon.hide()
       this.alertIcon.hide()
     } else {
-      this.popoverElem.show()
+      this._hidden = false
+      this.popoverElem.enable()
       this.imageIcon.show()
       this.alertIcon.show()
     }
   }
 
   showMessage (messageText, alert = false, timeout = 0) {
+    // Don't show messages when hidden (see updateVisibility)
+    if (this._hidden) { return }
+
     if (alert) {
       this.alertIcon.attr('src', EECSidebar.ALERT_IMG)
-      this.alertIcon.addClass('eec-sidebar-icon animate__animated animate__fadein')
+      this.alertIcon.addClass('animate__animated animate__fadein')
       this.popover.addClass('animate__animated animate__repeat-3 animate__tada')
     }
 
@@ -185,7 +204,8 @@ class EECSidebar extends HTMLElement {
     if (timeout > 0) {
       setTimeout(() => {
         this.alertIcon.attr('src', EECSidebar.KARUNA_IMG)
-        this.alertIcon.addClass('eec-sidebar-icon animate__animated animate__fadein')
+        this.alertIcon.addClass('animate__animated animate__fadein')
+        this.popover.removeClass('animate__animated animate__repeat-3 animate__tada')
         this.popoverElem.hide()
       }, timeout)
     }

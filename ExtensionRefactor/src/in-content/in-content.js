@@ -49,6 +49,8 @@ jQuery(document).ready(() => {
   // Setup global Karuna Connect side-bar
   const karunaConnectElem = document.createElement('eec-connect')
   document.body.insertBefore(karunaConnectElem)
+  karunaConnectElem.setBackgroundPort(extensionPort)
+  karunaConnectElem.setContextName(contextName)
 
   // Callback function to execute when mutations are observed
   const mutationCallback = (mutationsList, observer) => {
