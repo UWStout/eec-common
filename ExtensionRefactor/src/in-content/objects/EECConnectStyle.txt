@@ -1,7 +1,7 @@
 /* The Icon for the Karuna Connect side-bar */
 .eec-connect {
   position: absolute;
-  bottom: 400px;
+  top: 50%;
   right: -5px;
   width: 190px;
   height: 24px;
@@ -9,7 +9,7 @@
 
 .eec-status {
   position: absolute;
-  top: 50px;
+  top: 115px;
   right: -5px;
 }
 
@@ -25,17 +25,6 @@
   width: 250px;
   bottom: 400px;
   right: 75px;
-}
-
-#eec-connect-button-paper {
-  position: absolute;
-  right: -5px;
-  width: 50;
-  height: 24;
-}
-
-.eec-connect-button {
-  font-weight: bold;
 }
 
 #eec-history-panel {

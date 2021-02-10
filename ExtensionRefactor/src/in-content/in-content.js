@@ -61,8 +61,9 @@ jQuery(document).ready(() => {
     // We use optional chaining to avoid undefined errors
     if (IS_TEAMS) {
       userName = jQuery('img.user-picture')?.first()?.attr('upn')?.trim()
-      teamName = jQuery('.school-app-team-title')?.text()?.trim()
+      teamName = jQuery('.team-icon')?.attr('alt')?.substr(19)?.trim()
       channelName = jQuery('.channel-name')?.text()?.trim()
+      if (teamName) { teamName = teamName.substr(0, teamName.length - 1) }
     } else if (IS_DISCORD) {
       const userArea = jQuery('section[aria-label="User area"]')
       userName = userArea.text()?.trim()

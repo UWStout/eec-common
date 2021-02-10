@@ -145,6 +145,16 @@ class EECConnect extends HTMLElement {
 
   setContextName (newContext) {
     this.contextName = newContext
+    switch (newContext) {
+      case CONTEXT_UTIL.CONTEXT.DISCORD:
+        this.statusPanel.css('top', '55px')
+        break
+
+      default:
+      case CONTEXT_UTIL.CONTEXT.MS_TEAMS:
+        this.statusPanel.css('top', '115px')
+        break
+    }
   }
 }
 

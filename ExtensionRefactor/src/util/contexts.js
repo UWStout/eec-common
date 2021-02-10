@@ -17,6 +17,9 @@ export function isValidChannel (teamName, channelName, context) {
     case CONTEXT.DISCORD:
       return (channelName !== 'Discord' && teamName !== '' && !teamName.toLowerCase().includes('find or start'))
 
+    case CONTEXT.MS_TEAMS:
+      return (channelName !== undefined && channelName !== '' && teamName !== undefined && teamName !== '')
+
     // Default to invalid
     default:
       return false
