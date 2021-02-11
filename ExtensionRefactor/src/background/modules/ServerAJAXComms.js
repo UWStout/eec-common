@@ -75,31 +75,39 @@ function getUserStatus (userID) {
     // Request data from the server
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getUserStatus/${userID}`)
     requestPromise.then((response) => { // listen for server response
-      const affectLogID = response.data.affectLogID
+      const userStatus = response.data.userStatus
 
       // Make second request from server to get affect log entry
-      const affectLogPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/listAffectHistory/affectLogID/${affectLogID}`)
-      affectLogPromise.then((response2) => { // listen for server response
-        const affectID = response.data.affectID
+      if (userStatus.affectLogID) {
+        const affectLogID = userStatus.affectLogID
+        const affectLogPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/listAffectHistory/affectLogID/${affectLogID}`)
+        affectLogPromise.then((response2) => { // listen for server response
+          const affectID = response.data.affectID
 
-        // Make third request from server to get affect data from affectID
-        const affectPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getAffectDetails/${affectID}`)
-        affectPromise.then((response3) => {
-        // Build the status object and resolve with it
-          const userStatus = {
-            collaboration: response.data.lastCollaborationStatus,
-            recentAffect: response3.data,
-            timeToRespondMinutes: response.data.minutesToRespond
-          }
-          return resolve(userStatus)
+          // Make third request from server to get affect data from affectID
+          const affectPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getAffectDetails/${affectID}`)
+          affectPromise.then((response3) => {
+            // Build the status object and resolve with it
+            return resolve({
+              collaboration: userStatus.lastCollaborationStatus || 'unknown',
+              recentAffect: response3.affect,
+              timeToRespondMinutes: userStatus.minutesToRespond || -1
+            })
+          })
+          // Reject on error from the third request (request to get affect from affectID)
+          affectPromise.catch((error) => { return reject(error) })
         })
-        // Reject on error from the third request (request to get affect from affectID)
-        affectPromise.catch((error) => { return reject(error) })
-      })
-      // Reject on error from second request (request to get affectLog from affectLogID)
-      affectLogPromise.catch((error) => { return reject(error) })
+        // Reject on error from second request (request to get affectLog from affectLogID)
+        affectLogPromise.catch((error) => { return reject(error) })
+      } else {
+        return resolve({
+          collaboration: userStatus.lastCollaborationStatus || 'unknown',
+          recentAffect: null,
+          timeToRespondMinutes: userStatus.minutesToRespond || -1
+        })
+      }
+      // Reject on error from the first request (request to get user status)
+      requestPromise.catch((error) => { return reject(error) })
     })
-    // Reject on error from the first request (request to get user status)
-    requestPromise.catch((error) => { return reject(error) })
   })
 }

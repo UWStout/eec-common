@@ -42,10 +42,9 @@ export default function MoodSelect () {
         console.log(data.error)
       } else {
         // Retrieve user's most recent mood (TODO)
-        // chrome.runtime.sendMessage({ type: 'ajax-getCurrentMood', userId: data.id }, (data) => {
-        //   // CHECK FOR ERROR
-        //   setMood(data.index + 1)
-        // })
+        chrome.runtime.sendMessage({ type: 'ajax-getUserStatus', userID: data.id }, (data2) => {
+          console.log('[[MoodSelector]] data received: ', data2)
+        })
       }
     })
   }
