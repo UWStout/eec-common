@@ -1,10 +1,9 @@
 import React from 'react'
 
-/* 
- * Standardized emoji object for use within rendered react bodies
- * Props: 
- * symbol - emoji literal to display
- * label  - aria-label for accessibility readers
+/**
+ * 
+ * @param {string} symbol The actual unicode emoji
+ * @param {string} label The aria-label description of the emoji 
  */
 const Emoji = props => (
   <span
