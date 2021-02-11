@@ -20,7 +20,7 @@ export default function ConnectForm (props) {
   const [historyOpen, updateHistoryOpen] = useState(false)
   const [collaboration, updateCollaboration] = useState(false)
 
-  // Tracks the history panel state 
+  // Tracks the history panel state
   const handleHistoryClick = (e) => {
     const newHistoryOpen = !historyOpen
     updateHistoryOpen(newHistoryOpen)
@@ -33,7 +33,7 @@ export default function ConnectForm (props) {
   }
 
   const collaborationType = collaboration 
-    ? <Emoji symbol='🧑‍🤝‍🧑' label='People Holding Hands' /> 
+    ? <Emoji symbol='🧑‍🤝‍🧑' label='People Holding Hands' />
     : <Emoji symbol='🧍' label='Person Standing' />
 
   return (

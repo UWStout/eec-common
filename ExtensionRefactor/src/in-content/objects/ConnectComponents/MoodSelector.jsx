@@ -5,7 +5,12 @@ import Emoji from './Emoji.jsx'
 
 import { backgroundMessage } from '../AJAXHelper.js'
 
-const EMOJI = [<Emoji key='unknown' label='unknown' symbol='?' />]
+const EMOJI = [
+  {
+    emote: <Emoji key='unknown' label='unknown' symbol='?' />,
+    symbol: '?'
+  }
+]
 const EMOJI_STATE = {
   UNINITIALIZED: 0,
   RETRIEVING: 1,
@@ -31,30 +36,36 @@ export default function MoodSelect () {
   const [shareDialog, setDialogOpen] = useState(false)
   const [emojisReady, setEmojisReady] = useState(currentState)
 
+  // fetches the current mood from the status
+  function getCurrentMood (data) {
+    // Check the mood index against the currentMood
+    const doWork = (data) => {
+      const currentMood = data.recentAffect.affect.characterCodes[0]
+      console.log(currentMood)
+      EMOJI.forEach((emote, index) => {
+        if (emote.symbol === currentMood) {
+          setMood(index)
+        }
+      })
+    }
+    // Send the message to the Background
+    backgroundMessage(
+      { type: 'ajax-getUserStatus', userId: data.id },
+      'failed to get mood - ',
+      doWork
+    )
+  }
+
   // Initialize emoji list if not yet ready
-  if (mood === 0) {
-    // Send message to background to retrieve EMOJI list
-    chrome.runtime.sendMessage({ type: 'getuser' }, (data) => {
-      // Did an error occur
-      if (data.error) {
-        // Alert user and log error
-        window.alert('User data retrieval failed: ' + data.error.message)
-        console.log(data.error)
-      } else {
-        // Retrieve user's most recent mood (TODO)
-        // chrome.runtime.sendMessage({ type: 'ajax-getCurrentMood', userId: data.id }, (data) => {
-        //   // CHECK FOR ERROR
-        //   setMood(data.index + 1)
-        // })
-      }
-    })
+  if (mood === 0 && currentState === EMOJI_STATE.READY) {
+    backgroundMessage({ type: 'getuser' }, 'User data retrieval failed: ', getCurrentMood)
   }
 
   // pushes emojis from the database into an array of Emoji objects
   function buildEmojiList (data) {
     EMOJI.splice(0)
     data.forEach((entry) => {
-      EMOJI.push(<Emoji key={entry.name} label={entry.name} symbol={entry.emoji} />)
+      EMOJI.push({ emote: <Emoji key={entry.name} label={entry.name} symbol={entry.emoji} />, symbol: entry.name })
     })
     currentState = EMOJI_STATE.READY
     setEmojisReady(EMOJI_STATE.READY)
@@ -106,7 +117,7 @@ export default function MoodSelect () {
             handleShareOpen()
           }}
         >
-          {emote}
+          {emote.emote}
         </IconButton>
       ))}
     </div>
@@ -138,7 +149,7 @@ export default function MoodSelect () {
     <div>
       <span>
         <IconButton size='small' aria-controls='mood-menu' aria-haspopup='true' onClick={handleOpen}>
-          {EMOJI[mood]}
+          {EMOJI[mood].emote}
         </IconButton>
         mood
       </span>
