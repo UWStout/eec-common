@@ -30,6 +30,12 @@
         border: 1px solid lightgrey; font-size: 12px;
         overflow-y: auto; white-space: pre-wrap;
       }
+
+      /* Styling for the canned message sidebar */
+      #cannedMessageSidebar {
+        max-height: 370px;
+        overflow-x: auto;
+      }
     </style>
   </head>
   <body>
@@ -66,19 +72,19 @@
           </div>
         </div>
         <div class="col-6">
-          <div id="accordion">
+          <div id="cannedMessageSidebar">
             <div class="card">
-              <div class="card-header" id="headingOne">
+              <div class="card-header" id="messageGroupHeading1">
                 <h5 class="mb-0">
-                  <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  <button class="btn btn-link" data-toggle="collapse" data-target="#messageGroupCollapse1" aria-expanded="true" aria-controls="messageGroupCollapse1">
                     Collapsible Group #1
                   </button>
                 </h5>
               </div>
           
-              <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+              <div id="messageGroupCollapse1" class="collapse show" aria-labelledby="messageGroupHeading1" data-parent="#cannedMessageSidebar">
                 <div class="card-body">
-                  <ul class="list-group list-group-flush">
+                  <ul id="messageGroupList1" class="list-group list-group-flush">
                     <li class="list-group-item">Cras justo odio</li>
                     <li class="list-group-item">Dapibus ac facilisis in</li>
                     <li class="list-group-item">Morbi leo risus</li>
@@ -89,16 +95,16 @@
               </div>
             </div>
             <div class="card">
-              <div class="card-header" id="headingTwo">
+              <div class="card-header" id="messageGroupHeading2">
                 <h5 class="mb-0">
-                  <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#messageGroupCollapse2" aria-expanded="false" aria-controls="messageGroupCollapse2">
                     Collapsible Group #2
                   </button>
                 </h5>
               </div>
-              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+              <div id="messageGroupCollapse2" class="collapse" aria-labelledby="messageGroupHeading2" data-parent="#cannedMessageSidebar">
                 <div class="card-body">
-                  <ul class="list-group list-group-flush">
+                  <ul id="messageGroupList2" class="list-group list-group-flush">
                     <li class="list-group-item">Cras justo odio</li>
                     <li class="list-group-item">Dapibus ac facilisis in</li>
                     <li class="list-group-item">Morbi leo risus</li>
@@ -109,16 +115,16 @@
               </div>
             </div>
             <div class="card">
-              <div class="card-header" id="headingThree">
+              <div class="card-header" id="messageGroupHeading3">
                 <h5 class="mb-0">
-                  <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#messageGroupCollapse3" aria-expanded="false" aria-controls="messageGroupCollapse3">
                     Collapsible Group #3
                   </button>
                 </h5>
               </div>
-              <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+              <div id="messageGroupCollapse3" class="collapse" aria-labelledby="messageGroupHeading3" data-parent="#cannedMessageSidebar">
                 <div class="card-body">
-                  <ul class="list-group list-group-flush">
+                  <ul id="messageGroupList3" class="list-group list-group-flush">
                     <li class="list-group-item">Cras justo odio</li>
                     <li class="list-group-item">Dapibus ac facilisis in</li>
                     <li class="list-group-item">Morbi leo risus</li>
