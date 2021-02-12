@@ -12,18 +12,28 @@ let editor
 let toolbar
 
 // Session lookup
-let sessions = []
+const sessions = []
 let activeUserID = ''
 let activeTabID = ''
 let activeContextName = ''
 
-function addSession (userID, context, sessionID) {
-  const sessionKey = `${userID}${context}`
-  sessions[sessionKey] = sessionID
+function makeSessionKey (userID, context) {
+  if (!context) { return userID }
+  return `${userID}-${context}`
 }
 
-function getSessionID (userID, context) {
-  const sessionKey = `${userID}${context}`
+function addSession (userID, context, sessionID) {
+  const sessionKey = makeSessionKey(userID, context)
+  sessions[sessionKey] = {
+    tabID: sessionID,
+    active: true,
+    userID,
+    context
+  }
+}
+
+function getSession (userID, context) {
+  const sessionKey = makeSessionKey(userID, context)
   return sessions[sessionKey]
 }
 
@@ -42,38 +52,69 @@ socket.on('updateSessions', (sessionData) => {
 
   if (sessionData) {
     // Clear prev session tabs
-    tabHeaders.empty()
-    tabContents.empty()
-    tabs = []
-    sessions = []
-    activeUserID = ''
-    activeTabID = -1
-    activeContextName = ''
+    removeEmptyMessage()
+    // tabHeaders.empty()
+    // tabContents.empty()
+    // tabs = []
+    // sessions = []
+    // activeUserID = ''
+    // activeTabID = -1
+    // activeContextName = ''
+
+    // Previous session IDs
+    const prevSessions = Object.keys(sessions)
+    let isFirstSession = (prevSessions.length === 0)
 
     // Make new ones for each user and context
-    let tabCount = 0
     for (const user in sessionData) {
       if (!Array.isArray(sessionData[user].contexts)) {
         console.log('User session with NO contexts ' + sessionData[user].email)
       } else {
         sessionData[user].contexts.forEach((context) => {
-          const id = addTab(sessionData[user].email, context)
-          addSession(sessionData[user].email, context, id)
-          tabCount++
+          if (getSession(sessionData[user].email, context)?.tabID === undefined) {
+            // New session
+            const id = addTab(sessionData[user].email, context)
+            addSession(sessionData[user].email, context, id)
 
-          if (tabCount === 1) {
-            activeTabID = 1
-            activeUserID = sessionData[user].email
-            activeContextName = context
+            // When this is the very first session, make it active
+            if (isFirstSession) {
+              activeTabID = 1
+              activeUserID = sessionData[user].email
+              activeContextName = context
+              isFirstSession = false
+            }
+          } else {
+            // Session is still active
+            const index = prevSessions.indexOf(makeSessionKey(sessionData[user].email, context))
+            if (index >= 0) { prevSessions.splice(index, 1) }
+
+            // Reactivate an old session if necessary
+            if (!getSession(sessionData[user].email, context).active) {
+              getSession(sessionData[user].email, context).active = true
+              activateTab(getSession(sessionData[user].email, context).tabID)
+            }
           }
         })
       }
     }
 
+    // Any lingering prev sessions that are no longer active?
+    prevSessions.forEach((sessionID) => {
+      deactivateTab(getSession(sessionID)?.tabID)
+      getSession(sessionID).active = false
+
+      // Update send button state
+      if (getSession(sessionID)?.tabID === activeTabID) {
+        setSendButtonActive(false)
+      }
+    })
+
     // Are there no active valid sessions?
-    if (tabCount <= 0) {
-      console.log('Adding empty message')
-      tabContents.append(addEmptyMessage())
+    if (Object.keys(sessions).length <= 0) {
+      tabContents.append(makeEmptyMessage())
+      setSendButtonActive(false, 'No sessions')
+    } else {
+      setSendButtonActive(true)
     }
   }
 })
@@ -82,7 +123,7 @@ socket.on('clientTyping', (message) => {
   console.log('[WS] Client typing received')
 
   // Lookup the session index
-  const id = getSessionID(message.clientEmail, message.context)
+  const id = getSession(message.clientEmail, message.context)?.tabID
   if (id !== undefined) {
     const typingBox = $(`#activeTyping${id}`)
     typingBox.text(message.data)
@@ -96,7 +137,7 @@ socket.on('clientSend', (message) => {
   console.log('[WS] Client send received')
 
   // Lookup the session index
-  const id = getSessionID(message.clientEmail, message.context)
+  const id = getSession(message.clientEmail, message.context)?.tabID
   if (id !== undefined) {
     // Build and append new message entry
     const newMsg = $('<li>').addClass('clientMessage')
@@ -128,13 +169,20 @@ $(document).ready(() => {
 
   // Adjust the editable div to fill its parent
   $('div.TinyMDE').css('height', '100%')
+
+  // Setup page callbacks
+  $('#sendMessage').on('click', sendMessage)
 })
 
 // A simple message to show when there are no active sessions
-function addEmptyMessage () {
-  const emptyPaneDiv = $('<div>').addClass('text-center')
+function makeEmptyMessage () {
+  const emptyPaneDiv = $('<div>').attr('id', 'emptyMessageDiv').addClass('text-center')
   emptyPaneDiv.text('No active sessions')
   return emptyPaneDiv
+}
+
+function removeEmptyMessage () {
+  $('#emptyMessageDiv').remove()
 }
 
 // Tab element storage
@@ -144,6 +192,18 @@ function tabShown (tabID, userID, contextName) {
   activeUserID = userID
   activeContextName = contextName
   console.log(`New active tab: ${tabID} (${activeUserID}/${activeContextName})`)
+
+  setSendButtonActive(getSession(userID, contextName).active)
+}
+
+function setSendButtonActive (isActive, inactiveText = 'session is not active') {
+  if (!isActive) {
+    $('#sendMessage').attr('disabled', true).addClass('disabled')
+    $('#sendMessage').text(inactiveText)
+  } else {
+    $('#sendMessage').removeAttr('disabled').removeClass('disabled')
+    $('#sendMessage').text('Send')
+  }
 }
 
 // Insert a new tab at end of list
@@ -167,12 +227,23 @@ function addTab (userID, contextName) {
   tabContents.append(newContent)
 
   // Set callbacks for various form-inputs
-  $('.dropdown-item').on('click', cannedMessageClick)
+  // $('.dropdown-item').on('click', cannedMessageClick)
   // $('.messageText').on('keydown', triggerMessage)
-  $('#sendMessage').on('click', sendMessage)
 
   // Return the id
   return tabID
+}
+
+function activateTab (tabID) {
+  console.log(`Activating tab ${tabID}`)
+  // Strike through tab text
+  $(`#tab${tabID}`).css('text-decoration', '')
+}
+
+function deactivateTab (tabID) {
+  console.log(`Removing tab ${tabID}`)
+  // Strike through tab text
+  $(`#tab${tabID}`).css('text-decoration', 'line-through')
 }
 
 // Callback for clicking on a canned message
@@ -225,16 +296,16 @@ function sendMessage (event) {
 }
 
 // Remove tab at the given index
-function removeTab (index) {
-  // Ensure a valid index is set (default to last tab)
-  if (!index || index < 0 || index >= tabs.length) {
-    index = tabs.length - 1
-  }
+// function removeTab (index) {
+//   // Ensure a valid index is set (default to last tab)
+//   if (!index || index < 0 || index >= tabs.length) {
+//     index = tabs.length - 1
+//   }
 
-  // Remove the indicated elements
-  tabs[index].header.remove()
-  tabs[index].content.remove()
+//   // Remove the indicated elements
+//   tabs[index].header.remove()
+//   tabs[index].content.remove()
 
-  // Splice out of the array
-  tabs.splice(index, 1)
-}
+//   // Splice out of the array
+//   tabs.splice(index, 1)
+// }
