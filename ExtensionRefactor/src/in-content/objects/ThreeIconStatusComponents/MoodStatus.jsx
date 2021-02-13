@@ -6,16 +6,17 @@ import Emoji from '../ConnectComponents/Emoji.jsx'
 
 const useStyles = makeStyles((theme) => ({
   MoodStatusRoot: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(1)
   }
 }))
 
 export default function MoodStatus (props) {
   const classes = useStyles()
+  const moodStatus = props.status === '?' ? <Emoji symbol='😀' label='Grinning Face' /> : props.status
 
-  return(
+  return (
     <div className={classes.MoodStatusRoot}>
-      <Emoji symbol='😀' label='Grinning Face' />
+      {moodStatus}
     </div>
   )
 }
