@@ -171,7 +171,10 @@ $(document).ready(() => {
 
   // Listen for selection events
   editor.addEventListener('selection', (selection) => {
-    lastSelection = selection
+    // Cache the most recent, non-null selection object
+    if (selection && selection.focus) {
+      lastSelection = selection
+    }
   })
 
   // Adjust the editable div to fill its parent
