@@ -11,10 +11,10 @@
   {
     "header": "Group 2",
     "choices": [
-      { "name": "Entry 2.1", "message": "message to put in the message box for entry 2.1", "overwrite": true },
-      { "name": "Entry 2.2", "message": "message to put in the message box for entry 2.2", "overwrite": true },
-      { "name": "Entry 2.3", "message": "message to put in the message box for entry 2.3", "overwrite": true },
-      { "name": "Entry 2.4", "message": "message to put in the message box for entry 2.4", "overwrite": true }
+      { "name": "Entry 2.1", "message": "message to put in the message box for entry 2.1", "overwrite": false },
+      { "name": "Entry 2.2", "message": "message to put in the message box for entry 2.2", "overwrite": false },
+      { "name": "Entry 2.3", "message": "message to put in the message box for entry 2.3", "overwrite": false },
+      { "name": "Entry 2.4", "message": "message to put in the message box for entry 2.4", "overwrite": false }
     ]
   },
   {
