@@ -260,10 +260,6 @@ function addTab (userID, contextName) {
   tabHeaders.append(newHeader)
   tabContents.append(newContent)
 
-  // Set callbacks for various form-inputs
-  // $('.dropdown-item').on('click', cannedMessageClick)
-  // $('.messageText').on('keydown', triggerMessage)
-
   // Return the id
   return tabID
 }
@@ -292,7 +288,11 @@ function cannedMessageClick (event) {
     editor.setContent(source.data('message'))
   } else {
     // Insert/paste message into editor
-    editor.paste(source.data('message'), lastSelection.anchor, lastSelection.focus)
+    if (!lastSelection) {
+      editor.paste(source.data('message'))
+    } else {
+      editor.paste(source.data('message'), lastSelection.anchor, lastSelection.focus)
+    }
   }
 }
 
@@ -336,18 +336,3 @@ function sendMessage (event) {
     content: messageText
   })
 }
-
-// Remove tab at the given index
-// function removeTab (index) {
-//   // Ensure a valid index is set (default to last tab)
-//   if (!index || index < 0 || index >= tabs.length) {
-//     index = tabs.length - 1
-//   }
-
-//   // Remove the indicated elements
-//   tabs[index].header.remove()
-//   tabs[index].content.remove()
-
-//   // Splice out of the array
-//   tabs.splice(index, 1)
-// }
