@@ -19,6 +19,28 @@ export default function AccountSettings () {
   const classes = useStyles()
   const [email, updateEmail] = useState('')
   const [password, updatePassword] = useState('')
+  const [loggedIn, updateLoggedIn] = useState(false)
+
+  // Read the JWT for later use
+  chrome.runtime.sendMessage(
+    { type: 'read', key: 'JWT' },
+    (response) => {
+      this.JWT = response.value
+      updateLoggedIn(true)
+    }
+  )
+
+  // Decode JWT payload (without verification)
+  function decodeTokenPayload (token) {
+    // Validate that token has a payload
+    if (typeof token !== 'string' || token.split('.').length < 2) {
+      return {}
+    }
+    // Decode the JWT payload only
+    return JSON.parse(atob(token.split('.')[1]))
+  }
+
+  const payload = decodeTokenPayload(this.JWT)
 
   // Login validation callback
   const validateLogin = () => {
@@ -31,21 +53,22 @@ export default function AccountSettings () {
 
     // Saves the JWT and logs the user in.
     function login (data) {
-      // Alert user
-      window.alert('Login succeeded')
-
       // Store the token and broadcast a successful login
       chrome.runtime.sendMessage({ type: 'write', key: 'JWT', data: data.token })
       chrome.runtime.sendMessage({ type: 'login', key: 'JWT', data: data.token })
+      updateLoggedIn(true)
     }
 
     // Send message to background (which does the ajax request)
-    backgroundMessage(message, 'Login Failed', login)
+    backgroundMessage(message, 'Invalid Login: ', login)
   }
 
-  // Build the account settings form
-  return (
-    <div >
+  const logout = () => {
+    updateLoggedIn(false)
+  }
+
+  const loginDetails = (
+    <div>
       <div className={classes.AccountSettingsBody}>
         <span>
           <MailOutlineIcon />
@@ -65,6 +88,20 @@ export default function AccountSettings () {
         </div>
         <Button onClick={validateLogin}>login</Button>
       </div>
+    </div>
+  )
+
+  const loggedInWelcome = (
+    <div>
+      <h1>Welcome {payload.firstName}</h1>
+      <Button onClick={logout}>Logout</Button>
+    </div>
+  )
+
+  // Build the account settings form
+  return (
+    <div >
+      { loggedIn ? loggedInWelcome : loginDetails }
       <div>
         <span>
           <GroupOutlinedIcon />

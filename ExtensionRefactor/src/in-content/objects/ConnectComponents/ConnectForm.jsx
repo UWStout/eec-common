@@ -11,7 +11,7 @@ import History from './History.jsx'
 
 const useStyles = makeStyles((theme) => ({
   paperRoot: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   }
 }))
 
@@ -32,7 +32,7 @@ export default function ConnectForm (props) {
     updateCollaboration(collaborateChange)
   }
 
-  const collaborationType = collaboration 
+  const collaborationType = collaboration
     ? <Emoji symbol='🧑‍🤝‍🧑' label='People Holding Hands' />
     : <Emoji symbol='🧍' label='Person Standing' />
 
