@@ -4,7 +4,7 @@
     "choices": [
       { "name": "Entry 1.1", "message": "Thank you for sharing with your team!","trigger":"user completing the affect survey", "action":"","description":"This feedback is in response to the user completing the affect survey.", "overwrite": true },
       { "name": "Entry 1.2", "message": "{{other user}} typically responds in {{time}}.","trigger":"user messaging team member", "action":"","description":"This feedback is in response to the user starting to type a message to a team member. It is a placeholder for the proposed Typical Response Time (TRT) UI feedback.", "overwrite": true },
-      { "name": "Entry 1.3", "message": "It looks like you’ve expressed a **faux feeling**.","trigger":"Karuna recognizes a faux feeling", "action":"faux feeling highlighted","description":"This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
+      { "name": "Entry 1.3", "message": "It looks like you’ve exapressed a **faux feeling**.","trigger":"Karuna recognizes a faux feeling", "action":"faux feeling highlighted","description":"This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
       { "name": "Entry 1.4", "message": "It looks like you’ve expressed **feelings**.","trigger":"Karuna recognizes a feeling", "action":"feeling highlighted","description":"This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
       { "name": "Entry 1.5", "message": "It looks like you’ve expressed a **need**","trigger":"Karuna recognizes a need", "action":"need highlighted","description":"This intervention is in response to anything Karuna recognizes as a need. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
       { "name": "Entry 1.6", "message": "It looks like you’ve made an **observation**","trigger":"Karuna recognizes an observation", "action":"observation highlighted","description":"This intervention is in response to anything Karuna recognizes as an observation. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
@@ -36,5 +36,22 @@
     "choices": [
         { "name": "Entry 5.1", "message": "It looks like you’re navigating a sensitive situation. I invite you to consider using the following steps:\n1. Make a non-judgmental observation\n2. State how you feel about the observation\n3. State what you need or value\n4. Make a clear request","trigger":"conflict-based user message", "action":"","description":"This intervention occurs when the user is typing a message that appears to be in response to or potential for a conflict.", "overwrite": true }
     ]
-  }
+  },
+  {
+    "header": "Inserts",
+    "choices": [
+        { "name": "user's first name", "message": "{{user.firstName}}","trigger":"", "action":"","description":"insert user's first name where the text insertion cursor is", "overwrite": true },
+        { "name": "user's last name", "message": "{{user.lastName}}","trigger":"", "action":"","description":"in", "overwrite": true },
+        { "name": "user's email", "message": "{{user.email}}","trigger":"", "action":"","description":"", "overwrite": true },
+        { "name": "user's account type", "message": "{{user.type}}","trigger":"", "action":"","description":"", "overwrite": true },
+        { "name": "user's current mood", "message": "{{user.status.affect}}","trigger":"", "action":"","description":"", "overwrite": true },
+        { "name": "user's time to respond", "message": "{{user.status.timeToRespond}}","trigger":"", "action":"","description":"", "overwrite": true },
+        { "name": "user's collaboration status", "message": "{{user.status.collaboration}}","trigger":"", "action":"","description":"", "overwrite": true },
+        { "name": "other user's first name", "message": "{{otherUser[x].firstName}}","trigger":"", "action":"","description":"", "overwrite": true },
+        { "name": "other user's last name", "message": "{{otherUser[x].lastName}}","trigger":"", "action":"","description":"", "overwrite": true },
+        { "name": "other user's email", "message": "{{otherUser[x].email}}","trigger":"", "action":"","description":"", "overwrite": true },
+        { "name": "other user's account type", "message": "{{otherUser[x].type}}","trigger":"", "action":"","description":"", "overwrite": true },
+        { "name": "other user's current mood", "message": "{{otherUser[x].status.affect}}","trigger":"", "action":"","description":"", "overwrite": true },
+    ]
+},
 ]
