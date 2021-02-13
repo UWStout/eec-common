@@ -130,6 +130,11 @@ function oneTimeMessage (message, sender, sendResponse) {
         sendResponse('ok')
         return resolve('ok')
 
+      case 'logout':
+        console.log('attempted logout')
+        this.JWT = null
+        return resolve('ok')
+
       // Unknown messages
       default: {
         console.log(`[BACKGROUND] Unknown message type "${message.type}" from '${senderID}'`)

@@ -31,7 +31,8 @@ export default function ThreeIconStatus (props) {
       userStatus = data
     }
     // communicates with background
-    backgroundMessage({ type: 'ajax-getUserStatus', userID: data.id },
+    backgroundMessage(
+      { type: 'ajax-getUserStatus', userID: data.id },
       'failed to retrieve status',
       doWork
     )
