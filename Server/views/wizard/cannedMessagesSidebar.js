@@ -20,8 +20,8 @@ function makeCardHeader (headerText, headingID, collapseID) {
   const headerTxt = $('<h2>').addClass('mb-0')
 
   // Build the central button with text
-  const headerBtn = $('<button>').attr('type', 'button').addClass('btn btn-link btn-block text-left collapsed')
-  headerBtn.data('toggle', 'collapse').data('target', '#' + collapseID)
+  const headerBtn = $('<button>').attr('type', 'button').addClass('btn btn-link collapsed')
+  headerBtn.attr('data-toggle', 'collapse').attr('data-target', '#' + collapseID)
   headerBtn.attr('aria-expanded', false).attr('aria-controls', collapseID)
   headerBtn.text(headerText)
 
@@ -33,14 +33,14 @@ function makeCardHeader (headerText, headingID, collapseID) {
 
 function makeCardBody (choices, headingID, collapseID, listID, parentID) {
   const bodyCollapseDiv = $('<div>').attr('id', collapseID).addClass('collapse')
-  bodyCollapseDiv.data('parent', '#' + parentID).attr('aria-labelledby', headingID)
+  bodyCollapseDiv.attr('data-parent', '#' + parentID).attr('aria-labelledby', headingID)
 
   const bodyCardDiv = $('<div>').addClass('card-body')
   const bodyListGroup = makeListGroup(choices, listID)
 
   bodyCardDiv.append(bodyListGroup)
   bodyCollapseDiv.append(bodyCardDiv)
-  return bodyCardDiv
+  return bodyCollapseDiv
 }
 
 function makeListGroup (choices, listID) {
