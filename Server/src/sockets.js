@@ -168,7 +168,6 @@ function socketWizardMessage (messageInfo) {
       messageInfo.content = msgTemplate({ user: clientSessions[destID] })
     }
 
-    // Insert 'messageInfo' into database
     DBLog.logWizardMessage(messageInfo, correspondentID) // currently not being waited on, can be turned asynchronous later if this causes issues
 
     debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
@@ -203,8 +202,7 @@ function socketMessageSend (message) {
   }
   const userID = clientSessions[this.id].id
 
-  // TODO: Insert 'message' into database
-  // TO-DO: get userID of the person sending the message
+  // To-DO: do we have the ID of the person receiving the message?
   DBLog.logUserMessage(message, null, userID) // currently not being waited on, can be turned asynchronous later if this causes issues
 
   debug(`[WS:${this.id}] message received from ${message.context}`)
