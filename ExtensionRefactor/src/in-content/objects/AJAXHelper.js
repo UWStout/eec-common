@@ -8,8 +8,7 @@
 export function backgroundMessage (messageObject, errorMessage, doWork) {
   chrome.runtime.sendMessage(messageObject, (data) => {
     if (data.error) {
-      window.alert(errorMessage + data.error.message)
-      console.log(data.error)
+      console.log(errorMessage + '\n' + data.error.message + '\n' + data.error)
     } else {
       doWork(data)
     }

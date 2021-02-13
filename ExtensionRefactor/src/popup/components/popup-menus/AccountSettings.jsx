@@ -64,6 +64,7 @@ export default function AccountSettings () {
   }
 
   const logout = () => {
+    chrome.runtime.sendMessage({ type: 'logout' })
     updateLoggedIn(false)
   }
 

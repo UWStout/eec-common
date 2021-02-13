@@ -25,6 +25,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2)
+  },
+  moodPickerPaper: {
+    position: 'absolute',
+    width: 250,
+    bottom: 400,
+    right: 75,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2)
   }
 }))
 
@@ -119,7 +128,7 @@ export default function MoodSelect () {
 
   // Maps the modal body with the desired emotes
   const body = (
-    <div className='mood-modal'>
+    <div className={classes.moodPickerPaper}>
       {EMOJI.map((emote, index) => (
         <IconButton
           size='small'
@@ -148,12 +157,14 @@ export default function MoodSelect () {
           Yes, Share
         </Button>
       </span>
-      <div>
+      {/* pulling out until proper functionality can be implemented */}
+      {/* TODO create a background message to update user preference on mood sharing */}
+      {/* <div>
         <span className='small-text'>
           <Checkbox />
           Do not show this message in the future
         </span>
-      </div>
+      </div> */}
     </div>
   )
 
