@@ -55,12 +55,5 @@
         { "name": "other user's time to respond", "message": "{{otherUser[x].status.timeToRespond}}","trigger":"", "action":"","description":"insert other user's time to respond where the text insertion cursor is", "overwrite": true },
         { "name": "other user's collaboration status", "message": "{{otherUser[x].status.collaboration}}","trigger":"", "action":"","description":"insert other user's collaboration status where the text insertion cursor is", "overwrite": true }      
     ]
-  },
-  {
-    "header": "",
-    "choices": [
-        { "name": "Entry ", "message": "","trigger":"", "action":"","description":"", "overwrite": true }
-    ]
   }
-
 ]
