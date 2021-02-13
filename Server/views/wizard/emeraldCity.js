@@ -1,7 +1,8 @@
 /* globals $, store, Cookies, io, TinyMDE */
 
-// Import chat widget making button
+// Import various helper functions
 import { makeTabHeader, makeTabContentPane } from './chatWidgetHelper.js'
+import { makeMessageGroup } from './cannedMessagesSidebar.js'
 
 // Tab content holders
 let tabHeaders
@@ -172,7 +173,26 @@ $(document).ready(() => {
 
   // Setup page callbacks
   $('#sendMessage').on('click', sendMessage)
+
+  // Load data for canned messages and prepare to construct sidebar
+  $.getJSON('./cannedMessages.json', buildMessagesSidebar).fail((err) => {
+    console.error('Failed to read messages json')
+    console.error(err)
+  })
 })
+
+function buildMessagesSidebar (data) {
+  // Loop over return groups
+  data.forEach((group, i) => {
+    // Build and append each group of choices
+    const groupNodes = makeMessageGroup(i + 1, 'cannedMessageSidebar', group.header, group.choices)
+    $('#cannedMessageSidebar').append(groupNodes)
+  })
+
+  // TODO: Append command choices
+
+  // TODO: Append wizard history group
+}
 
 // A simple message to show when there are no active sessions
 function makeEmptyMessage () {

@@ -63,94 +63,36 @@
       <div class="row">
         <div class="col-6">
           
-          <!-- Display interactive tabs, one for each session -->
+          <!-- Display interactive tabs, one for each session (built by JavaScript) -->
           <ul id="tabHeader" class="nav nav-tabs" role="tablist">
           </ul>
 
-          <!-- All tab content -->
+          <!-- All tab content for tabs added above (built by JavaScript)-->
           <div id="tabContent" class="tab-content pt-1 pb-1" style="border: 1px solid #dee2e6; border-top: none;">
           </div>
         </div>
+
         <div class="col-6">
-          <div id="cannedMessageSidebar">
-            <div class="card">
-              <div class="card-header" id="messageGroupHeading1">
-                <h5 class="mb-0">
-                  <button class="btn btn-link" data-toggle="collapse" data-target="#messageGroupCollapse1" aria-expanded="true" aria-controls="messageGroupCollapse1">
-                    Collapsible Group #1
-                  </button>
-                </h5>
-              </div>
-          
-              <div id="messageGroupCollapse1" class="collapse show" aria-labelledby="messageGroupHeading1" data-parent="#cannedMessageSidebar">
-                <div class="card-body">
-                  <ul id="messageGroupList1" class="list-group list-group-flush">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Morbi leo risus</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header" id="messageGroupHeading2">
-                <h5 class="mb-0">
-                  <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#messageGroupCollapse2" aria-expanded="false" aria-controls="messageGroupCollapse2">
-                    Collapsible Group #2
-                  </button>
-                </h5>
-              </div>
-              <div id="messageGroupCollapse2" class="collapse" aria-labelledby="messageGroupHeading2" data-parent="#cannedMessageSidebar">
-                <div class="card-body">
-                  <ul id="messageGroupList2" class="list-group list-group-flush">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Morbi leo risus</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header" id="messageGroupHeading3">
-                <h5 class="mb-0">
-                  <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#messageGroupCollapse3" aria-expanded="false" aria-controls="messageGroupCollapse3">
-                    Collapsible Group #3
-                  </button>
-                </h5>
-              </div>
-              <div id="messageGroupCollapse3" class="collapse" aria-labelledby="messageGroupHeading3" data-parent="#cannedMessageSidebar">
-                <div class="card-body">
-                  <ul id="messageGroupList3" class="list-group list-group-flush">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Morbi leo risus</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!-- Sidebar showing easy to use canned messages for the wizard (built by JavaScript from JSON) -->
+          <div id="cannedMessageSidebar"></div>
         </div>
       </div>
  
       <div class="row">
         <div class="col-12">
           <div class="border rounded-bottom p-3 mt-2">
+            <!-- Tiny MDE attaches here via JavaScript -->
             <div class="border border-secondary border-bottom-0" id="markdownToolbar"></div>
             <div class="border border-secondary border-top-0" style="height: 150px; overflow-y: auto" id="markdownEditor"></div>
+
             <button class="btn btn-outline-secondary w-100 mt-2" type="button" id="sendMessage">Send</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Bootstrap JS, with dependencies Popper.js and jQuery -->
-    <script src="../lib/jquery.slim.min.js"></script>
+    <!-- Bootstrap JS, with full jQuery -->
+    <script src="../lib/jquery.min.js"></script>
     <script src="../lib/bootstrap.bundle.min.js"></script>
 
     <!-- Axios for ajax requests -->
