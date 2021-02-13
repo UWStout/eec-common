@@ -3,7 +3,7 @@
     "header": "Feedback",
     "choices": [
       { "name": "Post Affect Survey Thank You", "message": "Thank you for sharing with your team!", "trigger": "user completing the affect survey", "action": "", "description": "This feedback is in response to the user completing the affect survey.", "overwrite": true },
-      { "name": "Response Time Reminder", "message": "{{other user}} typically responds in {{time}}.", "trigger": "user messaging team member", "action": "", "description": "This feedback is in response to the user starting to type a message to a team member. It is a placeholder for the proposed Typical Response Time (TRT) UI feedback.", "overwrite": true },
+      { "name": "Response Time Reminder", "message": "{{otherUser[x].firstName}} typically responds in {{otherUser[x].status.timeToRespond}}.", "trigger": "user messaging team member", "action": "", "description": "This feedback is in response to the user starting to type a message to a team member. It is a placeholder for the proposed Typical Response Time (TRT) UI feedback.", "overwrite": true },
       { "name": "Call out FAUX Feeling", "message": "It looks like you’ve expressed a **faux feeling**.", "trigger": "Karuna recognizes a faux feeling", "action": "faux feeling highlighted", "description": "This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
       { "name": "Call out Feeling", "message": "It looks like you’ve expressed **feelings**.", "trigger": "Karuna recognizes a feeling", "action": "feeling highlighted", "description": "This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
       { "name": "Call out Need", "message": "It looks like you’ve expressed a **need**", "trigger": "Karuna recognizes a need", "action": "need highlighted", "description": "This intervention is in response to anything Karuna recognizes as a need. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
@@ -21,8 +21,8 @@
   {
     "header": "Receiver Status Interventions",
     "choices": [
-      { "name": "User not open to collaborate", "message": "{{other user}} status is set to {{team member’s status}}. They may be unable to meet your request at this time. I invite you to specify when you would like your request to be met.", "trigger": "request away user", "action": "", "description": "Intervention occurs when the user is making a request of another away/busy user.", "overwrite": true },
-      { "name": "User is currently typing", "message": "{{other user}} is typing a response. I invite you to wait until they send their message before responding.", "trigger": "user types x characters", "action": "", "description": "Intervention occurs only after a user types more than x amount of characters, which may indicate they missed or ignored the platform’s own notification.", "overwrite": true }
+      { "name": "User not open to collaborate", "message": "{{otherUser[x].firstName}}'s status is set to {{otherUser[x].status.timeToRespond}}. They may be unable to meet your request at this time. I invite you to specify when you would like your request to be met.", "trigger": "request away user", "action": "", "description": "Intervention occurs when the user is making a request of another away/busy user.", "overwrite": true },
+      { "name": "User is currently typing", "message": "{{otherUser[x].firstName}} is typing a response. I invite you to wait until they send their message before responding.", "trigger": "user types x characters", "action": "", "description": "Intervention occurs only after a user types more than x amount of characters, which may indicate they missed or ignored the platform’s own notification.", "overwrite": true }
     ]
   },
   {
@@ -53,7 +53,8 @@
         { "name": "other user's account type", "message": "{{otherUser[x].type}}","trigger":"", "action":"","description":"", "overwrite": true },
         { "name": "other user's current mood", "message": "{{otherUser[x].status.affect}}","trigger":"", "action":"","description":"", "overwrite": true },
         { "name": "other user's time to respond", "message": "{{otherUser[x].status.timeToRespond}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "other user's collaboration status", "message": "{{otherUser[x].status.collaboration}}","trigger":"", "action":"","description":"", "overwrite": true },      
+        { "name": "other user's collaboration status", "message": "{{otherUser[x].status.collaboration}}","trigger":"", "action":"","description":"", "overwrite": true }      
     ]
-},
+}
+
 ]
