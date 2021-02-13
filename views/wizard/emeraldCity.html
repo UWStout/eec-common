@@ -34,6 +34,7 @@
       /* Styling for the canned message sidebar */
       #cannedMessageSidebar {
         max-height: 370px;
+        min-height: 370px;
         overflow-x: auto;
       }
     </style>
@@ -61,7 +62,7 @@
       </div>
 
       <div class="row">
-        <div class="col-6">
+        <div class="col-lg-8 col-sm-6">
           
           <!-- Display interactive tabs, one for each session (built by JavaScript) -->
           <ul id="tabHeader" class="nav nav-tabs" role="tablist">
@@ -72,7 +73,7 @@
           </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-lg-4 col-sm-6">
           <!-- Sidebar showing easy to use canned messages for the wizard (built by JavaScript from JSON) -->
           <div id="cannedMessageSidebar"></div>
         </div>
