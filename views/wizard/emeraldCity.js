@@ -1,4 +1,4 @@
-/* globals $, store, Cookies, io, TinyMDE */
+/* globals $, axios, store, Cookies, io, TinyMDE */
 
 // Import various helper functions
 import { makeTabHeader, makeTabContentPane } from './chatWidgetHelper.js'
@@ -175,10 +175,12 @@ $(document).ready(() => {
   $('#sendMessage').on('click', sendMessage)
 
   // Load data for canned messages and prepare to construct sidebar
-  $.getJSON('./cannedMessages.json', buildMessagesSidebar).fail((err) => {
-    console.error('Failed to read messages json')
-    console.error(err)
-  })
+  axios.get('./cannedMessages.json')
+    .then((response) => { buildMessagesSidebar(response.data) })
+    .catch((err) => {
+      console.error('Failed to read messages json')
+      console.error(err)
+    })
 })
 
 function buildMessagesSidebar (data) {
