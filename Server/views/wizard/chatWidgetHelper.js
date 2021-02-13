@@ -1,21 +1,12 @@
 /* globals $ */
 
-// Canned messages shown in the dropdown
-const cannedMessages = [
-  'This is an example message ...',
-  'This is another example message ...',
-  'This is yet another example message ...',
-  '__DIVIDER__',
-  'This is one more example message'
-]
-
 export function makeTabHeader (id, userID, contextName, isActive, tabShownCallback) {
   // Make tab text
   const text = `${userID} - ${contextName}`
 
   // Build elements
   const tabListItem = $('<li></li>').addClass('nav-item')
-  const tabLink = $('<a></a>').addClass('nav-link')
+  const tabLink = $('<a></a>').addClass('nav-link text-truncate')
 
   // Configure tab-link element
   tabLink.attr('id', `tab${id}`).attr('href', `#tab${id}Content`)
@@ -67,21 +58,4 @@ function makeChatWidget (id, clientID, contextName) {
     `
   const chatWidget = $.parseHTML(chatWidgetInnerHTML)
   return chatWidget
-}
-
-function makeCannedMessageDropdown (id) {
-  const cannedMessageHTML = [
-    '<button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>',
-    '<div class="dropdown-menu">'
-  ]
-  cannedMessages.forEach((msgText) => {
-    if (msgText === '__DIVIDER__') {
-      cannedMessageHTML.push('  <div role="separator" class="dropdown-divider"></div>')
-    } else {
-      cannedMessageHTML.push(`  <a class="dropdown-item" href="#" data-target="#messageText${id}">${msgText}</a>`)
-    }
-  })
-  cannedMessageHTML.push('</div>')
-
-  return cannedMessageHTML.join('\n')
 }
