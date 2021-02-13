@@ -6,16 +6,17 @@ import Emoji from '../ConnectComponents/Emoji.jsx'
 
 const useStyles = makeStyles((theme) => ({
   CollabPrefRoot: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(1)
   }
 }))
 
 export default function CollaborationPreference (props) {
   const classes = useStyles()
+  const collaborate = props.status === 'unknown' ? <Emoji symbol='🧑‍🤝‍🧑' label='People Holding Hands' /> : props.status
 
-  return(
+  return (
     <div className={classes.CollabPrefRoot}>
-      <Emoji symbol='🧑‍🤝‍🧑' label='People Holding Hands' />
+      {collaborate}
     </div>
   )
 }
