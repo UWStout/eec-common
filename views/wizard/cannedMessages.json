@@ -41,20 +41,26 @@
     "header": "Inserts",
     "choices": [
         { "name": "user's first name", "message": "{{user.firstName}}","trigger":"", "action":"","description":"insert user's first name where the text insertion cursor is", "overwrite": true },
-        { "name": "user's last name", "message": "{{user.lastName}}","trigger":"", "action":"","description":"in", "overwrite": true },
-        { "name": "user's email", "message": "{{user.email}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "user's account type", "message": "{{user.type}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "user's current mood", "message": "{{user.status.affect}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "user's time to respond", "message": "{{user.status.timeToRespond}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "user's collaboration status", "message": "{{user.status.collaboration}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "other user's first name", "message": "{{otherUser[x].firstName}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "other user's last name", "message": "{{otherUser[x].lastName}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "other user's email", "message": "{{otherUser[x].email}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "other user's account type", "message": "{{otherUser[x].type}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "other user's current mood", "message": "{{otherUser[x].status.affect}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "other user's time to respond", "message": "{{otherUser[x].status.timeToRespond}}","trigger":"", "action":"","description":"", "overwrite": true },
-        { "name": "other user's collaboration status", "message": "{{otherUser[x].status.collaboration}}","trigger":"", "action":"","description":"", "overwrite": true }      
+        { "name": "user's last name", "message": "{{user.lastName}}","trigger":"", "action":"","description":"insert user's last name where the text insertion cursor is", "overwrite": true },
+        { "name": "user's email", "message": "{{user.email}}","trigger":"", "action":"","description":"insert user's email where the text insertion cursor is", "overwrite": true },
+        { "name": "user's account type", "message": "{{user.type}}","trigger":"", "action":"","description":"insert user's account type where the text insertion cursor is", "overwrite": true },
+        { "name": "user's current mood", "message": "{{user.status.affect}}","trigger":"", "action":"","description":"insert user's current mood where the text insertion cursor is", "overwrite": true },
+        { "name": "user's time to respond", "message": "{{user.status.timeToRespond}}","trigger":"", "action":"","description":"insert user's time to respond where the text insertion cursor is", "overwrite": true },
+        { "name": "user's collaboration status", "message": "{{user.status.collaboration}}","trigger":"", "action":"","description":"insert user's collaboration status where the text insertion cursor is", "overwrite": true },
+        { "name": "other user's first name", "message": "{{otherUser[x].firstName}}","trigger":"", "action":"","description":"insert other user's first name where the text insertion cursor is", "overwrite": true },
+        { "name": "other user's last name", "message": "{{otherUser[x].lastName}}","trigger":"", "action":"","description":"insert other user's last name where the text insertion cursor is", "overwrite": true },
+        { "name": "other user's email", "message": "{{otherUser[x].email}}","trigger":"", "action":"","description":"insert other user's email where the text insertion cursor is", "overwrite": true },
+        { "name": "other user's account type", "message": "{{otherUser[x].type}}","trigger":"", "action":"","description":"insert other user's account type where the text insertion cursor is", "overwrite": true },
+        { "name": "other user's current mood", "message": "{{otherUser[x].status.affect}}","trigger":"", "action":"","description":"insert other user's current mood where the text insertion cursor is", "overwrite": true },
+        { "name": "other user's time to respond", "message": "{{otherUser[x].status.timeToRespond}}","trigger":"", "action":"","description":"insert other user's time to respond where the text insertion cursor is", "overwrite": true },
+        { "name": "other user's collaboration status", "message": "{{otherUser[x].status.collaboration}}","trigger":"", "action":"","description":"insert other user's collaboration status where the text insertion cursor is", "overwrite": true }      
     ]
-}
+  },
+  {
+    "header": "",
+    "choices": [
+        { "name": "Entry ", "message": "","trigger":"", "action":"","description":"", "overwrite": true }
+    ]
+  }
 
 ]
