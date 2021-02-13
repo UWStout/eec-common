@@ -52,6 +52,8 @@
         { "name": "other user's email", "message": "{{otherUser[x].email}}","trigger":"", "action":"","description":"", "overwrite": true },
         { "name": "other user's account type", "message": "{{otherUser[x].type}}","trigger":"", "action":"","description":"", "overwrite": true },
         { "name": "other user's current mood", "message": "{{otherUser[x].status.affect}}","trigger":"", "action":"","description":"", "overwrite": true },
+        { "name": "other user's time to respond", "message": "{{otherUser[x].status.timeToRespond}}","trigger":"", "action":"","description":"", "overwrite": true },
+        { "name": "other user's collaboration status", "message": "{{otherUser[x].status.collaboration}}","trigger":"", "action":"","description":"", "overwrite": true },      
     ]
 },
 ]
