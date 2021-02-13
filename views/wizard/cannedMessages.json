@@ -46,7 +46,7 @@
         { "name": "Account type", "message": "{{user.type}}","trigger":"", "action":"","description":"insert user's account type where the text insertion cursor is", "overwrite": false },
         { "name": "Current mood", "message": "{{user.status.affect}}","trigger":"", "action":"","description":"insert user's current mood where the text insertion cursor is", "overwrite": false },
         { "name": "Time to respond", "message": "{{user.status.timeToRespond}}","trigger":"", "action":"","description":"insert user's time to respond where the text insertion cursor is", "overwrite": false },
-        { "name": "Collaboration status", "message": "{{user.status.collaboration}}","trigger":"", "action":"","description":"insert user's collaboration status where the text insertion cursor is", "overwrite": false },
+        { "name": "Collaboration status", "message": "{{user.status.collaboration}}","trigger":"", "action":"","description":"insert user's collaboration status where the text insertion cursor is", "overwrite": false }
       ]
     },
     {
