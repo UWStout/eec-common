@@ -3,7 +3,7 @@
     "header": "Feedback",
     "choices": [
       { "name": "Post Affect Survey Thank You", "message": "Thank you for sharing with your team!", "trigger": "user completing the affect survey", "action": "", "description": "This feedback is in response to the user completing the affect survey.", "overwrite": true },
-      { "name": "Response Time Reminder", "message": "{{otherUser[x].firstName}} typically responds in {{otherUser[x].status.timeToRespond}}.", "trigger": "user messaging team member", "action": "", "description": "This feedback is in response to the user starting to type a message to a team member. It is a placeholder for the proposed Typical Response Time (TRT) UI feedback.", "overwrite": true },
+      { "name": "Response Time Reminder", "message": "{{otherUser1.firstName}} typically responds in {{otherUser1.status.timeToRespond}}.", "trigger": "user messaging team member", "action": "", "description": "This feedback is in response to the user starting to type a message to a team member. It is a placeholder for the proposed Typical Response Time (TRT) UI feedback.", "overwrite": true },
       { "name": "Call out FAUX Feeling", "message": "It looks like you’ve expressed a **faux feeling**.", "trigger": "Karuna recognizes a faux feeling", "action": "faux feeling highlighted", "description": "This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
       { "name": "Call out Feeling", "message": "It looks like you’ve expressed **feelings**.", "trigger": "Karuna recognizes a feeling", "action": "feeling highlighted", "description": "This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
       { "name": "Call out Need", "message": "It looks like you’ve expressed a **need**", "trigger": "Karuna recognizes a need", "action": "need highlighted", "description": "This intervention is in response to anything Karuna recognizes as a need. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
@@ -21,8 +21,8 @@
   {
     "header": "Receiver Status Interventions",
     "choices": [
-      { "name": "User not open to collaborate", "message": "{{otherUser[x].firstName}}'s status is set to {{otherUser[x].status.timeToRespond}}. They may be unable to meet your request at this time. I invite you to specify when you would like your request to be met.", "trigger": "request away user", "action": "", "description": "Intervention occurs when the user is making a request of another away/busy user.", "overwrite": true },
-      { "name": "User is currently typing", "message": "{{otherUser[x].firstName}} is typing a response. I invite you to wait until they send their message before responding.", "trigger": "user types x characters", "action": "", "description": "Intervention occurs only after a user types more than x amount of characters, which may indicate they missed or ignored the platform’s own notification.", "overwrite": true }
+      { "name": "User not open to collaborate", "message": "{{otherUser1.firstName}}'s status is set to {{otherUser1.status.timeToRespond}}. They may be unable to meet your request at this time. I invite you to specify when you would like your request to be met.", "trigger": "request away user", "action": "", "description": "Intervention occurs when the user is making a request of another away/busy user.", "overwrite": true },
+      { "name": "User is currently typing", "message": "{{otherUser1.firstName}} is typing a response. I invite you to wait until they send their message before responding.", "trigger": "user types x characters", "action": "", "description": "Intervention occurs only after a user types more than x amount of characters, which may indicate they missed or ignored the platform’s own notification.", "overwrite": true }
     ]
   },
   {
@@ -38,22 +38,27 @@
     ]
   },
   {
-    "header": "Inserts",
+    "header": "Current User Variables",
     "choices": [
-        { "name": "user's first name", "message": "{{user.firstName}}","trigger":"", "action":"","description":"insert user's first name where the text insertion cursor is", "overwrite": false },
-        { "name": "user's last name", "message": "{{user.lastName}}","trigger":"", "action":"","description":"insert user's last name where the text insertion cursor is", "overwrite": false },
-        { "name": "user's email", "message": "{{user.email}}","trigger":"", "action":"","description":"insert user's email where the text insertion cursor is", "overwrite": false },
-        { "name": "user's account type", "message": "{{user.type}}","trigger":"", "action":"","description":"insert user's account type where the text insertion cursor is", "overwrite": false },
-        { "name": "user's current mood", "message": "{{user.status.affect}}","trigger":"", "action":"","description":"insert user's current mood where the text insertion cursor is", "overwrite": false },
-        { "name": "user's time to respond", "message": "{{user.status.timeToRespond}}","trigger":"", "action":"","description":"insert user's time to respond where the text insertion cursor is", "overwrite": false },
-        { "name": "user's collaboration status", "message": "{{user.status.collaboration}}","trigger":"", "action":"","description":"insert user's collaboration status where the text insertion cursor is", "overwrite": false },
-        { "name": "other user's first name", "message": "{{otherUser[x].firstName}}","trigger":"", "action":"","description":"insert other user's first name where the text insertion cursor is", "overwrite": false },
-        { "name": "other user's last name", "message": "{{otherUser[x].lastName}}","trigger":"", "action":"","description":"insert other user's last name where the text insertion cursor is", "overwrite": false },
-        { "name": "other user's email", "message": "{{otherUser[x].email}}","trigger":"", "action":"","description":"insert other user's email where the text insertion cursor is", "overwrite": false },
-        { "name": "other user's account type", "message": "{{otherUser[x].type}}","trigger":"", "action":"","description":"insert other user's account type where the text insertion cursor is", "overwrite": false },
-        { "name": "other user's current mood", "message": "{{otherUser[x].status.affect}}","trigger":"", "action":"","description":"insert other user's current mood where the text insertion cursor is", "overwrite": false },
-        { "name": "other user's time to respond", "message": "{{otherUser[x].status.timeToRespond}}","trigger":"", "action":"","description":"insert other user's time to respond where the text insertion cursor is", "overwrite": false },
-        { "name": "other user's collaboration status", "message": "{{otherUser[x].status.collaboration}}","trigger":"", "action":"","description":"insert other user's collaboration status where the text insertion cursor is", "overwrite": false }
+        { "name": "First name", "message": "{{user.firstName}}","trigger":"", "action":"","description":"insert user's first name where the text insertion cursor is", "overwrite": false },
+        { "name": "Last name", "message": "{{user.lastName}}","trigger":"", "action":"","description":"insert user's last name where the text insertion cursor is", "overwrite": false },
+        { "name": "email", "message": "{{user.email}}","trigger":"", "action":"","description":"insert user's email where the text insertion cursor is", "overwrite": false },
+        { "name": "Account type", "message": "{{user.type}}","trigger":"", "action":"","description":"insert user's account type where the text insertion cursor is", "overwrite": false },
+        { "name": "Current mood", "message": "{{user.status.affect}}","trigger":"", "action":"","description":"insert user's current mood where the text insertion cursor is", "overwrite": false },
+        { "name": "Time to respond", "message": "{{user.status.timeToRespond}}","trigger":"", "action":"","description":"insert user's time to respond where the text insertion cursor is", "overwrite": false },
+        { "name": "Collaboration status", "message": "{{user.status.collaboration}}","trigger":"", "action":"","description":"insert user's collaboration status where the text insertion cursor is", "overwrite": false },
+      ]
+    },
+    {
+      "header": "Mentioned User Variables",
+      "choices": [  
+        { "name": "First name", "message": "{{otherUser1.firstName}}","trigger":"", "action":"","description":"insert other user's first name where the text insertion cursor is", "overwrite": false },
+        { "name": "Last name", "message": "{{otherUser1.lastName}}","trigger":"", "action":"","description":"insert other user's last name where the text insertion cursor is", "overwrite": false },
+        { "name": "email", "message": "{{otherUser1.email}}","trigger":"", "action":"","description":"insert other user's email where the text insertion cursor is", "overwrite": false },
+        { "name": "Account type", "message": "{{otherUser1.type}}","trigger":"", "action":"","description":"insert other user's account type where the text insertion cursor is", "overwrite": false },
+        { "name": "Current mood", "message": "{{otherUser1.status.affect}}","trigger":"", "action":"","description":"insert other user's current mood where the text insertion cursor is", "overwrite": false },
+        { "name": "Time to respond", "message": "{{otherUser1.status.timeToRespond}}","trigger":"", "action":"","description":"insert other user's time to respond where the text insertion cursor is", "overwrite": false },
+        { "name": "Collaboration status", "message": "{{otherUser1.status.collaboration}}","trigger":"", "action":"","description":"insert other user's collaboration status where the text insertion cursor is", "overwrite": false }
     ]
   }
 ]
