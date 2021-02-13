@@ -1,4 +1,4 @@
-/* globals $, store, Cookies, io, TinyMDE */
+/* globals $, axios, store, Cookies, io, TinyMDE */
 
 // Import various helper functions
 import { makeTabHeader, makeTabContentPane } from './chatWidgetHelper.js'
@@ -154,6 +154,7 @@ socket.on('clientSend', (message) => {
   }
 })
 
+let lastSelection = null
 $(document).ready(() => {
   // Retrieve critical global references
   tabHeaders = $('#tabHeader')
@@ -168,6 +169,14 @@ $(document).ready(() => {
   editor = new TinyMDE.Editor({ element: 'markdownEditor', content: ' ' })
   toolbar = new TinyMDE.CommandBar({ element: 'markdownToolbar', editor })
 
+  // Listen for selection events
+  editor.addEventListener('selection', (selection) => {
+    // Cache the most recent, non-null selection object
+    if (selection && selection.focus) {
+      lastSelection = selection
+    }
+  })
+
   // Adjust the editable div to fill its parent
   $('div.TinyMDE').css('height', '100%')
 
@@ -175,17 +184,22 @@ $(document).ready(() => {
   $('#sendMessage').on('click', sendMessage)
 
   // Load data for canned messages and prepare to construct sidebar
-  $.getJSON('./cannedMessages.json', buildMessagesSidebar).fail((err) => {
-    console.error('Failed to read messages json')
-    console.error(err)
-  })
+  axios.get('./cannedMessages.json')
+    .then((response) => { buildMessagesSidebar(response.data) })
+    .catch((err) => {
+      window.alert('WARNING: There was an error reading the data for the canned messages.')
+      console.error('Failed to read messages json')
+      console.error(err)
+    })
 })
 
 function buildMessagesSidebar (data) {
   // Loop over return groups
   data.forEach((group, i) => {
     // Build and append each group of choices
-    const groupNodes = makeMessageGroup(i + 1, 'cannedMessageSidebar', group.header, group.choices)
+    const groupNodes = makeMessageGroup(
+      i + 1, cannedMessageClick, 'cannedMessageSidebar', group.header, group.choices
+    )
     $('#cannedMessageSidebar').append(groupNodes)
   })
 
@@ -268,21 +282,29 @@ function deactivateTab (tabID) {
 
 // Callback for clicking on a canned message
 function cannedMessageClick (event) {
+  // Prevent default behavior and get reference to list item element
   event.preventDefault()
-
   const source = $(event.target)
-  const dest = $(source.data('target'))
-  dest.val(source.text())
-}
 
-// Enter pressed in text box, trigger send button
-function triggerMessage (event) {
-  // Enter key
-  if (event.which === 13) {
-    const submitButton = $($(event.target).data('target'))
-    submitButton[0].click()
+  // Send message to editor
+  if (source.data('overwrite')) {
+    // Overwrite contents of editor
+    editor.setContent(source.data('message'))
+  } else {
+    // Insert/paste message into editor
+    editor.paste(source.data('message'), lastSelection.anchor, lastSelection.focus)
   }
 }
+
+// NOTE: Disabled for now
+// Enter pressed in text box, trigger send button
+// function triggerMessage (event) {
+//   // Enter key
+//   if (event.which === 13) {
+//     const submitButton = $($(event.target).data('target'))
+//     submitButton[0].click()
+//   }
+// }
 
 // Send button clicked so send message in text box
 function sendMessage (event) {

@@ -1,6 +1,6 @@
 /* global $ */
 
-export function makeMessageGroup (groupIndex, parentID, headerText, choices) {
+export function makeMessageGroup (groupIndex, clickCallback, parentID, headerText, choices) {
   const headingID = `messageGroupHeading${groupIndex}`
   const collapseID = `messageGroupCollapse${groupIndex}`
   const listID = `messageGroupList${groupIndex}`
@@ -8,7 +8,7 @@ export function makeMessageGroup (groupIndex, parentID, headerText, choices) {
   const cardDiv = $('<div>').addClass('card')
   cardDiv.append(
     makeCardHeader(headerText, headingID, collapseID),
-    makeCardBody(choices, headingID, collapseID, listID, parentID)
+    makeCardBody(choices, clickCallback, headingID, collapseID, listID, parentID)
   )
 
   return cardDiv
@@ -20,8 +20,8 @@ function makeCardHeader (headerText, headingID, collapseID) {
   const headerTxt = $('<h2>').addClass('mb-0')
 
   // Build the central button with text
-  const headerBtn = $('<button>').attr('type', 'button').addClass('btn btn-link btn-block text-left collapsed')
-  headerBtn.data('toggle', 'collapse').data('target', '#' + collapseID)
+  const headerBtn = $('<button>').attr('type', 'button').addClass('btn btn-link collapsed')
+  headerBtn.attr('data-toggle', 'collapse').attr('data-target', '#' + collapseID)
   headerBtn.attr('aria-expanded', false).attr('aria-controls', collapseID)
   headerBtn.text(headerText)
 
@@ -31,23 +31,28 @@ function makeCardHeader (headerText, headingID, collapseID) {
   return headerDiv
 }
 
-function makeCardBody (choices, headingID, collapseID, listID, parentID) {
+function makeCardBody (choices, clickCB, headingID, collapseID, listID, parentID) {
   const bodyCollapseDiv = $('<div>').attr('id', collapseID).addClass('collapse')
-  bodyCollapseDiv.data('parent', '#' + parentID).attr('aria-labelledby', headingID)
+  bodyCollapseDiv.attr('data-parent', '#' + parentID).attr('aria-labelledby', headingID)
 
   const bodyCardDiv = $('<div>').addClass('card-body')
-  const bodyListGroup = makeListGroup(choices, listID)
+  const bodyListGroup = makeListGroup(choices, clickCB, listID)
 
   bodyCardDiv.append(bodyListGroup)
   bodyCollapseDiv.append(bodyCardDiv)
-  return bodyCardDiv
+  return bodyCollapseDiv
 }
 
-function makeListGroup (choices, listID) {
+function makeListGroup (choices, clickCB, listID) {
   const listGroupUL = $('<ul>').attr('id', listID).addClass('list-group list-group-flush')
 
   choices.forEach((choice) => {
     const choiceItem = $('<li>').addClass('list-group-item').text(choice.name)
+    choiceItem.attr('data-message', choice.message)
+    choiceItem.attr('data-overwrite', choice.overwrite)
+    choiceItem.css('cursor', 'pointer')
+    // choiceItem.attr('data-action', choice.action)
+    choiceItem.click(clickCB)
     listGroupUL.append(choiceItem)
   })
 

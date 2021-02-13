@@ -2,39 +2,39 @@
   {
     "header": "Feedback",
     "choices": [
-      { "name": "Entry 1.1", "message": "Thank you for sharing with your team!","trigger":"user completing the affect survey", "action":"","description":"This feedback is in response to the user completing the affect survey.", "overwrite": true },
-      { "name": "Entry 1.2", "message": "{{other user}} typically responds in {{time}}.","trigger":"user messaging team member", "action":"","description":"This feedback is in response to the user starting to type a message to a team member. It is a placeholder for the proposed Typical Response Time (TRT) UI feedback.", "overwrite": true },
-      { "name": "Entry 1.3", "message": "It looks like you’ve exapressed a **faux feeling**.","trigger":"Karuna recognizes a faux feeling", "action":"faux feeling highlighted","description":"This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
-      { "name": "Entry 1.4", "message": "It looks like you’ve expressed **feelings**.","trigger":"Karuna recognizes a feeling", "action":"feeling highlighted","description":"This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
-      { "name": "Entry 1.5", "message": "It looks like you’ve expressed a **need**","trigger":"Karuna recognizes a need", "action":"need highlighted","description":"This intervention is in response to anything Karuna recognizes as a need. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
-      { "name": "Entry 1.6", "message": "It looks like you’ve made an **observation**","trigger":"Karuna recognizes an observation", "action":"observation highlighted","description":"This intervention is in response to anything Karuna recognizes as an observation. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
-      { "name": "Entry 1.7", "message": "It looks like you’ve made a **request**","trigger":"Karuna recognizes a request", "action":"request highlighted","description":"This intervention is in response to anything Karuna recognizes as a request. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
-      { "name": "Entry 1.8", "message": "You’re using the following **NVC elements**","trigger":"Karuna recognizes multiple NVC element", "action":"multiple NVC elements in a bulleted list","description":"This intervention is when Karuna recognizes multiple elements. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true }
+      { "name": "Post Affect Survey Thank You", "message": "Thank you for sharing with your team!", "trigger": "user completing the affect survey", "action": "", "description": "This feedback is in response to the user completing the affect survey.", "overwrite": true },
+      { "name": "Response Time Reminder", "message": "{{other user}} typically responds in {{time}}.", "trigger": "user messaging team member", "action": "", "description": "This feedback is in response to the user starting to type a message to a team member. It is a placeholder for the proposed Typical Response Time (TRT) UI feedback.", "overwrite": true },
+      { "name": "Call out FAUX Feeling", "message": "It looks like you’ve expressed a **faux feeling**.", "trigger": "Karuna recognizes a faux feeling", "action": "faux feeling highlighted", "description": "This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
+      { "name": "Call out Feeling", "message": "It looks like you’ve expressed **feelings**.", "trigger": "Karuna recognizes a feeling", "action": "feeling highlighted", "description": "This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
+      { "name": "Call out Need", "message": "It looks like you’ve expressed a **need**", "trigger": "Karuna recognizes a need", "action": "need highlighted", "description": "This intervention is in response to anything Karuna recognizes as a need. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
+      { "name": "Call out Observation", "message": "It looks like you’ve made an **observation**", "trigger": "Karuna recognizes an observation", "action": "observation highlighted", "description": "This intervention is in response to anything Karuna recognizes as an observation. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
+      { "name": "Call out Request", "message": "It looks like you’ve made a **request**", "trigger": "Karuna recognizes a request", "action": "request highlighted", "description": "This intervention is in response to anything Karuna recognizes as a request. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
+      { "name": "Call out Multiple NVC", "message": "You’re using the following **NVC elements**", "trigger": "Karuna recognizes multiple NVC element", "action": "multiple NVC elements in a bulleted list", "description": "This intervention is when Karuna recognizes multiple elements. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true }
     ]
   },
   {
     "header": "Session-based",
     "choices": [
-      { "name": "Entry 2.1", "message": "Hello! How are you feeling today?","trigger":"login","action":"The affect survey is prompted","description":"Karuna sends this intervention when the user signs into their team to work. The affect survey is prompted.", "overwrite": true }
+      { "name": "Affect Survey", "message": "Hello! How are you feeling today?", "trigger": "login", "action": "The affect survey is prompted", "description": "Karuna sends this intervention when the user signs into their team to work. The affect survey is prompted.", "overwrite": true }
     ]
   },
   {
     "header": "Receiver Status Interventions",
     "choices": [
-      { "name": "Entry 3.1", "message": "{{other user}} status is set to {{team member’s status}}. They may be unable to meet your request at this time. I invite you to specify when you would like your request to be met.","trigger":"request away user","action":"","description":"Intervention occurs when the user is making a request of another away/busy user.", "overwrite": true },
-      { "name": "Entry 3.2", "message": "{{other user}} is typing a response. I invite you to wait until they send their message before responding.","trigger":"user types x characters","action":"","description":"Intervention occurs only after a user types more than x amount of characters, which may indicate they missed or ignored the platform’s own notification.", "overwrite": true }
+      { "name": "User not open to collaborate", "message": "{{other user}} status is set to {{team member’s status}}. They may be unable to meet your request at this time. I invite you to specify when you would like your request to be met.", "trigger": "request away user", "action": "", "description": "Intervention occurs when the user is making a request of another away/busy user.", "overwrite": true },
+      { "name": "User is currently typing", "message": "{{other user}} is typing a response. I invite you to wait until they send their message before responding.", "trigger": "user types x characters", "action": "", "description": "Intervention occurs only after a user types more than x amount of characters, which may indicate they missed or ignored the platform’s own notification.", "overwrite": true }
     ]
   },
   {
     "header": "End of Interaction Interventions",
     "choices": [
-        { "name": "Entry 4.1", "message": "How do you feel after the last interaction? ","trigger":"end of interaction", "action":"The affect survey is prompted","description":"This intervention occurs after regardless of another user’s response. The affect survey is prompted.", "overwrite": true }
+        { "name": "Post-Interaction Survey", "message": "How do you feel after the last interaction? ", "trigger": "end of interaction", "action": "The affect survey is prompted", "description": "This intervention occurs after regardless of another user’s response. The affect survey is prompted.", "overwrite": true }
     ]
   },
   {
     "header": "Conflict Mediation Steps",
     "choices": [
-        { "name": "Entry 5.1", "message": "It looks like you’re navigating a sensitive situation. I invite you to consider using the following steps:\n1. Make a non-judgmental observation\n2. State how you feel about the observation\n3. State what you need or value\n4. Make a clear request","trigger":"conflict-based user message", "action":"","description":"This intervention occurs when the user is typing a message that appears to be in response to or potential for a conflict.", "overwrite": true }
+        { "name": "Mediation Steps Reminder", "message": "It looks like you’re navigating a sensitive situation. I invite you to consider using the following steps:\n1. Make a non-judgmental observation\n2. State how you feel about the observation\n3. State what you need or value\n4. Make a clear request", "trigger": "conflict-based user message", "action": "", "description": "This intervention occurs when the user is typing a message that appears to be in response to or potential for a conflict.", "overwrite": true }
     ]
   },
   {
