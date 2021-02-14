@@ -1,5 +1,10 @@
 function traverseAndSpanifyWords (sourceElement, destinationElement, searchWords) {
-  // Are there children to traverse
+  // Are there words to search for?
+  if (!Array.isArray(searchWords) || searchWords.length < 1) {
+    return
+  }
+
+  // Are there children to traverse?
   if (!sourceElement.hasChildNodes()) {
     return
   }
@@ -75,8 +80,8 @@ export function computeWordRects (textBox, searchWords) {
   ghostTextBox = textBox.clone()
   ghostTextBox.css('background-color', 'lightgreen')
 
-  // Loop over words and surround matched ones with a span
-  traverseAndSpanifyWords(textBox[0], ghostTextBox[0], searchWords)
+  // Loop over words and surround matched ones with a span (force searchWords to be array)
+  traverseAndSpanifyWords(textBox[0], ghostTextBox[0], (Array.isArray(searchWords) ? searchWords : []))
 
   // Append the cloned text box so we can measure it
   textBox.after(ghostTextBox)

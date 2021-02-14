@@ -13,6 +13,9 @@ class EECMessageTextModule extends HTMLElement {
   constructor () {
     super()
 
+    // Initialize word list to be empty
+    this._wordList = []
+
     // Create a shadow root
     this.attachShadow({ mode: 'open' })
 
@@ -39,6 +42,16 @@ class EECMessageTextModule extends HTMLElement {
 
     // Attach the created elements to the shadow DOM
     this.shadowRoot.append(this.styleElem, this.markupWrapper)
+  }
+
+  // Update background communication port
+  setBackgroundPort (extensionPort) {
+    this.backgroundPort = extensionPort
+    if (this.backgroundPort) {
+      this.backgroundPort.onMessage.addListener(
+        this.backgroundMessage.bind(this)
+      )
+    }
   }
 
   // Custom Element is mounted to the DOM
@@ -90,6 +103,17 @@ class EECMessageTextModule extends HTMLElement {
     }
   }
 
+  backgroundMessage (message) {
+    switch (message.type) {
+      // Watch for word highlight requests
+      case 'karunaMessage':
+        if (message.context === this.contextName && Array.isArray(message.highlight)) {
+          this.wordList = message.highlight
+        }
+        break
+    }
+  }
+
   textBoxFocused (event) {
     this.updateUnderlinedWords(this._wordList)
   }
@@ -117,7 +141,6 @@ class EECMessageTextModule extends HTMLElement {
   }
 
   sendTextToServer (newText) {
-    console.log('[[IN-CONTENT]] Text: ' + newText)
     if (this.backgroundPort) {
       this.backgroundPort.postMessage({
         type: 'textUpdate',

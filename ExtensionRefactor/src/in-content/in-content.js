@@ -130,8 +130,8 @@ function updateTextBoxes () {
 
       // Build in-line extension
       const messageTextModuleElem = document.createElement('eec-message-text-module')
-      messageTextModuleElem.backgroundPort = extensionPort
       messageTextModuleElem.contextName = contextName
+      messageTextModuleElem.setBackgroundPort(extensionPort)
       messageTextModuleElem.setTextBox(textBox)
 
       // Insert it and add to lookup map
