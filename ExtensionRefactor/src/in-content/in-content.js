@@ -1,5 +1,5 @@
 // Import out custom HTML Elements
-import './objects/EECExtension.js'
+import './objects/EECMessageTextModule.js'
 import './objects/EECBubble.js'
 import './objects/EECConnect.jsx'
 
@@ -52,13 +52,13 @@ let teamName = ''
 let channelName = ''
 
 jQuery(document).ready(() => {
-  // Setup global side-bar
+  // Setup global karuna bubble element
   const bubbleElem = document.createElement('eec-bubble')
   document.body.insertBefore(bubbleElem)
   bubbleElem.setBackgroundPort(extensionPort)
   bubbleElem.setContextName(contextName)
 
-  // Setup global Karuna Connect side-bar
+  // Setup global Karuna Connect element
   const karunaConnectElem = document.createElement('eec-connect')
   document.body.insertBefore(karunaConnectElem)
   karunaConnectElem.setBackgroundPort(extensionPort)
@@ -71,6 +71,7 @@ jQuery(document).ready(() => {
 
     // Check team and channel names on any page mutation.
     // We use optional chaining to avoid undefined errors
+    const oldValues = { userName, teamName, channelName }
     if (IS_TEAMS) {
       userName = jQuery('img.user-picture')?.first()?.attr('upn')?.trim()
       teamName = jQuery('.team-icon')?.attr('alt')?.substr(19)?.trim()
@@ -87,11 +88,14 @@ jQuery(document).ready(() => {
       channelName = jQuery('[data-qa="channel_name"]')?.text()?.trim()
     }
 
-    // Print updated context info
-    console.log(`[[IN-CONTENT]] context updated: ${contextName}, ${teamName}/${channelName}/${userName}`)
+    // Did something change?
+    if (oldValues.userName !== userName || oldValues.teamName !== teamName || oldValues.channelName !== channelName) {
+      // Print updated context info
+      console.log(`[[IN-CONTENT]] context updated: ${contextName}, ${teamName}/${channelName}/${userName}`)
 
-    // Update data in the background script
-    chrome.runtime.sendMessage({ type: 'context', userName, teamName, channelName, context: contextName })
+      // Update data in the background script
+      chrome.runtime.sendMessage({ type: 'context', userName, teamName, channelName, context: contextName })
+    }
   }
 
   // Create an observer instance linked to the callback function
@@ -102,7 +106,7 @@ jQuery(document).ready(() => {
 })
 
 // Track and inject the extension for each text-box
-const EECElementList = new Map()
+const EECMessageTextModuleList = new Map()
 function updateTextBoxes () {
   // Get all text-box elements
   let textBoxes
@@ -121,19 +125,18 @@ function updateTextBoxes () {
     if (IS_DISCORD) {
       key = textBox.getAttribute('aria-label')
     }
-    if (!EECElementList.has(key)) {
-      console.log(`[[IN-CONTENT]] Adding New EEC Extension for (${EECElementList.size + 1} added)`)
+    if (!EECMessageTextModuleList.has(key)) {
+      console.log(`[[IN-CONTENT]] Adding New EEC Message Text Module for (${EECMessageTextModuleList.size + 1} added)`)
 
       // Build in-line extension
-      const extensionElem = document.createElement('eec-extension')
-      extensionElem.backgroundPort = extensionPort
-      extensionElem.contextName = contextName
-      extensionElem.wordList = ['test', 'seth', 'the', 'violence', 'meta']
-      extensionElem.setTextBox(textBox)
+      const messageTextModuleElem = document.createElement('eec-message-text-module')
+      messageTextModuleElem.backgroundPort = extensionPort
+      messageTextModuleElem.contextName = contextName
+      messageTextModuleElem.setTextBox(textBox)
 
       // Insert it and add to lookup map
-      textBox.parentNode.insertBefore(extensionElem, textBox.nextSibling)
-      EECElementList.set(key, extensionElem)
+      textBox.parentNode.insertBefore(messageTextModuleElem, textBox.nextSibling)
+      EECMessageTextModuleList.set(key, messageTextModuleElem)
     }
   })
 }

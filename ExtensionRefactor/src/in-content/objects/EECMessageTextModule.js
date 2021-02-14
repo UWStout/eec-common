@@ -1,4 +1,4 @@
-import EECExtensionCSS from './EECExtension.txt'
+import EECMessageTextModuleCSS from './EECMessageTextModule.txt'
 
 import debounce from 'debounce'
 
@@ -9,7 +9,7 @@ import { CONTEXT } from '../../util/contexts'
 // Use polyfill only if needed
 const ResizeObserver = window.ResizeObserver || ROPolyfill
 
-class EECExtension extends HTMLElement {
+class EECMessageTextModule extends HTMLElement {
   constructor () {
     super()
 
@@ -28,7 +28,7 @@ class EECExtension extends HTMLElement {
   setupElement () {
     // Create some CSS to apply to the shadow dom
     this.styleElem = document.createElement('style')
-    this.styleElem.textContent = EECExtensionCSS
+    this.styleElem.textContent = EECMessageTextModuleCSS
 
     // Make elements to hold the markup
     const markupDivs = makeFixedPositionChildDiv(
@@ -49,12 +49,12 @@ class EECExtension extends HTMLElement {
 
   // Custom Element is unmounted from the DOM
   disconnectedCallback () {
-    console.log('[[IN-CONTENT]] EEC-Extension element removed from page.')
+    console.log('[[IN-CONTENT]] EEC-MessageTextModule element removed from page.')
   }
 
   // Custom Element is moved to a different DOM
   adoptedCallback () {
-    console.log('[[IN-CONTENT]] EEC-Extension element moved to new page.')
+    console.log('[[IN-CONTENT]] EEC-MessageTextModule element moved to new page.')
   }
 
   // Update the textBox we are watching
@@ -67,7 +67,7 @@ class EECExtension extends HTMLElement {
       // Setup event listeners for the text box
       this.textBox.on('focusin', this.textBoxFocused.bind(this))
       this.textBox.on('focusout', this.textBoxBlurred.bind(this))
-      this.textBox.on('input', debounce(this.textBoxInput.bind(this), 400, false))
+      this.textBox.on('input', debounce(this.textBoxInput.bind(this), 100, false))
 
       // Ensure backspace and delete keys trigger 'input' events
       this.textBox.on('keydown', (event) => {
@@ -91,15 +91,15 @@ class EECExtension extends HTMLElement {
   }
 
   textBoxFocused (event) {
-    // this.updateUnderlinedWords(this._wordList)
+    this.updateUnderlinedWords(this._wordList)
   }
 
   textBoxBlurred (event) {
-    // this.updateUnderlinedWords(this._wordList)
+    this.updateUnderlinedWords(this._wordList)
   }
 
   textBoxInput (event) {
-    // this.updateUnderlinedWords(this._wordList)
+    this.updateUnderlinedWords(this._wordList)
 
     // Send changed text to the server
     if (this.contextName === CONTEXT.MS_TEAMS) {
@@ -130,6 +130,7 @@ class EECExtension extends HTMLElement {
   get wordList () { return this._wordList }
   set wordList (wordList) {
     this._wordList = wordList
+    this.updateUnderlinedWords(this._wordList)
   }
 
   updateUnderlinedWords (words) {
@@ -155,5 +156,5 @@ class EECExtension extends HTMLElement {
 }
 
 // Define the new element and export it
-customElements.define('eec-extension', EECExtension)
-export default EECExtension
+customElements.define('eec-message-text-module', EECMessageTextModule)
+export default EECMessageTextModule
