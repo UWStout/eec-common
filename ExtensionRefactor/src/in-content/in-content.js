@@ -1,7 +1,7 @@
-// Import out custom HTML Elements
-import './objects/EECMessageTextModule.js'
-import './objects/EECBubble.js'
-import './objects/EECConnect.jsx'
+// Import our custom HTML Elements
+import EECConnect from './objects/EECConnect.jsx'
+import EECBubble from './objects/EECBubble.js'
+import EECMessageTextModule from './objects/EECMessageTextModule.js'
 
 import { CONTEXT } from '../util/contexts.js'
 
@@ -29,6 +29,13 @@ const IS_SLACK = (contextName === CONTEXT.SLACK)
 // Initialize communication with background page
 const extensionPort = chrome.runtime.connect({ name: contextName })
 
+// Detect uncaught errors related to an invalidated extension and silence them
+window.addEventListener('error', (event) => {
+  if (event.error.message.includes('Extension context invalidated')) {
+    event.stopImmediatePropagation()
+  }
+})
+
 // Detect unloading of tab/page and send a disconnect to the communication port
 window.addEventListener('beforeunload', (event) => {
   extensionPort.disconnect()
@@ -52,6 +59,11 @@ let teamName = ''
 let channelName = ''
 
 jQuery(document).ready(() => {
+  // Define our custom elements
+  customElements.define('eec-connect', EECConnect)
+  customElements.define('eec-bubble', EECBubble)
+  customElements.define('eec-message-text-module', EECMessageTextModule)
+
   // Setup global karuna bubble element
   const bubbleElem = document.createElement('eec-bubble')
   document.body.insertBefore(bubbleElem)

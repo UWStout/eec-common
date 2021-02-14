@@ -158,6 +158,5 @@ class EECConnect extends HTMLElement {
   }
 }
 
-// Define the new element and export it
-customElements.define('eec-connect', EECConnect)
+// Export custom element (NOTE: Don't forget to register it before use)
 export default EECConnect

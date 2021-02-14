@@ -178,6 +178,5 @@ class EECMessageTextModule extends HTMLElement {
   }
 }
 
-// Define the new element and export it
-customElements.define('eec-message-text-module', EECMessageTextModule)
+// Export custom element (NOTE: Don't forget to register it before use)
 export default EECMessageTextModule
