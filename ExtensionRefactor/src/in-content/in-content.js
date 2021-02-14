@@ -1,6 +1,6 @@
 // Import out custom HTML Elements
 import './objects/EECExtension.js'
-import './objects/EECSidebar.js'
+import './objects/EECBubble.js'
 import './objects/EECConnect.jsx'
 
 import { CONTEXT } from '../util/contexts.js'
@@ -34,6 +34,18 @@ window.addEventListener('beforeunload', (event) => {
   extensionPort.disconnect()
 })
 
+// DEBUGGING: Deal with Discord's hyper-aggressive capturing of keyboard events
+// function keyboardSpy (event) {
+//   console.log('Stopping propagation of ' + event.type)
+//   event.stopImmediatePropagation()
+// }
+
+// if (IS_DISCORD) {
+//   document.body.addEventListener('keydown', keyboardSpy, true)
+//   document.body.addEventListener('keyup', keyboardSpy, true)
+//   document.body.addEventListener('keypress', keyboardSpy, true)
+// }
+
 // State variables
 let userName = ''
 let teamName = ''
@@ -41,10 +53,10 @@ let channelName = ''
 
 jQuery(document).ready(() => {
   // Setup global side-bar
-  const sideBarElem = document.createElement('eec-sidebar')
-  document.body.insertBefore(sideBarElem)
-  sideBarElem.setBackgroundPort(extensionPort)
-  sideBarElem.setContextName(contextName)
+  const bubbleElem = document.createElement('eec-bubble')
+  document.body.insertBefore(bubbleElem)
+  bubbleElem.setBackgroundPort(extensionPort)
+  bubbleElem.setContextName(contextName)
 
   // Setup global Karuna Connect side-bar
   const karunaConnectElem = document.createElement('eec-connect')

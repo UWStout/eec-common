@@ -1,5 +1,5 @@
-/* The Icon for the Sidebar Popup */
-.eec-sidebar {
+/* The Icon for the Bubble Popup */
+.eec-bubble {
   position: absolute;
   bottom: 20px;
   right: 20px;
@@ -7,12 +7,12 @@
   height: 48px;
 }
 
-.eec-sidebar-icon {
+.eec-bubble-icon {
   display: block;
   position: absolute;
 }
 
-.eec-sidebar-alert {
+.eec-bubble-alert {
   bottom: 15px;
   right: 6px;
 }
