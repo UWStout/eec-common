@@ -206,10 +206,13 @@ async function socketWizardMessage (messageInfo) {
         })
       }
 
-      // Update message text and save in log
-      // NOTE: Logging is asynchronous and currently not being waited on
+      // Update message text and save in log (not waiting on logging, but we do catch errors)
       messageInfo.content = messageText
       DBLog.logWizardMessage(messageInfo, correspondentID)
+        .catch((err) => {
+          debug('Logging of wizard message failed')
+          debug(err)
+        })
 
       // Send the message on to client
       debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
@@ -231,7 +234,15 @@ function socketMessageUpdate (message) {
     return
   }
 
-  debug(`[WS:${this.id}] client typing in ${message.context}`)
+  // Update user's list of context aliases (their username in a service like Discord or Teams)
+  const userID = clientSessions[this.id].id
+  DBUser.setUserAlias(userID, message.context, message.user)
+    .catch((err) => {
+      debug('Alias update failed')
+      debug(err)
+    })
+
+  // Bounce message to wizard (no logging because it floods the console)
   mySocket.to('wizards').emit('clientTyping', {
     clientEmail: clientSessions[this.id].email,
     context: message.context,
@@ -241,16 +252,29 @@ function socketMessageUpdate (message) {
 
 // Attempt to send message from Client
 // - 'this' = current socket
-function socketMessageSend (message) {
+async function socketMessageSend (message) {
   if (!clientSessions[this.id]) {
     debug(`[WS:${this.id}] sending message before login`)
     return
   }
+
+  // Update user's list of context aliases (their username in a service like Discord or Teams)
   const userID = clientSessions[this.id].id
+  DBUser.setUserAlias(userID, message.context, message.user)
+    .catch((err) => {
+      debug('Alias update failed')
+      debug(err)
+    })
 
-  // To-DO: do we have the ID of the person receiving the message?
-  DBLog.logUserMessage(message, null, userID) // currently not being waited on, can be turned asynchronous later if this causes issues
+  // Log the message for telemetry and analysis
+  // TODO: do we have the ID of the person receiving the message?
+  DBLog.logUserMessage(message, null, userID)
+    .catch((err) => {
+      debug('client message logging failed')
+      debug(err)
+    })
 
+  // Log action (if debug is enabled) and send the message to the wizard
   debug(`[WS:${this.id}] message received from ${message.context}`)
   mySocket.to('wizards').emit('clientSend', {
     clientEmail: clientSessions[this.id].email,

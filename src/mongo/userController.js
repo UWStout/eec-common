@@ -251,6 +251,34 @@ export function updateUserTimestamps (userID, remoteAddress, context) {
   })
 }
 
+export function setUserAlias (userID, contextStr, alias) {
+  if (!userID || !contextStr || !alias) {
+    return Promise.reject(new Error('All parameters must be defined to set a user alias'))
+  }
+
+  // Build the alias document
+  const newAlias = {}
+  newAlias[`contextAlias.${contextStr}`] = alias
+
+  // Update user record with the new/updated alias data
+  return new Promise((resolve, reject) => {
+    const DBHandle = retrieveDBHandle('karunaData')
+    DBHandle.collection('Users')
+      .findOneAndUpdate(
+        { _id: new ObjectID(userID) },
+        { $set: newAlias },
+        (err, result) => {
+          if (err) {
+            debug(`Failed to update user alias to "${alias}" for "${contextStr}"`)
+            debug(err)
+            return reject(err)
+          }
+          resolve()
+        }
+      )
+  })
+}
+
 /**
  * Update a user's most recently indicated affect
  * @param {number} userID ID of the user to update
