@@ -77,7 +77,8 @@ class EECSidebar extends HTMLElement {
       placement: 'top-start',
       appendTo: this.shadowRoot,
       hideOnClick: 'toggle',
-      trigger: 'click'
+      trigger: 'click',
+      interactive: true
     })
     this.popoverElem.disable() // We will enable it manually
 
@@ -193,11 +194,18 @@ class EECSidebar extends HTMLElement {
       this.popover.addClass('animate__animated animate__repeat-3 animate__tada')
     }
 
-    // Parse Markdown to HTML
+    // Parse Markdown to HTML and set as content
     const AST = this.MDReader.parse(messageText)
     const messageHtml = this.MDWriter.render(AST)
-
     this.popoverElem.setContent(messageHtml)
+
+    // Check for and hook up inputs in the tippy content
+    const inputs = jQuery(this.popoverElem.popper).find('.karunaCustomInput')
+    if (inputs.length > 0) {
+      inputs.click(this.customInputClickCallback.bind(this))
+    }
+
+    // Show the tippy popover
     this.popoverElem.enable()
     this.popoverElem.show()
 
@@ -209,6 +217,32 @@ class EECSidebar extends HTMLElement {
         this.popoverElem.hide()
       }, timeout)
     }
+  }
+
+  customInputClickCallback (event) {
+    event.preventDefault()
+    const target = jQuery(event.target)
+    const sourceID = target.data('source')
+    const source = jQuery(this.popoverElem.popper).find(sourceID)
+
+    // Extract key and value
+    const keyName = source.attr('name')
+    const inputValue = source.val()
+
+    if (!inputValue || inputValue === '') {
+      window.alert('Please enter a value.')
+    } else {
+      // Disable inputs
+      target.attr('disabled', true)
+      source.attr('disabled', true).text('sent')
+
+      // Save the input data
+      this.writeUserMetadata(keyName, inputValue)
+    }
+  }
+
+  writeUserMetadata (key, value) {
+    console.log(`Request to write metadata "${key}": ${JSON.stringify(value)}`)
   }
 
   // Custom Element is mounted to the DOM

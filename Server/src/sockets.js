@@ -7,6 +7,9 @@ import Handlebars from 'handlebars'
 // Database controller
 import { getDBLogController, getDBUserController } from './routes/dbSelector.js'
 
+// Helper methods
+import { parseMessageCommands, parseOtherUsers } from './socketMessageHelper.js'
+
 // Setup debug for output
 import Debug from 'debug'
 const debug = Debug('server:socket')
@@ -157,21 +160,64 @@ function socketWizardSession (wizardInfo) {
 }
 
 // Broadcast a message from a wizard to a specific client
-function socketWizardMessage (messageInfo) {
+async function socketWizardMessage (messageInfo) {
   const destID = clientSocketLookup[messageInfo.clientEmail]
-  let correspondentID
   if (destID) {
-    correspondentID = clientSessions[destID].id
-    // Fill-in handlebars templates if they exist
-    if (messageInfo.content.includes('{{')) {
-      const msgTemplate = Handlebars.compile(messageInfo.content)
-      messageInfo.content = msgTemplate({ user: clientSessions[destID] })
+    // Pull out some local variables
+    const correspondentID = clientSessions[destID].id
+    let messageText = messageInfo.content
+
+    // Scan for and replace any karuna-specific commands
+    messageText = parseMessageCommands(messageText, messageInfo)
+
+    // Are any user status variables being used?
+    let userStatus = { affect: 'unknown', timeToRespond: 'unknown', collaboration: 'unknown' }
+    if (messageText.match(/{{\s*user\.status.*?}}/)) {
+      // Retrieve user status
+      try {
+        const response = await DBUser.getUserStatus(clientSessions[destID].id)
+        if (response) {
+          userStatus = {
+            affect: response.affectLogID || 'unknown',
+            timeToRespond: response.minutesToRespond || 'unknown',
+            collaboration: response.lastCollaborationStatus || 'unknown'
+          }
+        }
+      } catch (err) {
+        debug('Error getting user status')
+        debug(err)
+      }
     }
 
-    DBLog.logWizardMessage(messageInfo, correspondentID) // currently not being waited on, can be turned asynchronous later if this causes issues
+    try {
+      // Get any extra user data needed for mentioned users
+      const extraUsers = await parseOtherUsers(messageText, DBUser)
 
-    debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
-    mySocket.to(destID).emit('karunaMessage', messageInfo)
+      // Fill-in handlebars templates if they exist
+      if (messageText.includes('{{')) {
+        const msgTemplate = Handlebars.compile(messageText)
+        messageText = msgTemplate({
+          user: {
+            ...clientSessions[destID],
+            type: clientSessions[destID].userType,
+            status: userStatus
+          },
+          ...extraUsers
+        })
+      }
+
+      // Update message text and save in log
+      // NOTE: Logging is asynchronous and currently not being waited on
+      messageInfo.content = messageText
+      DBLog.logWizardMessage(messageInfo, correspondentID)
+
+      // Send the message on to client
+      debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
+      mySocket.to(destID).emit('karunaMessage', messageInfo)
+    } catch (err) {
+      debug('Error awaiting other user parsing')
+      debug(err)
+    }
   } else {
     debug(`[WS:${this.id}] wizard sending to UNKNOWN client ${messageInfo.clientEmail} in ${messageInfo.context}`)
   }

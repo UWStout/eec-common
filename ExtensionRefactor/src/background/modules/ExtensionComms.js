@@ -25,7 +25,7 @@ export function setupExtensionCommunication () {
     // Loop through active port names and look for matching context
     for (const portName in portSessions) {
       const context = portName.split('-')[0]
-      if (context === msg.context) {
+      if (context === msg.context && portSessions[portName]) {
         // Relay message to that port
         console.log('[BACKGROUND] + Context matched, posting message')
         portSessions[portName].postMessage(

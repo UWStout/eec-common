@@ -192,9 +192,9 @@ export function updateUser (userID, newData) {
 
 /**
  * Update a user's recent activity timestamps
- * 
+ *
  * tested in test 35
- * 
+ *
  * @param {number} userID ID of the user to update
  * @param {string} remoteAddress New IP address to set as source of the activity.
  * @param {string[]|bool} context Pass 'true' to indicate a wizard login, otherwise, pass array of
