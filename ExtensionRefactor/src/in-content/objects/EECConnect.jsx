@@ -135,6 +135,19 @@ class EECConnect extends HTMLElement {
           this.updateVisibility(true)
         }
         break
+
+      case 'login':
+        this.JWT = message.token
+        if (this.statusEmitter) {
+          this.statusEmitter.emit('login')
+        }
+        this.updateVisibility(true)
+        break
+
+      case 'logout':
+        this.JWT = null
+        this.updateVisibility(false)
+        break
     }
   }
 
@@ -142,7 +155,7 @@ class EECConnect extends HTMLElement {
     if (!show) {
       this.statusPanel.hide()
       this.connectPanel.hide()
-    } else {
+    } else if (this.JWT) {
       this.statusPanel.show()
       this.connectPanel.show()
     }

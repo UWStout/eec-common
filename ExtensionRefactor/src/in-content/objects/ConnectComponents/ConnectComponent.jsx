@@ -16,6 +16,7 @@ export default function ConnectComponent (props) {
   const [emojiList, updateEmojiList] = useState([])
   const [userStatus, updateUserStatus] = useState(null)
   const [privacy, updatePrivacy] = useState({ private: true, prompt: true })
+  const [loginTrigger, updateLoginTrigger] = useState(0)
 
   // Initialize the privacy preferences
   useEffect(() => {
@@ -35,11 +36,11 @@ export default function ConnectComponent (props) {
   useEffect(() => {
     // Send ajax request for data via background script
     backgroundMessage(
-      { type: 'ajax-getEmojiList' },
+      { type: 'ajax-getEmojiList', loginTrigger },
       'Emoji Retrieval failed: ',
       (data) => { updateEmojiList(data) }
     )
-  }, [])
+  }, [loginTrigger])
 
   // Synchronize user state
   const getLatestUserStatus = () => {
@@ -82,6 +83,14 @@ export default function ConnectComponent (props) {
 
   // Trigger first retrieval of user state
   useEffect(() => { getLatestUserStatus() }, [])
+
+  // Listen for a login
+  if (props.emitter) {
+    props.emitter.on('login', () => {
+      updateLoginTrigger(loginTrigger + 1)
+      getLatestUserStatus()
+    })
+  }
 
   // Opens and closes main menu
   const handleClick = (e) => {

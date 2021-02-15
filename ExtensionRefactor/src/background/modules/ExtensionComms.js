@@ -131,8 +131,13 @@ function oneTimeMessage (message, sender, sendResponse) {
         return resolve('ok')
 
       case 'logout':
-        console.log('attempted logout')
-        this.JWT = null
+        // Clear the token in all sessions
+        writeValue('JWT', null)
+        for (const portName in portSessions) {
+          portSessions[portName].postMessage(
+            { type: 'logout' }
+          )
+        }
         return resolve('ok')
 
       // Unknown messages

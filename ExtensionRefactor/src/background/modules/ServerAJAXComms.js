@@ -23,19 +23,35 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       break
 
     case 'ajax-getUserStatus':
-      promise = getUserStatus(userData.id)
+      if (!userData.id) {
+        promise = Promise.reject(new Error('No user id available (not logged in?)'))
+      } else {
+        promise = getUserStatus(userData.id)
+      }
       break
 
     case 'ajax-setUserAffect':
-      promise = setUserAffect(userData.id, message.affectID, message.privacy)
+      if (!userData.id) {
+        promise = Promise.reject(new Error('No user id available (not logged in?)'))
+      } else {
+        promise = setUserAffect(userData.id, message.affectID, message.privacy)
+      }
       break
 
     case 'ajax-setCollaboration':
-      promise = setCollaboration(userData.id, message.collaboration)
+      if (!userData.id) {
+        promise = Promise.reject(new Error('No user id available (not logged in?)'))
+      } else {
+        promise = setCollaboration(userData.id, message.collaboration)
+      }
       break
 
     case 'ajax-setTimeToRespond':
-      promise = setTimeToRespond(userData.id, message.timeToRespond)
+      if (!userData.id) {
+        promise = Promise.reject(new Error('No user id available (not logged in?)'))
+      } else {
+        promise = setTimeToRespond(userData.id, message.timeToRespond)
+      }
       break
 
     default: {

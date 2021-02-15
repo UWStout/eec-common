@@ -25,8 +25,10 @@ export default function AccountSettings () {
   chrome.runtime.sendMessage(
     { type: 'read', key: 'JWT' },
     (response) => {
-      this.JWT = response.value
-      updateLoggedIn(true)
+      if (response?.value) {
+        this.JWT = response.value
+        updateLoggedIn(true)
+      }
     }
   )
 

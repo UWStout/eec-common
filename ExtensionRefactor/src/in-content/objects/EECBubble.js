@@ -161,6 +161,11 @@ class EECBubble extends HTMLElement {
         this.showMessage(`Welcome **${payload.firstName}**!`, false, 5000)
       } break
 
+      case 'logout':
+        this.JWT = null
+        this.showMessage('Please **log in** to use Karuna', true, 5000)
+        break
+
       case 'karunaMessage':
         if (message.context === this.contextName && message.content.trim() !== '') {
           this.showMessage(message.content)
