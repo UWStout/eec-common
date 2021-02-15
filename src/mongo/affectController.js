@@ -139,55 +139,51 @@ export function listAffects (IDsOnly = true, perPage = 25, page = 1, sortBy = ''
 /**
  * Insert an affect log into the affect history collection
  *
- * TO-DO: needs to update user status mood
- *
  * tested in test 30 of test.js in the routes folder
  *
  * Each entry needs, at a minimum, an affectID (from the affect table), a userID OR a teamID, and a timestamp
- * @param {_id} affectID from the affect table
- * @param {_id} relatedID can be either a userID or a teamID, but we will never log both. ONE needs to be given.
- * @param {_bool} isUser true if it is a userID, else false if it is a teamID
- * @param {_bool} isPrivate can be null, if null, it is pushed as false, else it is pushed as its value (either true or false).
+ * @param {string} affectID from the affect table
+ * @param {string} relatedID can be either a userID or a teamID, but we will never log both. ONE needs to be given.
+ * @param {bool} isUser true if it is a userID, else false if it is a teamID
+ * @param {bool} isPrivate can be null, if null, it is pushed as false, else it is pushed as its value (either true or false).
  * @return {Promise} returns an inserted object
  */
 export function insertAffectHistoryEntry (affectID, relatedID, isUser, isPrivate) {
-  const DBHandle = retrieveDBHandle('karunaData')
-  let insertThis
+  // Ensure isPrivate has a default value
+  if (isPrivate === undefined) { isPrivate = true }
 
-  if (isPrivate === undefined) isPrivate = false
-
-  if (isUser) { // relatedID is a userID
-    insertThis = { affectID: new ObjectID(affectID), userID: new ObjectID(relatedID), timestamp: new Date(), isPrivate }
-  } else { // relatedID is a teamID
-    insertThis = { affectID: new ObjectID(affectID), teamID: new ObjectID(relatedID), timestamp: new Date(), isPrivate }
+  // Build proper object to insert
+  const insertThis = {
+    affectID: new ObjectID(affectID),
+    timestamp: new Date(),
+    isPrivate
   }
 
-  return new Promise((resolve, reject) => {
-    DBHandle
-      .collection('AffectHistory')
-      .insertOne(insertThis)
-      .catch((err) => {
-        debug('failed to update affect history')
-        return reject(err)
-      })
-    if (isPrivate === false && isUser) {
-      DBHandle
-        .collection('Users')
-        .findOneAndUpdate(
-          { _id: new ObjectID(relatedID) },
-          { $set: { status: { lastAffectID: new ObjectID(affectID) } } },
-          (err, result) => {
-            if (err) {
-              debug('Failed to update user status')
-              debug(err)
-              return reject(err)
-            }
-            resolve()
-          }
-        )
-    }
-    return resolve()
-  })
+  // Set either a user or team id as relatedID
+  if (isUser) {
+    insertThis.userID = new ObjectID(relatedID)
+  } else {
+    insertThis.teamID = new ObjectID(relatedID)
+  }
+
+  // Start affect history entry query
+  const DBHandle = retrieveDBHandle('karunaData')
+  const promises = [
+    DBHandle.collection('AffectHistory').insertOne(insertThis)
+  ]
+
+  // Possibly start user current mood update query
+  if (isUser) {
+    promises.push(DBHandle.collection('Users')
+      .findOneAndUpdate(
+        { _id: new ObjectID(relatedID) },
+        { $set: { 'status.currentAffectID': new ObjectID(affectID) } }
+      )
+    )
+  }
+
+  // Return a promise that resolves when both are finished and rejects otherwise
+  return Promise.all(promises)
 }
 
 /**

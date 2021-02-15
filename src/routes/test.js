@@ -592,7 +592,7 @@ router.post('/insertAffectHistoryEntry', async (req, res) => {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
   } if (userID && teamID) {
-    res.status(400).json({ invalid: true, message: 'cannot submit both userID and teamID' })
+    res.status(400).json({ invalid: true, message: 'Cannot submit both userID and teamID' })
     return
   }
 
@@ -608,19 +608,19 @@ router.post('/insertAffectHistoryEntry', async (req, res) => {
 
   // check if relatedID is a reasonable parameter for ObjectID
   if (!ObjectID.isValid(relatedID)) {
-    res.status(400).json({ invalid: true, id: relatedID, message: 'teamID or userID must be a single String of 12 bytes or a string of 24 hex characters' })
+    res.status(400).json({ invalid: true, id: relatedID, message: 'teamID or userID must be a 12 byte number or a string of 24 hex characters' })
   }
 
   // check if affectID is a reasonable parameter for ObjectID
   if (affectID && !ObjectID.isValid(affectID)) {
-    res.status(400).json({ invalid: true, message: 'affectID must be a single String of 12 bytes or a string of 24 hex characters' })
+    res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
   }
 
   // Attempt to insert affect history log
   debug('attempting to insert affect history log')
   try {
-    const log = await affectDB.insertAffectHistoryEntry(affectID, relatedID, isUser, isPrivate)
-    return res.status(200).json({ message: 'success', affectLog: log })
+    await affectDB.insertAffectHistoryEntry(affectID, relatedID, isUser, isPrivate)
+    return res.status(200).json({ message: 'success' })
   } catch (error) {
     console.error('Failed to insert affect history log')
     console.error(error)
@@ -713,10 +713,10 @@ router.get('/getUserStatus/:userID?', async (req, res) => {
   }
 })
 
-// 34. test userController's function updateUserStatus (userID, lastAffectID, lastCollaborationStatus, minutesToRespond)
-router.post('/updateUserStatus', async (req, res) => {
+// 34. test userController's function updateUserCollaboration (userID, collaborationStatus)
+router.post('/updateUserCollaboration', async (req, res) => {
   // Extract and check required fields
-  const { userID, lastAffectID, lastCollaborationStatus, minutesToRespond } = req.body
+  const { userID, collaborationStatus } = req.body
   if (!userID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
@@ -724,27 +724,44 @@ router.post('/updateUserStatus', async (req, res) => {
 
   // check if userID is a reasonable parameter for ObjectID
   if (!ObjectID.isValid(userID)) {
-    res.status(400).json({ invalid: true, id: userID, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
+    res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
   }
 
-  // check if affectID is a reasonable parameter for ObjectID
-  if (lastAffectID && !ObjectID.isValid(lastAffectID)) {
-    res.status(400).json({ invalid: true, message: 'affectID must be a single String of 12 bytes or a string of 24 hex characters' })
-  }
-
-  // Attempt to update user status
-  debug('attempting to update user status')
+  // Attempt to update user collaboration status
   try {
-    const update = await userDB.updateUserStatus(userID, lastAffectID, lastCollaborationStatus, minutesToRespond)
-    return res.status(200).json({ message: 'success', update })
+    await userDB.updateUserCollaboration(userID, collaborationStatus)
+    return res.status(200).json({ message: 'success' })
   } catch (error) {
-    console.error('Failed to update user status')
+    console.error('Failed to update user collaboration status')
     console.error(error)
-    return res.status(500).json({ error: true, message: 'Error while trying to update user status' })
+    return res.status(500).json({ error: true, message: 'Error while trying to update user collaboration status' })
   }
 })
 
-// 35. test user
+// 35. test userController's function updateUserTimeToRespond (userID, timeToRespond)
+router.post('/updateUserTimeToRespond', async (req, res) => {
+  // Extract and check required fields
+  const { userID, timeToRespond } = req.body
+  if (!userID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if userID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
+  }
+
+  // Attempt to update user time to respond
+  try {
+    await userDB.updateUserTimeToRespond(userID, timeToRespond)
+    return res.status(200).json({ message: 'success' })
+  } catch (error) {
+    console.error('Failed to update user time to respond')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while trying to update user time to respond' })
+  }
+})
 
 // Expose the router for use in other files
 export default router

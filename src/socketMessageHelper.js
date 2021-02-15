@@ -72,9 +72,9 @@ export function parseOtherUsers (messageText, DBUser) {
           email: 'email' + mentionIndex + '@example.com',
           userType: 'type' + mentionIndex,
           status: {
-            affectLogID: 'affect' + mentionIndex,
-            minutesToRespond: 'timeToRespond' + mentionIndex,
-            lastCollaborationStatus: 'collaboration' + mentionIndex
+            currentAffectID: 'affect' + mentionIndex,
+            timeToRespond: 'timeToRespond' + mentionIndex,
+            collaboration: 'collaboration' + mentionIndex
           }
         }
 
@@ -85,9 +85,9 @@ export function parseOtherUsers (messageText, DBUser) {
           email: userDetails.email,
           type: userDetails.userType,
           status: {
-            affect: userDetails.status.affectLogID,
-            timeToRespond: userDetails.status.minutesToRespond,
-            collaboration: userDetails.status.lastCollaborationStatus
+            affect: userDetails.status.currentAffectLogID,
+            timeToRespond: userDetails.status.timeToRespond,
+            collaboration: userDetails.status.collaboration
           }
         }
       }
