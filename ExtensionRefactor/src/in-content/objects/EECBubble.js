@@ -91,6 +91,9 @@ class EECBubble extends HTMLElement {
 
   setStatusEmitter (newEmitter) {
     this.statusEmitter = newEmitter
+    if (this.statusEmitter) {
+      this.statusEmitter.on('affectSurveyDone', this.postAffectSurvey.bind(this))
+    }
   }
 
   sendGreetingMessage (teamName) {
@@ -261,6 +264,14 @@ class EECBubble extends HTMLElement {
       this.statusEmitter.emit('affectInputRequested')
     } else {
       console.error('WARNING: No status emitter in bubble for requesting affect input.')
+    }
+  }
+
+  postAffectSurvey () {
+    const affectInputs = jQuery(this.popoverElem.popper).find('.karunaAffectInput')
+    if (affectInputs.length > 0) {
+      affectInputs.text('Thanks!')
+      affectInputs.attr('disabled', true)
     }
   }
 

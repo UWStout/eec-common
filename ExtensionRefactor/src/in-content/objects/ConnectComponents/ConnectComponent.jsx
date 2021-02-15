@@ -103,6 +103,7 @@ export default function ConnectComponent (props) {
   // Message that the affect dialog has closed
   const affectClosed = () => {
     if (showAffect) { updateFormOpen(false) }
+    if (props.emitter) { props.emitter.emit('affectSurveyDone') }
     updateShowAffect(false)
   }
 

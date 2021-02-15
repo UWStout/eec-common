@@ -4,18 +4,18 @@
     "choices": [
       { "name": "Post Affect Survey Thank You", "message": "Thank you for sharing with your team!", "trigger": "user completing the affect survey", "action": "", "description": "This feedback is in response to the user completing the affect survey.", "overwrite": true },
       { "name": "Response Time Reminder", "message": "{{otherUser1.firstName}} typically responds in {{otherUser1.status.timeToRespond}}.", "trigger": "user messaging team member", "action": "", "description": "This feedback is in response to the user starting to type a message to a team member. It is a placeholder for the proposed Typical Response Time (TRT) UI feedback.", "overwrite": true },
-      { "name": "Call out FAUX Feeling", "message": "It looks like you’ve expressed a **faux feeling**.", "trigger": "Karuna recognizes a faux feeling", "action": "faux feeling highlighted", "description": "This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
-      { "name": "Call out Feeling", "message": "It looks like you’ve expressed **feelings**.", "trigger": "Karuna recognizes a feeling", "action": "feeling highlighted", "description": "This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
-      { "name": "Call out Need", "message": "It looks like you’ve expressed a **need**", "trigger": "Karuna recognizes a need", "action": "need highlighted", "description": "This intervention is in response to anything Karuna recognizes as a need. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
-      { "name": "Call out Observation", "message": "It looks like you’ve made an **observation**", "trigger": "Karuna recognizes an observation", "action": "observation highlighted", "description": "This intervention is in response to anything Karuna recognizes as an observation. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
-      { "name": "Call out Request", "message": "It looks like you’ve made a **request**", "trigger": "Karuna recognizes a request", "action": "request highlighted", "description": "This intervention is in response to anything Karuna recognizes as a request. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
-      { "name": "Call out Multiple NVC", "message": "You’re using the following **NVC elements**", "trigger": "Karuna recognizes multiple NVC element", "action": "multiple NVC elements in a bulleted list", "description": "This intervention is when Karuna recognizes multiple elements. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true }
+      { "name": "Call out FAUX Feeling", "message": "It looks like you’ve expressed a **faux feeling**. {{highlight: word}}", "trigger": "Karuna recognizes a faux feeling", "action": "faux feeling highlighted", "description": "This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
+      { "name": "Call out Feeling", "message": "It looks like you’ve expressed **feelings**. {{highlight: word}}", "trigger": "Karuna recognizes a feeling", "action": "feeling highlighted", "description": "This intervention is in response to anything Karuna recognizes as a feeling. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
+      { "name": "Call out Need", "message": "It looks like you’ve expressed a **need**. {{highlight: word}}", "trigger": "Karuna recognizes a need", "action": "need highlighted", "description": "This intervention is in response to anything Karuna recognizes as a need. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
+      { "name": "Call out Observation", "message": "It looks like you’ve made an **observation**. {{highlight: word}}", "trigger": "Karuna recognizes an observation", "action": "observation highlighted", "description": "This intervention is in response to anything Karuna recognizes as an observation. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
+      { "name": "Call out Request", "message": "It looks like you’ve made a **request**. {{highlight: word}}", "trigger": "Karuna recognizes a request", "action": "request highlighted", "description": "This intervention is in response to anything Karuna recognizes as a request. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true },
+      { "name": "Call out Multiple NVC", "message": "You’re using the following **NVC elements**. {{highlight: word, word, word}}", "trigger": "Karuna recognizes multiple NVC element", "action": "multiple NVC elements in a bulleted list", "description": "This intervention is when Karuna recognizes multiple elements. It is a placeholder for the proposed NVC element callout UI feedback.", "overwrite": true }
     ]
   },
   {
     "header": "Session-based",
     "choices": [
-      { "name": "Affect Survey", "message": "Hello! How are you feeling today?", "trigger": "login", "action": "The affect survey is prompted", "description": "Karuna sends this intervention when the user signs into their team to work. The affect survey is prompted.", "overwrite": true }
+      { "name": "Affect Survey", "message": "Hello! How are you feeling today?\n\n{{affect: input}}", "trigger": "login", "action": "The affect survey is prompted", "description": "Karuna sends this intervention when the user signs into their team to work. The affect survey is prompted.", "overwrite": true }
     ]
   },
   {
@@ -40,9 +40,10 @@
   {
     "header": "Karuna Bubble Commands",
     "choices": [
-      { "name": "Highlight One Word", "message": "{{highlight:word}}", "trigger": "", "action": "", "description": "Instruct Karuna to highlight a word in the users message text.", "overwrite": false },
-      { "name": "Highlight Many Words", "message": "{{highlight:word1,word2,word3}}", "trigger": "", "action": "", "description": "Instruct Karuna to highlight several words in the users message text.", "overwrite": false },
-      { "name": "Generic Text Input", "message": "{{input:variable_name}}", "trigger": "", "action": "", "description": "Display an input box to the user. Response is stored in the user's metadata under 'variable_name'.", "overwrite": false }
+      { "name": "Highlight One Word", "message": "{{highlight: word}}", "trigger": "", "action": "", "description": "Instruct Karuna to highlight a word in the users message text.", "overwrite": false },
+      { "name": "Highlight Many Words", "message": "{{highlight: word1, word2, word3}}", "trigger": "", "action": "", "description": "Instruct Karuna to highlight several words in the users message text.", "overwrite": false },
+      { "name": "Affect Input Trigger", "message": "{{affect: input}}", "trigger": "", "action": "", "description": "Show a button that triggers the affect survey in the Karuna connect panel.", "overwrite": false },
+      { "name": "Generic Text Input", "message": "{{input: variable_name}}", "trigger": "", "action": "", "description": "Display an input box to the user. Response is stored in the user's metadata under 'variable_name'.", "overwrite": false }
     ]
   },
   {
