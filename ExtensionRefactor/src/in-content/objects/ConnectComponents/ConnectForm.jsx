@@ -84,7 +84,9 @@ export default function ConnectForm (props) {
 
             {/* Current mood / mood selection */}
             <Grid item className={classes.gridRow}>
-              <MoodSelect handleChange={props.handleAffectChange} currentAffectID={props.userStatus.currentAffectID} emojiList={props.emojiList} />
+              <MoodSelect handleChange={props.handleAffectChange}
+                currentAffectID={props.userStatus.currentAffectID}
+                privacy={props.privacy} emojiList={props.emojiList} />
             </Grid>
 
             {/* Current collaboration state and toggle */}

@@ -27,11 +27,15 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       break
 
     case 'ajax-setUserAffect':
-      promise = setUserAffect(userData.id, message.affectID)
+      promise = setUserAffect(userData.id, message.affectID, message.privacy)
       break
 
     case 'ajax-setCollaboration':
       promise = setCollaboration(userData.id, message.collaboration)
+      break
+
+    case 'ajax-setTimeToRespond':
+      promise = setTimeToRespond(userData.id, message.timeToRespond)
       break
 
     default: {
@@ -67,7 +71,7 @@ function validateAccount (email, password) {
 function getEmojiList () {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/listAffects?fullInfo&perPage=35`)
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/listAffects?fullInfo&perPage=500`)
 
     // Listen for server response or error
     requestPromise.then((response) => {
@@ -91,10 +95,41 @@ function getUserStatus (userID) {
   })
 }
 
-function setUserAffect (userID, affectID) {
-  return Promise.resolve()
+function setUserAffect (userID, affectID, isPrivate) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/insertAffectHistoryEntry`,
+      { userID, affectID, isPrivate }
+    )
+
+    // Listen for server response or error
+    requestPromise.then(() => { resolve() })
+    requestPromise.catch((error) => { reject(error) })
+  })
 }
 
-function setCollaboration (userID, newCollaboration) {
-  return Promise.resolve()
+function setCollaboration (userID, collaborationStatus) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/updateUserCollaboration`,
+      { userID, collaborationStatus }
+    )
+
+    // Listen for server response or error
+    requestPromise.then(() => { resolve() })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
+function setTimeToRespond (userID, timeToRespond) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/updateUserTimeToRespond`,
+      { userID, timeToRespond }
+    )
+
+    // Listen for server response or error
+    requestPromise.then(() => { resolve() })
+    requestPromise.catch((error) => { reject(error) })
+  })
 }

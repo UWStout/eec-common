@@ -4,8 +4,6 @@ import PropTypes from 'prop-types'
 import ConnectForm from './ConnectForm.jsx'
 import ConnectPanelButton from './ConnectPanelButton.jsx'
 
-import * as DBShapes from './dataTypeShapes.js'
-
 import { backgroundMessage } from '../AJAXHelper.js'
 
 // The sidebar Karuna Connect object
@@ -16,11 +14,11 @@ export default function ConnectComponent (props) {
 
   // User/Karuna data state
   const [emojiList, updateEmojiList] = useState(null)
-  const [userState, updateUserState] = useState(null)
-  const [privacy, updatePrivacy] = useState({})
+  const [userStatus, updateUserStatus] = useState(null)
+  const [privacy, updatePrivacy] = useState(null)
 
   // Initialize the privacy preferences
-  if (privacy.private === undefined) {
+  if (privacy === null) {
     updatePrivacy({ private: true, prompt: true })
     backgroundMessage(
       { type: 'read', key: 'privacy' },
@@ -53,15 +51,15 @@ export default function ConnectComponent (props) {
       { type: 'ajax-getUserStatus' },
       'Retrieving current user status failed: ',
       (currentUserState) => {
-        updateUserState(currentUserState)
+        updateUserStatus(currentUserState)
       }
     )
   }
 
   // Set new user mood (triggers a userState update)
-  const setUserMood = async (newMoodID) => {
+  const setUserMood = async (affectID, privacy) => {
     backgroundMessage(
-      { type: 'ajax-setUserAffect', affectID: newMoodID },
+      { type: 'ajax-setUserAffect', affectID, privacy },
       'Setting mood failed: ', () => {
         getLatestUserState()
       }
@@ -79,9 +77,9 @@ export default function ConnectComponent (props) {
   }
 
   // Trigger first retrieval of user state
-  if (userState === null) {
+  if (userStatus === null) {
     // Set to simple object to avoid extra retrievals
-    updateUserState({ retrieving: true })
+    updateUserStatus({ retrieving: true })
     getLatestUserState()
   }
 
@@ -108,13 +106,9 @@ export default function ConnectComponent (props) {
   return (
     <React.Fragment>
       {PanelOpenButton}
-      <ConnectForm userStatus={props.userStatus} emojiList={emojiList} silencePrompt={privacy} opened={formOpen}
+      <ConnectForm userStatus={userStatus} emojiList={emojiList} privacy={privacy} opened={formOpen}
         handleAffectChange={setUserMood} handleCollaborationChange={setCollaboration} handleClose={handleClick}
         handleHistoryFormOpen={handleHistoryClick} handleHistoryFormBack={handleHistoryBackClick} />
     </React.Fragment>
   )
-}
-
-ConnectComponent.propTypes = {
-  userStatus: PropTypes.shape(DBShapes.statusObjectShape).isRequired
 }

@@ -63,13 +63,13 @@ export default function MoodSelect (props) {
   // pushes emojis from the database into an array of Emoji objects
   const EMOJI = []
   props.emojiList.forEach((entry) => {
-    EMOJI[entry._id]({
+    EMOJI[entry._id] = {
       emote: <Emoji key={entry._id} label={entry.name} symbol={entry.characterCodes[0]} />,
       symbol: entry.name,
       id: entry._id
-    })
+    }
   })
-  EMOJI[-1] = EMOJI_UNKNOWN
+  EMOJI['0'] = EMOJI_UNKNOWN
 
   // Update state of tracked checkbox
   const silenceChange = (event) => {
@@ -108,7 +108,7 @@ export default function MoodSelect (props) {
     // Trigger callback for new mood
     if (props.handleChange) {
       try {
-        await props.handleChange(clickedMood)
+        await props.handleChange(clickedMood, isPrivate)
       } catch (err) {
         console.error('Failed to update mood')
         console.error(err)
@@ -164,7 +164,7 @@ export default function MoodSelect (props) {
   return (
     <div>
       <Button color="default" aria-controls="mood-menu" aria-haspopup="true" onClick={handleOpen} className={classes.panelButton}>
-        {props.currentAffectID ? EMOJI[props.currentAffectID].emote : EMOJI[-1].emote}
+        {props.currentAffectID ? EMOJI[props.currentAffectID].emote : EMOJI['0'].emote}
         Mood
       </Button>
       <Modal open={open} onClose={handleClose}>
