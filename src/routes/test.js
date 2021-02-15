@@ -575,10 +575,9 @@ router.get('/listAffects', async (req, res) => {
 
   // Attempt to retrieve affect list
   const IDsOnly = (req.query.fullInfo === undefined)
-  // const IDsOnly = false
   try {
     const affectList = await affectDB.listAffects(IDsOnly, perPage, page, sortBy, sortOrder, filterBy, filter)
-    res.send(affectList)
+    return res.send(affectList)
   } catch (err) {
     UTIL.checkAndReportError('Error retrieving affect list', res, err, debug)
   }
