@@ -13,7 +13,7 @@ import { backgroundMessage } from '../AJAXHelper.js'
 const EMOJI_UNKNOWN = <Emoji key='unknown' label='unknown' symbol='?' />
 const useStyles = makeStyles((theme) => ({
   paperRoot: {
-    backgroundColor: '#7db2f0',
+    backgroundColor: '#c5d9f1',
     textAlign: 'center',
     width: '45px',
     height: '125px'

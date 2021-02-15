@@ -1,3 +1,5 @@
+/* global EventEmitter3 */
+
 // Import our custom HTML Elements
 import EECConnect from './objects/EECConnect.jsx'
 import EECBubble from './objects/EECBubble.js'
@@ -41,17 +43,14 @@ window.addEventListener('beforeunload', (event) => {
   extensionPort.disconnect()
 })
 
-// DEBUGGING: Deal with Discord's hyper-aggressive capturing of keyboard events
-// function keyboardSpy (event) {
-//   console.log('Stopping propagation of ' + event.type)
-//   event.stopImmediatePropagation()
-// }
+// Create event emitter to relay some data between elements
+const statusEmitter = new EventEmitter3()
 
-// if (IS_DISCORD) {
-//   document.body.addEventListener('keydown', keyboardSpy, true)
-//   document.body.addEventListener('keyup', keyboardSpy, true)
-//   document.body.addEventListener('keypress', keyboardSpy, true)
-// }
+// DEBUGGING: Deal with Discord's hyper-aggressive capturing of keyboard events
+document.body.addEventListener('keypress', (event) => {
+  // Echo the keypress to the inner elements
+  statusEmitter.emit('keypress', event)
+})
 
 // State variables
 let userName = ''
@@ -66,12 +65,14 @@ jQuery(document).ready(() => {
 
   // Setup global karuna bubble element
   const bubbleElem = document.createElement('eec-bubble')
+  bubbleElem.setStatusEmitter(statusEmitter)
   document.body.insertBefore(bubbleElem)
   bubbleElem.setBackgroundPort(extensionPort)
   bubbleElem.setContextName(contextName)
 
   // Setup global Karuna Connect element
   const karunaConnectElem = document.createElement('eec-connect')
+  karunaConnectElem.setupElementReact(statusEmitter)
   document.body.insertBefore(karunaConnectElem)
   karunaConnectElem.setBackgroundPort(extensionPort)
   karunaConnectElem.setContextName(contextName)
@@ -142,6 +143,7 @@ function updateTextBoxes () {
 
       // Build in-line extension
       const messageTextModuleElem = document.createElement('eec-message-text-module')
+      messageTextModuleElem.setStatusEmitter(statusEmitter)
       messageTextModuleElem.contextName = contextName
       messageTextModuleElem.setBackgroundPort(extensionPort)
       messageTextModuleElem.setTextBox(textBox)

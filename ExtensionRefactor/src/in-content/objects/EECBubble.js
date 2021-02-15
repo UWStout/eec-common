@@ -89,6 +89,10 @@ class EECBubble extends HTMLElement {
     this.updateVisibility(false)
   }
 
+  setStatusEmitter (newEmitter) {
+    this.statusEmitter = newEmitter
+  }
+
   sendGreetingMessage (teamName) {
     if (typeof this.JWT === 'string') {
       if (this._welcomeShown) {
@@ -106,7 +110,7 @@ class EECBubble extends HTMLElement {
       }
     } else {
       setTimeout(() => {
-        this.showMessage('Please **log in** to use Karuna', true, 5000)
+        this.showMessage('Please **log in** to use Karuna<br>(Click the browser extension icon under the puzzle piece in the upper right of the browser window)', true, 5000)
       }, 3000)
     }
   }
@@ -163,7 +167,7 @@ class EECBubble extends HTMLElement {
 
       case 'logout':
         this.JWT = null
-        this.showMessage('Please **log in** to use Karuna', true, 5000)
+        this.showMessage('Please **log in** to use Karuna<br>(Click the browser extension icon under the puzzle piece in the upper right of the browser window)', true, 5000)
         break
 
       case 'karunaMessage':
@@ -205,9 +209,14 @@ class EECBubble extends HTMLElement {
     this.popoverElem.setContent(messageHtml)
 
     // Check for and hook up inputs in the tippy content
-    const inputs = jQuery(this.popoverElem.popper).find('.karunaCustomInput')
-    if (inputs.length > 0) {
-      inputs.click(this.customInputClickCallback.bind(this))
+    const customInputs = jQuery(this.popoverElem.popper).find('.karunaCustomInput')
+    if (customInputs.length > 0) {
+      customInputs.click(this.customInputClickCallback.bind(this))
+    }
+
+    const affectInputs = jQuery(this.popoverElem.popper).find('.karunaAffectInput')
+    if (affectInputs.length > 0) {
+      affectInputs.click(this.affectInputClickCallback.bind(this))
     }
 
     // Show the tippy popover
@@ -243,6 +252,15 @@ class EECBubble extends HTMLElement {
 
       // Save the input data
       this.writeUserMetadata(keyName, inputValue)
+    }
+  }
+
+  affectInputClickCallback (event) {
+    event.preventDefault()
+    if (this.statusEmitter) {
+      this.statusEmitter.emit('affectInputRequested')
+    } else {
+      console.error('WARNING: No status emitter in bubble for requesting affect input.')
     }
   }
 

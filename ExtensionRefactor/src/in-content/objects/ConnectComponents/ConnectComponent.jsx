@@ -10,6 +10,7 @@ import { backgroundMessage } from '../AJAXHelper.js'
 export default function ConnectComponent (props) {
   // Form mode state (history, mood form open/closed)
   const [formOpen, updateFormOpen] = useState(false)
+  const [showAffect, updateShowAffect] = useState(false)
   const [historyFormOpen, updateHistoryFormOpen] = useState(false)
 
   // User/Karuna data state
@@ -84,12 +85,25 @@ export default function ConnectComponent (props) {
   // Trigger first retrieval of user state
   useEffect(() => { getLatestUserStatus() }, [])
 
-  // Listen for a login
+  // Listen for events from other parts of the in-content scripts
   if (props.emitter) {
+    // A login event
     props.emitter.on('login', () => {
       updateLoginTrigger(loginTrigger + 1)
       getLatestUserStatus()
     })
+
+    // A request to show the affect input
+    props.emitter.on('affectInputRequested', () => {
+      updateFormOpen(true)
+      updateShowAffect(true)
+    })
+  }
+
+  // Message that the affect dialog has closed
+  const affectClosed = () => {
+    if (showAffect) { updateFormOpen(false) }
+    updateShowAffect(false)
   }
 
   // Opens and closes main menu
@@ -115,8 +129,8 @@ export default function ConnectComponent (props) {
   return (
     <React.Fragment>
       {PanelOpenButton}
-      <ConnectForm userStatus={userStatus} emojiList={emojiList} privacy={privacy} opened={formOpen}
-        handleAffectChange={setUserMood} handleCollaborationChange={setCollaboration} handleClose={handleClick}
+      <ConnectForm userStatus={userStatus} emojiList={emojiList} privacy={privacy} opened={formOpen} showAffect={showAffect}
+        handleAffectClose={affectClosed} handleAffectChange={setUserMood} handleCollaborationChange={setCollaboration} handleClose={handleClick}
         handleHistoryFormOpen={handleHistoryClick} handleHistoryFormBack={handleHistoryBackClick} />
     </React.Fragment>
   )

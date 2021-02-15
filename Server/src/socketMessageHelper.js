@@ -20,6 +20,13 @@ export function parseMessageCommands (messageText, messageInfo) {
           return ''
         }
 
+        // Show the affect prompt input
+        case 'affect': {
+          return (`
+            <button type="button" class="karunaAffectInput">Respond</button>
+          `).trim().replace(/[\s\n\r]+/g, ' ') // <-- strips unnecessary whitespace
+        }
+
         // Show a custom text-input box
         case 'input': {
           inputCount++

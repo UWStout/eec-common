@@ -1,5 +1,3 @@
-/* global EventEmitter3 */
-
 // React library
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -35,12 +33,10 @@ class EECConnect extends HTMLElement {
       console.log(response)
       this.JWT = response.value
     })
-
-    // Build the element HTML/CSS
-    this.setupElementReact()
   }
 
-  setupElementReact () {
+  // MUST be called manually now (with an event emitter)
+  setupElementReact (emitter) {
     // Setup basic shadow-DOM styles
     this.customStyle = jQuery('<style>')
     this.customStyle.text(EECConnectCSS)
@@ -82,8 +78,8 @@ class EECConnect extends HTMLElement {
       }
     })
 
-    // Make an event emitter for between component communication
-    this.statusEmitter = new EventEmitter3()
+    // Setup event emitter
+    this.statusEmitter = emitter
 
     // Give React control of the root element for the connect panel
     console.log('[[IN-CONTENT EECConnect]] Building react component ...')

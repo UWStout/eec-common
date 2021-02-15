@@ -107,9 +107,8 @@ export default function ConnectForm (props) {
             {/* Current mood / mood selection */}
             <Grid item className={classes.gridRow}>
               { props.userStatus
-                ? <MoodSelect handleChange={props.handleAffectChange}
-                  currentAffectID={props.userStatus.currentAffectID}
-                  privacy={props.privacy} emojiList={props.emojiList} />
+                ? <MoodSelect handleChange={props.handleAffectChange} showAffect={props.showAffect} handleAffectClose={props.handleAffectClose}
+                  currentAffectID={props.userStatus.currentAffectID} privacy={props.privacy} emojiList={props.emojiList} />
                 : <Button color="default" className={classes.panelButton}>
                   <Emoji padMore symbol="?" label="Loading" />
                   Mood
@@ -177,7 +176,9 @@ ConnectForm.propTypes = {
 
   // Props/functions to coordinate with the connect button
   opened: PropTypes.bool.isRequired,
+  showAffect: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
+  handleAffectClose: PropTypes.func.isRequired,
   handleHistoryFormOpen: PropTypes.func.isRequired,
   handleHistoryFormBack: PropTypes.func.isRequired
 }

@@ -44,6 +44,10 @@ class EECMessageTextModule extends HTMLElement {
     this.shadowRoot.append(this.styleElem, this.markupWrapper)
   }
 
+  setStatusEmitter (newEmitter) {
+    this.statusEmitter = newEmitter
+  }
+
   // Update background communication port
   setBackgroundPort (extensionPort) {
     this.backgroundPort = extensionPort

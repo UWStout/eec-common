@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -119,7 +119,11 @@ export default function MoodSelect (props) {
 
     // Close the dialog
     setDialogOpen(false)
+    props.handleAffectClose()
   }
+
+  // Hard-wired request to show the affect dialog
+  useEffect(() => { setOpen(props.showAffect) }, [props.showAffect])
 
   // Maps the modal body with the desired emotes
   const body = (
@@ -180,6 +184,8 @@ export default function MoodSelect (props) {
 MoodSelect.propTypes = {
   // Callback function to pass a new affect request back up to the parent
   handleChange: PropTypes.func,
+  handleAffectClose: PropTypes.func,
+  showAffect: PropTypes.bool,
 
   // Karuna user data
   privacy: PropTypes.shape({
