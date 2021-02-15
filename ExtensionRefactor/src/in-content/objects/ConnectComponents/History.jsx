@@ -1,17 +1,21 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
-
-import { Slide, Paper, Grid, IconButton, Switch } from '@material-ui/core'
+import { Slide, Paper, Grid, IconButton, Switch, Typography } from '@material-ui/core'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+
 import Emoji from './Emoji.jsx'
-import HistoryOneOnOne from './HistoryOneOnOne'
-import HistoryTeam from './HistoryTeam'
+// import HistoryOneOnOne from './HistoryOneOnOne.jsx'
+// import HistoryTeam from './HistoryTeam.jsx'
 
 const useStyles = makeStyles((theme) => ({
   paperRoot: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
+  },
+  gridRow: {
+    width: '100%'
   }
 }))
 
@@ -26,13 +30,14 @@ export default function History (props) {
     updateSwitched(newSwitchedState)
   }
 
-  const bodyDisplay = switched ? <HistoryTeam /> : <HistoryOneOnOne />
+  // TODO: Disabled for now
+  // const bodyDisplay = switched ? <HistoryTeam /> : <HistoryOneOnOne />
 
   return (
     <Slide direction='left' in={props.opened} mountOnEnter unmountOnExit>
       <Paper elevations={3} id='eec-history-panel' className={classes.paperRoot}>
         <Grid container spacing={2}>
-          <Grid item>
+          <Grid item className={classes.gridRow}>
             <IconButton size='small' onClick={() => {
               props.handleClose()
               props.handleHistoryFormBack()
@@ -47,10 +52,10 @@ export default function History (props) {
               <ChevronRightIcon />
             </IconButton>
           </Grid>
-          <Grid item>
+          <Grid item className={classes.gridRow}>
             <span>
               <Emoji symbol='👨‍👦' label='Family: Man, Boy'/>
-              <Switch 
+              <Switch
                 checked={switched}
                 onChange={handleSwitch}
                 name='history-switch'
@@ -58,13 +63,21 @@ export default function History (props) {
               <Emoji symbol='👨‍👧‍👦' label='Family: Man, Girl, Boy' />
             </span>
           </Grid>
-          <Grid item>
-            <div className='eec-mood-history-body'>
+          <Grid item className={classes.gridRow}>
+            <Typography>Not yet implemented<br/>(Coming Soon)</Typography>
+            {/* <div className='eec-mood-history-body'>
               {bodyDisplay}
-            </div>
+            </div> */}
           </Grid>
         </Grid>
       </Paper>
     </Slide>
   )
+}
+
+History.propTypes = {
+  opened: PropTypes.bool,
+  handleClose: PropTypes.func.isRequired,
+  handleHistoryFormOpen: PropTypes.func.isRequired,
+  handleHistoryFormBack: PropTypes.func.isRequired
 }

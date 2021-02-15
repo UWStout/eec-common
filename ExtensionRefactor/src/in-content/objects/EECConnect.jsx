@@ -1,3 +1,5 @@
+/* global EventEmitter3 */
+
 // React library
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -80,13 +82,16 @@ class EECConnect extends HTMLElement {
       }
     })
 
+    // Make an event emitter for between component communication
+    this.statusEmitter = new EventEmitter3()
+
     // Give React control of the root element for the connect panel
     console.log('[[IN-CONTENT EECConnect]] Building react component ...')
     ReactDOM.render(
       <StylesProvider jss={jss}>
         <MuiThemeProvider theme={theme}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
-            <ConnectComponent />
+            <ConnectComponent emitter={this.statusEmitter} />
           </MuiPickersUtilsProvider>
         </MuiThemeProvider>
       </StylesProvider>,
@@ -98,7 +103,7 @@ class EECConnect extends HTMLElement {
       <StylesProvider jss={jss}>
         <MuiThemeProvider theme={theme}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
-            <ThreeIconStatus />
+            <ThreeIconStatus emitter={this.statusEmitter} />
           </MuiPickersUtilsProvider>
         </MuiThemeProvider>
       </StylesProvider>,

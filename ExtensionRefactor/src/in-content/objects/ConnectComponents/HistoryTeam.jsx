@@ -4,8 +4,8 @@ import { Table, TableContainer, TableHead, TableRow, TableBody, TableCell } from
 import Emoji from './Emoji.jsx'
 
 const columns = [
-  { id: 'teamMood', label: 'Team' },
-  { id: 'date', label: 'Date' }
+  { id: 'teamMood', label: 'Team', minWidth: '20px' },
+  { id: 'date', label: 'Date', minWidth: '20px' }
 ]
 
 const rows = [
@@ -28,12 +28,12 @@ const rows = [
     rowid: '4',
     teamMood: <Emoji symbol='😀' label='Grinning Face' />,
     date: '12/23/20'
-  },
+  }
 ]
 
 // Display team average mood history
 export default function HistoryTeam (props) {
-  return(
+  return (
     <div>
       <TableContainer>
         <Table stickyHeader aria-label='sticky table' size='small' >
@@ -43,7 +43,7 @@ export default function HistoryTeam (props) {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{  minWidth: column.minWidth }}
+                  style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
                 </TableCell>

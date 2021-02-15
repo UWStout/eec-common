@@ -27,6 +27,7 @@
       "lib/browser-polyfill.min.js",
       "lib/jquery.slim.min.js",
       "lib/commonmark.min.js",
+      "lib/eventemitter3.min.js",
       "js/in-content.js"
     ]
   }],

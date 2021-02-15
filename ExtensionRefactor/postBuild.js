@@ -35,6 +35,7 @@ copyFiles(['./node_modules/webextension-polyfill/dist/browser-polyfill.min.js', 
 copyFiles(['./node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js', libsDir], true, errCB)
 copyFiles(['./node_modules/jquery/dist/jquery.slim.min.js', libsDir], true, errCB)
 copyFiles(['./node_modules/commonmark/dist/commonmark.min.js', libsDir], true, errCB)
+copyFiles(['./node_modules/eventemitter3/umd/eventemitter3.min.js', libsDir], true, errCB)
 
 // 3rd party library CSS
 copyFiles(['./node_modules/animate.css/animate.min.css', cssDir], true, errCB)

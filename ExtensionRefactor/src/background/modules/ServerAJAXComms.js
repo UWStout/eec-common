@@ -87,7 +87,7 @@ function getUserStatus (userID) {
     // Request data from the server
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getUserStatus/${userID}`)
     requestPromise.then((response) => {
-      return resolve(response.data.userStatus)
+      return resolve(response.data)
     })
 
     // Reject on error from the first request (request to get user status)

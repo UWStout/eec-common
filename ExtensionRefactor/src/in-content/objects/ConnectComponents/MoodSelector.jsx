@@ -10,8 +10,8 @@ import * as DBShapes from './dataTypeShapes.js'
 import { backgroundMessage } from '../AJAXHelper.js'
 
 const EMOJI_UNKNOWN = {
-  emote: <Emoji key='unknown' label='unknown' symbol='?' />,
-  symbol: '?'
+  emote: <Emoji padMore key='unknown' label='unknown' symbol='?' />,
+  id: '0'
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +35,10 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     justifyContent: 'left',
     textTransform: 'none',
-    marginBottom: '5px'
+    marginTop: '15px',
+    marginBottom: '5px',
+    fontSize: '14px',
+    whiteSpace: 'nowrap'
   }
 }))
 
@@ -48,6 +51,7 @@ export default function MoodSelect (props) {
   const [open, setOpen] = useState(false)
   const [shareDialog, setDialogOpen] = useState(false)
   const [clickedMood, setClickedMood] = useState(props.currentAffectID || '0')
+  const [curPrivacy, setCurPrivacy] = useState(props.privacy.private)
   const [silencePromptCB, setSilencePromptCB] = useState(!props.privacy.prompt)
 
   // Check emoji list, stop here if it is null/empty
@@ -61,15 +65,15 @@ export default function MoodSelect (props) {
   }
 
   // pushes emojis from the database into an array of Emoji objects
-  const EMOJI = []
+  const EMOJI = {}
   props.emojiList.forEach((entry) => {
-    EMOJI[entry._id] = {
-      emote: <Emoji key={entry._id} label={entry.name} symbol={entry.characterCodes[0]} />,
-      symbol: entry.name,
-      id: entry._id
+    if (entry._id && entry.active) {
+      EMOJI[entry._id] = {
+        emote: <Emoji padMore key={entry._id} label={entry.name} symbol={entry.characterCodes[0]} />,
+        id: entry._id
+      }
     }
   })
-  EMOJI['0'] = EMOJI_UNKNOWN
 
   // Update state of tracked checkbox
   const silenceChange = (event) => {
@@ -98,21 +102,17 @@ export default function MoodSelect (props) {
   }
 
   // Closes the share-with-team dialog
-  const handleShareClose = async (isPrivate) => {
+  const handleShareClose = (newMoodID, isPrivate) => {
     // Update privacy state
+    if (curPrivacy !== isPrivate) { setCurPrivacy(isPrivate) }
     backgroundMessage(
-      { type: 'write', key: 'privacy', value: { private: isPrivate, prompt: !silencePromptCB } },
+      { type: 'write', key: 'privacy', data: { private: isPrivate, prompt: !silencePromptCB } },
       'Failed to update privacy prompt preferences: ', () => {}
     )
 
     // Trigger callback for new mood
     if (props.handleChange) {
-      try {
-        await props.handleChange(clickedMood, isPrivate)
-      } catch (err) {
-        console.error('Failed to update mood')
-        console.error(err)
-      }
+      props.handleChange(newMoodID, isPrivate)
     } else {
       console.error('Handle change callback for mood missing')
     }
@@ -124,15 +124,15 @@ export default function MoodSelect (props) {
   // Maps the modal body with the desired emotes
   const body = (
     <div className={classes.moodPickerPaper}>
-      {Object.values(EMOJI).map((emote, index) => (
+      {Object.values(EMOJI).map((emote) => (
         <IconButton size='small' key={emote.id}
           selected={clickedMood === emote.id}
           onClick={() => {
             handleMenuItemClick(emote.id)
-            if (props.privacy.prompt) {
+            if (!silencePromptCB) {
               handleShareOpen()
             } else {
-              handleShareClose(props.privacy.private)
+              handleShareClose(emote.id, curPrivacy)
             }
           }}>
           {emote.emote}
@@ -146,10 +146,10 @@ export default function MoodSelect (props) {
     <div id='mood-share-modal' className={classes.paper}>
       <p>Do you want to share your feelings with the rest of the team?</p>
       <span>
-        <Button onClick={() => { handleShareClose(true) }} size='small'>
+        <Button onClick={() => { handleShareClose(clickedMood, true) }} size='small'>
           No, Keep Private
         </Button>
-        <Button onClick={() => { handleShareClose(false) }} size='small'>
+        <Button onClick={() => { handleShareClose(clickedMood, false) }} size='small'>
           Yes, Share
         </Button>
       </span>
@@ -164,7 +164,7 @@ export default function MoodSelect (props) {
   return (
     <div>
       <Button color="default" aria-controls="mood-menu" aria-haspopup="true" onClick={handleOpen} className={classes.panelButton}>
-        {props.currentAffectID ? EMOJI[props.currentAffectID].emote : EMOJI['0'].emote}
+        {props.currentAffectID && props.currentAffectID !== '0' ? EMOJI[props.currentAffectID].emote : EMOJI_UNKNOWN.emote}
         Mood
       </Button>
       <Modal open={open} onClose={handleClose}>

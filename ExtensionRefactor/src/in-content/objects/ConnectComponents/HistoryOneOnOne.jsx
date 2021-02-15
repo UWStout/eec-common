@@ -10,41 +10,41 @@ const columns = [
 ]
 
 const rows = [
-  { 
+  {
     rowid: '1',
     selfMood: <Emoji symbol='😀' label='Grinning Face' />,
     date: '12/20/20',
     partnerMood: <Emoji symbol='😀' label='Grinning Face' />
-  },  
-  { 
+  },
+  {
     rowid: '2',
     selfMood: <Emoji symbol='😀' label='Grinning Face' />,
     date: '12/20/20',
     partnerMood: <Emoji symbol='😀' label='Grinning Face' />
   },
-  { 
+  {
     rowid: '3',
     selfMood: <Emoji symbol='😐' label='Neutral Face' />,
     date: '12/21/20',
     partnerMood: <Emoji symbol='😀' label='Grinning Face' />
   },
-  { 
+  {
     rowid: '4',
     selfMood: <Emoji symbol='😐' label='Neutral Face' />,
     date: '12/21/20',
     partnerMood: <Emoji symbol='🙁' label='Slightly Frowning Face' />
   },
-  { 
+  {
     rowid: '5',
     selfMood: <Emoji symbol='😀' label='Grinning Face' />,
     date: '12/22/20',
     partnerMood: <Emoji symbol='😐' label='Neutral Face' />
-  },
+  }
 ]
 
 // Display team member mood history
 export default function HistoryOneOnOne (props) {
-  return(
+  return (
     <div>
       <TableContainer>
         <Table stickyHeader aria-label='sticky table' size='small' >
@@ -54,7 +54,7 @@ export default function HistoryOneOnOne (props) {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{  minWidth: column.minWidth }}
+                  style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
                 </TableCell>

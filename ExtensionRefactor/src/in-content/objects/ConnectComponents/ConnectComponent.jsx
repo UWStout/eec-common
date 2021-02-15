@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import ConnectForm from './ConnectForm.jsx'
@@ -13,13 +13,12 @@ export default function ConnectComponent (props) {
   const [historyFormOpen, updateHistoryFormOpen] = useState(false)
 
   // User/Karuna data state
-  const [emojiList, updateEmojiList] = useState(null)
+  const [emojiList, updateEmojiList] = useState([])
   const [userStatus, updateUserStatus] = useState(null)
-  const [privacy, updatePrivacy] = useState(null)
+  const [privacy, updatePrivacy] = useState({ private: true, prompt: true })
 
   // Initialize the privacy preferences
-  if (privacy === null) {
-    updatePrivacy({ private: true, prompt: true })
+  useEffect(() => {
     backgroundMessage(
       { type: 'read', key: 'privacy' },
       'Failed to read privacy preferences: ',
@@ -30,58 +29,59 @@ export default function ConnectComponent (props) {
         })
       }
     )
-  }
+  }, [])
 
   // Initialize the emoji list
-  if (emojiList === null) {
-    // Set to empty array to avoid extra retrievals
-    updateEmojiList([])
-
+  useEffect(() => {
     // Send ajax request for data via background script
     backgroundMessage(
       { type: 'ajax-getEmojiList' },
       'Emoji Retrieval failed: ',
       (data) => { updateEmojiList(data) }
     )
-  }
+  }, [])
 
   // Synchronize user state
-  const getLatestUserState = () => {
+  const getLatestUserStatus = () => {
+    console.log('[[REACT]] Retrieving last user status')
     backgroundMessage(
       { type: 'ajax-getUserStatus' },
       'Retrieving current user status failed: ',
-      (currentUserState) => {
-        updateUserStatus(currentUserState)
+      (currentUserStatus) => {
+        console.log('[[REACT]] User status retrieved:')
+        console.log(currentUserStatus)
+        if (props.emitter) { props.emitter.emit('userStatusChanged', currentUserStatus) }
+        updateUserStatus(currentUserStatus)
       }
     )
   }
 
   // Set new user mood (triggers a userState update)
   const setUserMood = async (affectID, privacy) => {
+    console.log('[[REACT]] Updating user mood')
     backgroundMessage(
       { type: 'ajax-setUserAffect', affectID, privacy },
       'Setting mood failed: ', () => {
-        getLatestUserState()
+        console.log('[[REACT]] user mood updated')
+        getLatestUserStatus()
       }
     )
   }
 
   // Set new user mood (triggers a userState update)
-  const setCollaboration = async (newCollaboration) => {
+  const setCollaboration = (newCollaboration) => {
+    console.log('[[REACT]] Updating user collaboration status')
     backgroundMessage(
       { type: 'ajax-setCollaboration', collaboration: newCollaboration },
       'Setting collaboration failed: ', () => {
-        getLatestUserState()
+        console.log('[[REACT]] User collaboration status updated')
+        getLatestUserStatus()
       }
     )
   }
 
   // Trigger first retrieval of user state
-  if (userStatus === null) {
-    // Set to simple object to avoid extra retrievals
-    updateUserStatus({ retrieving: true })
-    getLatestUserState()
-  }
+  useEffect(() => { getLatestUserStatus() }, [])
 
   // Opens and closes main menu
   const handleClick = (e) => {
@@ -111,4 +111,8 @@ export default function ConnectComponent (props) {
         handleHistoryFormOpen={handleHistoryClick} handleHistoryFormBack={handleHistoryBackClick} />
     </React.Fragment>
   )
+}
+
+ConnectComponent.propTypes = {
+  emitter: PropTypes.object
 }

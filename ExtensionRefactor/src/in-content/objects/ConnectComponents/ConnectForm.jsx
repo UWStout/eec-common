@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Slide, Paper, Grid } from '@material-ui/core'
-import { ChevronRight as ChevronRightIcon, PermMedia as PermMediaIcon } from '@material-ui/icons'
+
+import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import PermMediaIcon from '@material-ui/icons/PermMedia'
 
 import * as DBShapes from './dataTypeShapes.js'
 
@@ -19,7 +22,9 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     textTransform: 'none',
     marginBottom: '5px',
-    height: '35px'
+    height: '35px',
+    fontSize: '14px',
+    whiteSpace: 'nowrap'
   },
   firstGridRow: {
     width: '100%',
@@ -30,11 +35,20 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     justifyContent: 'left',
     textTransform: 'none',
-    marginBottom: '5px'
+    marginBottom: '5px',
+    fontSize: '14px',
+    whiteSpace: 'nowrap'
   },
   gridRow: {
     width: '100%',
     padding: 0
+  },
+  svgIcon: {
+    fontSize: '24px'
+  },
+  svgIconHidden: {
+    fontSize: '24px',
+    visibility: 'hidden'
   }
 }))
 
@@ -50,6 +64,10 @@ export default function ConnectForm (props) {
 
   // Tracks the collaboration button state
   const handleCollaborationClick = (e) => {
+    // Do nothing until userStatus is not null
+    if (!props.userStatus) { return }
+
+    // Toggle user collaboration status if callback provided
     if (props.handleCollaborationChange) {
       props.handleCollaborationChange(!props.userStatus.collaboration)
     } else {
@@ -58,9 +76,12 @@ export default function ConnectForm (props) {
   }
 
   // Build collaboration icon from userStatus prop
-  const collaborationType = props.userStatus.collaboration
-    ? <Emoji symbol='🧑‍🤝‍🧑' label='People Holding Hands' />
-    : <Emoji symbol='🧍' label='Person Standing' />
+  let collaborationType = <Emoji padMore symbol='?' label='Loading' />
+  if (props.userStatus && props.userStatus.collaboration) {
+    collaborationType = <Emoji padMore symbol='🧑‍🤝‍🧑' label='Open to Collaboration' />
+  } else {
+    collaborationType = <Emoji padMore symbol='🧍' label='Solo Focused' />
+  }
 
   // Return all the form elements
   return (
@@ -77,21 +98,28 @@ export default function ConnectForm (props) {
             {/* Header w/ button to close the panel */}
             <Grid item className={classes.firstGridRow}>
               <Button color="default" onClick={props.handleClose} className={classes.headerButton}>
+                <Emoji padMore symbol={<ChevronLeftIcon className={classes.svgIconHidden} />} label='' />
                 Karuna Connect
-                <Emoji symbol={<ChevronRightIcon />} label='Right Arrow Close Icon' />
+                <Emoji padMore symbol={<ChevronRightIcon className={classes.svgIcon} />} label='Close Panel' />
               </Button>
             </Grid>
 
             {/* Current mood / mood selection */}
             <Grid item className={classes.gridRow}>
-              <MoodSelect handleChange={props.handleAffectChange}
-                currentAffectID={props.userStatus.currentAffectID}
-                privacy={props.privacy} emojiList={props.emojiList} />
+              { props.userStatus
+                ? <MoodSelect handleChange={props.handleAffectChange}
+                  currentAffectID={props.userStatus.currentAffectID}
+                  privacy={props.privacy} emojiList={props.emojiList} />
+                : <Button color="default" className={classes.panelButton}>
+                  <Emoji padMore symbol="?" label="Loading" />
+                  Mood
+                </Button>
+              }
             </Grid>
 
             {/* Current collaboration state and toggle */}
             <Grid item className={classes.gridRow}>
-              <Button color="default" onClick={handleCollaborationClick} className={classes.panelButton}>
+              <Button color="default" onClick={props.userStatus ? handleCollaborationClick : () => {}} className={classes.panelButton}>
                 {collaborationType}
                 Collaboration
               </Button>
@@ -104,7 +132,7 @@ export default function ConnectForm (props) {
                 props.handleClose()
                 props.handleHistoryFormOpen()
               }}>
-                <Emoji symbol='⏳' label='Hourglass Not Done' />
+                <Emoji padMore symbol='⏳' label='View Mood History' />
                 History
               </Button>
             </Grid>
@@ -112,7 +140,7 @@ export default function ConnectForm (props) {
             {/* Link to Team Culture Document */}
             <Grid item className={classes.gridRow}>
               <Button color="default" className={classes.panelButton} onClick={() => {}}>
-                <Emoji symbol={<PermMediaIcon />} label='Documentation Folder Icon' />
+                <Emoji padMore symbol={<PermMediaIcon className={classes.svgIcon} />} label='View Team culture (coming soon)' />
                 Our Team Culture
               </Button>
             </Grid>
@@ -120,7 +148,7 @@ export default function ConnectForm (props) {
             {/* Link to NVC Info */}
             <Grid item className={classes.gridRow}>
               <Button color="default" className={classes.panelButton} onClick={() => {}}>
-                <Emoji symbol={<PermMediaIcon />} label='Documentation Folder Icon' />
+                <Emoji padMore symbol={<PermMediaIcon className={classes.svgIcon} />} label='View NVC information (coming soon)' />
                 More About NVC
               </Button>
             </Grid>
