@@ -3,7 +3,7 @@
   position: absolute;
   top: 50%;
   right: -5px;
-  width: 190px;
+  width: 220px;
   height: 24px;
 }
 
@@ -29,7 +29,7 @@
 
 #eec-history-panel {
   position: absolute;
-  width: 200px;
+  width: 220px;
 }
 
 .eec-mood-history-body {

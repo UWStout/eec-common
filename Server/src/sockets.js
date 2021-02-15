@@ -178,9 +178,9 @@ async function socketWizardMessage (messageInfo) {
         const response = await DBUser.getUserStatus(clientSessions[destID].id)
         if (response) {
           userStatus = {
-            affect: response.affectLogID || 'unknown',
-            timeToRespond: response.minutesToRespond || 'unknown',
-            collaboration: response.lastCollaborationStatus || 'unknown'
+            affect: response.currentAffectID || 'unknown',
+            timeToRespond: response.timeToRespond || NaN,
+            collaboration: response.collaboration || 'unknown'
           }
         }
       } catch (err) {

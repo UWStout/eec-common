@@ -1,22 +1,18 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+
 import { makeStyles } from '@material-ui/core/styles'
-import { Modal, IconButton, Button, Checkbox } from '@material-ui/core'
+import { Modal, IconButton, Button, Checkbox, FormControlLabel } from '@material-ui/core'
+
 import Emoji from './Emoji.jsx'
 
+import * as DBShapes from './dataTypeShapes.js'
 import { backgroundMessage } from '../AJAXHelper.js'
 
-const EMOJI = [
-  {
-    emote: <Emoji key='unknown' label='unknown' symbol='?' />,
-    symbol: '?'
-  }
-]
-const EMOJI_STATE = {
-  UNINITIALIZED: 0,
-  RETRIEVING: 1,
-  READY: 2
+const EMOJI_UNKNOWN = {
+  emote: <Emoji key='unknown' label='unknown' symbol='?' />,
+  symbol: '?'
 }
-let currentState = EMOJI_STATE.UNINITIALIZED
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -34,75 +30,55 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2)
+  },
+  panelButton: {
+    width: '100%',
+    justifyContent: 'left',
+    textTransform: 'none',
+    marginBottom: '5px'
   }
 }))
 
 // Menu of moods for user selection
-export default function MoodSelect () {
+export default function MoodSelect (props) {
+  // Styling classes
   const classes = useStyles()
-  const [mood, setMood] = useState(0)
+
+  // Setup component state
   const [open, setOpen] = useState(false)
   const [shareDialog, setDialogOpen] = useState(false)
-  const [emojisReady, setEmojisReady] = useState(currentState)
+  const [clickedMood, setClickedMood] = useState(props.currentAffectID || '0')
+  const [silencePromptCB, setSilencePromptCB] = useState(!props.privacy.prompt)
 
-  // fetches the current mood from the status
-  function getCurrentMood (data) {
-    // Check the mood index against the currentMood
-    const doWork = (data) => {
-      const currentMood = data.recentAffect.affect.characterCodes[0]
-      console.log(currentMood)
-      EMOJI.forEach((emote, index) => {
-        if (emote.symbol === currentMood) {
-          setMood(index)
-        }
-      })
-    }
-    // Send the message to the Background
-    backgroundMessage(
-      { type: 'ajax-getUserStatus', userId: data.id },
-      'failed to get mood - ',
-      doWork
+  // Check emoji list, stop here if it is null/empty
+  if (props.emojiList === null || props.emojiList.length < 1) {
+    return (
+      <Button color="default" className={classes.panelButton} disabled>
+        {EMOJI_UNKNOWN}
+        Mood
+      </Button>
     )
   }
 
-  // Initialize emoji list if not yet ready
-  if (mood === 0) {
-    // Send message to background to retrieve EMOJI list
-    chrome.runtime.sendMessage({ type: 'getuser' }, (data) => {
-      // Did an error occur
-      if (data.error) {
-        // Alert user and log error
-        window.alert('User data retrieval failed: ' + data.error.message)
-        console.log(data.error)
-      } else {
-        // Retrieve user's most recent mood (TODO)
-        chrome.runtime.sendMessage({ type: 'ajax-getUserStatus', userID: data.id }, (data2) => {
-          console.log('[[MoodSelector]] data received: ', data2)
-        })
-      }
-    })
-  }
-
   // pushes emojis from the database into an array of Emoji objects
-  function buildEmojiList (data) {
-    EMOJI.splice(0)
-    data.forEach((entry) => {
-      EMOJI.push({ emote: <Emoji key={entry.name} label={entry.name} symbol={entry.emoji} />, symbol: entry.name })
+  const EMOJI = []
+  props.emojiList.forEach((entry) => {
+    EMOJI[entry._id]({
+      emote: <Emoji key={entry._id} label={entry.name} symbol={entry.characterCodes[0]} />,
+      symbol: entry.name,
+      id: entry._id
     })
-    currentState = EMOJI_STATE.READY
-    setEmojisReady(EMOJI_STATE.READY)
-  }
+  })
+  EMOJI[-1] = EMOJI_UNKNOWN
 
-  if (emojisReady === EMOJI_STATE.UNINITIALIZED) {
-    // Indicate it is being retrieved
-    currentState = EMOJI_STATE.RETRIEVING
-    setEmojisReady(EMOJI_STATE.RETRIEVING)
-    backgroundMessage({ type: 'ajax-getEmojiList' }, 'Emoji Retrieval failed: ', buildEmojiList)
+  // Update state of tracked checkbox
+  const silenceChange = (event) => {
+    setSilencePromptCB(event.target.checked)
   }
 
   // Sets mood and closes menu
-  const handleMenuItemClick = (event, index) => {
-    setMood(index)
+  const handleMenuItemClick = (newId) => {
+    setClickedMood(newId)
     setOpen(false)
   }
 
@@ -122,23 +98,43 @@ export default function MoodSelect () {
   }
 
   // Closes the share-with-team dialog
-  const handleShareClose = () => {
+  const handleShareClose = async (isPrivate) => {
+    // Update privacy state
+    backgroundMessage(
+      { type: 'write', key: 'privacy', value: { private: isPrivate, prompt: !silencePromptCB } },
+      'Failed to update privacy prompt preferences: ', () => {}
+    )
+
+    // Trigger callback for new mood
+    if (props.handleChange) {
+      try {
+        await props.handleChange(clickedMood)
+      } catch (err) {
+        console.error('Failed to update mood')
+        console.error(err)
+      }
+    } else {
+      console.error('Handle change callback for mood missing')
+    }
+
+    // Close the dialog
     setDialogOpen(false)
   }
 
   // Maps the modal body with the desired emotes
   const body = (
     <div className={classes.moodPickerPaper}>
-      {EMOJI.map((emote, index) => (
-        <IconButton
-          size='small'
-          key={index}
-          selected={index === mood}
-          onClick={(event) => {
-            handleMenuItemClick(event, index)
-            handleShareOpen()
-          }}
-        >
+      {Object.values(EMOJI).map((emote, index) => (
+        <IconButton size='small' key={emote.id}
+          selected={clickedMood === emote.id}
+          onClick={() => {
+            handleMenuItemClick(emote.id)
+            if (props.privacy.prompt) {
+              handleShareOpen()
+            } else {
+              handleShareClose(props.privacy.private)
+            }
+          }}>
           {emote.emote}
         </IconButton>
       ))}
@@ -150,45 +146,48 @@ export default function MoodSelect () {
     <div id='mood-share-modal' className={classes.paper}>
       <p>Do you want to share your feelings with the rest of the team?</p>
       <span>
-        <Button onClick={handleShareClose} size='small'>
+        <Button onClick={() => { handleShareClose(true) }} size='small'>
           No, Keep Private
         </Button>
-        <Button onClick={handleShareClose} size='small'>
+        <Button onClick={() => { handleShareClose(false) }} size='small'>
           Yes, Share
         </Button>
       </span>
-      {/* pulling out until proper functionality can be implemented */}
-      {/* TODO create a background message to update user preference on mood sharing */}
-      {/* <div>
-        <span className='small-text'>
-          <Checkbox />
-          Do not show this message in the future
-        </span>
-      </div> */}
+      <div>
+        <FormControlLabel className="small-text" value="silencePrompt" control={<Checkbox color="primary" />}
+          label="Do not show this message in the future" labelPlacement="end" onChange={silenceChange} checked={silencePromptCB} />
+      </div>
     </div>
   )
 
   // builds the mood selector and modal
   return (
     <div>
-      <span>
-        <IconButton size='small' aria-controls='mood-menu' aria-haspopup='true' onClick={handleOpen}>
-          {EMOJI[mood].emote}
-        </IconButton>
-        mood
-      </span>
-      <Modal
-        open={open}
-        onClose={handleClose}
-      >
+      <Button color="default" aria-controls="mood-menu" aria-haspopup="true" onClick={handleOpen} className={classes.panelButton}>
+        {props.currentAffectID ? EMOJI[props.currentAffectID].emote : EMOJI[-1].emote}
+        Mood
+      </Button>
+      <Modal open={open} onClose={handleClose}>
         {body}
       </Modal>
-      <Modal 
-        open={shareDialog}
-        onClose={handleShareClose}
-      >
+      <Modal open={shareDialog} onClose={handleShareClose}>
         {shareModal}
       </Modal>
     </div>
+  )
+}
+
+MoodSelect.propTypes = {
+  // Callback function to pass a new affect request back up to the parent
+  handleChange: PropTypes.func,
+
+  // Karuna user data
+  privacy: PropTypes.shape({
+    private: PropTypes.bool,
+    prompt: PropTypes.bool
+  }),
+  currentAffectID: PropTypes.string,
+  emojiList: PropTypes.arrayOf(
+    PropTypes.shape(DBShapes.AffectObjectShape)
   )
 }

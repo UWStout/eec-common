@@ -223,9 +223,8 @@ export function updateUserTimestamps (userID, remoteAddress, context) {
     }
   } else {
     // Build updated context timestamp list
-    newData.lastContextLogin = {}
     context.forEach((contextName) => {
-      newData.lastContextLogin[contextName] = {
+      newData[`lastContextLogin.${contextName}`] = {
         timestamp: new Date(),
         remoteAddress
       }
@@ -280,43 +279,6 @@ export function setUserAlias (userID, contextStr, alias) {
 }
 
 /**
- * Update a user's most recently indicated affect
- * @param {number} userID ID of the user to update
- * @param {string} affectID ID of the most recently indicated affect
- * @return {Promise} Resolves with no data if successful, rejects on error
- */
-export function updateUserAffect (userID, affectID) {
-  // Ensure userID and affectID are defined
-  if (!userID || !affectID) {
-    return Promise.reject(new Error('Both the userID and affectID must be defined'))
-  }
-
-  // Setup new data for database
-  const lastAffect = {
-    timestamp: new Date(),
-    affectID: new ObjectID(affectID)
-  }
-
-  // Update user record with the latest affect data
-  return new Promise((resolve, reject) => {
-    const DBHandle = retrieveDBHandle('karunaData')
-    DBHandle.collection('Users')
-      .findOneAndUpdate(
-        { _id: new ObjectID(userID) },
-        { $set: { lastAffect } },
-        (err, result) => {
-          if (err) {
-            debug('Failed to update user with latest affect data')
-            debug(err)
-            return reject(err)
-          }
-          resolve()
-        }
-      )
-  })
-}
-
-/**
  * Drop a user from the database
  *
  * tested in test 16 of test.js
@@ -327,8 +289,7 @@ export function updateUserAffect (userID, affectID) {
 export function removeUser (userID) {
   const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
-    DBHandle
-      .collection('Users')
+    DBHandle.collection('Users')
       .findOneAndDelete({ _id: new ObjectID(userID) })
       .then(result => { resolve() })
       .catch(error => {
@@ -349,37 +310,63 @@ export function removeUser (userID) {
  */
 export function getUserStatus (userID) {
   const DBHandle = retrieveDBHandle('karunaData')
-  return DBHandle
-    .collection('Users')
+  return DBHandle.collection('Users')
     .findOne({ _id: new ObjectID(userID) }, { projection: { status: 1, _id: 0 } })
 }
 
 /**
- * updates the user's status. pushes updates to the status object of the user document with the given userID
+ * updates the user's collaboration status. pushes updates to the status object of the user document with the given userID
  *
  * tested in test 34
  *
  * @param {ObjectID} userID the user whose status is being updated
- * @param {ObjectID} affectLogID can be null, the user's most recent mood from the affect history
- * @param {String} lastCollaborationStatus can be null, the user's most recent collaboration status
- * @param {Number} minutesToRespond can be null? the user's average minutes to respond
+ * @param {String} collaborationStatus can be null, the user's most recent collaboration status
  */
-export function updateUserStatus (userID, affectLogID, lastCollaborationStatus, minutesToRespond) {
-  const DBHandle = retrieveDBHandle('karunaData')
-
+export function updateUserCollaboration (userID, collaborationStatus) {
   return new Promise((resolve, reject) => {
-    return DBHandle
-      .collection('Users')
+    const DBHandle = retrieveDBHandle('karunaData')
+    return DBHandle.collection('Users')
       .findOneAndUpdate(
         { _id: new ObjectID(userID) },
-        { $set: { status: { affectLogID: new ObjectID(affectLogID), lastCollaborationStatus, minutesToRespond: parseInt(minutesToRespond) } } },
+        { $set: { 'status.collaboration': collaborationStatus } },
         (err, result) => {
           if (err) {
-            debug('Failed to update user status')
+            debug('Failed to update user collaboration status')
             debug(err)
             return reject(err)
           }
           resolve(result)
-        })
+        }
+      )
+  })
+}
+
+/**
+ * updates the user's collaboration status. pushes updates to the status object of the user document with the given userID
+ *
+ * tested in test 34
+ *
+ * @param {ObjectID} userID the user whose status is being updated
+ * @param {number} timeToRespond the user's time to respond to queries in minutes (or NaN if undefined)
+ */
+export function updateUserTimeToRespond (userID, timeToRespond) {
+  // Set to default value
+  if (typeof timeToRespond !== 'number') { timeToRespond = NaN }
+
+  return new Promise((resolve, reject) => {
+    const DBHandle = retrieveDBHandle('karunaData')
+    return DBHandle.collection('Users')
+      .findOneAndUpdate(
+        { _id: new ObjectID(userID) },
+        { $set: { 'status.timeToRespond': timeToRespond } },
+        (err, result) => {
+          if (err) {
+            debug('Failed to update user time to respond')
+            debug(err)
+            return reject(err)
+          }
+          resolve(result)
+        }
+      )
   })
 }
