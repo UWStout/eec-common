@@ -705,7 +705,7 @@ router.get('/getUserStatus/:userID?', async (req, res) => {
   debug('attempting to get user status')
   try {
     const userStatus = await userDB.getUserStatus(userID)
-    return res.status(200).json({ message: 'success', userStatus })
+    return res.status(200).json({ ...userStatus.status })
   } catch (error) {
     debug('Failed to get user status')
     debug(error)
