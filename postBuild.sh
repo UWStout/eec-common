@@ -22,7 +22,7 @@ nodeLibs=(
   "socket.io/client-dist/socket.io.min.js"
   "store2/dist/store2.min.js"
   "tiny-markdown-editor/dist/tiny-mde.min.css"
-  "tiny-markdown-editor/dist/tiny-mde.min.js"
+  "tiny-markdown-editor/dist/tiny-mde.js"
 )
 
 rm -rf ./public/lib
@@ -30,3 +30,6 @@ mkdir ./public/lib
 for libFile in "${nodeLibs[@]}"; do
   cp "./node_modules/$libFile" "./public/lib"
 done
+
+echo "Patching JS Libraries ..."
+sed -i '4631s/.*/	          row: this.lines.length - 1,/' "./public/lib/tiny-mde.js"

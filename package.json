@@ -45,7 +45,7 @@
     "socket.io": "^3.0.0",
     "store2": "^2.12.0",
     "supports-color": "^7.2.0",
-    "tiny-markdown-editor": "^0.1.2"
+    "tiny-markdown-editor": "0.1.2"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
