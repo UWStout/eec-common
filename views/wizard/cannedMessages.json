@@ -21,7 +21,7 @@
   {
     "header": "Receiver Status Interventions",
     "choices": [
-      { "name": "User not open to collaborate", "message": "{{otherUser1.firstName}}'s status is set to {{otherUser1.status.timeToRespond}}. They may be unable to meet your request at this time. I invite you to specify when you would like your request to be met.", "trigger": "request away user", "action": "", "description": "Intervention occurs when the user is making a request of another away/busy user.", "overwrite": true },
+      { "name": "User not open to collaborate", "message": "{{otherUser1.firstName}}'s status is set to {{otherUser1.status.collaboration}}. They may be unable to meet your request at this time. I invite you to specify when you would like your request to be met.", "trigger": "request away user", "action": "", "description": "Intervention occurs when the user is making a request of another away/busy user.", "overwrite": true },
       { "name": "User is currently typing", "message": "{{otherUser1.firstName}} is typing a response. I invite you to wait until they send their message before responding.", "trigger": "user types x characters", "action": "", "description": "Intervention occurs only after a user types more than x amount of characters, which may indicate they missed or ignored the platform’s own notification.", "overwrite": true }
     ]
   },
