@@ -183,6 +183,20 @@ $(document).ready(() => {
   // Setup page callbacks
   $('#sendMessage').on('click', sendMessage)
 
+  $('#markdownEditor').on('keypress', checkEnterClick)
+
+  function checkEnterClick (e) {
+    if (isSendButtonActive()) {
+      // editor.setContent('')
+      if (e.keyCode === 13 && !e.shiftKey) {
+        e.preventDefault()
+        sendMessage()
+      } else if (e.keyCode === 13) {
+        sendMessage()
+      }
+    }
+  }
+
   // Load data for canned messages and prepare to construct sidebar
   axios.get('./cannedMessages.json')
     .then((response) => { buildMessagesSidebar(response.data) })
@@ -238,6 +252,11 @@ function setSendButtonActive (isActive, inactiveText = 'session is not active') 
     $('#sendMessage').removeAttr('disabled').removeClass('disabled')
     $('#sendMessage').text('Send')
   }
+}
+
+// will this work??
+function isSendButtonActive () {
+  return !$('#sendMessage').attr('disabled')
 }
 
 // Insert a new tab at end of list
@@ -308,8 +327,9 @@ function cannedMessageClick (event) {
 
 // Send button clicked so send message in text box
 function sendMessage (event) {
-  event.preventDefault()
-
+  if (event) {
+    event.preventDefault()
+  }
   // Retrieve message text
   const messageText = editor.getContent()
 
