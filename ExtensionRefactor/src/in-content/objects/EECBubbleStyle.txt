@@ -16,3 +16,8 @@
   bottom: 15px;
   right: 6px;
 }
+
+@keyframes fadeToGrey {
+  from { filter: grayscale(0%) }
+  to { filter: grayscale(100%) }
+}
