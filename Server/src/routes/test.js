@@ -15,7 +15,7 @@ import * as UTIL from './utils.js'
 import * as DBSelector from './dbSelector.js'
 
 // Authentication helpers (not currently in use)
-// import { authenticateToken, decodeToken } from './auth.js'
+import { authenticateToken, decodeToken } from './auth.js'
 
 // Create debug output object
 import Debug from 'debug'
@@ -49,7 +49,7 @@ const router = new Express.Router()
 // also tested within team.js with https://localhost:3000/data/team/list
 
 // 5. test teamController createTeam
-router.post('/registerTeam', async (req, res) => {
+router.post('/registerTeam', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { teamName, unitID, userID } = req.body
   if (!teamName) {
@@ -108,7 +108,7 @@ router.post('/registerTeam', async (req, res) => {
 })
 
 // 6. test teamController's addToTeam function: works!
-router.post('/addToTeam', async (req, res) => {
+router.post('/addToTeam', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { userID, teamID } = req.body
   if (!teamID || !userID) {
@@ -141,7 +141,7 @@ router.post('/addToTeam', async (req, res) => {
 })
 
 // 7. test teamController's createOrgUnit function: works!
-router.post('/registerOrg', async (req, res) => {
+router.post('/registerOrg', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { unitName, description, adminID } = req.body
   if (!unitName) {
@@ -167,7 +167,7 @@ router.post('/registerOrg', async (req, res) => {
 })
 
 // 8. test teamController's removeTeam function: works!
-router.delete('/removeTeam', async (req, res) => {
+router.delete('/removeTeam', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { teamID } = req.body
   if (!teamID) {
@@ -193,7 +193,7 @@ router.delete('/removeTeam', async (req, res) => {
 })
 
 // 9. test teamController's removeOrgUnit function
-router.delete('/removeOrg', async (req, res) => {
+router.delete('/removeOrg', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { unitID } = req.body
   if (!unitID) {
@@ -219,7 +219,7 @@ router.delete('/removeOrg', async (req, res) => {
 })
 
 // 10. test teamController's listTeamsInUnit (unitID) function
-router.get('/listTeamsInUnit/:unitID', async (req, res) => {
+router.get('/listTeamsInUnit/:unitID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const unitID = req.params.unitID
   if (!unitID) {
@@ -244,7 +244,7 @@ router.get('/listTeamsInUnit/:unitID', async (req, res) => {
 })
 
 // 11. test teamController's listUsersInTeam (teamID) function
-router.get('/listUsersInTeam/:teamID', async (req, res) => {
+router.get('/listUsersInTeam/:teamID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const teamID = req.params.teamID
   if (!teamID) {
@@ -285,7 +285,7 @@ router.get('/listUsersInTeam/:teamID', async (req, res) => {
 // done within user.js at https://localhost:3000/data/user/5ff742f09bb9905f98eb348e
 
 // 16. test userController's removeUser (userID) function
-router.delete('/removeUser', async (req, res) => {
+router.delete('/removeUser', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { userID } = req.body
   if (!userID) {
@@ -313,7 +313,7 @@ router.delete('/removeUser', async (req, res) => {
 })
 
 // 17. test teamController's getOrgUnitDetails (unitID)
-router.get('/getOrgUnitDetails/:unitID', async (req, res) => {
+router.get('/getOrgUnitDetails/:unitID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const unitID = req.params.unitID
   if (!unitID) {
@@ -340,7 +340,7 @@ router.get('/getOrgUnitDetails/:unitID', async (req, res) => {
 // 18. test teamControllers getTeamDetails (teamID)
 // tested within update function at https://localhost:3000/data/team/update
 // tested singularly here:
-router.get('/getTeamDetails/:teamID', async (req, res) => {
+router.get('/getTeamDetails/:teamID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const teamID = req.params.teamID
   if (!teamID) {
@@ -368,7 +368,7 @@ router.get('/getTeamDetails/:teamID', async (req, res) => {
 // tested within https://localhost:3000/data/team/update
 
 // 20. test logController's logWizardMessage (message, correspondentID)
-router.post('/logWizardMessage', async (req, res) => {
+router.post('/logWizardMessage', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { message, correspondentID } = req.body
   if (!message) {
@@ -394,7 +394,7 @@ router.post('/logWizardMessage', async (req, res) => {
 })
 
 // 21. test logController's logUserMessage (message, correspondentID, userID): TO-DO: BROKEN
-router.post('/logUserMessage', async (req, res) => {
+router.post('/logUserMessage', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { message, correspondentID, userID } = req.body
   if (!message || !userID) {
@@ -425,7 +425,7 @@ router.post('/logUserMessage', async (req, res) => {
 })
 
 // 22. test userController's function getUserCount ()
-router.get('/getUserCount', async (req, res) => {
+router.get('/getUserCount', authenticateToken, async (req, res) => {
   // Attempt to create org
   debug('getting User Count')
   try {
@@ -445,7 +445,7 @@ router.get('/getUserCount', async (req, res) => {
 // tested in orgUnit.js under endpoint 'data/unit/list'
 
 // 25. test affectController's function getAffectDetails (affectID)
-router.get('/getAffectDetails/:affectID', async (req, res) => {
+router.get('/getAffectDetails/:affectID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const affectID = req.params.affectID
   if (!affectID) {
@@ -471,7 +471,7 @@ router.get('/getAffectDetails/:affectID', async (req, res) => {
 })
 
 // 26. test affectController's function createAffect (affectName, description, characterCodes, relatedIDs)
-router.post('/createAffect', async (req, res) => {
+router.post('/createAffect', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { affectName, description, characterCodes, relatedIDs } = req.body
   if (!affectName) {
@@ -501,7 +501,7 @@ router.post('/createAffect', async (req, res) => {
 })
 
 // 27. test affectController's function removeAffect (affectID)
-router.delete('/removeAffect', async (req, res) => {
+router.delete('/removeAffect', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { affectID } = req.body
   if (!affectID) {
@@ -529,7 +529,7 @@ router.delete('/removeAffect', async (req, res) => {
 })
 
 // 28. test affectController's function updateAffect (affectID, newData)
-router.post('/updateAffect', async (req, res) => {
+router.post('/updateAffect', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { affectID, newData } = req.body
   if (!affectID) {
@@ -555,7 +555,7 @@ router.post('/updateAffect', async (req, res) => {
 })
 
 // 29. test affectController's function listAffects (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
-router.get('/listAffects', async (req, res) => {
+router.get('/listAffects', authenticateToken, async (req, res) => {
   // Try to get the pagination query string values
   const [perPage, page] = UTIL.getPaginationValues(req.query)
   if (isNaN(perPage) || isNaN(page)) {
@@ -584,7 +584,7 @@ router.get('/listAffects', async (req, res) => {
 })
 
 // 30. test affectController's function insertAffectHistoryEntry (affectID, relatedID, isUser)
-router.post('/insertAffectHistoryEntry', async (req, res) => {
+router.post('/insertAffectHistoryEntry', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { affectID, userID, teamID, isPrivate } = req.body
   if (!affectID || (!userID && !teamID)) {
@@ -628,7 +628,7 @@ router.post('/insertAffectHistoryEntry', async (req, res) => {
 })
 
 // 31. test affectController's function listAffectHistory (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
-router.get('/listAffectHistory/affectLogID/:affectLogID?/dateStart/:dateStart?/dateEnd/:dateEnd?', async (req, res) => {
+router.get('/listAffectHistory/affectLogID/:affectLogID?/dateStart/:dateStart?/dateEnd/:dateEnd?', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const affectLogID = req.params.affectLogID
   const dateStart = req.params.dateStart
@@ -656,7 +656,7 @@ router.get('/listAffectHistory/affectLogID/:affectLogID?/dateStart/:dateStart?/d
 })
 
 // 32. test affectController's function removeAffectHistoryEntry (affectLogID)
-router.delete('/removeAffectHistoryEntry', async (req, res) => {
+router.delete('/removeAffectHistoryEntry', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { affectLogID, dateRange } = req.body
   if (!affectLogID && !dateRange) {
@@ -691,7 +691,7 @@ router.delete('/removeAffectHistoryEntry', async (req, res) => {
 })
 
 // 33. test userControllers function getUserStatus (userID)
-router.get('/getUserStatus/:userID?', async (req, res) => {
+router.get('/getUserStatus/:userID?', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const userID = req.params.userID
 
@@ -713,7 +713,7 @@ router.get('/getUserStatus/:userID?', async (req, res) => {
 })
 
 // 34. test userController's function updateUserCollaboration (userID, collaborationStatus)
-router.post('/updateUserCollaboration', async (req, res) => {
+router.post('/updateUserCollaboration', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { userID, collaborationStatus } = req.body
   if (!userID) {
@@ -738,7 +738,7 @@ router.post('/updateUserCollaboration', async (req, res) => {
 })
 
 // 35. test userController's function updateUserTimeToRespond (userID, timeToRespond)
-router.post('/updateUserTimeToRespond', async (req, res) => {
+router.post('/updateUserTimeToRespond', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { userID, timeToRespond } = req.body
   if (!userID) {
