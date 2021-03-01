@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Modal, IconButton, Button, Checkbox, FormControlLabel } from '@material-ui/core'
+import { Modal, IconButton, Button, Checkbox, FormControlLabel, Typography } from '@material-ui/core'
 
 import Emoji from './Emoji.jsx'
 
@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '5px',
     fontSize: '14px',
     whiteSpace: 'nowrap'
+  },
+  text: {
+    color: theme.palette.text.primary
   }
 }))
 
@@ -148,7 +151,7 @@ export default function MoodSelect (props) {
   // Confirmation modal allows user to share feelings with team or keep private
   const shareModal = (
     <div id='mood-share-modal' className={classes.paper}>
-      <p>Do you want to share your feelings with the rest of the team?</p>
+      <Typography className={classes.text}>Do you want to share your feelings with the rest of the team?</Typography>
       <span>
         <Button onClick={() => { handleShareClose(clickedMood, true) }} size='small'>
           No, Keep Private
@@ -159,7 +162,8 @@ export default function MoodSelect (props) {
       </span>
       <div>
         <FormControlLabel className="small-text" value="silencePrompt" control={<Checkbox color="primary" />}
-          label="Do not show this message in the future" labelPlacement="end" onChange={silenceChange} checked={silencePromptCB} />
+          label={<Typography className={classes.text}>Do not show this message in the future</Typography>} labelPlacement="end"
+          onChange={silenceChange} checked={silencePromptCB} />
       </div>
     </div>
   )

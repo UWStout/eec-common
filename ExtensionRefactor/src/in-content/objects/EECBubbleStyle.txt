@@ -10,9 +10,16 @@
 .eec-bubble-icon {
   display: block;
   position: absolute;
+  cursor: pointer;
 }
 
 .eec-bubble-alert {
   bottom: 15px;
   right: 6px;
+  cursor: pointer;
+}
+
+@keyframes fadeToGrey {
+  from { filter: grayscale(0%) }
+  to { filter: grayscale(100%) }
 }

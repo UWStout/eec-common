@@ -113,7 +113,8 @@ class EECBubble extends HTMLElement {
       }
     } else {
       setTimeout(() => {
-        this.showMessage('Please **log in** to use Karuna<br>(Click the browser extension icon under the puzzle piece in the upper right of the browser window)', true, 5000)
+        this.showMessage('Please **log in** to use Karuna<br>(Click the browser extension icon under the puzzle piece in the upper right of the browser window)', true)
+        this.fadeToGrey(true)
       }, 3000)
     }
   }
@@ -166,11 +167,13 @@ class EECBubble extends HTMLElement {
         this.JWT = message.token
         const payload = this.decodeTokenPayload(this.JWT)
         this.showMessage(`Welcome **${payload.firstName}**!`, false, 5000)
+        this.fadeToGrey(false)
       } break
 
       case 'logout':
         this.JWT = null
-        this.showMessage('Please **log in** to use Karuna<br>(Click the browser extension icon under the puzzle piece in the upper right of the browser window)', true, 5000)
+        this.showMessage('Please **log in** to use Karuna<br>(Click the browser extension icon under the puzzle piece in the upper right of the browser window)', true)
+        this.fadeToGrey(true)
         break
 
       case 'karunaMessage':
@@ -204,6 +207,9 @@ class EECBubble extends HTMLElement {
       this.alertIcon.attr('src', EECBubble.ALERT_IMG)
       this.alertIcon.addClass('animate__animated animate__fadein')
       this.popover.addClass('animate__animated animate__repeat-3 animate__tada')
+    } else {
+      this.alertIcon.attr('src', EECBubble.KARUNA_IMG)
+      this.alertIcon.addClass('animate__animated animate__fadein')
     }
 
     // Parse Markdown to HTML and set as content
@@ -228,8 +234,8 @@ class EECBubble extends HTMLElement {
 
     if (timeout > 0) {
       setTimeout(() => {
-        this.alertIcon.attr('src', EECBubble.KARUNA_IMG)
-        this.alertIcon.addClass('animate__animated animate__fadein')
+        // this.alertIcon.attr('src', EECBubble.KARUNA_IMG)
+        // this.alertIcon.addClass('animate__animated animate__fadein')
         this.popover.removeClass('animate__animated animate__repeat-3 animate__tada')
         this.popoverElem.hide()
       }, timeout)
@@ -277,6 +283,13 @@ class EECBubble extends HTMLElement {
 
   writeUserMetadata (key, value) {
     console.log(`Request to write metadata "${key}": ${JSON.stringify(value)}`)
+  }
+
+  fadeToGrey (forward = true) {
+    this.imageIcon.css('animation-name', 'fadeToGrey')
+    this.imageIcon.css('animation-duration', '1s')
+    this.imageIcon.css('animation-fill-mode', 'forwards')
+    this.imageIcon.css('animation-direction', (forward ? 'normal' : 'reverse'))
   }
 
   // Custom Element is mounted to the DOM
