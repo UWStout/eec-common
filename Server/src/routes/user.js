@@ -99,7 +99,7 @@ router.post('/update', authenticateToken, async (req, res) => {
 
     // Update the user in the DB
     await DBUser.updateUser(userID, { firstName, lastName, teams, meta: userMeta })
-    return res.status(200).json({ success: true })
+    return res.json({ success: true })
   } catch (err) {
     UTIL.checkAndReportError('Error updating user', res, err, debug)
   }
@@ -123,7 +123,7 @@ router.post('/promote', authenticateToken, async (req, res) => {
   try {
     await DBUser.updateUser(userID, { userType: 'admin' })
     // res.send({ success: true })
-    return res.status(200).json({ success: true })
+    return res.json({ success: true })
   } catch (err) {
     UTIL.checkAndReportError('Error promoting user', res, err, debug)
   }
@@ -151,7 +151,7 @@ router.get('/getUserCount', authenticateToken, async (req, res) => {
   debug('getting User Count')
   try {
     const userCount = await DBUser.getUserCount()
-    return res.status(200).json({ message: 'success', userCount: userCount })
+    return res.json(userCount)
   } catch (error) {
     console.error('Failed to get User Count')
     console.error(error)
@@ -180,7 +180,7 @@ router.get('/listUsersInTeam/:teamID', authenticateToken, async (req, res) => {
     if (users.error) {
       return res.status(400).json(users)
     }
-    return res.status(200).json({ message: 'success', users })
+    return res.json(users)
   } catch (error) {
     console.error(`Failed to list users in team ${teamID}`)
     console.error(error)
@@ -208,8 +208,7 @@ router.delete('/removeUser', authenticateToken, async (req, res) => {
     const user = await DBUser.removeUser(userID)
     // if user does not exist, function will succeed
     debug('success: user removed!')
-    // return res.status(200).json({ message: 'success', user: user })
-    res.status(200).json({ success: true })
+    res.json({ success: true })
   } catch (error) {
     console.error(`Failed to remove user ${userID}`)
     console.error(error)
@@ -234,7 +233,7 @@ router.get('/getUserStatus/:userID?', authenticateToken, async (req, res) => {
   debug('attempting to get user status')
   try {
     const userStatus = await DBUser.getUserStatus(userID)
-    return res.status(200).json({ ...userStatus.status })
+    return res.json({ ...userStatus.status })
   } catch (error) {
     debug('Failed to get user status')
     debug(error)
@@ -259,7 +258,7 @@ router.post('/updateUserCollaboration', authenticateToken, async (req, res) => {
   // Attempt to update user collaboration status
   try {
     await DBUser.updateUserCollaboration(userID, collaborationStatus)
-    res.status(200).json({ success: true })
+    res.json({ success: true })
   } catch (error) {
     console.error('Failed to update user collaboration status')
     console.error(error)
@@ -284,7 +283,7 @@ router.post('/updateUserTimeToRespond', authenticateToken, async (req, res) => {
   // Attempt to update user time to respond
   try {
     await DBUser.updateUserTimeToRespond(userID, timeToRespond)
-    res.status(200).json({ success: true })
+    res.json({ success: true })
   } catch (error) {
     console.error('Failed to update user time to respond')
     console.error(error)

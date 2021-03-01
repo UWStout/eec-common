@@ -101,7 +101,7 @@ router.post('/login', async (req, res) => {
       audience: userData.email,
       expiresIn: '1d'
     })
-    return res.status(200).json({ message: 'success', token: token })
+    return res.json(token)
   } catch (err) {
     // Something went wrong so log it
     debug('Failed validation')
@@ -141,7 +141,7 @@ router.post('/register', async (req, res) => {
   debug(`Making account for ${email}`)
   try {
     const userID = await DBAuth.createUser(firstName, lastName, email, userType, password)
-    return res.status(200).json({ message: 'success', userID: userID })
+    return res.json(userID)
   } catch (error) {
     console.error(`Failed to create account ${email}`)
     console.error(error)

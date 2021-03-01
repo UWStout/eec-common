@@ -81,7 +81,7 @@ router.post('/update', authenticateToken, async (req, res) => {
 
     // Update the team in the DB
     await DBUnit.updateOrgUnit(unitID, { name: unitName })
-    return res.status(200).json({ success: true })
+    return res.json({ success: true })
   } catch (err) {
     UTIL.checkAndReportError('Error updating org unit', res, err, debug)
   }
@@ -105,8 +105,7 @@ router.post('/registerOrg', authenticateToken, async (req, res) => {
   debug(`Creating ${unitName}`)
   try {
     const teamID = await DBUnit.createOrgUnit(unitName, description, adminID)
-    // return res.status(200).json({ message: 'success', teamID: teamID })
-    return res.status(200).json({ success: true })
+    return res.json({ success: true })
   } catch (error) {
     console.error(`Failed to create ${unitName}`)
     console.error(error)
@@ -132,7 +131,7 @@ router.get('/getOrgUnitDetails/:unitID', authenticateToken, async (req, res) => 
   debug(`attempting to list teams for user ${unitID}`)
   try {
     const unit = await DBUnit.getOrgUnitDetails(unitID)
-    return res.status(200).json({ message: 'success', unit: unit })
+    return res.json(unit)
   } catch (error) {
     debug(`Failed to get org unit details ${unitID}`)
     debug(error)
