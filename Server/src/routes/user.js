@@ -125,7 +125,7 @@ router.post('/promote', authenticateToken, async (req, res) => {
   }
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   // Attempt to retrieve user ID
   const userID = req.params.id
   if (!userID) {
