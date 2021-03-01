@@ -47,7 +47,7 @@ router.get('/getAffectDetails/:affectID', authenticateToken, async (req, res) =>
   debug(`attempting to get affect details ${affectID}`)
   try {
     const affect = await affectDB.getAffectDetails(affectID)
-    return res.status(200).json({ message: 'success', affect: affect })
+    return res.json(affect)
   } catch (error) {
     debug(`Failed to get affect details ${affectID}`)
     debug(error)
@@ -77,8 +77,7 @@ router.post('/createAffect', authenticateToken, async (req, res) => {
   debug('attempting to create an affect')
   try {
     const affect = await affectDB.createAffect(affectName, description, characterCodes, relatedIDs)
-    return res.status(200).json({ success: true })
-    // return res.status(200).json({ message: 'success', affect: affect, characterCodes })
+    return res.json({ success: true })
   } catch (error) {
     console.error('Failed to to create an affect')
     console.error(error)
@@ -106,8 +105,7 @@ router.delete('/removeAffect', authenticateToken, async (req, res) => {
     const affect = await affectDB.removeAffect(affectID)
     // if user does not exist, function will succeed
     debug('success: affect removed!')
-    // return res.status(200).json({ message: 'success', affect: affect })
-    return res.status(200).json({ success: true })
+    return res.json({ success: true })
   } catch (error) {
     console.error(`Failed to remove affect ${affectID}`)
     console.error(error)
@@ -133,8 +131,7 @@ router.post('/updateAffect', authenticateToken, async (req, res) => {
   debug('attempting to update an affect')
   try {
     const affect = await affectDB.updateAffect(affectID, newData)
-    // return res.status(200).json({ message: 'success', affect: affect })
-    return res.status(200).json({ success: true })
+    return res.json({ success: true })
   } catch (error) {
     console.error('Failed to to update an affect')
     console.error(error)
@@ -207,7 +204,7 @@ router.post('/insertAffectHistoryEntry', authenticateToken, async (req, res) => 
   debug('attempting to insert affect history log')
   try {
     await affectDB.insertAffectHistoryEntry(affectID, relatedID, isUser, isPrivate)
-    res.status(200).json({ success: true })
+    res.json({ success: true })
   } catch (error) {
     console.error('Failed to insert affect history log')
     console.error(error)
@@ -235,7 +232,7 @@ router.get('/listAffectHistory/affectLogID/:affectLogID?/dateStart/:dateStart?/d
   debug('attempting to list affect history')
   try {
     const affectLog = await affectDB.listAffectHistory(affectLogID, dateStart, dateEnd)
-    return res.status(200).json({ message: 'success', affectLog: affectLog })
+    return res.json(affectLog)
   } catch (error) {
     debug('Failed to list affect history')
     debug(error)
@@ -270,8 +267,7 @@ router.delete('/removeAffectHistoryEntry', authenticateToken, async (req, res) =
     const affectLog = await affectDB.removeAffectHistoryEntry(affectLogID, dateRange)
     // if user does not exist, function will succeed
     debug('success: affect log removed!')
-    // return res.status(200).json({ message: 'success', affectLog: affectLog })
-    return res.status(200).json({ success: true })
+    return res.json({ success: true })
   } catch (error) {
     console.error(`Failed to remove affect log ${affectLogID}`)
     console.error(error)
