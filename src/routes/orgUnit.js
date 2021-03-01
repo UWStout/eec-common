@@ -7,6 +7,9 @@ import { authenticateToken } from './auth.js'
 // Database controller
 import { getDBUnitController } from './dbSelector.js'
 
+// for testing the database
+import { ObjectID } from 'mongodb'
+
 // Utility functions
 import * as UTIL from './utils.js'
 
@@ -83,6 +86,59 @@ router.post('/update', authenticateToken, async (req, res) => {
     UTIL.checkAndReportError('Error updating org unit', res, err, debug)
   }
 })
+
+// 7. test unitController's createOrgUnit function: works!
+router.post('/registerOrg', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { unitName, description, adminID } = req.body
+  if (!unitName) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if adminID is a reasonable parameter for ObjectID (hexadecimal)
+  if (adminID && !ObjectID.isValid(adminID)) {
+    res.status(400).json({ invalid: true, message: 'adminID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // Attempt to create org
+  debug(`Creating ${unitName}`)
+  try {
+    const teamID = await DBUnit.createOrgUnit(unitName, description, adminID)
+    return res.status(200).json({ message: 'success', teamID: teamID })
+  } catch (error) {
+    console.error(`Failed to create ${unitName}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while creating the organization' })
+  }
+})
+
+// 17. test teamController's getOrgUnitDetails (unitID)
+router.get('/getOrgUnitDetails/:unitID', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const unitID = req.params.unitID
+  if (!unitID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if unitID is a reasonable parameter for ObjectID (hexadecimal)
+  if (unitID && !ObjectID.isValid(unitID)) {
+    res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to get org unit details
+  debug(`attempting to list teams for user ${unitID}`)
+  try {
+    const unit = await DBUnit.getOrgUnitDetails(unitID)
+    return res.status(200).json({ message: 'success', unit: unit })
+  } catch (error) {
+    debug(`Failed to get org unit details ${unitID}`)
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while getting org unit details' })
+  }
+})
+
 
 // Expose the router for use in other files
 export default router
