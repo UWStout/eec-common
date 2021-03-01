@@ -5,7 +5,7 @@ import Express from 'express'
 // import JWT from 'jsonwebtoken'
 
 // Utility functions
-import * as UTIL from './utils.js'
+// import * as UTIL from './utils.js'
 
 // Database controller
 import * as DBSelector from './dbSelector.js'
@@ -47,7 +47,8 @@ router.post('/logWizardMessage', authenticateToken, async (req, res) => {
   debug('logging wizard message')
   try {
     const teamID = await logDB.logWizardMessage(message, correspondentID)
-    return res.status(200).json({ message: 'success', teamID: teamID })
+    // return res.status(200).json({ message: 'success', teamID: teamID })
+    return res.status(200).json({ success: true })
   } catch (error) {
     console.error('Failed to log wizard message')
     console.error(error)
@@ -78,7 +79,8 @@ router.post('/logUserMessage', authenticateToken, async (req, res) => {
   debug('logging user message')
   try {
     const teamID = await logDB.logUserMessage(message, correspondentID, userID)
-    return res.status(200).json({ message: 'success', teamID: teamID })
+    // return res.status(200).json({ message: 'success', teamID: teamID })
+    return res.status(200).json({ success: true })
   } catch (error) {
     console.error('Failed to log user message')
     console.error(error)

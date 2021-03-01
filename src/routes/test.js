@@ -7,7 +7,7 @@ import Express from 'express'
 
 // Authorization token library (not currently in use)
 // import JWT from 'jsonwebtoken'
-
+/*
 // Utility functions
 import * as UTIL from './utils.js'
 
@@ -23,15 +23,18 @@ import Debug from 'debug'
 // for using the database
 import { ObjectID } from 'mongodb'
 
-const debug = Debug('server:test')
+// const debug = Debug('server:test')
 
+*/
 // Get database controllers
 // const authDB = getDBAuthController() // (not currently in use)
+/*
 const teamDB = DBSelector.getDBTeamController()
 const userDB = DBSelector.getDBUserController()
 const unitDB = DBSelector.getDBUnitController()
 const logDB = DBSelector.getDBLogController()
 const affectDB = DBSelector.getDBAffectController()
+*/
 
 // Create a router to attach to an express server app
 const router = new Express.Router()
@@ -60,10 +63,8 @@ const router = new Express.Router()
 // 15. test userController's getUserDetails(userID) function
 // done within user.js at https://localhost:3000/data/user/5ff742f09bb9905f98eb348e
 
-
 // 19. test teamControllers updateTeam (userID, newData)
 // tested within https://localhost:3000/data/team/update
-
 
 // 22. test userController's function getUserCount () has been moved
 

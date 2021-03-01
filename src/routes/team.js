@@ -10,7 +10,6 @@ import { getDBTeamController } from './dbSelector.js'
 // for testing the database
 import { ObjectID } from 'mongodb'
 
-
 // Utility functions
 import * as UTIL from './utils.js'
 
@@ -85,7 +84,7 @@ router.post('/update', authenticateToken, async (req, res) => {
 
     // Update the team in the DB
     await DBTeam.updateTeam(teamID, { name: teamName, orgId })
-    res.send({ success: true })
+    return res.status(200).json({ success: true })
   } catch (err) {
     UTIL.checkAndReportError('Error updating team', res, err, debug)
   }
@@ -142,7 +141,8 @@ router.post('/registerTeam', authenticateToken, async (req, res) => {
   debug(`Making team ${teamName}`)
   try {
     const teamID = await DBTeam.createTeam(teamName, unitID, userID)
-    return res.status(200).json({ message: 'success', teamID: teamID })
+    // return res.status(200).json({ message: 'success', teamID: teamID })
+    return res.status(200).json({ success: true })
   } catch (error) {
     console.error(`Failed to create team ${teamName}`)
     console.error(error)
@@ -175,7 +175,8 @@ router.post('/addToTeam', authenticateToken, async (req, res) => {
   debug(`adding ${userID} to ${teamID}`)
   try {
     const team = await DBTeam.addToTeam(userID, teamID)
-    return res.status(200).json({ message: 'success', teamID: team })
+    // return res.status(200).json({ message: 'success', teamID: team })
+    return res.status(200).json({ success: true })
   } catch (error) {
     console.error(`Failed to add ${userID} to team ${teamID}`)
     console.error(error)
@@ -201,7 +202,8 @@ router.delete('/removeTeam', authenticateToken, async (req, res) => {
   debug(`Removing Team ${teamID}`)
   try {
     const team = await DBTeam.removeTeam(teamID)
-    return res.status(200).json({ message: 'success', teamID: team })
+    // return res.status(200).json({ message: 'success', teamID: team })
+    return res.status(200).json({ success: true })
   } catch (error) {
     console.error(`Failed to remove Team ${teamID}`)
     console.error(error)
@@ -227,7 +229,8 @@ router.delete('/removeOrg', authenticateToken, async (req, res) => {
   debug(`Removing Organizational Unit ${unitID}`)
   try {
     const unit = await DBTeam.removeOrgUnit(unitID)
-    return res.status(200).json({ message: 'success', unit: unit })
+    // return res.status(200).json({ message: 'success', unit: unit })
+    return res.status(200).json({ success: true })
   } catch (error) {
     console.error(`Failed to remove Team ${unitID}`)
     console.error(error)
@@ -287,7 +290,6 @@ router.get('/getTeamDetails/:teamID', authenticateToken, async (req, res) => {
     return res.status(500).json({ error: true, message: 'Error while getting team details' })
   }
 })
-
 
 // Expose the router for use in other files
 export default router

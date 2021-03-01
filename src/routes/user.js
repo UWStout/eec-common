@@ -99,7 +99,7 @@ router.post('/update', authenticateToken, async (req, res) => {
 
     // Update the user in the DB
     await DBUser.updateUser(userID, { firstName, lastName, teams, meta: userMeta })
-    res.send({ success: true })
+    return res.status(200).json({ success: true })
   } catch (err) {
     UTIL.checkAndReportError('Error updating user', res, err, debug)
   }
@@ -122,7 +122,8 @@ router.post('/promote', authenticateToken, async (req, res) => {
   // Update the user to 'admin' type
   try {
     await DBUser.updateUser(userID, { userType: 'admin' })
-    res.send({ success: true })
+    // res.send({ success: true })
+    return res.status(200).json({ success: true })
   } catch (err) {
     UTIL.checkAndReportError('Error promoting user', res, err, debug)
   }
@@ -207,7 +208,8 @@ router.delete('/removeUser', authenticateToken, async (req, res) => {
     const user = await DBUser.removeUser(userID)
     // if user does not exist, function will succeed
     debug('success: user removed!')
-    return res.status(200).json({ message: 'success', user: user })
+    // return res.status(200).json({ message: 'success', user: user })
+    res.status(200).json({ success: true })
   } catch (error) {
     console.error(`Failed to remove user ${userID}`)
     console.error(error)
@@ -257,7 +259,7 @@ router.post('/updateUserCollaboration', authenticateToken, async (req, res) => {
   // Attempt to update user collaboration status
   try {
     await DBUser.updateUserCollaboration(userID, collaborationStatus)
-    return res.status(200).json({ message: 'success' })
+    res.status(200).json({ success: true })
   } catch (error) {
     console.error('Failed to update user collaboration status')
     console.error(error)
@@ -282,7 +284,7 @@ router.post('/updateUserTimeToRespond', authenticateToken, async (req, res) => {
   // Attempt to update user time to respond
   try {
     await DBUser.updateUserTimeToRespond(userID, timeToRespond)
-    return res.status(200).json({ message: 'success' })
+    res.status(200).json({ success: true })
   } catch (error) {
     console.error('Failed to update user time to respond')
     console.error(error)
