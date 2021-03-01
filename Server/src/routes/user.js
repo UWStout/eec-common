@@ -7,6 +7,9 @@ import { authenticateToken } from './auth.js'
 // Database controller
 import { getDBUserController } from './dbSelector.js'
 
+// for testing the database
+import { ObjectID } from 'mongodb'
+
 // Utility functions
 import * as UTIL from './utils.js'
 
@@ -138,6 +141,152 @@ router.get('/:id', authenticateToken, async (req, res) => {
     res.send(userDetails)
   } catch (err) {
     UTIL.checkAndReportError('Error retrieving user details', res, err, debug)
+  }
+})
+
+// 22. test userController's function getUserCount ()
+router.get('/getUserCount', authenticateToken, async (req, res) => {
+  // Attempt to create org
+  debug('getting User Count')
+  try {
+    const userCount = await DBUser.getUserCount()
+    return res.status(200).json({ message: 'success', userCount: userCount })
+  } catch (error) {
+    console.error('Failed to get User Count')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while getting user count' })
+  }
+})
+
+// 11. test userController's listUsersInTeam (teamID) function
+router.get('/listUsersInTeam/:teamID', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const teamID = req.params.teamID
+  if (!teamID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
+  if (teamID && !ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to list users in the given team
+  debug(`attempt to list users in Team ${teamID}`)
+  try {
+    const users = await DBUser.listUsersInTeam(teamID)
+    if (users.error) {
+      return res.status(400).json(users)
+    }
+    return res.status(200).json({ message: 'success', users })
+  } catch (error) {
+    console.error(`Failed to list users in team ${teamID}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while listing users in team' })
+  }
+})
+
+// 16. test userController's removeUser (userID) function
+router.delete('/removeUser', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { userID } = req.body
+  if (!userID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to remove user
+  debug(`attempt to remove user ${userID}`)
+  try {
+    const user = await DBUser.removeUser(userID)
+    // if user does not exist, function will succeed
+    debug('success: user removed!')
+    return res.status(200).json({ message: 'success', user: user })
+  } catch (error) {
+    console.error(`Failed to remove user ${userID}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while removing user' })
+  }
+})
+
+/**
+ * API routes for status object
+ */
+// userControllers function getUserStatus (userID)
+router.get('/getUserStatus/:userID?', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const userID = req.params.userID
+
+  // check if userID is a reasonable parameter for ObjectID
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to get user status
+  debug('attempting to get user status')
+  try {
+    const userStatus = await DBUser.getUserStatus(userID)
+    return res.status(200).json({ ...userStatus.status })
+  } catch (error) {
+    debug('Failed to get user status')
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while trying to get user status' })
+  }
+})
+
+// 34. test userController's function updateUserCollaboration (userID, collaborationStatus)
+router.post('/updateUserCollaboration', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { userID, collaborationStatus } = req.body
+  if (!userID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if userID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
+  }
+
+  // Attempt to update user collaboration status
+  try {
+    await DBUser.updateUserCollaboration(userID, collaborationStatus)
+    return res.status(200).json({ message: 'success' })
+  } catch (error) {
+    console.error('Failed to update user collaboration status')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while trying to update user collaboration status' })
+  }
+})
+
+// 35. test userController's function updateUserTimeToRespond (userID, timeToRespond)
+router.post('/updateUserTimeToRespond', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { userID, timeToRespond } = req.body
+  if (!userID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if userID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
+  }
+
+  // Attempt to update user time to respond
+  try {
+    await DBUser.updateUserTimeToRespond(userID, timeToRespond)
+    return res.status(200).json({ message: 'success' })
+  } catch (error) {
+    console.error('Failed to update user time to respond')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while trying to update user time to respond' })
   }
 })
 

@@ -7,6 +7,10 @@ import { authenticateToken } from './auth.js'
 // Database controller
 import { getDBTeamController } from './dbSelector.js'
 
+// for testing the database
+import { ObjectID } from 'mongodb'
+
+
 // Utility functions
 import * as UTIL from './utils.js'
 
@@ -86,6 +90,204 @@ router.post('/update', authenticateToken, async (req, res) => {
     UTIL.checkAndReportError('Error updating team', res, err, debug)
   }
 })
+
+// 5. test teamController createTeam
+router.post('/registerTeam', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { teamName, unitID, userID } = req.body
+  if (!teamName) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if unitID is a reasonable parameter for ObjectID (hexadecimal)
+  if (unitID && !ObjectID.isValid(unitID)) {
+    res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  /* // TO-DO? Check if team with the same team name is already registered?
+  lookup = [{
+    // Join with the matching 'orgId' in the 'Units' collection
+    $lookup: {
+      from: 'Units',
+      let: { unitID: '$orgId' },
+      pipeline: [
+        { $match: { $expr: { $eq: ['$_id', '$$unitID'] } } },
+        { $project: { _id: 0, orgId: '$_id', unitName: '$name' } }
+      ],
+      as: 'unit'
+    }
+  }, {
+    // Merge the fields of the Unit object into the root document
+    $replaceRoot: {
+      newRoot: {
+        $mergeObjects: [
+          { $arrayElemAt: ['$unit', 0] },
+          '$$ROOT'
+        ]
+      }
+    }
+  }]
+
+  // Remove the unit object that was merged in
+  project = { unit: 0 }
+ */
+
+  // Attempt to create user
+  debug(`Making team ${teamName}`)
+  try {
+    const teamID = await DBTeam.createTeam(teamName, unitID, userID)
+    return res.status(200).json({ message: 'success', teamID: teamID })
+  } catch (error) {
+    console.error(`Failed to create team ${teamName}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while creating team' })
+  }
+})
+
+// 6. test teamController's addToTeam function: works!
+router.post('/addToTeam', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { userID, teamID } = req.body
+  if (!teamID || !userID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
+  if (teamID && !ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // TO-DO: Check if already added to the team?
+
+  // Attempt to add user to team
+  debug(`adding ${userID} to ${teamID}`)
+  try {
+    const team = await DBTeam.addToTeam(userID, teamID)
+    return res.status(200).json({ message: 'success', teamID: team })
+  } catch (error) {
+    console.error(`Failed to add ${userID} to team ${teamID}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while adding to team' })
+  }
+})
+
+// 8. test teamController's removeTeam function: works!
+router.delete('/removeTeam', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { teamID } = req.body
+  if (!teamID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
+  if (teamID && !ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to remove team
+  debug(`Removing Team ${teamID}`)
+  try {
+    const team = await DBTeam.removeTeam(teamID)
+    return res.status(200).json({ message: 'success', teamID: team })
+  } catch (error) {
+    console.error(`Failed to remove Team ${teamID}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while removing Team' })
+  }
+})
+
+// 9. test teamController's removeOrgUnit function
+router.delete('/removeOrg', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { unitID } = req.body
+  if (!unitID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if unitID is a reasonable parameter for ObjectID (hexadecimal)
+  if (unitID && !ObjectID.isValid(unitID)) {
+    res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to remove org unit
+  debug(`Removing Organizational Unit ${unitID}`)
+  try {
+    const unit = await DBTeam.removeOrgUnit(unitID)
+    return res.status(200).json({ message: 'success', unit: unit })
+  } catch (error) {
+    console.error(`Failed to remove Team ${unitID}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while removing Org Unit' })
+  }
+})
+
+// 10. test teamController's listTeamsInUnit (unitID) function
+router.get('/listTeamsInUnit/:unitID', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const unitID = req.params.unitID
+  if (!unitID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  if (unitID && !ObjectID.isValid(unitID)) {
+    res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to list teams in org unit
+  debug(`attempt to list teams in Unit ${unitID}`)
+  try {
+    const teams = await DBTeam.listTeamsInUnit(unitID)
+    return res.status(200).json({ message: 'success', teams })
+  } catch (error) {
+    console.error(`Failed to list teams in org unit ${unitID}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while listing teams in org unit' })
+  }
+})
+
+// 18. test teamControllers getTeamDetails (teamID)
+// tested within update function at https://localhost:3000/data/team/update
+// tested singularly here:
+router.get('/getTeamDetails/:teamID', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const teamID = req.params.teamID
+  if (!teamID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
+  if (teamID && !ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to get team details
+  debug(`attempting to get team details ${teamID}`)
+  try {
+    const team = await DBTeam.getTeamDetails(teamID)
+    return res.status(200).json({ message: 'success', team: team })
+  } catch (error) {
+    debug(`Failed to get team details ${teamID}`)
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while getting team details' })
+  }
+})
+
 
 // Expose the router for use in other files
 export default router
