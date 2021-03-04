@@ -91,7 +91,7 @@ router.post('/update', authenticateToken, async (req, res) => {
 })
 
 // 5. test teamController createTeam
-router.post('/registerTeam', authenticateToken, async (req, res) => {
+router.post('/register', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { teamName, unitID, userID } = req.body
   if (!teamName) {
@@ -150,7 +150,7 @@ router.post('/registerTeam', authenticateToken, async (req, res) => {
 })
 
 // 6. test teamController's addToTeam function: works!
-router.post('/addToTeam', authenticateToken, async (req, res) => {
+router.post('/addUser', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { userID, teamID } = req.body
   if (!teamID || !userID) {
@@ -183,7 +183,7 @@ router.post('/addToTeam', authenticateToken, async (req, res) => {
 })
 
 // 8. test teamController's removeTeam function: works!
-router.delete('/removeTeam', authenticateToken, async (req, res) => {
+router.delete('/remove', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { teamID } = req.body
   if (!teamID) {
@@ -209,7 +209,7 @@ router.delete('/removeTeam', authenticateToken, async (req, res) => {
 })
 
 // 9. test teamController's removeOrgUnit function
-router.delete('/removeOrg', authenticateToken, async (req, res) => {
+router.delete('/remove', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { unitID } = req.body
   if (!unitID) {
@@ -235,7 +235,7 @@ router.delete('/removeOrg', authenticateToken, async (req, res) => {
 })
 
 // 10. test teamController's listTeamsInUnit (unitID) function
-router.get('/listTeamsInUnit/:unitID', authenticateToken, async (req, res) => {
+router.get('/listInUnit/:unitID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const unitID = req.params.unitID
   if (!unitID) {
@@ -262,7 +262,7 @@ router.get('/listTeamsInUnit/:unitID', authenticateToken, async (req, res) => {
 // 18. test teamControllers getTeamDetails (teamID)
 // tested within update function at https://localhost:3000/data/team/update
 // tested singularly here:
-router.get('/getTeamDetails/:teamID', authenticateToken, async (req, res) => {
+router.get('/details/:teamID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const teamID = req.params.teamID
   if (!teamID) {

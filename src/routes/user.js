@@ -129,7 +129,7 @@ router.post('/promote', authenticateToken, async (req, res) => {
   }
 })
 
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/details/:id', authenticateToken, async (req, res) => {
   // Attempt to retrieve user ID
   const userID = req.params.id
   if (!userID) {
@@ -146,7 +146,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 })
 
 // 22. test userController's function getUserCount ()
-router.get('/getUserCount', authenticateToken, async (req, res) => {
+router.get('/count', authenticateToken, async (req, res) => {
   // Attempt to create org
   debug('getting User Count')
   try {
@@ -160,7 +160,7 @@ router.get('/getUserCount', authenticateToken, async (req, res) => {
 })
 
 // 11. test userController's listUsersInTeam (teamID) function
-router.get('/listUsersInTeam/:teamID', authenticateToken, async (req, res) => {
+router.get('/listInTeam/:teamID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const teamID = req.params.teamID
   if (!teamID) {
@@ -189,7 +189,7 @@ router.get('/listUsersInTeam/:teamID', authenticateToken, async (req, res) => {
 })
 
 // 16. test userController's removeUser (userID) function
-router.delete('/removeUser', authenticateToken, async (req, res) => {
+router.delete('/remove', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { userID } = req.body
   if (!userID) {
@@ -220,7 +220,7 @@ router.delete('/removeUser', authenticateToken, async (req, res) => {
  * API routes for status object
  */
 // userControllers function getUserStatus (userID)
-router.get('/getUserStatus/:userID?', authenticateToken, async (req, res) => {
+router.get('/status/:userID?', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const userID = req.params.userID
 
@@ -242,7 +242,7 @@ router.get('/getUserStatus/:userID?', authenticateToken, async (req, res) => {
 })
 
 // 34. test userController's function updateUserCollaboration (userID, collaborationStatus)
-router.post('/updateUserCollaboration', authenticateToken, async (req, res) => {
+router.post('/collaboration', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { userID, collaborationStatus } = req.body
   if (!userID) {
@@ -267,7 +267,7 @@ router.post('/updateUserCollaboration', authenticateToken, async (req, res) => {
 })
 
 // 35. test userController's function updateUserTimeToRespond (userID, timeToRespond)
-router.post('/updateUserTimeToRespond', authenticateToken, async (req, res) => {
+router.post('/timeToRespond', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { userID, timeToRespond } = req.body
   if (!userID) {

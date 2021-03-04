@@ -30,7 +30,7 @@ const router = new Express.Router()
 // ******* API routes **************
 
 // 25. test affectController's function getAffectDetails (affectID)
-router.get('/getAffectDetails/:affectID', authenticateToken, async (req, res) => {
+router.get('/details/:affectID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const affectID = req.params.affectID
   if (!affectID) {
@@ -56,7 +56,7 @@ router.get('/getAffectDetails/:affectID', authenticateToken, async (req, res) =>
 })
 
 // 26. test affectController's function createAffect (affectName, description, characterCodes, relatedIDs)
-router.post('/createAffect', authenticateToken, async (req, res) => {
+router.post('/create', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { affectName, description, characterCodes, relatedIDs } = req.body
   if (!affectName) {
@@ -86,7 +86,7 @@ router.post('/createAffect', authenticateToken, async (req, res) => {
 })
 
 // 27. test affectController's function removeAffect (affectID)
-router.delete('/removeAffect', authenticateToken, async (req, res) => {
+router.delete('/remove', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { affectID } = req.body
   if (!affectID) {
@@ -114,7 +114,7 @@ router.delete('/removeAffect', authenticateToken, async (req, res) => {
 })
 
 // 28. test affectController's function updateAffect (affectID, newData)
-router.post('/updateAffect', authenticateToken, async (req, res) => {
+router.post('/update', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { affectID, newData } = req.body
   if (!affectID) {
@@ -140,7 +140,7 @@ router.post('/updateAffect', authenticateToken, async (req, res) => {
 })
 
 // 29. test affectController's function listAffects (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
-router.get('/listAffects', authenticateToken, async (req, res) => {
+router.get('/list', authenticateToken, async (req, res) => {
   // Try to get the pagination query string values
   const [perPage, page] = UTIL.getPaginationValues(req.query)
   if (isNaN(perPage) || isNaN(page)) {
@@ -169,7 +169,7 @@ router.get('/listAffects', authenticateToken, async (req, res) => {
 })
 
 // 30. test affectController's function insertAffectHistoryEntry (affectID, relatedID, isUser)
-router.post('/insertAffectHistoryEntry', authenticateToken, async (req, res) => {
+router.post('/insertHistory', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { affectID, userID, teamID, isPrivate } = req.body
   if (!affectID || (!userID && !teamID)) {
@@ -213,7 +213,7 @@ router.post('/insertAffectHistoryEntry', authenticateToken, async (req, res) => 
 })
 
 // 31. test affectController's function listAffectHistory (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
-router.get('/listAffectHistory/affectLogID/:affectLogID?/dateStart/:dateStart?/dateEnd/:dateEnd?', authenticateToken, async (req, res) => {
+router.get('/listHistory/affectLogID/:affectLogID?/dateStart/:dateStart?/dateEnd/:dateEnd?', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const affectLogID = req.params.affectLogID
   const dateStart = req.params.dateStart
@@ -241,7 +241,7 @@ router.get('/listAffectHistory/affectLogID/:affectLogID?/dateStart/:dateStart?/d
 })
 
 // 32. test affectController's function removeAffectHistoryEntry (affectLogID)
-router.delete('/removeAffectHistoryEntry', authenticateToken, async (req, res) => {
+router.delete('/removeHistory', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { affectLogID, dateRange } = req.body
   if (!affectLogID && !dateRange) {
@@ -274,3 +274,5 @@ router.delete('/removeAffectHistoryEntry', authenticateToken, async (req, res) =
     return res.status(500).json({ error: true, message: 'Error while attempting to remove affect log' })
   }
 })
+
+export default router

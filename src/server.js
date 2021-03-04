@@ -23,22 +23,15 @@ import Cors from 'cors'
 // Our websockets events and management
 import { makeSocket } from './sockets.js'
 
-// Custom router for authentication API
+// Custom routers for all the different groups of routes
 import authRouter from './routes/auth.js'
-
-// Custom router for user data API
 import userRouter from './routes/user.js'
-
-// Custom router for user team API
 import teamRouter from './routes/team.js'
-
-// Custom router for team org-unit API
+import affectRouter from './routes/affect.js'
 import orgUnitRouter from './routes/orgUnit.js'
 
 // custom router for testing purposes
 import testRouter from './routes/test.js'
-
-import adminRouter from './routes/adminRoutes.js'
 
 // Custom router for admin-only backend routes
 import wizardRouter from './routes/wizard.js'
@@ -113,14 +106,14 @@ if (process.env.HEROKU && !process.env.LOCAL) {
   })
 }
 
-// used for MongoDB set up
-app.use('/admin', adminRouter)
-
 // All authentication routes are under '/auth/'
 app.use(`${SERVER_ROOT}auth`, authRouter)
 
 // All user data routes are under '/data/user'
 app.use(`${SERVER_ROOT}data/user`, userRouter)
+
+// All affect data routes are under '/data/affect'
+app.use(`${SERVER_ROOT}data/affect`, affectRouter)
 
 // All team data routes are under '/data/team'
 app.use(`${SERVER_ROOT}data/team`, teamRouter)
