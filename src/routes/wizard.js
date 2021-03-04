@@ -32,13 +32,14 @@ router.get('/*', decodeToken, (req, res) => {
     // Send to login
     debug(`Redirecting ${req.path} to login.html`)
     const dest = encodeURIComponent(REDIRECT_PATH + 'emeraldCity.html')
-    return res.redirect(`../login.html?dest=${dest}`)
+    return res.status(401).send('Unauthorized')
+    // return res.redirect(`../login.html?dest=${dest}`)
   }
 
   // Check for admin status
   if (req.user.userType !== 'admin') {
     debug(`User not authorized to use wizard "${req.user.email}" (${req.user.userType})`)
-    return res.status(400).send('Not authorized (admins only)')
+    return res.status(401).send('Not authorized (admins only)')
   }
 
   // Attempt to send file in response
