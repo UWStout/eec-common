@@ -36,8 +36,12 @@ export function writeValue (key, data, context, overwrite = true) {
   return true
 }
 
+export function retrieveToken () {
+  return readValue('JWT')
+}
+
 export function retrieveUser () {
-  const JWT = readValue('JWT')
+  const JWT = retrieveToken()
   if (!JWT) { return {} }
 
   try {

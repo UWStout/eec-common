@@ -5,7 +5,7 @@ import Axios from 'axios'
 import * as SERVER_CONFIG from '../../util/serverConfig.js'
 
 // Helper functions
-import { retrieveUser } from './DataStorage.js'
+import { retrieveUser, retrieveToken } from './DataStorage.js'
 
 export function processAjaxRequest (message, resolve, reject, sendResponse) {
   // Lookup user data (may need it later)
@@ -71,6 +71,13 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
   }
 }
 
+// Construct and return a header object containing the JWT for use with AXIOS
+function authorizationHeader () {
+  return {
+    Authorization: `digest ${retrieveToken()}`
+  }
+}
+
 function validateAccount (email, password) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
@@ -87,7 +94,8 @@ function validateAccount (email, password) {
 function getEmojiList () {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/listAffects?fullInfo&perPage=500`)
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/listAffects?fullInfo&perPage=500`, config)
 
     // Listen for server response or error
     requestPromise.then((response) => {
@@ -101,7 +109,8 @@ function getEmojiList () {
 function getUserStatus (userID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getUserStatus/${userID}`)
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getUserStatus/${userID}`, config)
     requestPromise.then((response) => {
       return resolve(response.data)
     })
@@ -114,8 +123,10 @@ function getUserStatus (userID) {
 function setUserAffect (userID, affectID, isPrivate) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/insertAffectHistoryEntry`,
-      { userID, affectID, isPrivate }
+      { userID, affectID, isPrivate },
+      config
     )
 
     // Listen for server response or error
@@ -127,8 +138,10 @@ function setUserAffect (userID, affectID, isPrivate) {
 function setCollaboration (userID, collaborationStatus) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/updateUserCollaboration`,
-      { userID, collaborationStatus }
+      { userID, collaborationStatus },
+      config
     )
 
     // Listen for server response or error
@@ -140,8 +153,10 @@ function setCollaboration (userID, collaborationStatus) {
 function setTimeToRespond (userID, timeToRespond) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/updateUserTimeToRespond`,
-      { userID, timeToRespond }
+      { userID, timeToRespond },
+      config
     )
 
     // Listen for server response or error
