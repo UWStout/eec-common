@@ -1,8 +1,6 @@
 // Essential file libraries
 import fs from 'fs'
 import path from 'path'
-// import  { dirname } from 'path'
-// import { fileURLToPath } from 'url'
 
 // Read extra environment variables from the .env file
 import dotenv from 'dotenv'
@@ -29,9 +27,11 @@ import userRouter from './routes/user.js'
 import teamRouter from './routes/team.js'
 import affectRouter from './routes/affect.js'
 import orgUnitRouter from './routes/orgUnit.js'
+import logRouter from './routes/log.js'
 
-// custom router for testing purposes
-import testRouter from './routes/test.js'
+// DISABLED
+// Custom router for testing purposes
+// import testRouter from './routes/test.js'
 
 // Custom router for admin-only backend routes
 import wizardRouter from './routes/wizard.js'
@@ -56,7 +56,6 @@ const app = new Express()
 
 // Configure view engine to use EJS
 app.set('view engine', 'ejs')
-// app.set('views', './views')
 
 // Build HTTP/HTTPS server
 let server
@@ -95,7 +94,7 @@ app.use(Express.json())
 
 // Redirect all non-ssl traffic to HTTPS
 if (process.env.HEROKU && !process.env.LOCAL) {
-  console.log('Redirecting traffic to HTTPS')
+  debug('Redirecting traffic to HTTPS')
   app.use((req, res, next) => {
     const reqType = req.headers['x-forwarded-proto']
     if (reqType === 'https') {
@@ -109,6 +108,9 @@ if (process.env.HEROKU && !process.env.LOCAL) {
 // All authentication routes are under '/auth/'
 app.use(`${SERVER_ROOT}auth`, authRouter)
 
+// All logging data routes are under '/data/log'
+app.use(`${SERVER_ROOT}data/log`, logRouter)
+
 // All user data routes are under '/data/user'
 app.use(`${SERVER_ROOT}data/user`, userRouter)
 
@@ -121,8 +123,9 @@ app.use(`${SERVER_ROOT}data/team`, teamRouter)
 // All org-unit data routes are under '/data/unit'
 app.use(`${SERVER_ROOT}data/unit`, orgUnitRouter)
 
+// DISABLED
 // All testing routes are under '/test/'
-app.use(`${SERVER_ROOT}test`, testRouter)
+// app.use(`${SERVER_ROOT}test`, testRouter)
 
 // All wizard routes are under '/oz/'
 app.use(`${SERVER_ROOT}oz`, wizardRouter)
@@ -148,7 +151,7 @@ const PROD_PORT = process.env.PORT || process.env.PROD_PORT || 42424
 if (process.argv.find((arg) => { return arg === 'dev' })) {
   // Start server listening on debug/dev port
   server.listen(DEV_PORT, 'localhost', () => {
-    debug(`Karuna DEV server listening on port ${DEV_PORT}`)
+    console.log(`Karuna DEV server listening on port ${DEV_PORT}`)
   })
 } else {
   // Start server listening on main/production port
