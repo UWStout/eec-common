@@ -95,7 +95,7 @@ function getEmojiList () {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader() }
-    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/listAffects?fullInfo&perPage=500`, config)
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}affect/list?fullInfo&perPage=500`, config)
 
     // Listen for server response or error
     requestPromise.then((response) => {
@@ -110,7 +110,7 @@ function getUserStatus (userID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader() }
-    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/getUserStatus/${userID}`, config)
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}user/status/${userID}`, config)
     requestPromise.then((response) => {
       return resolve(response.data)
     })
@@ -124,7 +124,7 @@ function setUserAffect (userID, affectID, isPrivate) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader() }
-    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/insertAffectHistoryEntry`,
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}affect/insertHistory`,
       { userID, affectID, isPrivate },
       config
     )
@@ -139,7 +139,7 @@ function setCollaboration (userID, collaborationStatus) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader() }
-    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/updateUserCollaboration`,
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}user/collaboration`,
       { userID, collaborationStatus },
       config
     )
@@ -154,7 +154,7 @@ function setTimeToRespond (userID, timeToRespond) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader() }
-    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}test/updateUserTimeToRespond`,
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}user/timeToRespond`,
       { userID, timeToRespond },
       config
     )

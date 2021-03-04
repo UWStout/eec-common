@@ -88,7 +88,7 @@ router.post('/update', authenticateToken, async (req, res) => {
 })
 
 // 7. test unitController's createOrgUnit function: works!
-router.post('/registerOrg', authenticateToken, async (req, res) => {
+router.post('/register', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { unitName, description, adminID } = req.body
   if (!unitName) {
@@ -114,7 +114,7 @@ router.post('/registerOrg', authenticateToken, async (req, res) => {
 })
 
 // 17. test teamController's getOrgUnitDetails (unitID)
-router.get('/getOrgUnitDetails/:unitID', authenticateToken, async (req, res) => {
+router.get('/details/:unitID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const unitID = req.params.unitID
   if (!unitID) {
