@@ -61,6 +61,10 @@ const debug = Debug('server')
 // Initialize express app
 const app = new Express()
 
+// Configure view engine to use EJS
+app.set('view engine', 'ejs')
+// app.set('views', './views')
+
 // Build HTTP/HTTPS server
 let server
 if (process.env.HEROKU) {
@@ -133,6 +137,9 @@ app.use(`${SERVER_ROOT}oz`, wizardRouter)
 // All database administration routes are under '/dbAdmin/'
 app.use(`${SERVER_ROOT}dbAdmin`, dbAdminRouter)
 
+// Provide a listing of all 'admin' pages on the server
+app.use(`${SERVER_ROOT}adminIndex.html`, adminIndex)
+
 // Login/out authorization routes from root
 app.use('/', Express.static(path.resolve('./views/auth')))
 
@@ -154,6 +161,21 @@ if (process.argv.find((arg) => { return arg === 'dev' })) {
   // Start server listening on main/production port
   server.listen(PROD_PORT, '0.0.0.0', () => {
     console.log(`Karuna server listening on port ${PROD_PORT}`)
+  })
+}
+
+// Return an index of all available admin pages currently enabled
+function adminIndex (req, res, next) {
+  res.render('adminIndex.ejs', {
+    adminLinkList: [
+      { href: `${SERVER_ROOT}login.html`, text: 'General login page for accessing backend server pages' },
+      { href: `${SERVER_ROOT}logout.html`, text: 'Clear credentials from a previous login' },
+      { href: `${SERVER_ROOT}register.html`, text: 'Create a new standard Karuna account' },
+      { href: `${SERVER_ROOT}oz`, text: 'Wizard backend interface' },
+      { href: `${SERVER_ROOT}dbAdmin/manageUsers.html`, text: 'User data view and editing' },
+      { href: `${SERVER_ROOT}dbAdmin/manageTeams.html`, text: 'Team data view and editing' },
+      { href: `${SERVER_ROOT}dbAdmin/manageUnits.html`, text: 'Org Unit data view and editing' }
+    ]
   })
 }
 

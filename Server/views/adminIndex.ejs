@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Karuna Server Admin Pages</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../lib/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+
+      <div class="row">
+        <div class="col-12">
+          <div class="pb-2 mt-4 mb-2 border-bottom">
+            <h1>Karuna Admin Index</h1>
+          </div>
+          <p class="pt-2 pb-2 mb-s">The following links are pages intended for admin users only that allow
+            special access to interfaces and data intended only for testing and development of the Karuna
+            tool. The login, logout, and register pages can be accessed by anyone. You must be logged in as
+            an administrator to access any other links. Please contact the devs to upgrade to an admin account.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="list-group">
+            <% adminLinkList.forEach((link) => { %>
+              <a class="list-group-item list-group-item-action" href="<%= link.href %>"><%= link.text %></a>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery first then Bootstrap JS -->
+    <script src="../lib/jquery.slim.min.js"></script>
+    <script src="../lib/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
