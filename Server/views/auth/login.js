@@ -88,8 +88,8 @@ async function validateLogin () {
     $('.form-signin :button').prop('disabled', true)
 
     // Set the token and redirect
-    store.local.set('JWT', response.data.token)
-    Cookies.set('JWT', response.data.token)
+    store.local.set('JWT', response.data)
+    Cookies.set('JWT', response.data)
     setTimeout(() => { window.location.href = destURL }, 1000)
   } catch (err) {
     // Show a failed alert message

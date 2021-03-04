@@ -56,8 +56,8 @@ export default function AccountSettings () {
     // Saves the JWT and logs the user in.
     function login (data) {
       // Store the token and broadcast a successful login
-      chrome.runtime.sendMessage({ type: 'write', key: 'JWT', data: data.token })
-      chrome.runtime.sendMessage({ type: 'login', key: 'JWT', data: data.token })
+      chrome.runtime.sendMessage({ type: 'write', key: 'JWT', data })
+      chrome.runtime.sendMessage({ type: 'login', key: 'JWT', data })
       updateLoggedIn(true)
     }
 
