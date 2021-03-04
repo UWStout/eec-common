@@ -32,8 +32,7 @@ router.get('/*', decodeToken, (req, res) => {
     // Send to login
     debug(`Redirecting ${req.path} to login.html`)
     const dest = encodeURIComponent(REDIRECT_PATH + 'emeraldCity.html')
-    return res.status(401).send('Unauthorized')
-    // return res.redirect(`../login.html?dest=${dest}`)
+    return res.redirect(`../login.html?dest=${dest}`)
   }
 
   // Check for admin status

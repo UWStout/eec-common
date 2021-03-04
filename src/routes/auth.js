@@ -9,7 +9,7 @@ import { getDBAuthController, getDBUserController } from './dbSelector.js'
 
 // Create debug output object
 import Debug from 'debug'
-const debug = Debug('server:auth')
+const debug = Debug('server:auth_routes')
 
 // Get database auth and user controller objects
 const DBAuth = getDBAuthController()

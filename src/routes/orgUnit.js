@@ -15,7 +15,7 @@ import * as UTIL from './utils.js'
 
 // Create debug output object
 import Debug from 'debug'
-const debug = Debug('server:org_unit')
+const debug = Debug('server:org_unit_routes')
 
 // Get database auth and user controller objects
 const DBUnit = getDBUnitController()
@@ -104,7 +104,7 @@ router.post('/register', authenticateToken, async (req, res) => {
   // Attempt to create org
   debug(`Creating ${unitName}`)
   try {
-    const teamID = await DBUnit.createOrgUnit(unitName, description, adminID)
+    await DBUnit.createOrgUnit(unitName, description, adminID)
     return res.json({ success: true })
   } catch (error) {
     console.error(`Failed to create ${unitName}`)

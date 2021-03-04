@@ -1,25 +1,18 @@
 // Basic HTTP routing library
 import Express from 'express'
 
-// Authorization token library (not currently in use)
-// import JWT from 'jsonwebtoken'
-
-// Utility functions
-// import * as UTIL from './utils.js'
-
 // Database controller
 import * as DBSelector from './dbSelector.js'
 
-// Authentication helpers (not currently in use)
-import { authenticateToken, decodeToken } from './auth.js'
-
-// Create debug output object
-import Debug from 'debug'
+// Authentication helpers
+import { authenticateToken } from './auth.js'
 
 // for testing the database
 import { ObjectID } from 'mongodb'
 
-const debug = Debug('server:test')
+// Create debug output object
+import Debug from 'debug'
+const debug = Debug('server:log_routes')
 
 // Get database controllers
 const logDB = DBSelector.getDBLogController()
@@ -30,7 +23,7 @@ const router = new Express.Router()
 // ******* API routes **************
 
 // 20. test logController's logWizardMessage (message, correspondentID)
-router.post('/logWizardMessage', authenticateToken, async (req, res) => {
+router.post('/wizardMessage', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { message, correspondentID } = req.body
   if (!message) {
@@ -46,7 +39,7 @@ router.post('/logWizardMessage', authenticateToken, async (req, res) => {
   // Attempt to create org
   debug('logging wizard message')
   try {
-    const teamID = await logDB.logWizardMessage(message, correspondentID)
+    await logDB.logWizardMessage(message, correspondentID)
     return res.json({ success: true })
   } catch (error) {
     console.error('Failed to log wizard message')
@@ -56,7 +49,7 @@ router.post('/logWizardMessage', authenticateToken, async (req, res) => {
 })
 
 // 21. test logController's logUserMessage (message, correspondentID, userID): TO-DO: BROKEN
-router.post('/logUserMessage', authenticateToken, async (req, res) => {
+router.post('/userMessage', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { message, correspondentID, userID } = req.body
   if (!message || !userID) {
@@ -77,7 +70,7 @@ router.post('/logUserMessage', authenticateToken, async (req, res) => {
   // Attempt to create org
   debug('logging user message')
   try {
-    const teamID = await logDB.logUserMessage(message, correspondentID, userID)
+    await logDB.logUserMessage(message, correspondentID, userID)
     return res.json({ success: true })
   } catch (error) {
     console.error('Failed to log user message')
@@ -85,3 +78,5 @@ router.post('/logUserMessage', authenticateToken, async (req, res) => {
     return res.status(500).json({ error: true, message: 'Error while logging user message' })
   }
 })
+
+export default router

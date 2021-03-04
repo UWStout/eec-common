@@ -15,7 +15,7 @@ import * as UTIL from './utils.js'
 
 // Create debug output object
 import Debug from 'debug'
-const debug = Debug('server:user')
+const debug = Debug('server:user_routes')
 
 // Get database auth and user controller objects
 const DBTeam = getDBTeamController()
@@ -140,7 +140,7 @@ router.post('/register', authenticateToken, async (req, res) => {
   // Attempt to create user
   debug(`Making team ${teamName}`)
   try {
-    const teamID = await DBTeam.createTeam(teamName, unitID, userID)
+    await DBTeam.createTeam(teamName, unitID, userID)
     return res.json({ success: true })
   } catch (error) {
     console.error(`Failed to create team ${teamName}`)
@@ -173,7 +173,7 @@ router.post('/addUser', authenticateToken, async (req, res) => {
   // Attempt to add user to team
   debug(`adding ${userID} to ${teamID}`)
   try {
-    const team = await DBTeam.addToTeam(userID, teamID)
+    await DBTeam.addToTeam(userID, teamID)
     return res.json({ success: true })
   } catch (error) {
     console.error(`Failed to add ${userID} to team ${teamID}`)
@@ -199,7 +199,7 @@ router.delete('/remove', authenticateToken, async (req, res) => {
   // attempt to remove team
   debug(`Removing Team ${teamID}`)
   try {
-    const team = await DBTeam.removeTeam(teamID)
+    await DBTeam.removeTeam(teamID)
     return res.json({ success: true })
   } catch (error) {
     console.error(`Failed to remove Team ${teamID}`)
@@ -225,7 +225,7 @@ router.delete('/remove', authenticateToken, async (req, res) => {
   // attempt to remove org unit
   debug(`Removing Organizational Unit ${unitID}`)
   try {
-    const unit = await DBTeam.removeOrgUnit(unitID)
+    await DBTeam.removeOrgUnit(unitID)
     return res.json({ success: true })
   } catch (error) {
     console.error(`Failed to remove Team ${unitID}`)
