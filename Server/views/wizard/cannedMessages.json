@@ -68,7 +68,7 @@
       { "name": "Current mood", "message": "{{otherUser1.status.affect}}", "trigger": "", "action": "", "description": "insert other user's current mood where the text insertion cursor is", "overwrite": false },
       { "name": "Time to respond", "message": "{{otherUser1.status.timeToRespond}}", "trigger": "", "action": "", "description": "insert other user's time to respond where the text insertion cursor is", "overwrite": false },
       { "name": "Collaboration status", "message": "{{otherUser1.status.collaboration}}", "trigger": "", "action": "", "description": "insert other user's collaboration status where the text insertion cursor is", "overwrite": false },
-      { "name": "Test", "Message": "Trying out adding a new message directly to the repo", "trigger": "", "action": "", "description": "I hope this works", "overwrite": true }
+      { "name": "Test", "message": "Trying out adding a new message directly to the repo", "trigger": "", "action": "", "description": "I hope this works", "overwrite": true }
     ]
   }
 ]
