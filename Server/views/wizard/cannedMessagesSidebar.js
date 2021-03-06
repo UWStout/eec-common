@@ -48,9 +48,9 @@ function makeListGroup (choices, clickCB, listID) {
   const listGroupUL = $('<ul>').attr('id', listID).addClass('list-group list-group-flush')
 
   choices.forEach((choice) => {
-    const choiceItem = $('<li>').addClass('list-group-item px-0 py-1').text(choice.name)
-    choiceItem.attr('data-message', choice.message)
-    choiceItem.attr('data-overwrite', choice.overwrite)
+    const choiceItem = $('<li>').addClass('list-group-item px-0 py-1').text(choice.name ? choice.name : 'ERROR: \'name\' property missing')
+    choiceItem.attr('data-message', choice.message ? choice.message : 'ERROR: \'message\' property missing from choice')
+    choiceItem.attr('data-overwrite', choice.overwrite !== undefined ? choice.overwrite : false)
     choiceItem.css('cursor', 'pointer')
     // choiceItem.attr('data-action', choice.action)
     choiceItem.click(clickCB)
