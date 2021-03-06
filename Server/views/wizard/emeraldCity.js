@@ -4,6 +4,13 @@
 import { makeTabHeader, makeTabContentPane } from './chatWidgetHelper.js'
 import { makeMessageGroup } from './cannedMessagesSidebar.js'
 
+// Repo read-only token
+// - This is a personal access token for github account KarunaAuth
+// - This account has read-only access to eec-common and nothing else
+// - CAUTION: This is sent to and used by any clients that access emeraldCity.html
+//            so do NOT increase the access rights of this account!
+const EEC_READ_TOKEN = 'cd275b3f7220416a7b68368d84e58586da6381f2'
+
 // Tab content holders
 let tabHeaders
 let tabContents
@@ -182,7 +189,6 @@ $(document).ready(() => {
 
   // Setup page callbacks
   $('#sendMessage').on('click', sendMessage)
-
   $('#markdownEditor').on('keypress', checkEnterClick)
 
   function checkEnterClick (e) {
@@ -197,13 +203,31 @@ $(document).ready(() => {
     }
   }
 
-  // Load data for canned messages and prepare to construct sidebar
-  axios.get('./cannedMessages.json')
-    .then((response) => { buildMessagesSidebar(response.data) })
+  // Try to load LATEST canned data from repo
+  const headers = {
+    Authorization: `token ${EEC_READ_TOKEN}`,
+    Accept: 'application/vnd.github.v3.raw'
+  }
+
+  // Grab latest version
+  axios.get('https://api.github.com/repos/UWStout/eec-common/contents/Server/views/wizard/cannedMessages.json', { headers }, 'json')
+    .then((response) => {
+      console.log('Loading latest cannedMessages.json from Github')
+      buildMessagesSidebar(response.data)
+    })
     .catch((err) => {
-      window.alert('WARNING: There was an error reading the data for the canned messages.')
-      console.error('Failed to read messages json')
+      // Log the error and try fallback
+      console.error('Failed to load github canned messages, falling back to local copy (may be out of date)')
       console.error(err)
+
+      // Fall back to local version of canned messages
+      axios.get('./cannedMessages.json')
+        .then((response) => { buildMessagesSidebar(response.data) })
+        .catch((err) => {
+          window.alert('WARNING: There was an error reading the canned messages.')
+          console.error('Failed to read messages json')
+          console.error(err)
+        })
     })
 })
 
@@ -216,8 +240,6 @@ function buildMessagesSidebar (data) {
     )
     $('#cannedMessageSidebar').append(groupNodes)
   })
-
-  // TODO: Append command choices
 
   // TODO: Append wizard history group
 }
