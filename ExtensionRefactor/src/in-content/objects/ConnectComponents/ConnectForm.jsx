@@ -8,7 +8,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import PermMediaIcon from '@material-ui/icons/PermMedia'
 
-import * as DBShapes from './dataTypeShapes.js'
+import * as DBShapes from '../dataTypeShapes.js'
 
 import MoodSelect from './MoodSelector.jsx'
 import Emoji from './Emoji.jsx'

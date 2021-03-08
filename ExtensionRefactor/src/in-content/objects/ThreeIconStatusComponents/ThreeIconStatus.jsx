@@ -7,8 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import ChatBubbleIcon from '@material-ui/icons/ChatBubbleOutlineOutlined'
 
 import Emoji from '../ConnectComponents/Emoji.jsx'
-
-import { backgroundMessage } from '../AJAXHelper.js'
+import * as DBShapes from '../dataTypeShapes.js'
 
 const EMOJI_UNKNOWN = <Emoji key='unknown' label='unknown' symbol='?' />
 const useStyles = makeStyles((theme) => ({
@@ -32,60 +31,42 @@ export default function ThreeIconStatus (props) {
   // Compute custom styles
   const classes = useStyles()
 
-  // Establish component state
-  const [emojiList, updateEmojiList] = useState([])
-  const [userStatus, updateUserStatus] = useState(null)
-
-  // Initialize the emoji list
-  useEffect(() => {
-    // Send ajax request for data via background script
-    backgroundMessage(
-      { type: 'ajax-getEmojiList' },
-      'Emoji Retrieval failed: ',
-      (data) => { updateEmojiList(data) }
-    )
-  }, [])
-
-  // Synchronize user state
-  // const getLatestUserStatus = () => {
-  //   backgroundMessage(
-  //     { type: 'ajax-getUserStatus' },
-  //     'Retrieving current user status failed: ',
-  //     (currentUserStatus) => {
-  //       console.log(currentUserStatus)
-  //       updateUserStatus(currentUserStatus)
-  //     }
-  //   )
-  // }
-
-  // Listen for user status updates
-  useEffect(() => {
-    if (props.emitter) {
-      props.emitter.on('userStatusChanged', updateUserStatus)
-    }
-  }, [props.emitter])
-
-  // Initialize the user status
-  // useEffect(() => { getLatestUserStatus() }, [])
-
   // Pick mood icon
-  let moodIcon = EMOJI_UNKNOWN
-  if (userStatus) {
-    for (let i = 0; i < emojiList.length; i++) {
-      const entry = emojiList[i]
-      if (entry._id === userStatus.currentAffectID && entry.active) {
-        moodIcon = <Emoji key={entry._id} label={entry.name} symbol={entry.characterCodes[0]} />
-        break
+  const [moodIcon, updateMoodIcon] = useState(EMOJI_UNKNOWN)
+  useEffect(() => {
+    if (props.userStatus) {
+      for (let i = 0; i < props.emojiList.length; i++) {
+        const entry = props.emojiList[i]
+        if (entry._id === props.userStatus.currentAffectID && entry.active) {
+          updateMoodIcon(<Emoji key={entry._id} label={entry.name} symbol={entry.characterCodes[0]} />)
+          break
+        }
       }
     }
-  }
+  }, [props.emojiList, props.userStatus])
 
   // Build collaboration icon from userStatus prop
   let collaborationType = <Emoji symbol='?' label='Loading' />
-  if (userStatus?.collaboration) {
+  if (props.userStatus?.collaboration) {
     collaborationType = <Emoji symbol='🧑‍🤝‍🧑' label='Open to Collaboration' />
   } else {
     collaborationType = <Emoji symbol='🧍' label='Solo Focused' />
+  }
+
+  // Render as a radial status icon
+  if (props.radial) {
+    const style = {
+      position: 'absolute',
+      top: props.anchor.top,
+      left: props.anchor.left
+    }
+    return (
+      <div style={style}>
+        <div>A</div><br/>
+        <div>B</div><br/>
+        <div>C</div>
+      </div>
+    )
   }
 
   return (
@@ -106,5 +87,13 @@ export default function ThreeIconStatus (props) {
 }
 
 ThreeIconStatus.propTypes = {
-  emitter: PropTypes.object
+  userStatus: PropTypes.shape(DBShapes.StatusObjectShape),
+  emojiList: PropTypes.arrayOf(
+    PropTypes.shape(DBShapes.AffectObjectShape)
+  ),
+  radial: PropTypes.bool,
+  anchor: PropTypes.shape({
+    top: PropTypes.string,
+    left: PropTypes.string
+  })
 }

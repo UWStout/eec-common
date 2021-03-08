@@ -15,7 +15,7 @@ import EECConnectCSS from './EECConnectStyle.txt'
 
 // Custom React Component
 import ConnectComponent from './ConnectComponents/ConnectComponent.jsx'
-import ThreeIconStatus from './ThreeIconStatusComponents/ThreeIconStatus.jsx'
+import StatusManager from './ThreeIconStatusComponents/StatusManager.jsx'
 
 // Utility enums and functions for app context management
 import * as CONTEXT_UTIL from '../../util/contexts.js'
@@ -23,6 +23,9 @@ import * as CONTEXT_UTIL from '../../util/contexts.js'
 class EECConnect extends HTMLElement {
   constructor () {
     super()
+
+    // Initialize internal data
+    this.otherStatuses = null
 
     // create a shadow root
     this.attachShadow({ mode: 'open' })
@@ -99,7 +102,7 @@ class EECConnect extends HTMLElement {
       <StylesProvider jss={jss}>
         <MuiThemeProvider theme={theme}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
-            <ThreeIconStatus emitter={this.statusEmitter} />
+            <StatusManager emitter={this.statusEmitter} />
           </MuiPickersUtilsProvider>
         </MuiThemeProvider>
       </StylesProvider>,
@@ -109,6 +112,9 @@ class EECConnect extends HTMLElement {
 
     // Start out hidden
     this.updateVisibility(false)
+
+    // Setup status icons for other users
+    this.updateOtherStatusList()
   }
 
   // Update background communication port
@@ -154,6 +160,39 @@ class EECConnect extends HTMLElement {
     } else if (this.JWT) {
       this.statusPanel.show()
       this.connectPanel.show()
+    }
+  }
+
+  updateOtherStatusList () {
+    const otherAvatars = jQuery('div[class^=avatar-] div[class^=wrapper-]')
+
+    const oldStatuses = { ...this.otherStatuses }
+    const newStatuses = []
+    otherAvatars.each((index, curElem) => {
+      if (index > 0) {
+        const discordName = curElem.attr('aria-label').split(',')[0]
+        const anchor = curElem.offset()
+        if (!this.otherStatuses[discordName]) {
+          newStatuses[discordName] = { discordName, anchor, status: null }
+        } else {
+          delete oldStatuses[discordName]
+        }
+      }
+    })
+
+    if (Object.keys(newStatuses).length > 0 || Object.keys(oldStatuses).length > 0) {
+      // Delete old statuses that are no longer needed
+      Object.keys(oldStatuses).forEach((oldStatusKey) => {
+        delete this.otherStatuses[oldStatusKey]
+      })
+
+      // Merge remaining statuses with new ones
+      if (Object.keys(newStatuses).length > 0) {
+        this.otherStatuses = { ...this.otherStatuses, ...newStatuses }
+      }
+
+      // Signal updated statuses
+      this.emitter.emit('', this.otherStatuses)
     }
   }
 

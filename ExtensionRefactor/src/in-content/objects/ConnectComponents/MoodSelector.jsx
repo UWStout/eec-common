@@ -6,7 +6,7 @@ import { Modal, IconButton, Button, Checkbox, FormControlLabel, Typography } fro
 
 import Emoji from './Emoji.jsx'
 
-import * as DBShapes from './dataTypeShapes.js'
+import * as DBShapes from '../dataTypeShapes.js'
 import { backgroundMessage } from '../AJAXHelper.js'
 
 const EMOJI_UNKNOWN = {
