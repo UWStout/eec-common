@@ -81,7 +81,7 @@ function authorizationHeader () {
 function validateAccount (email, password) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/auth/login`,
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}auth/login`,
       { email: email, password: password }
     )
 
