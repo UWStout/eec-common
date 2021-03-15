@@ -9,6 +9,7 @@ import { getDBLogController, getDBUserController } from './routes/dbSelector.js'
 
 // Helper methods
 import { parseMessageCommands, parseOtherUsers } from './socketMessageHelper.js'
+import * as Analysis from './analysisEngine.js'
 
 // Setup debug for output
 import Debug from 'debug'
@@ -104,6 +105,14 @@ function socketClientSession (clientInfo) {
     debug(`[WS:${this.id}] invalid client session token missing`)
     return
   }
+
+  // Check for any timed triggers
+  Analysis.checkTimedTriggers(clientInfo)
+    .then(() => {})
+    .catch((err) => {
+      debug('Error checking timed triggers on client session update')
+      debug(err)
+    })
 
   // Write/Update session and broadcast change
   clientSessions[this.id] = { ...decodeToken(clientInfo.token) }
@@ -242,6 +251,14 @@ function socketMessageUpdate (message) {
       debug(err)
     })
 
+  // Hook to intelligence core, expect a promise in return
+  Analysis.analyzeMessage(message, false)
+    .then((result) => {})
+    .catch((err) => {
+      debug('In-Progress Message analysis failed')
+      debug(err)
+    })
+
   // Bounce message to wizard (no logging because it floods the console)
   mySocket.to('wizards').emit('clientTyping', {
     clientEmail: clientSessions[this.id].email,
@@ -263,6 +280,14 @@ async function socketMessageSend (message) {
   DBUser.setUserAlias(userID, message.context, message.user)
     .catch((err) => {
       debug('Alias update failed')
+      debug(err)
+    })
+
+  // Hook to intelligence core, expect a promise in return
+  Analysis.analyzeMessage(message, true)
+    .then((result) => {})
+    .catch((err) => {
+      debug('Completed Message analysis failed')
       debug(err)
     })
 
