@@ -44,7 +44,7 @@
       { "name": "Highlight Many Words", "message": "{{highlight: word1, word2, word3}}", "trigger": "", "action": "", "description": "Instruct Karuna to highlight several words in the users message text.", "overwrite": false },
       { "name": "Affect Input Trigger", "message": "{{affect: input}}", "trigger": "", "action": "", "description": "Show a button that triggers the affect survey in the Karuna connect panel.", "overwrite": false },
       { "name": "Generic Text Input", "message": "{{input: variable_name}}", "trigger": "", "action": "", "description": "Display an input box to the user. Response is stored in the user's metadata under 'variable_name'.", "overwrite": false },
-      { "name": "update other user's user status", "message": "{{update: user_status}}", "trigger": "", "action": "", "description": "Display an input box to the user. Response is stored in the user's metadata under 'variable_name'.", "overwrite": false }
+      { "name": "update other user's user status", "message": "{{update: user_status_option, newStatus}}", "trigger": "", "action": "", "description": "Display an input box to the user. Response is stored in the user's metadata under 'variable_name'.", "overwrite": false }
     ]
   },
   {
