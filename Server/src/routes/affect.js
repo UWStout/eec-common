@@ -199,6 +199,7 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
   // Attempt to insert affect history log
   debug('attempting to insert affect history log')
   try {
+    // updates history and user status
     await affectDB.insertAffectHistoryEntry(affectID, relatedID, isUser, isPrivate)
     res.json({ success: true })
   } catch (error) {

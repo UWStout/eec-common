@@ -38,6 +38,17 @@ export function parseMessageCommands (messageText, messageInfo) {
           `).trim().replace(/[\s\n\r]+/g, ' ') // <-- strips unnecessary whitespace
         }
 
+        // Show a custom text-input box
+        case 'update': {
+          // cmdData contains what should be updated
+          const args = cmdData.split(',').map(word => (word.trim())) // creates an array called words
+          if (!Array.isArray(messageInfo.update)) {
+            messageInfo.update = []
+          }
+          messageInfo.update.push({ user_status_option: args[0], newStatus: args[1] })
+          return ''
+        }
+
         // Anything else (just remove it)
         default:
           debug(`WARNING: Unknown command ${cmdName} in wizard message`)
