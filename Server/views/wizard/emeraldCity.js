@@ -154,6 +154,8 @@ socket.on('clientSend', (message) => {
     messageBox.append(newMsg)
     messageBox[0].scrollTop = messageBox[0].scrollHeight
 
+    // is this where "word-triggered" karuna responses should happen?
+
     // Clear the typing box text
     $(`#activeTyping${id}`).text('')
   } else {
@@ -336,16 +338,6 @@ function cannedMessageClick (event) {
     }
   }
 }
-
-// NOTE: Disabled for now
-// Enter pressed in text box, trigger send button
-// function triggerMessage (event) {
-//   // Enter key
-//   if (event.which === 13) {
-//     const submitButton = $($(event.target).data('target'))
-//     submitButton[0].click()
-//   }
-// }
 
 // Send button clicked so send message in text box
 function sendMessage (event) {
