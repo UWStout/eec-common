@@ -196,6 +196,8 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
     res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
   }
 
+  // TODO: Consider hook to Analysis.analyzeAffect()
+
   // Attempt to insert affect history log
   debug('attempting to insert affect history log')
   try {
