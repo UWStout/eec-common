@@ -28,7 +28,7 @@
   {
     "header": "End of Interaction Interventions",
     "choices": [
-        { "name": "Post-Interaction Survey", "message": "How do you feel after the last interaction? ", "trigger": "end of interaction", "action": "The affect survey is prompted", "description": "This intervention occurs after regardless of another user’s response. The affect survey is prompted.", "overwrite": true }
+        { "name": "Post-Interaction Survey", "message": "How do you feel after the last interaction?\n\n{{affect: input}}", "trigger": "end of interaction", "action": "The affect survey is prompted", "description": "This intervention occurs after regardless of another user’s response. The affect survey is prompted.", "overwrite": true }
     ]
   },
   {
