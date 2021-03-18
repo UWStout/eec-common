@@ -13,6 +13,8 @@ import * as DBShapes from '../dataTypeShapes.js'
 import MoodSelect from './MoodSelector.jsx'
 import Emoji from './Emoji.jsx'
 import History from './History.jsx'
+import MoreAboutNVC from './MoreAboutNVC.jsx'
+import TeamCulture from './TeamCulture.jsx'
 
 const useStyles = makeStyles((theme) => ({
   paperRoot: {
@@ -55,6 +57,18 @@ const useStyles = makeStyles((theme) => ({
 export default function ConnectForm (props) {
   const classes = useStyles()
   const [historyOpen, updateHistoryOpen] = useState(false)
+  const [displayedNVC, updateDisplayed] = useState(false)
+  const [displayedTeam, updateTeamDisplayed] = useState(false)
+
+  const handleDisplayedNVC = (event) => {
+    const newDisplayedState = !displayedNVC
+    updateDisplayed(newDisplayedState)
+  }
+
+  const handleDisplayedTeamCulture = (event) => {
+    const newDisplayedState = !displayedTeam
+    updateTeamDisplayed(newDisplayedState)
+  }
 
   // Tracks the history panel state
   const handleHistoryClick = (e) => {
@@ -83,6 +97,9 @@ export default function ConnectForm (props) {
     collaborationType = <Emoji padMore symbol='🧍' label='Solo Focused' />
   }
 
+  const nvc = displayedNVC ? <MoreAboutNVC /> : null
+  const team = displayedTeam ? <TeamCulture /> : null
+
   // Return all the form elements
   return (
     <div>
@@ -102,6 +119,11 @@ export default function ConnectForm (props) {
                 Karuna Connect
                 <Emoji padMore symbol={<ChevronRightIcon className={classes.svgIcon} />} label='Close Panel' />
               </Button>
+            </Grid>
+
+            <Grid>
+              { nvc }
+              { team }
             </Grid>
 
             {/* Current mood / mood selection */}
@@ -138,7 +160,7 @@ export default function ConnectForm (props) {
 
             {/* Link to Team Culture Document */}
             <Grid item className={classes.gridRow}>
-              <Button color="default" className={classes.panelButton} onClick={() => {}}>
+              <Button color="default" className={classes.panelButton} onClick={ handleDisplayedTeamCulture }>
                 <Emoji padMore symbol={<PermMediaIcon className={classes.svgIcon} />} label='View Team culture (coming soon)' />
                 Our Team Culture
               </Button>
@@ -146,7 +168,7 @@ export default function ConnectForm (props) {
 
             {/* Link to NVC Info */}
             <Grid item className={classes.gridRow}>
-              <Button color="default" className={classes.panelButton} onClick={() => {}}>
+              <Button color="default" className={classes.panelButton} onClick={ handleDisplayedNVC }>
                 <Emoji padMore symbol={<PermMediaIcon className={classes.svgIcon} />} label='View NVC information (coming soon)' />
                 More About NVC
               </Button>
