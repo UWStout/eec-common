@@ -44,7 +44,7 @@
       { "name": "Highlight Many Words", "message": "{{highlight: word1, word2, word3}}", "trigger": "", "action": "", "description": "Instruct Karuna to highlight several words in the users message text.", "overwrite": false },
       { "name": "Affect Input Trigger", "message": "{{affect: input}}", "trigger": "", "action": "", "description": "Show a button that triggers the affect survey in the Karuna connect panel.", "overwrite": false },
       { "name": "Generic Text Input", "message": "{{input: variable_name}}", "trigger": "", "action": "", "description": "Display an input box to the user. Response is stored in the user's metadata under 'variable_name'.", "overwrite": false },
-      { "name": "update other user's user status", "message": "{{update: user_status_option, newStatus}}", "trigger": "", "action": "", "description": "Display an input box to the user. Response is stored in the user's metadata under 'variable_name'.", "overwrite": false }
+      { "name": "update other user's user status", "message": "{{update: user status option (replace me), new status (replace me)}}", "trigger": "", "action": "", "description": "Display an input box to the user. Response is stored in the user's metadata under 'variable_name'.", "overwrite": false }
     ]
   },
   {
@@ -74,9 +74,11 @@
   {
     "header": "Generic Status Variables",
     "choices": [  
-      { "name": "Time to respond", "message": "{{}}", "trigger": "", "action": "", "description": "insert other user's time to respond where the text insertion cursor is", "overwrite": false },
-      { "name": "Open to Collaboration", "message": true, "trigger": "", "action": "", "description": "insert other user's collaboration status where the text insertion cursor is", "overwrite": false },
-      { "name": "Not Open to Collaboration", "message": false, "trigger": "", "action": "", "description": "insert other user's collaboration status where the text insertion cursor is", "overwrite": false }
+      { "name": "user status option: Time to respond", "message": "timeToRespond", "trigger": "", "action": "", "description": "insert time to respond status option where the text insertion cursor is", "overwrite": false },
+      { "name": "user status option: Collaboration status", "message": "collaboration", "trigger": "", "action": "", "description": "insert collaboration status option where the text insertion cursor is", "overwrite": false },
+      { "name": "new status: Open to Collaboration", "message": true, "trigger": "", "action": "", "description": "insert not open to collaborate setting where the text insertion cursor is", "overwrite": false },
+      { "name": "new status: Not Open to Collaboration", "message": false, "trigger": "", "action": "", "description": "insert open to collaborate setting where the text insertion cursor is", "overwrite": false },
+      { "name": "user status option: current affect", "message": "affect", "trigger": "", "action": "", "description": "insert current affect status option where the text insertion cursor is", "overwrite": false }
     ]
   }
 ]
