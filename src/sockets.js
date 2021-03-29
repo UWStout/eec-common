@@ -38,6 +38,9 @@ export function makeSocket (serverListener) {
     socket.on('wizardSession', socketWizardSession.bind(socket))
     socket.on('wizardMessage', socketWizardMessage.bind(socket)) // <-- LOG TO DATABASE
 
+    // sending message to client through karuna bubble
+    socket.on('genericMessage', socketGenericMessage.bind(socket))
+
     // Client specific messages
     socket.on('clientSession', socketClientSession.bind(socket))
     socket.on('messageUpdate', socketMessageUpdate.bind(socket))
@@ -232,6 +235,20 @@ async function socketWizardMessage (messageInfo) {
     }
   } else {
     debug(`[WS:${this.id}] wizard sending to UNKNOWN client ${messageInfo.clientEmail} in ${messageInfo.context}`)
+  }
+}
+
+async function socketGenericMessage(messageInfo){
+  const destID = clientSocketLookup[messageInfo.clientEmail]
+  if (destID) {
+    // Pull out some local variables
+    const correspondentID = clientSessions[destID].id
+
+    // Send the message on to client
+    debug(`generic message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
+    mySocket.to(destID).emit('karunaMessage', messageInfo)
+  } else {
+    debug(`generic message sending to UNKNOWN client ${messageInfo.clientEmail} in ${messageInfo.context}`)
   }
 }
 
