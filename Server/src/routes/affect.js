@@ -13,6 +13,8 @@ import { authenticateToken } from './auth.js'
 // for testing the database
 import { ObjectID } from 'mongodb'
 
+import { analyzeAffect } from '../analysisEngine.js'
+
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('server:affect_routes')
@@ -197,12 +199,30 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
   }
 
   // TODO: Consider hook to Analysis.analyzeAffect()
+  // Hook to intelligence core, expect a promise in return
+  try {
+    const affect = await affectDB.getAffectDetails(affectID)
+    // return res.json(affect)
 
+    analyzeAffect(affect, false)
+      .then((result) => {
+        debug('analyze affect success')
+      })
+      .catch((err) => {
+        debug('In-Progress Message analysis failed')
+        debug(err)
+      })
+  } catch (error) {
+    debug(`Failed to get affect details ${affectID}`)
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while getting affect details' })
+  }
   // Attempt to insert affect history log
   debug('attempting to insert affect history log')
   try {
     // updates history and user status
     await affectDB.insertAffectHistoryEntry(affectID, relatedID, isUser, isPrivate)
+    debug('affect updated')
     res.json({ success: true })
   } catch (error) {
     console.error('Failed to insert affect history log')

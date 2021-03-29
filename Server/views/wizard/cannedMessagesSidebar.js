@@ -1,4 +1,6 @@
-/* global $ */
+import Affect from './Affect.js'
+
+/* globals $, axios, store, Cookies, io, TinyMDE */
 
 export function makeMessageGroup (groupIndex, clickCallback, parentID, headerText, choices) {
   const headingID = `messageGroupHeading${groupIndex}`
@@ -32,6 +34,52 @@ function makeCardHeader (headerText, headingID, collapseID) {
   return headerDiv
 }
 
+function retrieveAffects () {
+  return new Promise((resolve, reject) => {
+    // Build URL with query parameters
+    const URL = '../data/affect/list?fullInfo=true'
+
+    // Start the GET request
+    axios.get(URL)
+      .then((response) => {
+        // debugger
+        // console.log(response.data.data.length)
+        // Deal with an empty data set
+        if (response.data.data.length < 1) {
+          return resolve({ data: [] })
+        }
+
+        // Resolve the promise normally
+        return resolve(response.data.data)
+      }).catch((error) => {
+        console.log(error)
+        return reject(error)
+      })
+  })
+}
+
+export async function appendAffectList (cannedMessages) {
+  try {
+    const affectList = await retrieveAffects()
+    const modAffects = []
+    for (let i = 0; i < affectList.length; i++) {
+      modAffects.push(Affect.fromJSON(affectList[i]))
+    }
+
+    // put affects into cannedMessages object
+    debugger
+
+    
+    
+
+    // TO-DO: go into cannedMessages.json, and move the added affects to their proper group.
+    // TO-DO? streamline by automating this.
+  } catch (err) {
+    console.log('error making affect list')
+    console.log(err)
+  }
+}
+
 function makeCardBody (choices, clickCB, headingID, collapseID, listID, parentID) {
   const bodyCollapseDiv = $('<div>').attr('id', collapseID).addClass('collapse')
   bodyCollapseDiv.attr('data-parent', '#' + parentID).attr('aria-labelledby', headingID)
@@ -50,7 +98,7 @@ function makeListGroup (choices, clickCB, listID) {
   choices.forEach((choice) => {
     const choiceItem = $('<li>').addClass('list-group-item px-0 py-1').text(choice.name ? choice.name : 'ERROR: \'name\' property missing')
     choiceItem.attr('data-message', choice.message ? choice.message : 'ERROR: \'message\' property missing from choice')
-    choiceItem.attr('data-overwrite', choice.overwrite !== undefined ? choice.overwrite : false)
+    choiceItem.attr('data-overwrite', choice.overwrite !== undefined ? choice.overwrite : false) // defaults to false, I think
     choiceItem.css('cursor', 'pointer')
     // choiceItem.attr('data-action', choice.action)
     choiceItem.click(clickCB)

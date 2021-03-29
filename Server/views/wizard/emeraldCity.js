@@ -2,7 +2,7 @@
 
 // Import various helper functions
 import { makeTabHeader, makeTabContentPane } from './chatWidgetHelper.js'
-import { makeMessageGroup } from './cannedMessagesSidebar.js'
+import { makeMessageGroup, appendAffectList } from './cannedMessagesSidebar.js'
 
 // Repo read-only token
 // - This is a personal access token for github account KarunaAuth
@@ -222,6 +222,8 @@ $(document).ready(() => {
       console.error('Failed to load github canned messages, falling back to local copy (may be out of date)')
       console.error(err)
 
+      // this is where I should try to talk to the JSON object, but not write to it.
+
       // Fall back to local version of canned messages
       axios.get('./cannedMessages.json')
         .then((response) => { buildMessagesSidebar(response.data) })
@@ -235,14 +237,15 @@ $(document).ready(() => {
 
 function buildMessagesSidebar (data) {
   // Loop over return groups
-  data.forEach((group, i) => {
-    // Build and append each group of choices
-    const groupNodes = makeMessageGroup(
-      i + 1, cannedMessageClick, 'cannedMessageSidebar', group.header, group.choices
-    )
-    $('#cannedMessageSidebar').append(groupNodes)
-  })
+  // data.forEach((group, i) => {
+  //   // Build and append each group of choices
+  //   const groupNodes = makeMessageGroup(
+  //     i + 1, cannedMessageClick, 'cannedMessageSidebar', group.header, group.choices
+  //   )
+  //   $('#cannedMessageSidebar').append(groupNodes)
+  // })
 
+  appendAffectList(data)
   // TODO: Append wizard history group
 }
 
