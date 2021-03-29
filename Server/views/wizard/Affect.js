@@ -19,7 +19,7 @@ class Affect {
 
   static fromJSON (json) {
     // const parsed = JSON.parse(jsonString)
-    const newAffect = new Affect(json.characterCodes[0] + ' ' + json.name, '{{' + json._id + '}}', json.description)
+    const newAffect = new Affect(json.characterCodes[0] + ' ' + json.name, json._id, json.description)
     return newAffect
   }
 
