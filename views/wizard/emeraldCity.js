@@ -235,17 +235,18 @@ $(document).ready(() => {
     })
 })
 
-function buildMessagesSidebar (data) {
+async function buildMessagesSidebar (data) {
   // Loop over return groups
-  // data.forEach((group, i) => {
-  //   // Build and append each group of choices
-  //   const groupNodes = makeMessageGroup(
-  //     i + 1, cannedMessageClick, 'cannedMessageSidebar', group.header, group.choices
-  //   )
-  //   $('#cannedMessageSidebar').append(groupNodes)
-  // })
+  data = await appendAffectList(data)
+  data.forEach((group, i) => {
+    // Build and append each group of choices
+    const groupNodes = makeMessageGroup(
+      i + 1, cannedMessageClick, 'cannedMessageSidebar', group.header, group.choices
+    )
+    $('#cannedMessageSidebar').append(groupNodes)
+  })
 
-  appendAffectList(data)
+  
   // TODO: Append wizard history group
 }
 

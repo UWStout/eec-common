@@ -67,11 +67,9 @@ export async function appendAffectList (cannedMessages) {
     }
 
     // put affects into cannedMessages object
-    debugger
-
-    
-    
-
+    const statusGroup = cannedMessages[8].choices
+    modAffects.forEach((element) => statusGroup.push(element))
+    return cannedMessages
     // TO-DO: go into cannedMessages.json, and move the added affects to their proper group.
     // TO-DO? streamline by automating this.
   } catch (err) {
