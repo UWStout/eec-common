@@ -238,7 +238,7 @@ async function socketWizardMessage (messageInfo) {
   }
 }
 
-async function socketGenericMessage(messageInfo){
+async function socketGenericMessage (messageInfo) {
   const destID = clientSocketLookup[messageInfo.clientEmail]
   if (destID) {
     // Pull out some local variables
