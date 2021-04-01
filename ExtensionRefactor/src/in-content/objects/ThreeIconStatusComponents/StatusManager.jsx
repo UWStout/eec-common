@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
+import { makeStyles } from '@material-ui/core/styles'
 import ThreeIconStatus from './ThreeIconStatus.jsx'
 
 import { backgroundMessage } from '../AJAXHelper.js'
 
+const useStyles = makeStyles((theme) => ({
+  fixedParent: {
+    position: 'fixed',
+    top: '0px',
+    left: '0px'
+  }
+}))
+
 // A general manager for all status icons (logged in and other users both)
 export default function StatusManager (props) {
+  const classes = useStyles()
+
   // User/Karuna data state
   const [emojiList, updateEmojiList] = useState([])
   const [userStatus, updateUserStatus] = useState(null)
@@ -47,7 +58,9 @@ export default function StatusManager (props) {
     const curStatus = otherStatusList[discordName]
     statusElementList.push(
       <ThreeIconStatus radial emojiList={emojiList} key={discordName}
-        anchor={curStatus.anchor} userStatus={curStatus.status} />
+        top={curStatus.anchor.top} left={curStatus.anchor.left}
+        width={curStatus.dims.width} height={curStatus.dims.height}
+        userStatus={curStatus.status} />
     )
   }
 
@@ -55,7 +68,9 @@ export default function StatusManager (props) {
   return (
     <React.Fragment>
       <ThreeIconStatus emojiList={emojiList} userStatus={userStatus} />
-      {statusElementList}
+      <div className={classes.fixedParent}>
+        {statusElementList}
+      </div>
     </React.Fragment>
   )
 }

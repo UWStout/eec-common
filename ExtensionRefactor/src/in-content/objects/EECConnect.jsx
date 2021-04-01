@@ -25,7 +25,7 @@ class EECConnect extends HTMLElement {
     super()
 
     // Initialize internal data
-    this.otherStatuses = null
+    this.otherStatuses = {}
 
     // create a shadow root
     this.attachShadow({ mode: 'open' })
@@ -36,6 +36,9 @@ class EECConnect extends HTMLElement {
       console.log(response)
       this.JWT = response.value
     })
+
+    // We are interested in window resizing
+    window.addEventListener('resize', this.onWindowResized.bind(this))
   }
 
   // MUST be called manually now (with an event emitter)
@@ -117,6 +120,25 @@ class EECConnect extends HTMLElement {
     this.updateOtherStatusList()
   }
 
+  onMutation () {
+    this.updateOtherStatusList(false)
+
+    // Re-apply our scroll listener, just in case
+    const memberDiv = jQuery('div[class^=members-]')
+    if (memberDiv !== this.memberDiv) {
+      memberDiv.on('scroll', this.onMemberScroll.bind(this))
+      this.memberDiv = memberDiv
+    }
+  }
+
+  onWindowResized () {
+    this.updateOtherStatusList(true)
+  }
+
+  onMemberScroll () {
+    this.updateOtherStatusList(true)
+  }
+
   // Update background communication port
   setBackgroundPort (extensionPort) {
     this.backgroundPort = extensionPort
@@ -163,27 +185,41 @@ class EECConnect extends HTMLElement {
     }
   }
 
-  updateOtherStatusList () {
+  updateOtherStatusList (resizeOnly) {
+    console.log('%c[[REACT]]', 'background: #222; color: #bada55', 'Checking User List')
     const otherAvatars = jQuery('div[class^=avatar-] div[class^=wrapper-]')
-
     const oldStatuses = { ...this.otherStatuses }
     const newStatuses = []
+
+    let somethingChanged = false
     otherAvatars.each((index, curElem) => {
-      if (index > 0) {
-        const discordName = curElem.attr('aria-label').split(',')[0]
-        const anchor = curElem.offset()
-        if (!this.otherStatuses[discordName]) {
-          newStatuses[discordName] = { discordName, anchor, status: null }
+      const jqElem = jQuery(curElem)
+      const discordName = jqElem.attr('aria-label').split(',')[0]
+      const anchor = jqElem.offset()
+      const dims = { width: jqElem.width(), height: jqElem.height() }
+
+      const newStatus = { discordName, anchor, dims, status: null }
+      if (resizeOnly) {
+        this.otherStatuses[discordName] = newStatus
+        delete oldStatuses[discordName]
+        somethingChanged = true
+      } else {
+        if (this.otherStatuses[discordName] === undefined) {
+          newStatuses[discordName] = newStatus
+          console.log('%c[[REACT]]', 'background: #222; color: #bada55', `-- NEW user "${discordName}" (${JSON.stringify(anchor)})`)
+          somethingChanged = true
         } else {
           delete oldStatuses[discordName]
         }
       }
     })
 
-    if (Object.keys(newStatuses).length > 0 || Object.keys(oldStatuses).length > 0) {
+    if (resizeOnly || Object.keys(newStatuses).length > 0 || Object.keys(oldStatuses).length > 0) {
       // Delete old statuses that are no longer needed
       Object.keys(oldStatuses).forEach((oldStatusKey) => {
         delete this.otherStatuses[oldStatusKey]
+        console.log('%c[[REACT]]', 'background: #222; color: #bada55', `-- User GONE "${oldStatusKey}"`)
+        somethingChanged = true
       })
 
       // Merge remaining statuses with new ones
@@ -191,9 +227,30 @@ class EECConnect extends HTMLElement {
         this.otherStatuses = { ...this.otherStatuses, ...newStatuses }
       }
 
-      // Signal updated statuses
-      this.emitter.emit('', this.otherStatuses)
+      // Signal updated statuses if something changed
+      if (somethingChanged) {
+        console.log('%c[[REACT]]', 'background: #222; color: #bada55', '-- EMITTING CHANGE')
+        this.statusEmitter.emit('statusListChanged', { ...this.otherStatuses })
+      }
     }
+  }
+
+  statusHasChanged (oldStatus, newStatus) {
+    if (oldStatus === undefined || oldStatus.anchor === undefined || oldStatus.dims === undefined) {
+      return true
+    }
+
+    if (Math.abs(oldStatus.anchor.top - newStatus.anchor.top) > 1e-4 ||
+        Math.abs(oldStatus.anchor.left - newStatus.anchor.left) > 1e-4) {
+      return true
+    }
+
+    if (Math.abs(oldStatus.dims.width - newStatus.dims.width) > 1e-4 ||
+        Math.abs(oldStatus.dims.height - newStatus.dims.height) > 1e-4) {
+      return true
+    }
+
+    return false
   }
 
   setContextName (newContext) {
