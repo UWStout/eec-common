@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Opens the Connect Panel
 export default function ConnectPanelButton (props) {
   const classes = useStyles()
 

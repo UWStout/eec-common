@@ -20,6 +20,7 @@ export default function AccountSettings () {
   const [email, updateEmail] = useState('')
   const [password, updatePassword] = useState('')
   const [loggedIn, updateLoggedIn] = useState(false)
+  const [failedLogin, updateFailed] = useState(false)
 
   // Read the JWT for later use
   chrome.runtime.sendMessage(
@@ -59,10 +60,15 @@ export default function AccountSettings () {
       chrome.runtime.sendMessage({ type: 'write', key: 'JWT', data })
       chrome.runtime.sendMessage({ type: 'login', key: 'JWT', data })
       updateLoggedIn(true)
+      updateFailed(false)
+    }
+
+    function invalidLogin () {
+      updateFailed(true)
     }
 
     // Send message to background (which does the ajax request)
-    backgroundMessage(message, 'Invalid Login: ', login)
+    backgroundMessage(message, 'Invalid Login: ', invalidLogin, login)
   }
 
   const logout = () => {
@@ -70,9 +76,16 @@ export default function AccountSettings () {
     updateLoggedIn(false)
   }
 
+  const invalidLogin = (
+    <div style={{ color: '#f51d00' }}>
+      Invalid login Data
+    </div>
+  )
+
   const loginDetails = (
     <div>
       <div className={classes.AccountSettingsBody}>
+        { failedLogin ? invalidLogin : null }
         <span>
           <MailOutlineIcon />
           Email

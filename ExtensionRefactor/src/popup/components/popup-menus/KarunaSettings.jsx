@@ -7,12 +7,12 @@ import AlarmIcon from '@material-ui/icons/Alarm'
 import ThumbDownIcon from '@material-ui/icons/ThumbDown'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
 import TvIcon from '@material-ui/icons/Tv'
-import TvOffIcon from '@material-ui/icons/TvOff';
+import TvOffIcon from '@material-ui/icons/TvOff'
 
 const useStyles = makeStyles({
   karunaSettingsBody: {
     padding: '5px 0px 5px 0px'
-  },
+  }
 })
 
 export default function KarunaSettings () {
@@ -43,7 +43,7 @@ export default function KarunaSettings () {
         label='timeout'
         type='number'
         InputLabelProps={{
-          shrink: true,
+          shrink: true
         }}
       />
       <div className={classes.karunaSettingsBody}>
