@@ -8,6 +8,8 @@ const columns = [
   { id: 'date', label: 'Date', minWidth: '20px' }
 ]
 
+// Hard coded history.
+// TODO: pull data from server and display dynamically
 const rows = [
   {
     rowid: '1',

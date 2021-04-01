@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 /**
- *
+ * Standardizes the emoji for use within Karuna.
  * @param {string} symbol The actual unicode emoji
  * @param {string} label The aria-label description of the emoji
  */

@@ -9,6 +9,8 @@ const columns = [
   { id: 'partnerMood', label: 'them', minWidth: 10 }
 ]
 
+// Hard coded history.
+// TODO: pull data from server and display dynamically
 const rows = [
   {
     rowid: '1',
