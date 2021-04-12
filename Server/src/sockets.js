@@ -238,17 +238,15 @@ async function socketWizardMessage (messageInfo) {
   }
 }
 
-async function socketGenericMessage(messageInfo){
+async function socketGenericMessage (messageInfo) {
   const destID = clientSocketLookup[messageInfo.clientEmail]
+  console.log('destID in socketGenericMessage: ' + destID)
   if (destID) {
-    // Pull out some local variables
-    const correspondentID = clientSessions[destID].id
-
     // Send the message on to client
-    debug(`generic message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
+    debug(`generic message for client ${messageInfo.clientEmail}`)
     mySocket.to(destID).emit('karunaMessage', messageInfo)
   } else {
-    debug(`generic message sending to UNKNOWN client ${messageInfo.clientEmail} in ${messageInfo.context}`)
+    debug(`generic message sending to UNKNOWN client ${messageInfo.clientEmail} in ${messageInfo}`)
   }
 }
 
@@ -323,4 +321,27 @@ async function socketMessageSend (message) {
     context: message.context,
     data: message.data
   })
+}
+
+export function sendGenericMessage (message, userID) {
+  if (message.trim() === '') {
+    return
+  }
+  // get User email from userID
+  // use DBUser
+  const userEmail = 'anywhere@email.com' // TO-DO: get from database using userID
+  const socketID = clientSocketLookup[userEmail]
+  
+  console.log(socketID)
+
+  // Broadcast to all sockets
+  console.log(`Broadcasting message to ${userEmail} - ${message}`)
+
+  if (socketID) {
+    mySocket.to(socketID).emit('genericMessage', {
+      clientEmail: userEmail, // user email
+      // context: message,
+      data: message
+    })
+  }
 }

@@ -246,7 +246,6 @@ async function buildMessagesSidebar (data) {
     $('#cannedMessageSidebar').append(groupNodes)
   })
 
-  
   // TODO: Append wizard history group
 }
 
