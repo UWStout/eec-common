@@ -82,6 +82,9 @@ jQuery(document).ready(() => {
     // Attempt to update EEC text-boxes (if needed)
     updateTextBoxes()
 
+    // Signal that content has changed to the connect component
+    karunaConnectElem.onMutation()
+
     // Check team and channel names on any page mutation.
     // We use optional chaining to avoid undefined errors
     const oldValues = { userName, teamName, channelName }

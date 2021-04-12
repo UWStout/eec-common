@@ -45,6 +45,20 @@ export default function ThreeIconStatus (props) {
     }
   }, [props.emojiList, props.userStatus])
 
+  // Setup the geometry state
+  const [statusGeom, updateStatusGeom] = useState({ top: 0, left: 0, width: 0, height: 0 })
+  useEffect(() => {
+    if (props.top !== statusGeom.top || props.left !== statusGeom.left ||
+        props.width !== statusGeom.width || props.height !== statusGeom.height) {
+      updateStatusGeom({
+        top: props.top,
+        left: props.left,
+        width: props.width,
+        height: props.height
+      })
+    }
+  }, [props.top, props.left, props.width, props.height])
+
   // Build collaboration icon from userStatus prop
   let collaborationType = <Emoji symbol='?' label='Loading' />
   if (props.userStatus?.collaboration) {
@@ -55,16 +69,21 @@ export default function ThreeIconStatus (props) {
 
   // Render as a radial status icon
   if (props.radial) {
-    const style = {
+    const parentStyle = {
       position: 'absolute',
-      top: props.anchor.top,
-      left: props.anchor.left
+      whiteSpace: 'nowrap',
+      ...statusGeom
     }
+
+    const childStyle = {
+      position: 'absolute',
+      bottom: '-5px',
+      transform: 'translateX(-30%)'
+    }
+
     return (
-      <div style={style}>
-        <div>A</div><br/>
-        <div>B</div><br/>
-        <div>C</div>
+      <div style={parentStyle}>
+        <div style={childStyle}>A-B-C</div>
       </div>
     )
   }
@@ -92,8 +111,13 @@ ThreeIconStatus.propTypes = {
     PropTypes.shape(DBShapes.AffectObjectShape)
   ),
   radial: PropTypes.bool,
-  anchor: PropTypes.shape({
-    top: PropTypes.string,
-    left: PropTypes.string
-  })
+  top: PropTypes.number,
+  left: PropTypes.number,
+  width: PropTypes.number,
+  height: PropTypes.number
+}
+
+// Need the geometry values to always be defined
+ThreeIconStatus.defaultProps = {
+  top: 0, left: 0, width: 0, height: 0
 }
