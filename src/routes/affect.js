@@ -204,7 +204,7 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
     const affect = await affectDB.getAffectDetails(affectID)
     // return res.json(affect)
 
-    analyzeAffect(affect, false)
+    analyzeAffect(affect, userID)
       .then((result) => {
         debug('analyze affect success')
       })

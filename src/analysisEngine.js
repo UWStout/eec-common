@@ -1,5 +1,9 @@
+
 // Setup debug for output
 import Debug from 'debug'
+
+import { sendGenericMessage } from './sockets.js'
+
 const debug = Debug('server:analysis')
 
 // Stub function for analyzing messages (both incomplete and complete)
@@ -22,7 +26,7 @@ export function analyzeMessage (messageObj, isComplete = false) {
 }
 
 // Stub function for analyzing an affect
-export function analyzeAffect (affectObj) {
+export function analyzeAffect (affectObj, userID) {
   return new Promise((resolve, reject) => {
     debug(affectObj.characterCodes[0]) // when will this be called?
     // switch (affectObj.data) { // will this be an ID or an affect?
@@ -30,7 +34,9 @@ export function analyzeAffect (affectObj) {
 
     // This is an example I want to work with to get the karuna bubble connected with the analysis engine.
     if (affectObj.characterCodes[0] === '🤩') {
-      debug('you look excited!')
+      const message = 'you look excited!'
+      debug(message)
+      sendGenericMessage(message, userID)
     }
     debug('Call to analyzeAffect')
     setTimeout(() => { resolve({ success: true }) }, 100)
