@@ -23,6 +23,7 @@ export default function ConnectComponent (props) {
   useEffect(() => {
     backgroundMessage(
       { type: 'read', key: 'privacy' },
+      props.context,
       'Failed to read privacy preferences: ',
       (newPrivacy) => {
         updatePrivacy({
@@ -38,6 +39,7 @@ export default function ConnectComponent (props) {
     // Send ajax request for data via background script
     backgroundMessage(
       { type: 'ajax-getEmojiList', loginTrigger },
+      props.context,
       'Emoji Retrieval failed: ',
       (data) => { updateEmojiList(data) }
     )
@@ -48,6 +50,7 @@ export default function ConnectComponent (props) {
     console.log('[[REACT]] Retrieving last user status')
     backgroundMessage(
       { type: 'ajax-getUserStatus' },
+      props.context,
       'Retrieving current user status failed: ',
       (currentUserStatus) => {
         console.log('[[REACT]] User status retrieved:')
@@ -63,6 +66,7 @@ export default function ConnectComponent (props) {
     console.log('[[REACT]] Updating user mood')
     backgroundMessage(
       { type: 'ajax-setUserAffect', affectID, privacy },
+      props.context,
       'Setting mood failed: ', () => {
         console.log('[[REACT]] user mood updated')
         getLatestUserStatus()
@@ -75,6 +79,7 @@ export default function ConnectComponent (props) {
     console.log('[[REACT]] Updating user collaboration status')
     backgroundMessage(
       { type: 'ajax-setCollaboration', collaboration: newCollaboration },
+      props.context,
       'Setting collaboration failed: ', () => {
         console.log('[[REACT]] User collaboration status updated')
         getLatestUserStatus()
@@ -138,5 +143,6 @@ export default function ConnectComponent (props) {
 }
 
 ConnectComponent.propTypes = {
-  emitter: PropTypes.object
+  emitter: PropTypes.object,
+  context: PropTypes.string
 }

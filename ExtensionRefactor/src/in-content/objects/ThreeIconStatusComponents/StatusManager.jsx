@@ -31,6 +31,7 @@ export default function StatusManager (props) {
     // Send ajax request for data via background script
     backgroundMessage(
       { type: 'ajax-getEmojiList', loginTrigger },
+      props.context,
       'Emoji Retrieval failed: ',
       (data) => { updateEmojiList(data) }
     )
@@ -76,5 +77,6 @@ export default function StatusManager (props) {
 }
 
 StatusManager.propTypes = {
-  emitter: PropTypes.object
+  emitter: PropTypes.object,
+  context: PropTypes.string
 }

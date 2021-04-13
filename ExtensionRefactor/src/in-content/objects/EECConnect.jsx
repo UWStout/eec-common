@@ -42,7 +42,10 @@ class EECConnect extends HTMLElement {
   }
 
   // MUST be called manually now (with an event emitter)
-  setupElementReact (emitter) {
+  setupElementReact (contextName, emitter) {
+    // Set the context name
+    this.contextName = contextName
+
     // Setup basic shadow-DOM styles
     this.customStyle = jQuery('<style>')
     this.customStyle.text(EECConnectCSS)
@@ -93,7 +96,7 @@ class EECConnect extends HTMLElement {
       <StylesProvider jss={jss}>
         <MuiThemeProvider theme={theme}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
-            <ConnectComponent emitter={this.statusEmitter} />
+            <ConnectComponent context={this.contextName} emitter={this.statusEmitter} />
           </MuiPickersUtilsProvider>
         </MuiThemeProvider>
       </StylesProvider>,
@@ -105,7 +108,7 @@ class EECConnect extends HTMLElement {
       <StylesProvider jss={jss}>
         <MuiThemeProvider theme={theme}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
-            <StatusManager emitter={this.statusEmitter} />
+            <StatusManager context={this.contextName} emitter={this.statusEmitter} />
           </MuiPickersUtilsProvider>
         </MuiThemeProvider>
       </StylesProvider>,
@@ -118,6 +121,9 @@ class EECConnect extends HTMLElement {
 
     // Setup status icons for other users
     this.updateOtherStatusList()
+
+    // Setup to update the styling after deferring some time
+    setTimeout(() => { this.setContextName.bind(this)(contextName) }, 200)
   }
 
   onMutation () {

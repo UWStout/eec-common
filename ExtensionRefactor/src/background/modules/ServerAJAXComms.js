@@ -15,7 +15,7 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
   let promise = null
   switch (message.type) {
     case 'ajax-validateAccount':
-      promise = validateAccount(message.email, message.password)
+      promise = validateAccount(message.email, message.password, message.context)
       break
 
     case 'ajax-getEmojiList':
@@ -34,7 +34,7 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       if (!userData.id) {
         promise = Promise.reject(new Error('No user id available (not logged in?)'))
       } else {
-        promise = setUserAffect(userData.id, message.affectID, message.privacy)
+        promise = setUserAffect(userData.id, message.context, message.affectID, message.privacy)
       }
       break
 
@@ -42,7 +42,7 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       if (!userData.id) {
         promise = Promise.reject(new Error('No user id available (not logged in?)'))
       } else {
-        promise = setCollaboration(userData.id, message.collaboration)
+        promise = setCollaboration(userData.id, message.context, message.collaboration)
       }
       break
 
@@ -50,7 +50,7 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       if (!userData.id) {
         promise = Promise.reject(new Error('No user id available (not logged in?)'))
       } else {
-        promise = setTimeToRespond(userData.id, message.timeToRespond)
+        promise = setTimeToRespond(userData.id, message.context, message.timeToRespond)
       }
       break
 
@@ -78,11 +78,11 @@ function authorizationHeader () {
   }
 }
 
-function validateAccount (email, password) {
+function validateAccount (email, password, context) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}auth/login`,
-      { email: email, password: password }
+      { email: email, password: password, context: (context || 'unknown') }
     )
 
     // Listen for server response or error
@@ -120,12 +120,12 @@ function getUserStatus (userID) {
   })
 }
 
-function setUserAffect (userID, affectID, isPrivate) {
+function setUserAffect (userID, context, affectID, isPrivate) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader() }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/insertHistory`,
-      { userID, affectID, isPrivate },
+      { userID, context: (context || 'unknown'), affectID, isPrivate },
       config
     )
 
@@ -135,12 +135,12 @@ function setUserAffect (userID, affectID, isPrivate) {
   })
 }
 
-function setCollaboration (userID, collaborationStatus) {
+function setCollaboration (userID, collaborationStatus, context) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader() }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/collaboration`,
-      { userID, collaborationStatus },
+      { userID, context: (context || 'unknown'), collaborationStatus },
       config
     )
 
@@ -150,12 +150,12 @@ function setCollaboration (userID, collaborationStatus) {
   })
 }
 
-function setTimeToRespond (userID, timeToRespond) {
+function setTimeToRespond (userID, timeToRespond, context) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader() }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/timeToRespond`,
-      { userID, timeToRespond },
+      { userID, context: (context || 'unknown'), timeToRespond },
       config
     )
 

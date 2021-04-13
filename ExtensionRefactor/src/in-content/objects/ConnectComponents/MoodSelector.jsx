@@ -110,7 +110,8 @@ export default function MoodSelect (props) {
     if (curPrivacy !== isPrivate) { setCurPrivacy(isPrivate) }
     backgroundMessage(
       { type: 'write', key: 'privacy', data: { private: isPrivate, prompt: !silencePromptCB } },
-      'Failed to update privacy prompt preferences: ', () => {}
+      'none',
+      'Failed to update privacy prompt preferences: '
     )
 
     // Trigger callback for new mood

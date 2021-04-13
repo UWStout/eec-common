@@ -2,18 +2,23 @@
  * Generic chrome.runtime.sendMessage function to simplify AJAX calls to the background.
  * Background messages are processed in ServerAJAXComms.js which returns a promise.
  * @param {object} messageObject a message object which must at minimum include a type: string
+ * @param {string} context A context identifier for which messaging tool is sending this request
  * @param {string} errorMessage message to return as an alert
- * @param {function} doWork parameter(data), function defined within context to perform a basic message task
+ * @param {function} errorCB Callback to run when an error occurs (takes no parameters)
+ * @param {function} successCB Callback that runs on success and receives any data returned by the response
  */
-export function backgroundMessage (messageObject, errorMessage, errorWork = null, doWork) {
-  chrome.runtime.sendMessage(messageObject, (data) => {
+export function backgroundMessage (messageObject, context = 'none',
+  errorMessage = 'Unknown error', successCB = null, errorCB = null) {
+  chrome.runtime.sendMessage({ ...messageObject, context }, (data) => {
     if (data && data.error) {
-      console.log(errorMessage + '\n' + data.error.message + '\n' + data.error)
-      if (errorWork) {
-        errorWork()
+      console.error(errorMessage + '\n' + data.error.message + '\n' + data.error)
+      if (errorCB) {
+        return errorCB()
       }
-    } else if (doWork) {
-      doWork(data)
+    }
+
+    if (successCB) {
+      return successCB(data)
     }
   })
 }
