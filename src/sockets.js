@@ -329,19 +329,28 @@ export function sendGenericMessage (message, userID) {
   }
   // get User email from userID
   // use DBUser
-  const userEmail = 'anywhere@email.com' // TO-DO: get from database using userID
-  const socketID = clientSocketLookup[userEmail]
-  
-  console.log(socketID)
+  // console.log('userID: ' + userID)
 
-  // Broadcast to all sockets
-  console.log(`Broadcasting message to ${userEmail} - ${message}`)
+  DBUser.getUserDetails(userID)
+    .then((details) => {
+      const userEmail = details.email
+      console.log(userEmail)
+      const socketID = clientSocketLookup[userEmail]
 
-  if (socketID) {
-    mySocket.to(socketID).emit('genericMessage', {
-      clientEmail: userEmail, // user email
-      // context: message,
-      data: message
+      // Broadcast to all sockets
+      console.log(`Broadcasting message to ${userEmail} - ${message}`)
+
+      if (socketID) {
+        console.log('emitting generic message')
+        mySocket.to(socketID).emit('karunaMessage', {
+          clientEmail: userEmail, // user email
+          context: 'discord',
+          data: message
+        })
+      }
     })
-  }
+    .catch((err) => {
+      debug('could not get user details')
+      debug(err)
+    })
 }
