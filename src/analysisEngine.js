@@ -26,7 +26,7 @@ export function analyzeMessage (messageObj, isComplete = false) {
 }
 
 // Stub function for analyzing an affect
-export function analyzeAffect (affectObj, userID) {
+export function analyzeAffect (affectObj, userID, context) {
   return new Promise((resolve, reject) => {
     debug(affectObj.characterCodes[0]) // when will this be called?
     // switch (affectObj.data) { // will this be an ID or an affect?
@@ -36,7 +36,7 @@ export function analyzeAffect (affectObj, userID) {
     if (affectObj.characterCodes[0] === '🤩') {
       const message = 'you look excited!'
       debug(message)
-      sendGenericMessage(message, userID)
+      sendGenericMessage(message, userID, context)
     }
     debug('Call to analyzeAffect')
     setTimeout(() => { resolve({ success: true }) }, 100)
