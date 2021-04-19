@@ -323,7 +323,7 @@ async function socketMessageSend (message) {
   })
 }
 
-export function sendGenericMessage (message, userID) {
+export function sendGenericMessage (message, userID, context) {
   if (message.trim() === '') {
     return
   }
@@ -333,6 +333,7 @@ export function sendGenericMessage (message, userID) {
 
   DBUser.getUserDetails(userID)
     .then((details) => {
+      console.log(details)
       const userEmail = details.email
       console.log(userEmail)
       const socketID = clientSocketLookup[userEmail]
@@ -340,12 +341,14 @@ export function sendGenericMessage (message, userID) {
       // Broadcast to all sockets
       console.log(`Broadcasting message to ${userEmail} - ${message}`)
 
+      console.log('context is ' + context)
+
       if (socketID) {
         console.log('emitting generic message')
         mySocket.to(socketID).emit('karunaMessage', {
           clientEmail: userEmail, // user email
-          context: 'discord',
-          data: message
+          context: context,
+          content: message
         })
       }
     })

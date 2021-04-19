@@ -177,6 +177,8 @@ class EECBubble extends HTMLElement {
         break
 
       case 'karunaMessage':
+        console.log("Bubble message recieved: ")
+        console.log(message)
         if (message.context === this.contextName && message.content.trim() !== '') {
           this.showMessage(message.content)
         }

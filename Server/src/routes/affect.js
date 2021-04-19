@@ -169,7 +169,7 @@ router.get('/list', authenticateToken, async (req, res) => {
 // 30. test affectController's function insertAffectHistoryEntry (affectID, relatedID, isUser)
 router.post('/insertHistory', authenticateToken, async (req, res) => {
   // Extract and check required fields
-  const { affectID, userID, teamID, isPrivate } = req.body
+  const { affectID, userID, teamID, isPrivate, context } = req.body
   if (!affectID || (!userID && !teamID)) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
@@ -177,6 +177,8 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
     res.status(400).json({ invalid: true, message: 'Cannot submit both userID and teamID' })
     return
   }
+
+  debug('context is ' + context)
 
   // set relatedID
   let relatedID, isUser
@@ -204,7 +206,7 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
     const affect = await affectDB.getAffectDetails(affectID)
     // return res.json(affect)
 
-    analyzeAffect(affect, userID)
+    analyzeAffect(affect, userID, context)
       .then((result) => {
         debug('analyze affect success')
       })
