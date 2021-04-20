@@ -1,43 +1,220 @@
-<mxfile host="app.diagrams.net" modified="2020-11-19T21:50:27.326Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36" etag="KEEh4xi9MBvEgbh26DAZ" version="13.9.9" type="github">
-  <diagram id="gYGimB_lef4zcPNBKloe" name="Page-1">
-    <mxGraphModel dx="1408" dy="1041" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="VVU1PZiKsJxvv-uHh0C--1" value="&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;b&gt;Root&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ ContextName: string&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ Sidebar: EECSidebar&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ Extension: EECExtension[]&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ ExtensionPort: Port&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;" parent="1" vertex="1">
-          <mxGeometry x="130" y="200" width="190" height="110" as="geometry" />
-        </mxCell>
-        <mxCell id="VVU1PZiKsJxvv-uHh0C--2" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" parent="VVU1PZiKsJxvv-uHh0C--1" vertex="1">
-          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
-            <mxPoint x="-24" y="4" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VVU1PZiKsJxvv-uHh0C--3" value="&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;b&gt;EECSidebar&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ BackgroundPort: Port&lt;br&gt;+ ContextName: string&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ JWT: string&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;" parent="1" vertex="1">
-          <mxGeometry x="410" y="200" width="190" height="110" as="geometry" />
-        </mxCell>
-        <mxCell id="VVU1PZiKsJxvv-uHh0C--4" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" parent="VVU1PZiKsJxvv-uHh0C--3" vertex="1">
-          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
-            <mxPoint x="-24" y="4" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VVU1PZiKsJxvv-uHh0C--5" value="&lt;b&gt;&lt;u&gt;Objects/EECSidebar.js - is an HTMLElement&lt;/u&gt;&lt;/b&gt;&lt;br&gt;The primary sidebar that shows the Karuna icon and displays messages from Karuna" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.37;size=20;position=0.47;" parent="1" vertex="1">
-          <mxGeometry x="410" y="120" width="270" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="VVU1PZiKsJxvv-uHh0C--6" value="&lt;b&gt;&lt;u&gt;in-content.js - Root injected script&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Injected into Discord and MS Teams pages and modifies them. Adds custom elements and communicates with the background script." style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.67;size=20;position=0.47;" parent="1" vertex="1">
-          <mxGeometry x="70" y="110" width="270" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="VVU1PZiKsJxvv-uHh0C--7" value="&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;b&gt;EECElement&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ textBox: HTMLElement&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ SizeObserver: ResizeObserver&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ BackgroundPort: Port&lt;br&gt;+ ContextName: string&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ WordList: string[]&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ JWT: string&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;" parent="1" vertex="1">
-          <mxGeometry x="730" y="200" width="210" height="140" as="geometry" />
-        </mxCell>
-        <mxCell id="VVU1PZiKsJxvv-uHh0C--8" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" parent="VVU1PZiKsJxvv-uHh0C--7" vertex="1">
-          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
-            <mxPoint x="-24" y="4" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VVU1PZiKsJxvv-uHh0C--9" value="&lt;b&gt;&lt;u&gt;Objects/EECElement.js - is an HTMLElement&lt;/u&gt;&lt;/b&gt;&lt;br&gt;One installed per editable text box. Monitors the textbox and relays content to background script. Can also underline words in textbox." style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.37;size=20;position=0.47;" parent="1" vertex="1">
-          <mxGeometry x="730" y="110" width="270" height="90" as="geometry" />
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
+<mxfile>
+    <diagram id="gYGimB_lef4zcPNBKloe" name="Page-1">
+        <mxGraphModel dx="1890" dy="998" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="In-Content" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="20" y="10" width="210" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Injected into Discord and MS Teams&lt;br&gt;via the shadow DOM. Our custom&lt;br&gt;Visual elements visible on the page&lt;br&gt;Live here" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="2">
+                    <mxGeometry y="30" width="210" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" target="14" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="230" y="60" as="sourcePoint"/>
+                        <mxPoint x="214.8571428571429" y="185" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="11" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" target="15" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="230" y="60" as="sourcePoint"/>
+                        <mxPoint x="334.8571428571429" y="185" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="13" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" target="16" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="230" y="60" as="sourcePoint"/>
+                        <mxPoint x="560" y="150" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="14" value="Connect Components" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="25" y="150" width="205" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="Contains the JSX components&lt;br&gt;responsible for rendering the connect&lt;br&gt;panel. The general structure of the&lt;br&gt;panel flows from EECConnect.jsx&lt;br&gt;down into ConnectComponent.jsx&lt;br&gt;which passes props down into the&lt;br&gt;ConnectForm.jsx&lt;br&gt;&lt;br&gt;ConnectForm.jsx builds the grid&lt;br&gt;which in turn renders each modular&lt;br&gt;component within the Form container" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="14">
+                    <mxGeometry x="-2.5" y="40" width="210" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="Css Helpers" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="260" y="150" width="205" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="Provides various CSS libraries&amp;nbsp;&lt;br&gt;to the project. The .css.txt files are&lt;br&gt;&quot;imported&quot; and ran through their&lt;br&gt;.js file. &lt;br&gt;&lt;br&gt;This is a black box, refer to each&lt;br&gt;respective Documentation for usage,&lt;br&gt;and import as needed." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="15">
+                    <mxGeometry x="-5" y="50" width="210" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="Three Icon Status" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="490" y="150" width="205" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="Renders the Status icons bar into&lt;br&gt;the shadow DOM when on Discord&lt;br&gt;or Teams.&lt;br&gt;&lt;br&gt;Similar to Connect Panel, the Status&lt;br&gt;icons are rendered from&lt;br&gt;EECConnect.jsx and props flow into&lt;br&gt;StatusManager.jsx which flows&lt;br&gt;into ThreeIconStatus.jsx to render&lt;br&gt;the actual content" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="16">
+                    <mxGeometry x="-5" y="35" width="210" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" target="19" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="230" y="60" as="sourcePoint"/>
+                        <mxPoint x="880" y="150.1428571428571" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="19" value="EECContent files" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="730" y="150" width="205" height="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="Contains rendering information for&lt;br&gt;insertion into the shadow DOM.&lt;br&gt;The rendering of each component&lt;br&gt;is dependent on in-content.js&lt;br&gt;observing the context.&lt;br&gt;&lt;br&gt;EECBubble.js renders messages&lt;br&gt;from the wizard in the lower corner&lt;br&gt;&lt;br&gt;EECConnect.jsx renders the connect&lt;br&gt;panel&lt;br&gt;&lt;br&gt;EECMessageTextModule.js observes&lt;br&gt;and detects relevant changes within&lt;br&gt;a text bar" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="19">
+                    <mxGeometry x="-5" y="35" width="210" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" target="31" parent="1" source="14">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="130" y="465" as="sourcePoint"/>
+                        <mxPoint x="110" y="400" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="31" value="ConnectComponent.jsx" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="57.5" y="400" width="182.5" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="Rendered By EECConnect.jsx" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="31">
+                    <mxGeometry y="26" width="182.5" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="Collects background information&#10;and propogates user info&#10;downstream to other components" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="31">
+                    <mxGeometry y="52" width="182.5" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;exitX=1.006;exitY=0.282;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.003;entryY=0.132;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" target="40" parent="1" source="33">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="170" y="650" as="sourcePoint"/>
+                        <mxPoint x="322.41379310344826" y="420.2068965517242" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="40" value="ConnectForm.jsx" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="325" y="400" width="195" height="162" as="geometry"/>
+                </mxCell>
+                <mxCell id="41" value="Renders individual components&#10;in the connect panel" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="40">
+                    <mxGeometry y="26" width="195" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" value="Disperses user props down&#10;into each component" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="40">
+                    <mxGeometry y="70" width="195" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="43" value="Handles panel navigation logic&#10;and opens/closes history and&#10;team culture pages" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="40">
+                    <mxGeometry y="110" width="195" height="52" as="geometry"/>
+                </mxCell>
+                <mxCell id="46" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;exitX=0.452;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.448;entryY=-0.006;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" target="47" parent="1" source="33">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="110" y="620" as="sourcePoint"/>
+                        <mxPoint x="50" y="570" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="47" value="ConnectPanelButton.jsx" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="560" width="180" height="52" as="geometry"/>
+                </mxCell>
+                <mxCell id="48" value="Button overlay to open panel" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="47">
+                    <mxGeometry y="26" width="180" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="52" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="53">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="50" y="650" as="sourcePoint"/>
+                        <mxPoint x="140" y="510" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="53" value="Emoji.jsx" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="630" width="180" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="54" value="Standardizes Emoji object for&#10;use within jsx components" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="53">
+                    <mxGeometry y="26" width="180" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="57" value="History.jsx" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="320" y="590" width="185" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="58" value="Opens new panel for viewing&#10;conversation histories" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="57">
+                    <mxGeometry y="26" width="185" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" value="Controls switched state which&#10;flips between 1on1 and team&#10;history" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="57">
+                    <mxGeometry y="60" width="185" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="60" value="Contains 1on1 and team history&#10;components" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="57">
+                    <mxGeometry y="110" width="185" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="62" value="MoodSelector.jsx" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="510" y="590" width="190" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="63" value="Contains mood selection modal.&#10;Updates mood registered in DB" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="62">
+                    <mxGeometry y="26" width="190" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="64" value="Confirmation modal controls &#10;sharing and modal recurrence&#10;configuration." style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="62">
+                    <mxGeometry y="60" width="190" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="66" value="MoreAboutNVC.jsx" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="710" y="590" width="180" height="98" as="geometry"/>
+                </mxCell>
+                <mxCell id="67" value="Opens to NVC page, potentially&#10;within the panel itself" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="66">
+                    <mxGeometry y="26" width="180" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="68" value="location to open to is defined by&#10;admin" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="66">
+                    <mxGeometry y="60" width="180" height="38" as="geometry"/>
+                </mxCell>
+                <mxCell id="70" value="TeamCulture.jsx" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="900" y="590" width="190" height="98" as="geometry"/>
+                </mxCell>
+                <mxCell id="71" value="Opens to team culture document,&#10;potentially within the panel itself" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="70">
+                    <mxGeometry y="26" width="190" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="72" value="Location to open to is defined by&#10;admin" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="70">
+                    <mxGeometry y="60" width="190" height="38" as="geometry"/>
+                </mxCell>
+                <mxCell id="79" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" target="57" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="520" y="480" as="sourcePoint"/>
+                        <mxPoint x="560.344827586207" y="460.2068965517242" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="81" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" target="62" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="520" y="480" as="sourcePoint"/>
+                        <mxPoint x="560.344827586207" y="460.2068965517242" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="83" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" target="66" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="520" y="480" as="sourcePoint"/>
+                        <mxPoint x="560.344827586207" y="460.2068965517242" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="85" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" target="70" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="520" y="480" as="sourcePoint"/>
+                        <mxPoint x="560.344827586207" y="460.2068965517242" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="88" value="HistoryTeam.jsx" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="780" width="150" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="89" value="displays history of emotes&#10;among the entire team" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="88">
+                    <mxGeometry y="26" width="150" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="90" value="hardcoded as of &#10;documenting" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="88">
+                    <mxGeometry y="60" width="150" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="91" value="Disabled as of &#10;documenting" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="88">
+                    <mxGeometry y="100" width="150" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="92" value="HistoryOneOnOne.jsx" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="260" y="780" width="150" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="93" value="displays history of emotes&#10;between two individual&#10;team members" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="92">
+                    <mxGeometry y="26" width="150" height="54" as="geometry"/>
+                </mxCell>
+                <mxCell id="94" value="hardcoded as of &#10;documenting" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="92">
+                    <mxGeometry y="80" width="150" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="95" value="Disabled as of &#10;documenting" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="92">
+                    <mxGeometry y="120" width="150" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="97" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;exitX=0.507;exitY=1.016;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" target="88" parent="1" source="60">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="490" y="770" as="sourcePoint"/>
+                        <mxPoint x="530" y="749.8571428571429" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="99" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;entryX=0.499;entryY=1.033;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" target="60" parent="1" source="92">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="320" y="780" as="sourcePoint"/>
+                        <mxPoint x="360.28571428571433" y="760.1428571428571" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
 </mxfile>
