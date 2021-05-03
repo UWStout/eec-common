@@ -1,57 +1,82 @@
-<mxfile host="app.diagrams.net" modified="2020-11-19T21:48:53.084Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36" etag="L9MMJNYmed4Q6RLj7ove" version="13.9.9" type="github">
-  <diagram id="2OQqpx99xaDEVUR0yD9j" name="Page-1">
-    <mxGraphModel dx="1408" dy="1041" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-1" value="&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;b&gt;Communication&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;&lt;span&gt;- portListener: Port&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;- msgListener: chorme.runtime&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;" vertex="1" parent="1">
-          <mxGeometry x="400" y="170" width="230" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-2" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" vertex="1" parent="yfZOgvPxEN0UtjOrXzQR-1">
-          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
-            <mxPoint x="-24" y="4" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-3" value="&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;b&gt;Socket Comms&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ socket: Socket-io.socket&lt;br&gt;+ activeContexts: Set&lt;/p&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;" vertex="1" parent="1">
-          <mxGeometry x="100" y="170" width="210" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-4" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" vertex="1" parent="yfZOgvPxEN0UtjOrXzQR-3">
-          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
-            <mxPoint x="-24" y="4" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-5" value="&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;b&gt;Request Listener&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin: 0px ; margin-left: 8px&quot;&gt;+ *Filters: { url: string[], types: string[] }&lt;br&gt;+ *TypeFilters: string[]&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;" vertex="1" parent="1">
-          <mxGeometry x="700" y="170" width="230" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-6" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" vertex="1" parent="yfZOgvPxEN0UtjOrXzQR-5">
-          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
-            <mxPoint x="-24" y="4" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-7" value="&lt;u style=&quot;font-weight: bold&quot;&gt;WebRequest.api Components&lt;/u&gt;&lt;br&gt;Allows intercepting HTTP requests happening in the background from ALL tabs to inspect and even consume them." style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.37;size=20;position=0.47;" vertex="1" parent="1">
-          <mxGeometry x="690" y="80" width="270" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-8" value="&lt;u style=&quot;font-weight: bold&quot;&gt;Chrome Extension Communication&lt;/u&gt;&lt;br&gt;Internal communication between different parts of the extension" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.37;size=20;position=0.47;" vertex="1" parent="1">
-          <mxGeometry x="410" y="80" width="220" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-9" value="&lt;u style=&quot;font-weight: bold&quot;&gt;Communication with Karuna Server&lt;/u&gt;&lt;br&gt;Real-time communication between the extension and the Karuna server.&amp;nbsp; All extension-server comms should happen here." style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0.37;size=20;position=0.47;" vertex="1" parent="1">
-          <mxGeometry x="80" y="80" width="270" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-12" value="LocalStorage" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
-          <mxGeometry x="462.5" y="310" width="105" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-13" value="" style="endArrow=classic;startArrow=classic;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="yfZOgvPxEN0UtjOrXzQR-12" target="yfZOgvPxEN0UtjOrXzQR-1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="260" y="420" as="sourcePoint" />
-            <mxPoint x="310" y="370" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="yfZOgvPxEN0UtjOrXzQR-14" value="One-Time Messages" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="yfZOgvPxEN0UtjOrXzQR-13">
-          <mxGeometry x="-0.425" relative="1" as="geometry">
-            <mxPoint y="-13" as="offset" />
-          </mxGeometry>
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
+<mxfile>
+    <diagram id="2OQqpx99xaDEVUR0yD9j" name="Page-1">
+        <mxGraphModel dx="1041" dy="1367" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="6" value="Background" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="51.5" y="10" width="265" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="In order for the front-end interfaces to retrieve&lt;br&gt;data from the server, there needs to be a&lt;br&gt;large number calls to the server. To preserver&lt;br&gt;clean code, these calls are relegated to&lt;br&gt;background scripts.&lt;br&gt;&lt;br&gt;The background scripts listen for specfic&lt;br&gt;function calls, where they will react by&amp;nbsp;&lt;br&gt;interacting with the server. As such, background&lt;br&gt;handles socket connections, AJAX requests,&lt;br&gt;server routes, tab listeners, and web token&lt;br&gt;storage. The background also differentiates&lt;br&gt;between contexts, such as Discord vs Teams." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="6">
+                    <mxGeometry x="-2.5" y="50" width="270" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="" style="shape=singleArrow;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="316.5" y="110" width="95" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="Background.js" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="411.5" y="10" width="267.5" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="Background.js simply initializes each listener.&lt;br&gt;All of the data that flows into background&lt;br&gt;flows through background.js and down&lt;br&gt;into it's respective script.&lt;br&gt;&lt;br&gt;The actual file itself is simply three function calls&lt;br&gt;to set up the sockets, the webRequest listener,&lt;br&gt;and the ExtensionComms listener." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="11">
+                    <mxGeometry x="-2.5" y="75" width="270" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="SocketComms.js" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="119" y="350" width="277.5" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="When a session is built within the right context,&lt;br&gt;SocketComms emits the 'clientSession' event on&lt;br&gt;connection and disconnection. This is an&lt;br&gt;initial handshake. When needed, getSocket() can&lt;br&gt;be called to setup and use a socket connection&lt;br&gt;with the server.&lt;br&gt;&lt;br&gt;SocketComms is primarily used to interact with&lt;br&gt;the server wizard. The wizard can send messages&lt;br&gt;and the interfaces can display and also respond&lt;br&gt;back to the wizard. The Sockets can also listen&lt;br&gt;to text chats on the page and return those to the&lt;br&gt;wizard" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="15">
+                    <mxGeometry x="-1.25" y="40" width="280" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="ServerAJAXComms.js" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="409" y="350" width="275" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="All AJAX requests are processed under the AJAX&lt;br&gt;comms, such as getEmojiList, or getUserAffect.&lt;br&gt;The request type is processed and sent out as&lt;br&gt;an Axios request to the server. A promise is&lt;br&gt;returned with relevant data from the server.&lt;br&gt;&lt;br&gt;All new AJAX requests should be built here.&lt;br&gt;A switched statement determinest he request type&lt;br&gt;and a function sends the request and then returns&lt;br&gt;a promise. The promise data is returned to the&lt;br&gt;interface." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="16">
+                    <mxGeometry x="-5" y="55" width="280" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="ExtensionComms.js" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="701.5" y="350" width="276.25" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="ExtensionComms is the communication logic&lt;br&gt;between the extension and the server. The port&lt;br&gt;and the message listeners are instantiated and&lt;br&gt;a socket is opened for the karunaMessage&lt;br&gt;keyword.&lt;br&gt;&lt;br&gt;ExtensionComms determines whether to send&lt;br&gt;a message to ServerAJAXComms or process it as&lt;br&gt;a non-AJAX request. These are login, getuser,&lt;br&gt;logout, etc..&lt;br&gt;&lt;br&gt;A port is also opened to interconnect&lt;br&gt;communication between pieces of the extension,&lt;br&gt;such as the popup and in-content. Messages&lt;br&gt;are relayed between each piece through the port." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="17">
+                    <mxGeometry x="-1.87" y="40" width="280" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" target="11" parent="1" source="16">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="581.5" y="320" as="sourcePoint"/>
+                        <mxPoint x="581.8333333333335" y="330.3333333333335" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="22" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" target="11" parent="1" source="15">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="316.5" y="350" as="sourcePoint"/>
+                        <mxPoint x="356.8333333333335" y="330.3333333333335" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="24" value="" style="edgeStyle=entityRelationEdgeStyle;startArrow=none;endArrow=none;segment=10;curved=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" target="17" parent="1" source="11">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="751.5" y="160" as="sourcePoint"/>
+                        <mxPoint x="791.8333333333335" y="140.33333333333348" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="28" value="" style="shape=singleArrow;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="676.5" y="110" width="100" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="modules" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="776.5" y="10" width="275" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="Modules are context specific logic. Depending&lt;br&gt;on context, Discord and Teams should behave&lt;br&gt;slightly differently. The Filters scripts determine&lt;br&gt;when to send messages properly, and apply&lt;br&gt;the proper filter to the extension.&lt;br&gt;&lt;br&gt;Each context records text slightly differently. The&lt;br&gt;Filter script normalizes this for the extension and&lt;br&gt;emits the proper messageSend event when&lt;br&gt;text is appended to the DOM." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="29">
+                    <mxGeometry x="2.5" y="60" width="270" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="WebRequests.js" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="119" y="630" width="205" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="Applies the proper filter to a context.&lt;br&gt;Checks for the context in the browser&lt;br&gt;and determines whether to display&lt;br&gt;the overlay or not, depending on the&lt;br&gt;URL." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="31">
+                    <mxGeometry x="-2.5" y="65" width="210" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="DataStorage.js" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="340" y="630" width="205" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="Stores the JavaScript Web Token&lt;br&gt;and also reads the JWT if the token&lt;br&gt;is available within memory. Caching&lt;br&gt;the JWT allows for persistence of&lt;br&gt;logins.&lt;br&gt;&lt;br&gt;We can retrieve the User and also&lt;br&gt;retrieve the User's token." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="33">
+                    <mxGeometry x="-2.5" y="45" width="210" height="110" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
 </mxfile>
