@@ -203,7 +203,7 @@ async function socketWizardMessage (messageInfo) {
 
     try {
       // Get any extra user data needed for mentioned users
-      const extraUsers = await parseOtherUsers(messageText, DBUser)
+      const extraUsers = await parseOtherUsers(messageText, messageInfo, DBUser)
 
       // Fill-in handlebars templates if they exist
       if (messageText.includes('{{')) {
