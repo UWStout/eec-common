@@ -60,7 +60,7 @@ export function parseMessageCommands (messageText, messageInfo) {
   return newMessageText
 }
 
-export function parseOtherUsers (messageText, DBUser) {
+export function parseOtherUsers (messageText, messageInfo, DBUser) {
   // Are any other users (mentioned users) variables being used?
   const otherMatches = messageText.match(/{{\s*(otherUser\d+)(?:\..*?)?}}/g)
   if (!otherMatches) { return Promise.resolve({}) }
@@ -78,13 +78,8 @@ export function parseOtherUsers (messageText, DBUser) {
       if (extraUsers[varName] === undefined) {
         extraUsers[varName] = {}
 
-        // Retrieve user details (TODO: Implement this)
         const mentionIndex = parseInt(data[2]) - 1
-        // const otherUserID = await DBUser.lookupIDByContextHandle(mentions[mentionIndex], messageInfo.context)
-        // const userDetails = await DBUser.getUserDetails(otherUserID)
-
-        // TEMP: Unique dummy data for each user
-        const userDetails = {
+        let userDetails = {
           firstName: 'firstName' + mentionIndex,
           lastName: 'firstName' + mentionIndex,
           email: 'email' + mentionIndex + '@example.com',
@@ -94,6 +89,12 @@ export function parseOtherUsers (messageText, DBUser) {
             timeToRespond: 'timeToRespond' + mentionIndex,
             collaboration: 'collaboration' + mentionIndex
           }
+        }
+
+        // Retrieve user details (TODO: Implement this)
+        if (messageInfo.mentions && mentionIndex < messageInfo.mentions.length) {
+          const otherUserID = await DBUser.lookupIDByContextHandle(messageInfo.mentions[mentionIndex], messageInfo.context)
+          userDetails = await DBUser.getUserDetails(otherUserID)
         }
 
         // Add details to the extra users variable
