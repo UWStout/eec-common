@@ -145,7 +145,7 @@ function updateTextBoxes () {
       key = textBox.getAttribute('aria-label')
     }
     if (!EECMessageTextModuleList.has(key)) {
-      LOG(`Adding New EEC Message Text Module for (${EECMessageTextModuleList.size + 1} added)`)
+      LOG(`Adding New EEC Message Text Module (${EECMessageTextModuleList.size + 1} added)`)
 
       // Build in-line extension
       const messageTextModuleElem = document.createElement('eec-message-text-module')

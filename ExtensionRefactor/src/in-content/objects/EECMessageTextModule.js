@@ -64,18 +64,19 @@ class EECMessageTextModule extends HTMLElement {
 
   // Custom Element is mounted to the DOM
   connectedCallback () {
+    LOG('connected event')
     // Setup the positioning of this element
     this.style.cssText = 'position: absolute; top: 0px; left: 0px; z-index: 3;'
   }
 
   // Custom Element is unmounted from the DOM
   disconnectedCallback () {
-    LOG('EEC-MessageTextModule element removed from page.')
+    LOG('disconnected event')
   }
 
   // Custom Element is moved to a different DOM
   adoptedCallback () {
-    LOG('EEC-MessageTextModule element moved to new page.')
+    LOG('adopted event')
   }
 
   // Update the textBox we are watching
@@ -84,19 +85,7 @@ class EECMessageTextModule extends HTMLElement {
     if (this.textBox) {
       // Create this element's html and styling
       this.setupElement()
-
-      // Setup event listeners for the text box
-      this.textBox.on('focusin', this.textBoxFocused.bind(this))
-      this.textBox.on('focusout', this.textBoxBlurred.bind(this))
-      this.textBox.on('input', debounce(this.textBoxInput.bind(this), 100, false))
-
-      // Ensure backspace and delete keys trigger 'input' events
-      this.textBox.on('keydown', (event) => {
-        const key = event.keyCode || event.charCode
-        if (key === 8 || key === 46) {
-          this.textBox.trigger('input')
-        }
-      })
+      this.installTextListeners()
 
       // Observe and respond to resize events
       this.sizeObserver = new ResizeObserver((entries) => {
@@ -106,9 +95,35 @@ class EECMessageTextModule extends HTMLElement {
           this.markupWrapper.firstChild.style.height = `${newSize.blockSize}px`
         }
       })
-
       this.sizeObserver.observe(newTextBox)
+
+      // Observe and respond to changes in the DOM content
+      this.changeObserver = new MutationObserver((mutationsList, observer) => {
+        mutationsList.forEach((mutation) => {
+          LOG(mutation)
+          if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            LOG('A child node has been added, re-installing listeners.')
+            this.installTextListeners()
+          }
+        })
+      })
+      this.changeObserver.observe(newTextBox, { childList: true })
     }
+  }
+
+  installTextListeners () {
+    // Setup event listeners for the text box
+    this.textBox.on('focusin', this.textBoxFocused.bind(this))
+    this.textBox.on('focusout', this.textBoxBlurred.bind(this))
+    this.textBox.on('input', debounce(this.textBoxInput.bind(this), 100, false))
+
+    // Ensure backspace and delete keys trigger 'input' events
+    this.textBox.on('keydown', (event) => {
+      const key = event.keyCode || event.charCode
+      if (key === 8 || key === 46) {
+        this.textBox.trigger('input')
+      }
+    })
   }
 
   backgroundMessage (message) {
@@ -134,28 +149,44 @@ class EECMessageTextModule extends HTMLElement {
     this.updateUnderlinedWords(this._wordList)
 
     // Send changed text to the server
-    LOG('[[Raw Text Content:]]')
-    LOG(event.target)
     if (this.contextName === CONTEXT.MS_TEAMS) {
+      // Find Mentions
+      const mentions = []
+      this.textBox.find('span[data-itemprops]').each(function () {
+        const mentionData = jQuery(this).data('itemprops')
+        if (mentionData?.mentionType === 'person') {
+          mentions.push(mentionData.mri)
+        }
+      })
+
+      // Get and send text of message
       const tree = jQuery.parseHTML(event.target.innerHTML)
       if (!Array.isArray(tree)) {
-        this.sendTextToServer(event.target.textContent)
+        this.sendTextToServer(event.target.textContent, mentions)
       } else {
         const text = []
         tree.forEach((div) => { text.push(div.textContent) })
-        this.sendTextToServer(text.join('\n'))
+        this.sendTextToServer(text.join('\n'), mentions)
       }
     } else {
-      this.sendTextToServer(event.target.textContent)
+      // Find mentions
+      const mentions = []
+      this.textBox.find('.mention').each(function () {
+        mentions.push(jQuery(this).attr('aria-label'))
+      })
+
+      // Send text of message
+      this.sendTextToServer(event.target.textContent, mentions)
     }
   }
 
-  sendTextToServer (newText) {
+  sendTextToServer (newText, mentions = []) {
     if (this.backgroundPort) {
       this.backgroundPort.postMessage({
         type: 'textUpdate',
         context: this.contextName,
-        content: newText
+        content: newText,
+        mentions
       })
     }
   }
