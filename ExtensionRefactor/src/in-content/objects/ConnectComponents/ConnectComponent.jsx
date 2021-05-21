@@ -6,6 +6,10 @@ import ConnectPanelButton from './ConnectPanelButton.jsx'
 
 import { backgroundMessage } from '../AJAXHelper.js'
 
+// Colorful logger
+import { makeLogger } from '../../../util/Logger.js'
+const LOG = makeLogger('CONNECT Component', 'lavender', 'black')
+
 // The sidebar Karuna Connect object
 export default function ConnectComponent (props) {
   // Form mode state (history, mood form open/closed)
@@ -47,14 +51,14 @@ export default function ConnectComponent (props) {
 
   // Synchronize user state
   const getLatestUserStatus = () => {
-    console.log('[[REACT]] Retrieving last user status')
+    LOG('Retrieving last user status')
     backgroundMessage(
       { type: 'ajax-getUserStatus' },
       props.context,
       'Retrieving current user status failed: ',
       (currentUserStatus) => {
-        console.log('[[REACT]] User status retrieved:')
-        console.log(currentUserStatus)
+        LOG('User status retrieved:')
+        LOG(currentUserStatus)
         if (props.emitter) { props.emitter.emit('userStatusChanged', currentUserStatus) }
         updateUserStatus(currentUserStatus)
       }
@@ -63,12 +67,12 @@ export default function ConnectComponent (props) {
 
   // Set new user mood (triggers a userState update)
   const setUserMood = async (affectID, privacy) => {
-    console.log('[[REACT]] Updating user mood')
+    LOG('Updating user mood')
     backgroundMessage(
       { type: 'ajax-setUserAffect', affectID, privacy },
       props.context,
       'Setting mood failed: ', () => {
-        console.log('[[REACT]] user mood updated')
+        LOG('user mood updated')
         getLatestUserStatus()
       }
     )
@@ -76,12 +80,12 @@ export default function ConnectComponent (props) {
 
   // Set new user mood (triggers a userState update)
   const setCollaboration = (newCollaboration) => {
-    console.log('[[REACT]] Updating user collaboration status')
+    LOG('Updating user collaboration status')
     backgroundMessage(
       { type: 'ajax-setCollaboration', collaboration: newCollaboration },
       props.context,
       'Setting collaboration failed: ', () => {
-        console.log('[[REACT]] User collaboration status updated')
+        LOG('User collaboration status updated')
         getLatestUserStatus()
       }
     )

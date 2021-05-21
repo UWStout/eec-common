@@ -7,6 +7,10 @@ import EECMessageTextModule from './objects/EECMessageTextModule.js'
 
 import { CONTEXT } from '../util/contexts.js'
 
+// Colorful logger
+import { makeLogger } from '../util/Logger.js'
+const LOG = makeLogger('CONTENT Root', 'maroon', 'white')
+
 // Avoid jQuery conflicts
 $.noConflict()
 
@@ -14,13 +18,13 @@ $.noConflict()
 let contextName = 'UNKNOWN'
 if (window.location.host.includes('discord')) {
   contextName = CONTEXT.DISCORD
-  console.log('[[IN-CONTENT]] DISCORD DETECTED')
+  LOG('DISCORD DETECTED')
 } else if (window.location.host.includes('teams.microsoft.')) {
   contextName = CONTEXT.MS_TEAMS
-  console.log('[[IN-CONTENT]] MS TEAMS DETECTED')
+  LOG('MS TEAMS DETECTED')
 } else if (window.location.host.includes('.slack.com')) {
   contextName = CONTEXT.SLACK
-  console.log('[[IN-CONTENT]] SLACK DETECTED')
+  LOG('SLACK DETECTED')
 }
 
 // Helpful booleans
@@ -106,7 +110,7 @@ jQuery(document).ready(() => {
     // Did something change?
     if (oldValues.userName !== userName || oldValues.teamName !== teamName || oldValues.channelName !== channelName) {
       // Print updated context info
-      console.log(`[[IN-CONTENT]] context updated: ${contextName}, ${teamName}/${channelName}/${userName}`)
+      LOG(`context updated: ${contextName}, ${teamName}/${channelName}/${userName}`)
 
       // Update data in the background script
       chrome.runtime.sendMessage({ type: 'context', userName, teamName, channelName, context: contextName })
@@ -141,7 +145,7 @@ function updateTextBoxes () {
       key = textBox.getAttribute('aria-label')
     }
     if (!EECMessageTextModuleList.has(key)) {
-      console.log(`[[IN-CONTENT]] Adding New EEC Message Text Module for (${EECMessageTextModuleList.size + 1} added)`)
+      LOG(`Adding New EEC Message Text Module for (${EECMessageTextModuleList.size + 1} added)`)
 
       // Build in-line extension
       const messageTextModuleElem = document.createElement('eec-message-text-module')

@@ -5,6 +5,10 @@ import { CONTEXT } from '../../../util/contexts.js'
 import { readValue } from '../DataStorage.js'
 import { getSocket } from '../SocketComms.js'
 
+// Colorful logger
+import { makeLogger } from '../../../util/Logger.js'
+const LOG = makeLogger('MS TEAMS Filter', 'purple', 'white')
+
 // MS-Teams specific filters
 // Only intercept messages to these urls and of the indicated types
 export const filters = {
@@ -83,7 +87,7 @@ export function listener (details) {
   if (msgTypeFilters.find((curFilter) => { return requestTypePart.startsWith(curFilter) })) {
     // Send the socket data
     if (requestTypePart === 'messages' && requestContent) {
-      console.log('[[IN-CONTENT]] Sending socket message for MSTeams')
+      LOG('Sending socket message for MSTeams')
       const wsMsg = {
         type: requestTypePart,
         subType: requestSubTypePart,
@@ -97,9 +101,9 @@ export function listener (details) {
     }
 
     // Log activity
-    console.log(`[[IN-CONTENT]] MSTeams Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}  (${details.method})`)
+    LOG(`MSTeams Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}  (${details.method})`)
     if (requestContent) {
-      console.log(`[[IN-CONTENT]] MSTeams Message:    > "${requestContent}"`)
+      LOG(`MSTeams Message:    > "${requestContent}"`)
     }
   }
 }

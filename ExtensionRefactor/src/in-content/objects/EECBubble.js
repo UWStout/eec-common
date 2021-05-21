@@ -13,6 +13,10 @@ import * as AnimateCSS from './cssHelpers/animateCSS.js'
 // Accepted context strings
 import * as CONTEXT_UTIL from '../../util/contexts'
 
+// Colorful logger
+import { makeLogger } from '../../util/Logger.js'
+const LOG = makeLogger('EEC Bubble', 'lightgreen', 'black')
+
 // Set some universal defaults for tippy
 tippy.setDefaultProps({
   arrow: true,
@@ -32,8 +36,8 @@ class EECBubble extends HTMLElement {
 
     // Read the JWT for later use
     chrome.runtime.sendMessage({ type: 'read', key: 'JWT' }, (response) => {
-      console.log('[[IN-CONTENT]] EEC-Bubble Received token')
-      console.log(response)
+      LOG('Received token')
+      LOG(response)
       this.JWT = response.value
       this.sendGreetingMessage()
     })
@@ -177,8 +181,8 @@ class EECBubble extends HTMLElement {
         break
 
       case 'karunaMessage':
-        console.log("Bubble message recieved: ")
-        console.log(message)
+        LOG("Bubble message recieved: ")
+        LOG(message)
         if (message.context === this.contextName && message.content.trim() !== '') {
           this.showMessage(message.content)
         }
@@ -284,7 +288,7 @@ class EECBubble extends HTMLElement {
   }
 
   writeUserMetadata (key, value) {
-    console.log(`Request to write metadata "${key}": ${JSON.stringify(value)}`)
+    LOG(`Request to write metadata "${key}": ${JSON.stringify(value)}`)
   }
 
   fadeToGrey (forward = true) {
@@ -296,17 +300,17 @@ class EECBubble extends HTMLElement {
 
   // Custom Element is mounted to the DOM
   connectedCallback () {
-    console.log('[[IN-CONTENT]] EEC-Bubble element added to page.')
+    LOG('EEC-Bubble element added to page.')
   }
 
   // Custom Element is unmounted from the DOM
   disconnectedCallback () {
-    console.log('[[IN-CONTENT]] EEC-Bubble element removed from page.')
+    LOG('EEC-Bubble element removed from page.')
   }
 
   // Custom Element is moved to a different DOM
   adoptedCallback () {
-    console.log('[[IN-CONTENT]] EEC-Bubble element moved to new page.')
+    LOG('EEC-Bubble element moved to new page.')
   }
 }
 

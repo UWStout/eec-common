@@ -5,6 +5,10 @@ import { CONTEXT } from '../../../util/contexts.js'
 import { readValue } from '../DataStorage.js'
 import { getSocket } from '../SocketComms.js'
 
+// Colorful logger
+import { makeLogger } from '../../../util/Logger.js'
+const LOG = makeLogger('SLACK Filter', 'purple', 'white')
+
 // Slack specific filters
 // Only intercept messages to these urls and of the indicated types
 export const filters = {
@@ -65,7 +69,7 @@ export function listener (details) {
   if (msgTypeFilters.find((curFilter) => { return requestTypePart.startsWith(curFilter) })) {
     // Send the socket data
     if (requestTypePart === 'chat' && requestContent) {
-      console.log('[[IN-CONTENT]] Sending socket message for Slack')
+      LOG('Sending socket message for Slack')
       const wsMsg = {
         type: requestTypePart,
         subType: requestSubTypePart,
@@ -79,9 +83,9 @@ export function listener (details) {
     }
 
     // Log activity
-    console.log(`[[IN-CONTENT]] Slack Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}  (${details.method})`)
+    LOG(`Slack Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}  (${details.method})`)
     if (requestContent) {
-      console.log(`[[IN-CONTENT]] Slack Message:    > "${requestContent}"`)
+      LOG(`Slack Message:    > "${requestContent}"`)
     }
   }
 }

@@ -20,6 +20,10 @@ import StatusManager from './ThreeIconStatusComponents/StatusManager.jsx'
 // Utility enums and functions for app context management
 import * as CONTEXT_UTIL from '../../util/contexts.js'
 
+// Colorful logger
+import { makeLogger } from '../../util/Logger.js'
+const LOG = makeLogger('EEC Connect', '#222', '#bada55')
+
 class EECConnect extends HTMLElement {
   constructor () {
     super()
@@ -32,8 +36,8 @@ class EECConnect extends HTMLElement {
 
     // Read the JWT for later
     chrome.runtime.sendMessage({ type: 'read', key: 'JWT' }, (response) => {
-      console.log('[[IN-CONTENT]] EECConnect Received token')
-      console.log(response)
+      LOG('EECConnect Received token')
+      LOG(response)
       this.JWT = response.value
     })
 
@@ -91,7 +95,7 @@ class EECConnect extends HTMLElement {
     this.statusEmitter = emitter
 
     // Give React control of the root element for the connect panel
-    console.log('[[IN-CONTENT EECConnect]] Building react component ...')
+    LOG('Building react component ...')
     ReactDOM.render(
       <StylesProvider jss={jss}>
         <MuiThemeProvider theme={theme}>
@@ -114,7 +118,7 @@ class EECConnect extends HTMLElement {
       </StylesProvider>,
       this.statusPanel[0]
     )
-    console.log('[[IN-CONTENT EECConnect]] ... mounted')
+    LOG('... mounted')
 
     // Start out hidden
     this.updateVisibility(false)
@@ -192,7 +196,7 @@ class EECConnect extends HTMLElement {
   }
 
   updateOtherStatusList (resizeOnly) {
-    console.log('%c[[REACT]]', 'background: #222; color: #bada55', 'Checking User List')
+    LOG('Checking User List')
     const otherAvatars = jQuery('div[class^=avatar-] div[class^=wrapper-]')
     const oldStatuses = { ...this.otherStatuses }
     const newStatuses = []
@@ -212,7 +216,7 @@ class EECConnect extends HTMLElement {
       } else {
         if (this.otherStatuses[discordName] === undefined) {
           newStatuses[discordName] = newStatus
-          console.log('%c[[REACT]]', 'background: #222; color: #bada55', `-- NEW user "${discordName}" (${JSON.stringify(anchor)})`)
+          LOG(`-- NEW user "${discordName}" (${JSON.stringify(anchor)})`)
           somethingChanged = true
         } else {
           delete oldStatuses[discordName]
@@ -224,7 +228,7 @@ class EECConnect extends HTMLElement {
       // Delete old statuses that are no longer needed
       Object.keys(oldStatuses).forEach((oldStatusKey) => {
         delete this.otherStatuses[oldStatusKey]
-        console.log('%c[[REACT]]', 'background: #222; color: #bada55', `-- User GONE "${oldStatusKey}"`)
+        LOG(`-- User GONE "${oldStatusKey}"`)
         somethingChanged = true
       })
 
@@ -235,7 +239,7 @@ class EECConnect extends HTMLElement {
 
       // Signal updated statuses if something changed
       if (somethingChanged) {
-        console.log('%c[[REACT]]', 'background: #222; color: #bada55', '-- EMITTING CHANGE')
+        LOG('-- EMITTING CHANGE')
         this.statusEmitter.emit('statusListChanged', { ...this.otherStatuses })
       }
     }

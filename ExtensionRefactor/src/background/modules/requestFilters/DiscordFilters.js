@@ -5,6 +5,10 @@ import { CONTEXT } from '../../../util/contexts.js'
 import { readValue } from '../DataStorage.js'
 import { getSocket } from '../SocketComms.js'
 
+// Colorful logger
+import { makeLogger } from '../../../util/Logger.js'
+const LOG = makeLogger('DISCORD Filter', 'navy', 'white')
+
 // Discord specific filters
 // Only intercept messages to these urls and of the indicated types
 export const filters = {
@@ -67,7 +71,7 @@ export function listener (details) {
   if (msgTypeFilters.find((curFilter) => { return requestTypePart.startsWith(curFilter) })) {
     // Send the socket data
     if (requestTypePart === 'messages' && requestContent) {
-      console.log('[[IN-CONTENT]] Sending socket message for discord')
+      LOG('Sending socket message for discord')
       const wsMsg = {
         type: requestTypePart,
         subType: requestSubTypePart,
@@ -81,9 +85,9 @@ export function listener (details) {
     }
 
     // Log the action
-    console.log(`[[IN-CONTENT]] Discord Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}  (${details.method})`)
+    LOG(`Discord Message: ${requestTypePart}${requestSubTypePart ? '/' + requestSubTypePart : ''}  (${details.method})`)
     if (requestContent) {
-      console.log(`[[IN-CONTENT]] Discord Message:    > "${requestContent}"`)
+      LOG(`Discord Message:    > "${requestContent}"`)
     }
   }
 }

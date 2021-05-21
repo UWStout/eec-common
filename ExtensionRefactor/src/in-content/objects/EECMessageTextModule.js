@@ -6,6 +6,10 @@ import { computeWordRects, makeFixedPositionChildDiv } from './TextUtility.js'
 import { ResizeObserver as ROPolyfill } from '@juggle/resize-observer'
 import { CONTEXT } from '../../util/contexts'
 
+// Colorful logger
+import { makeLogger } from '../../util/Logger.js'
+const LOG = makeLogger('TEXT Box Module', 'pink', 'black')
+
 // Use polyfill only if needed
 const ResizeObserver = window.ResizeObserver || ROPolyfill
 
@@ -66,12 +70,12 @@ class EECMessageTextModule extends HTMLElement {
 
   // Custom Element is unmounted from the DOM
   disconnectedCallback () {
-    console.log('[[IN-CONTENT]] EEC-MessageTextModule element removed from page.')
+    LOG('EEC-MessageTextModule element removed from page.')
   }
 
   // Custom Element is moved to a different DOM
   adoptedCallback () {
-    console.log('[[IN-CONTENT]] EEC-MessageTextModule element moved to new page.')
+    LOG('EEC-MessageTextModule element moved to new page.')
   }
 
   // Update the textBox we are watching
@@ -130,6 +134,8 @@ class EECMessageTextModule extends HTMLElement {
     this.updateUnderlinedWords(this._wordList)
 
     // Send changed text to the server
+    LOG('[[Raw Text Content:]]')
+    LOG(event.target)
     if (this.contextName === CONTEXT.MS_TEAMS) {
       const tree = jQuery.parseHTML(event.target.innerHTML)
       if (!Array.isArray(tree)) {
