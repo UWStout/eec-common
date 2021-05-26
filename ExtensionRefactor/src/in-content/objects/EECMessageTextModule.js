@@ -153,9 +153,13 @@ class EECMessageTextModule extends HTMLElement {
       // Find Mentions
       const mentions = []
       this.textBox.find('span[data-itemprops]').each(function () {
-        const mentionData = jQuery(this).data('itemprops')
+        const jqElem = jQuery(this)
+        const mentionData = jqElem.data('itemprops')
         if (mentionData?.mentionType === 'person') {
-          mentions.push(mentionData.mri)
+          mentions.push({
+            userAlias: mentionData.mri,
+            value: jqElem.text()
+          })
         }
       })
 
@@ -172,7 +176,11 @@ class EECMessageTextModule extends HTMLElement {
       // Find mentions
       const mentions = []
       this.textBox.find('.mention').each(function () {
-        mentions.push(jQuery(this).attr('aria-label'))
+        const jqElem = jQuery(this)
+        mentions.push({
+          userAlias: jqElem.attr('aria-label'),
+          value: jqElem.text()
+        })
       })
 
       // Send text of message
