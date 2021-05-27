@@ -2,27 +2,57 @@
 // Setup debug for output
 import Debug from 'debug'
 
+import * as WATSON from './watsonAssistant.js'
+
 import { sendGenericMessage } from './sockets.js'
 
 const debug = Debug('server:analysis')
 
-// Stub function for analyzing messages (both incomplete and complete)
-export function analyzeMessage (messageObj, isComplete = false) {
-  return new Promise((resolve, reject) => {
-    // debug(messageObj.data) // where the message is stored
+const sessionMap = new Map()
 
-    // These are the options from the Miro docs that I found
-    switch (messageObj.data) {
-      case 'I feel frustrated':
-      case 'I feel upset':
-      case 'WTF':
-      case 'I feel (input)': // make additional case statements for faux feelings?
-      case 'not responding': // obviously not an actual message, probably related to viewing the other user's message but not responding
-        resolve({ karunaResponse: 'do you want to update your affect?' })
+// Stub function for analyzing messages (both incomplete and complete)
+export async function analyzeMessage (messageObj, userID, context, isComplete = false) {
+  // Ignore incomplete messages for now
+  if (!isComplete) { return }
+
+  // Build customer id
+  const customerID = `${userID}${context ? '-' + context : ''}`
+
+  // Loop for sending message (might run twice)
+  let retry = false
+  do {
+    // Create watson session if needed
+    if (!sessionMap.has(customerID)) {
+      if (!retry) { debug('Creating session for ' + customerID) }
+      try {
+        const newSession = await WATSON.createSession(userID, context)
+        sessionMap.set(customerID, newSession)
+      } catch (err) {
+        debug('Error while creating session')
+        debug(err)
+        throw err
+      }
     }
-    debug('Call to analyzeMessage')
-    setTimeout(() => { resolve({ success: true }) }, 100)
-  })
+    retry = false
+
+    // Attempt to analyze message
+    try {
+      const response = await WATSON.sendMessage(messageObj.data, messageObj.mentions, sessionMap.get(customerID))
+      return response
+    } catch (err) {
+      if (!retry && err.message === 'Invalid Session') {
+        // Clear old session and retry
+        debug('Renewing expired session for ' + customerID)
+        sessionMap.delete(customerID)
+        retry = true
+      } else {
+        // Other error so throw it
+        debug('Error while sending message')
+        debug(err)
+        throw err
+      }
+    }
+  } while (retry)
 }
 
 // Stub function for analyzing an affect

@@ -7,7 +7,7 @@ import dotenv from 'dotenv'
 
 // print messages only during debug
 import Debug from 'debug'
-const debug = Debug('server:mongo')
+const debug = Debug('mongo:connect')
 
 // Load .env config
 dotenv.config()
