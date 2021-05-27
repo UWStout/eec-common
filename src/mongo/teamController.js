@@ -8,7 +8,7 @@ import { ObjectID } from 'mongodb'
 
 // print messages only during debug
 import Debug from 'debug'
-const debug = Debug('server:mongo')
+const debug = Debug('mongo:teamController')
 
 /**
  * Retrieve details for the given team

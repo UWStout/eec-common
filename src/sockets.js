@@ -11,9 +11,19 @@ import { getDBLogController, getDBUserController } from './routes/dbSelector.js'
 import { parseMessageCommands, parseOtherUsers } from './socketMessageHelper.js'
 import * as Analysis from './analysisEngine.js'
 
+// Read env variables from the .env file
+import dotenv from 'dotenv'
+
 // Setup debug for output
 import Debug from 'debug'
 const debug = Debug('server:socket')
+
+// Adjust env based on .env file
+dotenv.config()
+
+// Option to enable the Watson analysis engine
+// TODO: Consider disabling wizard when this is true
+const WATSON_ENABLED = process.env.WATSON_ENABLED || false
 
 // Useful global info
 const clientSessions = {}
@@ -266,13 +276,15 @@ function socketMessageUpdate (message) {
       debug(err)
     })
 
-  // Hook to intelligence core, expect a promise in return
-  Analysis.analyzeMessage(message, false)
-    .then((result) => {})
-    .catch((err) => {
-      debug('In-Progress Message analysis failed')
-      debug(err)
-    })
+  if (WATSON_ENABLED) {
+    // Hook to intelligence core, expect a promise in return
+    Analysis.analyzeMessage(message, userID, message.context, false)
+      .then((result) => {})
+      .catch((err) => {
+        debug('In-Progress Message analysis failed')
+        debug(err)
+      })
+  }
 
   // Bounce message to wizard (no logging because it floods the console)
   mySocket.to('wizards').emit('clientTyping', {
@@ -298,14 +310,6 @@ async function socketMessageSend (message) {
       debug(err)
     })
 
-  // Hook to intelligence core, expect a promise in return
-  Analysis.analyzeMessage(message, true)
-    .then((result) => {})
-    .catch((err) => {
-      debug('Completed Message analysis failed')
-      debug(err)
-    })
-
   // Log the message for telemetry and analysis
   // TODO: do we have the ID of the person receiving the message?
   DBLog.logUserMessage(message, null, userID)
@@ -314,13 +318,60 @@ async function socketMessageSend (message) {
       debug(err)
     })
 
+  // Hook to intelligence core, expect a promise in return
+  if (WATSON_ENABLED) {
+    debug(`[WS:${this.id}] message sent to watson from ${message.context}`)
+    Analysis.analyzeMessage(message, userID, message.context, true)
+      .then((result) => {
+        // TODO: Consider something more sophisticated here
+        const messageText = result.output.generic[0].text
+        sendWatsonResponse.bind(this)(
+          `**WATSON**: ${messageText}`,
+          message,
+          message.context,
+          result.output.entities,
+          result.output.intents
+        )
+      })
+      .catch((err) => {
+        debug('Completed Message analysis failed')
+        debug(err)
+      })
+  }
+
   // Log action (if debug is enabled) and send the message to the wizard
-  debug(`[WS:${this.id}] message received from ${message.context}`)
+  debug(`[WS:${this.id}] message sent to wizard from ${message.context}`)
   mySocket.to('wizards').emit('clientSend', {
     clientEmail: clientSessions[this.id].email,
     context: message.context,
     data: message.data
   })
+}
+
+// Attempt to send message to client FROM Watson
+// - 'this' = client socket
+export function sendWatsonResponse (responseText, clientPromptObj, clientContext, entities, intents) {
+  if (responseText.trim() === '') {
+    console.log('ignoring empty watson message')
+    return
+  }
+
+  const messageObj = {
+    clientEmail: clientSessions[this.id].email,
+    context: clientContext,
+    content: responseText,
+    entities,
+    intents
+  }
+
+  DBLog.logWatsonMessage(messageObj, clientPromptObj, clientSessions[this.id].id)
+    .catch((err) => {
+      debug('Logging of watson message failed')
+      debug(err)
+    })
+
+  console.log('sending response from watson')
+  this.emit('karunaMessage', messageObj)
 }
 
 export function sendGenericMessage (message, userID, context) {

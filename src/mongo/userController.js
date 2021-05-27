@@ -8,7 +8,7 @@ import { listCollection } from './commonHelper.js'
 
 // print messages only during debug
 import Debug from 'debug'
-const debug = Debug('server:mongo')
+const debug = Debug('mongo:userController')
 
 /**
  * Retrieve the number of users in the user table

@@ -1,14 +1,11 @@
 import { retrieveDBHandle } from './connect.js'
 
-// Shared functions between different controllers
-import { listCollection } from './commonHelper.js'
-
 // for using the database
 import { ObjectID } from 'mongodb'
 
 // print messages only during debug
 import Debug from 'debug'
-const debug = Debug('server:mongo')
+const debug = Debug('mongo:logController')
 
 /**
  * Logs messages from the wizard
@@ -29,6 +26,29 @@ export function logWizardMessage (message, correspondentID) {
     insertThis = { message: message }
   } else insertThis = { message: message, timestamp: new Date(), correspondentID: new ObjectID(correspondentID) }
   var c = DBHandle.collection('wizardLogs')
+  return c.insertOne(insertThis)
+}
+
+/**
+ * Logs messages from watson
+ *
+ * @param {Object} messageObj the watson message getting logged
+ * @param {Object} promptObj the previous message the prompted this response
+ * @param {_id} correspondentID the id of the person being replied to, may be empty
+ * @return A document containing:
+ * - A boolean acknowledged as true if the operation ran with write concern or false if write concern was disabled.
+ * - A field insertedId with the _id value of the inserted document (the message).
+ */
+export function logWatsonMessage (messageObj, promptObj, correspondentID) {
+  const DBHandle = retrieveDBHandle('karunaLogs')
+  const insertThis = {
+    message: messageObj,
+    prompt: promptObj,
+    timestamp: new Date(),
+    correspondentID: (correspondentID ? new ObjectID(correspondentID) : undefined)
+  }
+
+  var c = DBHandle.collection('watsonLogs')
   return c.insertOne(insertThis)
 }
 

@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt'
 
 // print messages only during debug
 import Debug from 'debug'
-const debug = Debug('server:mongo')
+const debug = Debug('mongo:authController')
 
 // How many rounds to use when generating hash salt for passwords
 const SALT_ROUNDS = 10

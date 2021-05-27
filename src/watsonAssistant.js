@@ -10,7 +10,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 // Create debug logging function
-const debug = Debug('server:assistant')
+const debug = Debug('server:watson')
 
 // Info specific to our assistant
 const ASSISTANT_ROOT_SERVER = 'https://api.us-south.assistant.watson.cloud.ibm.com'
@@ -79,20 +79,26 @@ export function deleteSession (session) {
 export function sendMessage (messageText, mentions, session) {
   return new Promise((resolve, reject) => {
     debug('Sending message to Watson for analysis')
+    // DEBUG: It seems sending 'entities' causes it to not identify any on its end
+    // let entities = []
+    // if (mentions) {
+    //   entities = mentions.map((mention) => ({
+    //     entity: 'username',
+    //     location: [mention.start, mention.start + mention.value.length],
+    //     value: 'mention',
+    //     confidence: 1
+    //   }))
+    // }
+
+    const input = {
+      text: messageText
+    }
+
     assistant.message({
       assistantId: ASSISTANT_API_ID,
       sessionId: session.sessionID,
       headers: { 'X-Watson-Metadata': session.customerID },
-      input: {
-        message_type: 'text',
-        text: messageText,
-        entities: mentions.map((mention) => ({
-          entity: 'username',
-          location: [mention.start, mention.start + mention.value.length],
-          value: 'mention',
-          confidence: 1
-        }))
-      }
+      input
     }).then(res => { resolve(res.result) })
       .catch((err) => { reject(err) })
   })
