@@ -4,8 +4,8 @@
   "description": "Backend server / RESTful API for the Karuna communication tool.",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "set DEBUG=watch,server,server:* DEBUG_HIDE_DATE=true DEBUG_COLORS=true & node watchCode.mjs",
-    "devbash": "bash -c 'DEBUG=watch,server,server:* DEBUG_HIDE_DATE=true DEBUG_COLORS=true node watchCode.mjs'",
+    "dev": "set DEBUG=watch,server,server:*,mongo:* DEBUG_HIDE_DATE=true DEBUG_COLORS=true & node watchCode.mjs",
+    "devbash": "bash -c 'DEBUG=watch,server,server:*,mongo:* DEBUG_HIDE_DATE=true DEBUG_COLORS=true node watchCode.mjs'",
     "build": "esbuild --platform=node --bundle --external:saslprep --external:bcrypt --external:sqlite3 --external:utf-8-validate --external:bufferutil --minify --outfile=dist/server.js src/server.js",
     "postbuild": "bash postBuild.sh"
   },

@@ -2,7 +2,7 @@
 import Express from 'express'
 
 // Database controller
-import * as DBSelector from './dbSelector.js'
+import * as DBLog from '../mongo/logController.js'
 
 // Authentication helpers
 import { authenticateToken } from './auth.js'
@@ -13,9 +13,6 @@ import { ObjectID } from 'mongodb'
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('server:log_routes')
-
-// Get database controllers
-const logDB = DBSelector.getDBLogController()
 
 // Create a router to attach to an express server app
 const router = new Express.Router()
@@ -39,7 +36,7 @@ router.post('/wizardMessage', authenticateToken, async (req, res) => {
   // Attempt to create org
   debug('logging wizard message')
   try {
-    await logDB.logWizardMessage(message, correspondentID)
+    await DBLog.logWizardMessage(message, correspondentID)
     return res.json({ success: true })
   } catch (error) {
     console.error('Failed to log wizard message')
@@ -70,7 +67,7 @@ router.post('/userMessage', authenticateToken, async (req, res) => {
   // Attempt to create org
   debug('logging user message')
   try {
-    await logDB.logUserMessage(message, correspondentID, userID)
+    await DBLog.logUserMessage(message, correspondentID, userID)
     return res.json({ success: true })
   } catch (error) {
     console.error('Failed to log user message')
