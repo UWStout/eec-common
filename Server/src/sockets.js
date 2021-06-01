@@ -4,8 +4,9 @@ import SocketIO from 'socket.io'
 // Import the handlebars template library
 import Handlebars from 'handlebars'
 
-// Database controller
-import { getDBLogController, getDBUserController } from './routes/dbSelector.js'
+// Database log and user controller objects
+import * as DBUser from './mongo/userController.js'
+import * as DBLog from './mongo/logController.js'
 
 // Helper methods
 import { parseMessageCommands, parseOtherUsers } from './socketMessageHelper.js'
@@ -29,10 +30,6 @@ const WATSON_ENABLED = process.env.WATSON_ENABLED || false
 const clientSessions = {}
 const clientSocketLookup = {}
 const wizardSessions = {}
-
-// database log and user controller objects
-const DBLog = getDBLogController()
-const DBUser = getDBUserController()
 
 // Our root socket instance
 let mySocket = null

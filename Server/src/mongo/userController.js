@@ -1,4 +1,5 @@
-import { retrieveDBHandle } from './connect.js'
+// New DB connector (refactored 6/1/2021)
+import { connect as retrieveDBHandle, closeClient } from './connect.js'
 
 // To deal with ObjectIDs in the mongo format
 import { ObjectID } from 'mongodb'
@@ -8,6 +9,10 @@ import { listCollection } from './commonHelper.js'
 
 // print messages only during debug
 import Debug from 'debug'
+
+// Re-export closeClient
+export { closeClient }
+
 const debug = Debug('mongo:userController')
 
 /**
@@ -17,8 +22,8 @@ const debug = Debug('mongo:userController')
  *
  * @return {Promise} Resolves to the number of users, rejects on error
  */
-export function getUserCount () {
-  const DBHandle = retrieveDBHandle('karunaData')
+export async function getUserCount () {
+  const DBHandle = await retrieveDBHandle('karunaData')
   return DBHandle.collection('Users').estimatedDocumentCount()
 }
 
@@ -30,8 +35,8 @@ export function getUserCount () {
  * @param {number} userID ID of the user in the database
  * @return {Promise} Resolves to an object with all the user data, rejects on error
  */
-export function getUserDetails (userID) {
-  const DBHandle = retrieveDBHandle('karunaData')
+export async function getUserDetails (userID) {
+  const DBHandle = await retrieveDBHandle('karunaData')
   return DBHandle
     .collection('Users')
     .findOne({ _id: new ObjectID(userID) }, { projection: { passwordHash: 0 } })
@@ -46,20 +51,21 @@ export function getUserDetails (userID) {
  * @return {Promise} Resolves to the userID or -1 if no user exists
  */
 export function emailExists (email) {
-  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
-    DBHandle
-      .collection('Users')
-      .findOne({ email: email }, { _id: 1 }, (err, result) => {
-        // Check for an error
-        if (err) {
-          return resolve(-1)
-        }
-        // check if findOne failed
-        if (result == null) {
-          return resolve(-1)
-        } else { return resolve(result) }
-      })
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle
+        .collection('Users')
+        .findOne({ email: email }, { _id: 1 }, (err, result) => {
+          // Check for an error
+          if (err) {
+            return resolve(-1)
+          }
+          // check if findOne failed
+          if (result == null) {
+            return resolve(-1)
+          } else { return resolve(result) }
+        })
+    })
   })
 }
 
@@ -107,11 +113,9 @@ export function listUsersInTeam (teamID) {
 
   return new Promise((resolve, reject) => {
     // Retrieve team details
-    const DBHandle = retrieveDBHandle('karunaData')
-
-    try {
-      DBHandle.collection('Teams')
-        .findOne({ _id: new ObjectID(teamID) }, (err, result) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      try {
+        DBHandle.collection('Teams').findOne({ _id: new ObjectID(teamID) }, (err, result) => {
           // Check for and handle error
           if (err) {
             debug('Error retrieving unit for "listUsersInTeam"')
@@ -156,9 +160,10 @@ export function listUsersInTeam (teamID) {
             })
           })
         })
-    } catch (err) {
-      return resolve({ error: true, message: err.toString() })
-    }
+      } catch (err) {
+        return resolve({ error: true, message: err.toString() })
+      }
+    })
   })
 }
 
@@ -172,21 +177,22 @@ export function listUsersInTeam (teamID) {
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
 export function updateUser (userID, newData) {
-  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
-    DBHandle.collection('Users')
-      .findOneAndUpdate(
-        { _id: new ObjectID(userID) },
-        { $set: { ...newData } },
-        (err, result) => {
-          if (err) {
-            debug('Failed to update user')
-            debug(err)
-            return reject(err)
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users')
+        .findOneAndUpdate(
+          { _id: new ObjectID(userID) },
+          { $set: { ...newData } },
+          (err, result) => {
+            if (err) {
+              debug('Failed to update user')
+              debug(err)
+              return reject(err)
+            }
+            resolve()
           }
-          resolve()
-        }
-      )
+        )
+    })
   })
 }
 
@@ -233,9 +239,8 @@ export function updateUserTimestamps (userID, remoteAddress, context) {
 
   // Update user record with the latest connection/login data
   return new Promise((resolve, reject) => {
-    const DBHandle = retrieveDBHandle('karunaData')
-    DBHandle.collection('Users')
-      .findOneAndUpdate(
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users').findOneAndUpdate(
         { _id: new ObjectID(userID) },
         { $set: { ...newData } },
         (err, result) => {
@@ -247,6 +252,7 @@ export function updateUserTimestamps (userID, remoteAddress, context) {
           resolve()
         }
       )
+    })
   })
 }
 
@@ -261,9 +267,8 @@ export function setUserAlias (userID, contextStr, alias) {
 
   // Update user record with the new/updated alias data
   return new Promise((resolve, reject) => {
-    const DBHandle = retrieveDBHandle('karunaData')
-    DBHandle.collection('Users')
-      .findOneAndUpdate(
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users').findOneAndUpdate(
         { _id: new ObjectID(userID) },
         { $set: newAlias },
         (err, result) => {
@@ -272,9 +277,10 @@ export function setUserAlias (userID, contextStr, alias) {
             debug(err)
             return reject(err)
           }
-          resolve()
+          return resolve()
         }
       )
+    })
   })
 }
 
@@ -287,16 +293,17 @@ export function setUserAlias (userID, contextStr, alias) {
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
 export function removeUser (userID) {
-  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
-    DBHandle.collection('Users')
-      .findOneAndDelete({ _id: new ObjectID(userID) })
-      .then(result => { resolve() })
-      .catch(error => {
-        debug('Failed to remove user')
-        debug(error)
-        return reject(error)
-      })
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users')
+        .findOneAndDelete({ _id: new ObjectID(userID) })
+        .then(result => { resolve() })
+        .catch(error => {
+          debug('Failed to remove user')
+          debug(error)
+          return reject(error)
+        })
+    })
   })
 }
 
@@ -308,8 +315,8 @@ export function removeUser (userID) {
  * @param {ObjectID} userID
  * @returns {Promise} resolves with status object from user field, else rejects with an error
  */
-export function getUserStatus (userID) {
-  const DBHandle = retrieveDBHandle('karunaData')
+export async function getUserStatus (userID) {
+  const DBHandle = await retrieveDBHandle('karunaData')
   return DBHandle.collection('Users')
     .findOne({ _id: new ObjectID(userID) }, { projection: { status: 1, _id: 0 } })
 }
@@ -322,22 +329,21 @@ export function getUserStatus (userID) {
  * @param {ObjectID} userID the user whose status is being updated
  * @param {String} collaborationStatus can be null, the user's most recent collaboration status
  */
-export function updateUserCollaboration (userID, collaborationStatus) {
+export async function updateUserCollaboration (userID, collaborationStatus) {
+  const DBHandle = await retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
-    const DBHandle = retrieveDBHandle('karunaData')
-    return DBHandle.collection('Users')
-      .findOneAndUpdate(
-        { _id: new ObjectID(userID) },
-        { $set: { 'status.collaboration': collaborationStatus } },
-        (err, result) => {
-          if (err) {
-            debug('Failed to update user collaboration status')
-            debug(err)
-            return reject(err)
-          }
-          resolve(result)
+    return DBHandle.collection('Users').findOneAndUpdate(
+      { _id: new ObjectID(userID) },
+      { $set: { 'status.collaboration': collaborationStatus } },
+      (err, result) => {
+        if (err) {
+          debug('Failed to update user collaboration status')
+          debug(err)
+          return reject(err)
         }
-      )
+        resolve(result)
+      }
+    )
   })
 }
 
@@ -349,12 +355,12 @@ export function updateUserCollaboration (userID, collaborationStatus) {
  * @param {ObjectID} userID the user whose status is being updated
  * @param {number} timeToRespond the user's time to respond to queries in minutes (or NaN if undefined)
  */
-export function updateUserTimeToRespond (userID, timeToRespond) {
+export async function updateUserTimeToRespond (userID, timeToRespond) {
   // Set to default value
   if (typeof timeToRespond !== 'number') { timeToRespond = NaN }
 
+  const DBHandle = await retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
-    const DBHandle = retrieveDBHandle('karunaData')
     return DBHandle.collection('Users')
       .findOneAndUpdate(
         { _id: new ObjectID(userID) },
@@ -365,7 +371,7 @@ export function updateUserTimeToRespond (userID, timeToRespond) {
             debug(err)
             return reject(err)
           }
-          resolve(result)
+          return resolve(result)
         }
       )
   })

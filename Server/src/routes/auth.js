@@ -5,15 +5,12 @@ import Express from 'express'
 import JWT from 'jsonwebtoken'
 
 // Database controller
-import { getDBAuthController, getDBUserController } from './dbSelector.js'
+import * as DBUser from '../mongo/userController.js'
+import * as DBAuth from '../mongo/authController.js'
 
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('server:auth_routes')
-
-// Get database auth and user controller objects
-const DBAuth = getDBAuthController()
-const DBUser = getDBUserController()
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {

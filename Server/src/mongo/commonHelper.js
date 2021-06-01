@@ -1,4 +1,5 @@
-import { retrieveDBHandle } from './connect.js'
+// New DB connector (refactored 6/1/2021)
+import { connect as retrieveDBHandle } from './connect.js'
 
 // print messages only during debug
 import Debug from 'debug'
@@ -95,24 +96,25 @@ export function listCollection (collectionName, lookup = null, projection = null
     })
 
     // Perform the full query
-    const DBHandle = retrieveDBHandle('karunaData')
-    DBHandle.collection(collectionName).aggregate(rootPipeline, (err, cursor) => {
-      // Check for pipeline error
-      if (err) {
-        debug('List users failed')
-        debug(err)
-        return reject(err)
-      }
-
-      // Convert to array and return
-      cursor.toArray((err, docs) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection(collectionName).aggregate(rootPipeline, (err, cursor) => {
+        // Check for pipeline error
         if (err) {
-          debug('Aggregation toArray failed')
+          debug('List users failed')
           debug(err)
           return reject(err)
         }
 
-        return resolve(docs[0])
+        // Convert to array and return
+        cursor.toArray((err, docs) => {
+          if (err) {
+            debug('Aggregation toArray failed')
+            debug(err)
+            return reject(err)
+          }
+
+          return resolve(docs[0])
+        })
       })
     })
   })

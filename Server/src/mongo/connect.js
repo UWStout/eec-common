@@ -1,6 +1,6 @@
 // MongoDB communication libraries
 // import { ClientEncryption } from 'mongodb-client-encryption'
-import { MongoClient } from 'mongodb'
+import MongoDB from 'mongodb'
 
 // Read extra environment variables from the .env file
 import dotenv from 'dotenv'
@@ -12,86 +12,57 @@ const debug = Debug('mongo:connect')
 // Load .env config
 dotenv.config()
 
-// Client connection
-let clientHandle
-
 // URL of the database server
 const DB_SERVER_URL = 'mongodb://localhost:27017'
 const PROD_SERVER_URL = `mongodb+srv://${process.env.MONGO_USER}@karunacluster1.yb2nw.mongodb.net/karunaData?retryWrites=true&w=majority`
 
-// Initialize database connection
-let CONNECTING_PROMISE = null
-export async function connect (dbName = 'eec-common', autoClose = true) {
-  try {
-    // Are we already connecting?
-    if (CONNECTING_PROMISE) {
-      debug('Already connecting, awaiting result')
-      await CONNECTING_PROMISE
-      return clientHandle.db(dbName)
+// Client connection handle
+const clientHandle = new MongoDB.MongoClient(
+  (process.env.HEROKU ? PROD_SERVER_URL : DB_SERVER_URL),
+  { useNewUrlParser: true, useUnifiedTopology: true }
+)
+
+/**
+ * Ensure there is a connection to the mongoDB instance and optionally return
+ * a handle to the given database.
+ * @param {string} dbName Name of the database to connect to.
+ * @returns {MongoDB.db | undefined} If a dbName is provided, the database handle will be returned, otherwise null is returned.
+ * @throws If connection to mongodb instance fails.
+ */
+export async function connect (dbName) {
+  // Attempt to establish a connection with the mongodb instance
+  if (!clientHandle.isConnected()) {
+    try {
+      debug('Connecting to mongo ...')
+      await clientHandle.connect()
+      debug('... success')
+    } catch (err) {
+      debug('Failed to connect to mongodb')
+      debug(err)
+      throw new Error('Failed to connect to mongodb')
     }
-  } catch (err) {
-    // Don't log tons as the original connection attempt will do that
-    console.error('CRITICAL: MongoDB connection failed')
-    return Promise.reject(err)
   }
 
-  // Is there an existing connection? Using retrieveDBHandle instead.
-  if (clientHandle) {
-    debug('Connection to client already exists (use retrieveDBHandle instead?)')
-    return Promise.reject(new Error('Client connection already exists'))
-  }
-
-  // Attempt to connect
-  try {
-    const URL = (process.env.HEROKU ? PROD_SERVER_URL : DB_SERVER_URL)
-    console.log(`Connecting to MongoDB at '${URL}'`)
-    CONNECTING_PROMISE = MongoClient.connect(URL, { useUnifiedTopology: true, useNewUrlParser: true })
-    clientHandle = await CONNECTING_PROMISE
-    CONNECTING_PROMISE = null
-    console.log('Connected to database')
-  } catch (err) {
-    CONNECTING_PROMISE = null
-    console.error('CRITICAL: Database connection failed')
-    console.error(err)
-    process.exit(1)
-  }
-
-  // Setup database to close cleanly before exiting
-  if (autoClose) {
-    process.on('beforeExit', () => {
-      console.log(`Auto-closing ${dbName} ...`)
-      close(dbName)
-    })
-  }
-
-  // Return the database connection
-  return Promise.resolve(clientHandle.db(dbName))
-}
-
-// Attempt to close an existing database handle
-export function close (dbName) {
-  // Is there an open database handle to close
-  if (!clientHandle) {
-    console.error('Can\'t close mongoDB client database, no connection.')
-    return
-  }
-
-  // Close the handle
-  console.log('Closing mongoDB database ...')
-  clientHandle.close().then(() => {
-    // Clear the handle
-    clientHandle = undefined
-  })
-}
-
-// Retrieve an existing DB connection (and possibly auto-connect if not found)
-export function retrieveDBHandle (dbName = 'eec-common', autoClose = true) {
-  // Is there an existing connection?
-  if (clientHandle) {
+  // Return database handle
+  if (dbName) {
     return clientHandle.db(dbName)
   }
+}
 
-  // Cannot retrieve handle
-  console.error('No mongo client connection available.')
-  return null
+/**
+ * Close all client connections to MongoDB (if not connected, does nothing).
+ * @throws If there is an error while closing the connection.
+ */
+export async function closeClient () {
+  // Establish a connection (if not already)
+  try {
+    if (clientHandle.isConnected()) {
+      debug('Disconnecting from mongo ...')
+      await clientHandle.close()
+      debug('... success')
+    }
+  } catch (err) {
+    debug('Error disconnecting from mongo', err)
+    throw (new Error('Failed to disconnect from mongodb'))
+  }
 }

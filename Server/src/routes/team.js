@@ -5,7 +5,7 @@ import Express from 'express'
 import { authenticateToken } from './auth.js'
 
 // Database controller
-import { getDBTeamController } from './dbSelector.js'
+import * as DBTeam from '../mongo/teamController.js'
 
 // for testing the database
 import { ObjectID } from 'mongodb'
@@ -16,9 +16,6 @@ import * as UTIL from './utils.js'
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('server:user_routes')
-
-// Get database auth and user controller objects
-const DBTeam = getDBTeamController()
 
 // Create a router to attach to an express server app
 const router = new Express.Router()

@@ -1,4 +1,5 @@
-import { retrieveDBHandle } from './connect.js'
+// New DB connector (refactored 6/1/2021)
+import { connect as retrieveDBHandle, closeClient } from './connect.js'
 
 // Shared functions between different controllers
 import { listCollection } from './commonHelper.js'
@@ -8,6 +9,10 @@ import { ObjectID } from 'mongodb'
 
 // print messages only during debug
 import Debug from 'debug'
+
+// Re-export closeClient
+export { closeClient }
+
 const debug = Debug('mongo:unitController')
 
 /**
@@ -18,10 +23,9 @@ const debug = Debug('mongo:unitController')
  * @param {number} unitID ID of the org unit to lookup
  * @return {Promise} Resolves to JS Object with all the org unit details, rejects on error
  */
-export function getOrgUnitDetails (unitID) {
-  const DBHandle = retrieveDBHandle('karunaData')
-  return DBHandle
-    .collection('Units')
+export async function getOrgUnitDetails (unitID) {
+  const DBHandle = await retrieveDBHandle('karunaData')
+  return DBHandle.collection('Units')
     .findOne({ _id: new ObjectID(unitID) })
 }
 
@@ -35,17 +39,15 @@ export function getOrgUnitDetails (unitID) {
  * @param {string} adminID ID of admin user (may be null)
  * @return {Promise} Resolves to ID of the newly created org unit, rejects if creation fails
  */
-export function createOrgUnit (unitName, description, adminID) {
-  const DBHandle = retrieveDBHandle('karunaData')
-  let insertThis
-  if (!adminID && !description) {
-    insertThis = { unitName }
-  } else if (!adminID) {
-    insertThis = { unitName, description }
-  } else insertThis = { unitName, description, adminID: new ObjectID(adminID) }
-  return DBHandle
-    .collection('Units')
-    .insertOne(insertThis)
+export async function createOrgUnit (unitName, description, adminID) {
+  const insertThis = {
+    unitName,
+    description,
+    adminID: (ObjectID.isValid(adminID) ? new ObjectID(adminID) : undefined)
+  }
+
+  const DBHandle = await retrieveDBHandle('karunaData')
+  return DBHandle.collection('Units').insertOne(insertThis)
 }
 
 /**
@@ -63,13 +65,13 @@ export function removeOrgUnit (unitID) {
   // - Set the 'unitID' to null in all teams of that unit
   // - Automatically delete all teams in the unit
 
-  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
-    DBHandle
-      .collection('Units')
-      .findOneAndDelete({ _id: new ObjectID(unitID) })
-      .then(result => { resolve(true) })
-      .catch(() => { resolve(false) })
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Units')
+        .findOneAndDelete({ _id: new ObjectID(unitID) })
+        .then(result => { resolve(true) })
+        .catch(() => { resolve(false) })
+    })
   })
 }
 
@@ -78,26 +80,27 @@ export function removeOrgUnit (unitID) {
  *
  * tested in test 23 of test.js
  *
- * @param {number} userID ID of the user to update
+ * @param {string} userID ID of the user to update
  * @param {Object} newData New data for the org unit document (will be merged with existing document)
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
 export function updateOrgUnits (userID, newData) {
-  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
-    DBHandle.collection('Units')
-      .findOneAndUpdate(
-        { _id: new ObjectID(userID) },
-        { $set: { ...newData } },
-        (err, result) => {
-          if (err) {
-            debug('Failed to update org unit')
-            debug(err)
-            return reject(err)
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Units')
+        .findOneAndUpdate(
+          { _id: new ObjectID(userID) },
+          { $set: { ...newData } },
+          (err, result) => {
+            if (err) {
+              debug('Failed to update org unit')
+              debug(err)
+              return reject(err)
+            }
+            resolve()
           }
-          resolve()
-        }
-      )
+        )
+    })
   })
 }
 

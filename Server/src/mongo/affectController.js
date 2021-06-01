@@ -1,4 +1,5 @@
-import { retrieveDBHandle } from './connect.js'
+// New DB connector (refactored 6/1/2021)
+import { connect as retrieveDBHandle, closeClient } from './connect.js'
 
 // Shared functions between different controllers
 import { listCollection } from './commonHelper.js'
@@ -10,6 +11,9 @@ import { ObjectID } from 'mongodb'
 import Debug from 'debug'
 const debug = Debug('mongo:affectController')
 
+// Re-export closeClient
+export { closeClient }
+
 /* Affect Functions */
 
 /**
@@ -20,8 +24,8 @@ const debug = Debug('mongo:affectController')
  * @param {number} affectID ID of the affect to lookup
  * @return {Promise} Resolves to JS Object with all the affect details, rejects on error
  */
-export function getAffectDetails (affectID) {
-  const DBHandle = retrieveDBHandle('karunaData')
+export async function getAffectDetails (affectID) {
+  const DBHandle = await retrieveDBHandle('karunaData')
   return DBHandle.collection('Affects')
     .findOne({ _id: new ObjectID(affectID) })
 }
@@ -38,33 +42,34 @@ export function getAffectDetails (affectID) {
  * @return {Promise} Resolves to ID of the newly created affect, rejects if creation fails
  */
 export function createAffect (affectName, description, characterCodes, relatedIDs) {
+  // Start to build the affect
+  const insertThis = { name: affectName, description, characterCodes: [], related: [], active: true }
+
+  // Ensure the character codes are in an array
+  if (!Array.isArray(characterCodes)) {
+    if (characterCodes) {
+      insertThis.characterCodes.push(characterCodes)
+    }
+  } else {
+    insertThis.characterCodes = [...characterCodes]
+  }
+
+  // Ensure related IDs are an array and are proper ObjectIDs
+  if (!Array.isArray(relatedIDs)) {
+    if (relatedIDs) {
+      insertThis.related.push(new ObjectID(relatedIDs))
+    }
+  } else {
+    insertThis.related = relatedIDs.map((relID) => (new ObjectID(relID)))
+  }
+
+  // Insert the affect asynchronously
   return new Promise((resolve, reject) => {
-    // Start to build the affect
-    const insertThis = { name: affectName, description, characterCodes: [], related: [], active: true }
-
-    // Ensure the character codes are in an array
-    if (!Array.isArray(characterCodes)) {
-      if (characterCodes) {
-        insertThis.characterCodes.push(characterCodes)
-      }
-    } else {
-      insertThis.characterCodes = [...characterCodes]
-    }
-
-    // Ensure related IDs are an array and are proper ObjectIDs
-    if (!Array.isArray(relatedIDs)) {
-      if (relatedIDs) {
-        insertThis.related.push(new ObjectID(relatedIDs))
-      }
-    } else {
-      insertThis.related = relatedIDs.map((relID) => (new ObjectID(relID)))
-    }
-
-    // Insert the affect and return the related promise
-    const DBHandle = retrieveDBHandle('karunaData')
-    return DBHandle.collection('Affects').insertOne(insertThis, (err, result) => {
-      if (err) { return reject(err) }
-      return resolve(result.insertedId)
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Affects').insertOne(insertThis, (err, result) => {
+        if (err) { return reject(err) }
+        return resolve(result.insertedId)
+      })
     })
   })
 }
@@ -78,12 +83,13 @@ export function createAffect (affectName, description, characterCodes, relatedID
  * @return {Promise} Resolves only if the removal was successful, rejects otherwise
  */
 export function removeAffect (affectID) {
-  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
-    DBHandle.collection('Affects')
-      .findOneAndDelete({ _id: new ObjectID(affectID) })
-      .then(result => { return resolve() })
-      .catch((err) => { return reject(err) })
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Affects')
+        .findOneAndDelete({ _id: new ObjectID(affectID) })
+        .then(result => { return resolve() })
+        .catch((err) => { return reject(err) })
+    })
   })
 }
 
@@ -97,21 +103,22 @@ export function removeAffect (affectID) {
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
 export function updateAffect (affectID, newData) {
-  const DBHandle = retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
-    DBHandle.collection('Affects')
-      .findOneAndUpdate(
-        { _id: new ObjectID(affectID) },
-        { $set: { ...newData } },
-        (err, result) => {
-          if (err) {
-            debug('Failed to update affect')
-            debug(err)
-            return reject(err)
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Affects')
+        .findOneAndUpdate(
+          { _id: new ObjectID(affectID) },
+          { $set: { ...newData } },
+          (err, result) => {
+            if (err) {
+              debug('Failed to update affect')
+              debug(err)
+              return reject(err)
+            }
+            return resolve()
           }
-          return resolve()
-        }
-      )
+        )
+    })
   })
 }
 
@@ -148,7 +155,7 @@ export function listAffects (IDsOnly = true, perPage = 25, page = 1, sortBy = ''
  * @param {bool} isPrivate can be null, if null, it is pushed as false, else it is pushed as its value (either true or false).
  * @return {Promise} returns an inserted object
  */
-export function insertAffectHistoryEntry (affectID, relatedID, isUser, isPrivate) {
+export async function insertAffectHistoryEntry (affectID, relatedID, isUser, isPrivate) {
   // Ensure isPrivate has a default value
   if (isPrivate === undefined) { isPrivate = true }
 
@@ -167,7 +174,7 @@ export function insertAffectHistoryEntry (affectID, relatedID, isUser, isPrivate
   }
 
   // Start affect history entry query
-  const DBHandle = retrieveDBHandle('karunaData')
+  const DBHandle = await retrieveDBHandle('karunaData')
   const promises = [
     DBHandle.collection('AffectHistory').insertOne(insertThis)
   ]
@@ -198,8 +205,6 @@ export function insertAffectHistoryEntry (affectID, relatedID, isUser, isPrivate
  * @return {Promise} Resolves only if the query was successful, rejects otherwise
  */
 export function listAffectHistory (affectLogID, dateStart, dateEnd) {
-  const DBHandle = retrieveDBHandle('karunaData')
-
   let findThis
   if (affectLogID) {
     findThis = { _id: new ObjectID(affectLogID) }
@@ -214,16 +219,18 @@ export function listAffectHistory (affectLogID, dateStart, dateEnd) {
   }
 
   return new Promise((resolve, reject) => {
-    DBHandle.collection('AffectHistory')
-      .find(findThis)
-      .toArray(function (err, result) {
-        if (err) {
-          debug('Failed to find affect history')
-          debug(err)
-          return reject(err)
-        }
-        resolve(result)
-      })
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('AffectHistory')
+        .find(findThis)
+        .toArray(function (err, result) {
+          if (err) {
+            debug('Failed to find affect history')
+            debug(err)
+            return reject(err)
+          }
+          resolve(result)
+        })
+    })
   })
 }
 
@@ -237,8 +244,6 @@ export function listAffectHistory (affectLogID, dateStart, dateEnd) {
  * @return {Promise} Resolves only if the removal was successful, rejects otherwise
  */
 export function removeAffectHistoryEntry (affectLogID, dateRange) {
-  const DBHandle = retrieveDBHandle('karunaData')
-
   let removeOne
   if (dateRange) removeOne = false
   else removeOne = true
@@ -248,9 +253,11 @@ export function removeAffectHistoryEntry (affectLogID, dateRange) {
   else removeThis = { timestamp: { $gte: new Date(dateRange[0]), $lte: new Date(dateRange[1]) } }
 
   return new Promise((resolve, reject) => {
-    DBHandle.collection('AffectHistory')
-      .deleteMany(removeThis, { justOne: removeOne })
-      .then(result => { return resolve() })
-      .catch((err) => { return reject(err) })
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('AffectHistory')
+        .deleteMany(removeThis, { justOne: removeOne })
+        .then(result => { return resolve() })
+        .catch((err) => { return reject(err) })
+    })
   })
 }

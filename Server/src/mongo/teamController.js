@@ -1,4 +1,5 @@
-import { retrieveDBHandle } from './connect.js'
+// New DB connector (refactored 6/1/2021)
+import { connect as retrieveDBHandle, closeClient } from './connect.js'
 
 // Shared functions between different controllers
 import { listCollection } from './commonHelper.js'
@@ -8,6 +9,10 @@ import { ObjectID } from 'mongodb'
 
 // print messages only during debug
 import Debug from 'debug'
+
+// Re-export closeClient
+export { closeClient }
+
 const debug = Debug('mongo:teamController')
 
 /**
@@ -18,8 +23,8 @@ const debug = Debug('mongo:teamController')
  * @param {number} teamID ID of the team to lookup
  * @return {Promise} Resolves to JS Object with all the team details, rejects on error
  */
-export function getTeamDetails (teamID) {
-  const DBHandle = retrieveDBHandle('karunaData')
+export async function getTeamDetails (teamID) {
+  const DBHandle = await retrieveDBHandle('karunaData')
   return DBHandle
     .collection('Teams')
     .findOne({ _id: new ObjectID(teamID) })
@@ -36,30 +41,29 @@ export function getTeamDetails (teamID) {
  * @return {number} ID of the newly created team or null if creation fails
  */
 export function createTeam (teamName, unitID, userID) {
-  const DBHandle = retrieveDBHandle('karunaData')
-  let insertThis
-
-  if (!unitID) {
-    insertThis = { teamName }
-  } else insertThis = { teamName, unitID: new ObjectID(unitID) }
+  const insertThis = {
+    teamName,
+    unitID: (ObjectID.isValid(unitID) ? new ObjectID(unitID) : undefined)
+  }
 
   return new Promise((resolve, reject) => {
-    DBHandle
-      .collection('Teams')
-      .insertOne(insertThis, (err, result) => {
-        if (err) {
-          debug('Failed to create team')
-          debug(err)
-          return reject(err)
-        } else {
-          if (userID) {
-            debug('adding ' + userID + ' to team')
-            addToTeam(userID)
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Teams')
+        .insertOne(insertThis, (err, result) => {
+          if (err) {
+            debug('Failed to create team')
+            debug(err)
+            return reject(err)
+          } else {
+            debug('Team created')
+            if (userID) {
+              debug('adding ' + userID + ' to team')
+              addToTeam(userID)
+            }
+            return resolve(result)
           }
-          debug('Creating team')
-          return resolve(result)
-        }
-      })
+        })
+    })
   })
 }
 
@@ -71,15 +75,9 @@ export function createTeam (teamName, unitID, userID) {
  * @param {number} teamID ID of the team to destroy (must exist in DB)
  * @return {boolean} Whether or not the removal was successful
  */
-export function removeTeam (teamID) {
-  const DBHandle = retrieveDBHandle('karunaData')
-  return new Promise((resolve, reject) => {
-    DBHandle
-      .collection('Teams')
-      .findOneAndDelete({ _id: new ObjectID(teamID) })
-      .then(() => { resolve(true) })
-      .catch(() => { resolve(false) })
-  })
+export async function removeTeam (teamID) {
+  const DBHandle = await retrieveDBHandle('karunaData')
+  return DBHandle.collection('Teams').findOneAndDelete({ _id: new ObjectID(teamID) })
 }
 
 /**
@@ -98,9 +96,8 @@ export function updateTeam (userID, newData) {
       newData.orgId = new ObjectID(newData.orgId)
     }
 
-    const DBHandle = retrieveDBHandle('karunaData')
-    DBHandle.collection('Teams')
-      .findOneAndUpdate(
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Teams').findOneAndUpdate(
         { _id: new ObjectID(userID) },
         { $set: { ...newData } },
         (err, result) => {
@@ -109,9 +106,10 @@ export function updateTeam (userID, newData) {
             debug(err)
             return reject(err)
           }
-          resolve()
+          return resolve()
         }
       )
+    })
   })
 }
 
@@ -173,57 +171,58 @@ export function listTeams (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
  */
 export function listTeamsInUnit (unitID) {
   // Check for proper UnitID
-  if (!unitID) {
+  if (!ObjectID.isValid(unitID)) {
     return Promise.reject(new Error('UnitID must be defined'))
   }
 
   return new Promise((resolve, reject) => {
     // Retrieve unit details
-    const DBHandle = retrieveDBHandle('karunaData')
-    DBHandle.collection('Units')
-      .findOne({ _id: new ObjectID(unitID) }, (err, result) => {
-        // Check for and handle error
-        if (err) {
-          debug('Error retrieving unit for "listTeamsInUnit"')
-          debug(err)
-          return reject(err)
-        }
-
-        // For invalid unitID (does not exist)
-        if (!result) { return resolve([]) }
-
-        // Reshape unit data (removing id)
-        const unitData = {
-          unitName: result.name,
-          unitAdmin: result.admin,
-          unitCulture: result.culture
-        }
-
-        // Retrieve filtered list of teams with unit info joined
-        DBHandle.collection('Teams').aggregate([
-          { $match: { orgId: new ObjectID(unitID) } },
-          { $addFields: unitData }
-        ], (err, cursor) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Units')
+        .findOne({ _id: new ObjectID(unitID) }, (err, result) => {
           // Check for and handle error
           if (err) {
-            debug('Error listing teams for "listTeamsInUnit"')
+            debug('Error retrieving unit for "listTeamsInUnit"')
             debug(err)
             return reject(err)
           }
 
-          // Convert to array and return
-          cursor.toArray((err, docs) => {
+          // For invalid unitID (does not exist)
+          if (!result) { return resolve([]) }
+
+          // Reshape unit data (removing id)
+          const unitData = {
+            unitName: result.name,
+            unitAdmin: result.admin,
+            unitCulture: result.culture
+          }
+
+          // Retrieve filtered list of teams with unit info joined
+          DBHandle.collection('Teams').aggregate([
+            { $match: { orgId: new ObjectID(unitID) } },
+            { $addFields: unitData }
+          ], (err, cursor) => {
+            // Check for and handle error
             if (err) {
-              debug('Cursor toArray failed for "listTeamsInUnit"')
+              debug('Error listing teams for "listTeamsInUnit"')
               debug(err)
               return reject(err)
             }
 
-            // Resolve with the results
-            return resolve(docs)
+            // Convert to array and return
+            cursor.toArray((err, docs) => {
+              if (err) {
+                debug('Cursor toArray failed for "listTeamsInUnit"')
+                debug(err)
+                return reject(err)
+              }
+
+              // Resolve with the results
+              return resolve(docs)
+            })
           })
         })
-      })
+    })
   })
 }
 
@@ -232,21 +231,25 @@ export function listTeamsInUnit (unitID) {
  *
  * tested in test 6 of test.js
  *
- * @param {number} userID The id of the user to add
- * @param {number} teamID The id of the team to add them too
+ * @param {string} userID The id of the user to add
+ * @param {string} teamID The id of the team to add them too
  * @return {Promise} Resolves with 'true' on success, rejects on error
  */
 export function addToTeam (userID, teamID) {
+  if (!ObjectID.isValid(userID) || !ObjectID.isValid(teamID)) {
+    return Promise.reject(new Error('Either userID or teamID is invalid'))
+  }
+
   return new Promise((resolve, reject) => {
     // Get database handle
-    const DBHandle = retrieveDBHandle('karunaData')
-
-    // Update user record to include indicated team
-    DBHandle.collection('Users')
-      .update(
-        { _id: new ObjectID(userID) },
-        { $push: { teams: new ObjectID(teamID) } }
-      ).then(() => { return resolve('true') })
-      .catch((err) => { return reject(err) })
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      // Update user record to include indicated team
+      DBHandle.collection('Users')
+        .update(
+          { _id: new ObjectID(userID) },
+          { $push: { teams: new ObjectID(teamID) } }
+        ).then(() => { return resolve('true') })
+        .catch((err) => { return reject(err) })
+    })
   })
 }

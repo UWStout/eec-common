@@ -5,7 +5,7 @@ import Express from 'express'
 import { authenticateToken } from './auth.js'
 
 // Database controller
-import { getDBUserController } from './dbSelector.js'
+import * as DBUser from '../mongo/userController.js'
 
 // for testing the database
 import { ObjectID } from 'mongodb'
@@ -16,9 +16,6 @@ import * as UTIL from './utils.js'
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('server:user')
-
-// Get database auth and user controller objects
-const DBUser = getDBUserController()
 
 // Create a router to attach to an express server app
 const router = new Express.Router()
@@ -205,7 +202,7 @@ router.delete('/remove', authenticateToken, async (req, res) => {
   // attempt to remove user
   debug(`attempt to remove user ${userID}`)
   try {
-    const user = await DBUser.removeUser(userID)
+    await DBUser.removeUser(userID)
     // if user does not exist, function will succeed
     debug('success: user removed!')
     res.json({ success: true })
