@@ -35,7 +35,7 @@ export async function getUserCount () {
  *
  * tested in test 15 of test.js
  *
- * @param {number} userID ID of the user in the database
+ * @param {string} userID ID of the user in the database
  * @return {Promise} Resolves to an object with all the user data, rejects on error
  */
 export async function getUserDetails (userID) {
