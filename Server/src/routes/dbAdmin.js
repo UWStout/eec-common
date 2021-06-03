@@ -11,7 +11,7 @@ import Debug from 'debug'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const debug = Debug('server:db_admin')
+const debug = Debug('karuna:server:db_admin')
 
 // Path for redirection
 const REDIRECT_PATH = `${process.argv.SERVER_ROOT ? process.argv.SERVER_ROOT : ''}/dbAdmin/`

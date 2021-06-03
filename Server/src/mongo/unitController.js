@@ -5,7 +5,7 @@ import { connect as retrieveDBHandle, closeClient } from './connect.js'
 import { listCollection } from './commonHelper.js'
 
 // for using the database
-import { ObjectID } from 'mongodb'
+import MongoDB from 'mongodb'
 
 // print messages only during debug
 import Debug from 'debug'
@@ -13,7 +13,10 @@ import Debug from 'debug'
 // Re-export closeClient
 export { closeClient }
 
-const debug = Debug('mongo:unitController')
+// Extract ObjectID for easy usage
+const { ObjectID } = MongoDB
+
+const debug = Debug('karuna:mongo:unitController')
 
 /**
  * Retrieve details for the given organizational unit

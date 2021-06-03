@@ -49,7 +49,7 @@ const SERVER_ROOT = process.env.SERVER_ROOT || '/'
 console.log(`Server root: ${SERVER_ROOT}`)
 
 // prints messages for debugging purposes
-const debug = Debug('server')
+const serverDebug = Debug('karuna:server')
 
 // Initialize express app
 const app = new Express()
@@ -65,7 +65,8 @@ if (process.env.HEROKU) {
   server = http.createServer(app)
 } else {
   // Not HEROKU so make an HTTPS server
-  debug('Creating local HTTPS server for dev')
+  serverDebug('Creating local HTTPS server for dev')
+
   const SSL_KEY_FILE = process.env.SERVER_KEY || './certs/server.key'
   const SSL_CERT_FILE = process.env.SERVER_CERT || './certs/server.crt'
   const SSLOptions = {
@@ -94,7 +95,7 @@ app.use(Express.json())
 
 // Redirect all non-ssl traffic to HTTPS
 if (process.env.HEROKU && !process.env.LOCAL) {
-  debug('Redirecting traffic to HTTPS')
+  serverDebug('Redirecting traffic to HTTPS')
   app.use((req, res, next) => {
     const reqType = req.headers['x-forwarded-proto']
     if (reqType === 'https') {
@@ -177,7 +178,7 @@ function adminIndex (req, res, next) {
 
 // Log on SIGINT and SIGTERM before exiting
 function handleSignal (signal) {
-  debug(`Received ${signal}, exiting.`)
+  serverDebug(`Received ${signal}, exiting.`)
   process.exit(0)
 }
 process.on('SIGINT', handleSignal)

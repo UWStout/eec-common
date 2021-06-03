@@ -10,7 +10,7 @@ import * as DBAuth from '../mongo/authController.js'
 
 // Create debug output object
 import Debug from 'debug'
-const debug = Debug('server:auth_routes')
+const debug = Debug('karuna:server:auth_routes')
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {

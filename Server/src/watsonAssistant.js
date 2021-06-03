@@ -1,6 +1,6 @@
 // Watson API library
-import AssistantV2 from 'ibm-watson/assistant/v2'
-import { IamAuthenticator } from 'ibm-watson/auth'
+import AssistantV2 from 'ibm-watson/assistant/v2.js'
+import { IamAuthenticator } from 'ibm-watson/auth/index.js'
 
 // print messages only during debug
 import Debug from 'debug'
@@ -10,7 +10,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 // Create debug logging function
-const debug = Debug('server:watson')
+const debug = Debug('karuna:server:watson')
 
 // Info specific to our assistant
 const ASSISTANT_ROOT_SERVER = 'https://api.us-south.assistant.watson.cloud.ibm.com'

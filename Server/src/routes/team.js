@@ -8,14 +8,17 @@ import { authenticateToken } from './auth.js'
 import * as DBTeam from '../mongo/teamController.js'
 
 // for testing the database
-import { ObjectID } from 'mongodb'
+import MongoDB from 'mongodb'
 
 // Utility functions
 import * as UTIL from './utils.js'
 
 // Create debug output object
 import Debug from 'debug'
-const debug = Debug('server:user_routes')
+const debug = Debug('karuna:server:user_routes')
+
+// Extract ObjectID for easy usage
+const { ObjectID } = MongoDB
 
 // Create a router to attach to an express server app
 const router = new Express.Router()

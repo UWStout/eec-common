@@ -8,11 +8,14 @@ import * as DBLog from '../mongo/logController.js'
 import { authenticateToken } from './auth.js'
 
 // for testing the database
-import { ObjectID } from 'mongodb'
+import MongoDB from 'mongodb'
 
 // Create debug output object
 import Debug from 'debug'
-const debug = Debug('server:log_routes')
+const debug = Debug('karuna:server:log_routes')
+
+// Extract ObjectID for easy usage
+const { ObjectID } = MongoDB
 
 // Create a router to attach to an express server app
 const router = new Express.Router()

@@ -1,5 +1,5 @@
 // Import the socket.io library
-import SocketIO from 'socket.io'
+import * as io from 'socket.io'
 
 // Import the handlebars template library
 import Handlebars from 'handlebars'
@@ -17,7 +17,7 @@ import dotenv from 'dotenv'
 
 // Setup debug for output
 import Debug from 'debug'
-const debug = Debug('server:socket')
+const debug = Debug('karuna:server:socket')
 
 // Adjust env based on .env file
 dotenv.config()
@@ -37,7 +37,7 @@ let mySocket = null
 // Integrate our web-sockets route with the express server
 export function makeSocket (serverListener) {
   // Setup web-sockets
-  mySocket = SocketIO(serverListener, { path: '/karuna/socket.io' })
+  mySocket = new io.Server(serverListener, { path: '/karuna/socket.io' })
 
   // Respond to new socket connections
   mySocket.on('connection', (socket) => {

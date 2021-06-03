@@ -3,7 +3,7 @@ import { connect as retrieveDBHandle } from './connect.js'
 
 // print messages only during debug
 import Debug from 'debug'
-const debug = Debug('mongo:commonHelper')
+const debug = Debug('karuna:mongo:commonHelper')
 
 // Don't allow more than this many to be returned
 const MAX_PER_PAGE = 250

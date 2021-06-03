@@ -9,7 +9,7 @@ module.exports = {
     script: './dist/server.js',
     log_file: './logs/output.log',
     env: {
-      DEBUG: 'watch,server:*'
+      DEBUG: 'karuna:*'
     }
   }]
 }

@@ -11,13 +11,16 @@ import * as DBAffect from '../mongo/affectController.js'
 import { authenticateToken } from './auth.js'
 
 // for testing the database
-import { ObjectID } from 'mongodb'
+import MongoDB from 'mongodb'
 
 import { analyzeAffect } from '../analysisEngine.js'
 
 // Create debug output object
 import Debug from 'debug'
-const debug = Debug('server:affect_routes')
+const debug = Debug('karuna:server:affect_routes')
+
+// Extract ObjectID for easy usage
+const { ObjectID } = MongoDB
 
 // Create a router to attach to an express server app
 const router = new Express.Router()

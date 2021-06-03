@@ -6,7 +6,7 @@ import * as WATSON from './watsonAssistant.js'
 
 import { sendGenericMessage } from './sockets.js'
 
-const debug = Debug('server:analysis')
+const analysisDebug = Debug('karuna:server:analysis')
 
 const sessionMap = new Map()
 
@@ -23,13 +23,13 @@ export async function analyzeMessage (messageObj, userID, context, isComplete = 
   do {
     // Create watson session if needed
     if (!sessionMap.has(customerID)) {
-      if (!retry) { debug('Creating session for ' + customerID) }
+      if (!retry) { analysisDebug('Creating session for ' + customerID) }
       try {
         const newSession = await WATSON.createSession(userID, context)
         sessionMap.set(customerID, newSession)
       } catch (err) {
-        debug('Error while creating session')
-        debug(err)
+        analysisDebug('Error while creating session')
+        analysisDebug(err)
         throw err
       }
     }
@@ -42,13 +42,13 @@ export async function analyzeMessage (messageObj, userID, context, isComplete = 
     } catch (err) {
       if (!retry && err.message === 'Invalid Session') {
         // Clear old session and retry
-        debug('Renewing expired session for ' + customerID)
+        analysisDebug('Renewing expired session for ' + customerID)
         sessionMap.delete(customerID)
         retry = true
       } else {
         // Other error so throw it
-        debug('Error while sending message')
-        debug(err)
+        analysisDebug('Error while sending message')
+        analysisDebug(err)
         throw err
       }
     }
@@ -58,17 +58,17 @@ export async function analyzeMessage (messageObj, userID, context, isComplete = 
 // Stub function for analyzing an affect
 export function analyzeAffect (affectObj, userID, context) {
   return new Promise((resolve, reject) => {
-    debug(affectObj.characterCodes[0]) // when will this be called?
+    analysisDebug(affectObj.characterCodes[0]) // when will this be called?
     // switch (affectObj.data) { // will this be an ID or an affect?
     // }
 
     // This is an example I want to work with to get the karuna bubble connected with the analysis engine.
     if (affectObj.characterCodes[0] === '🤩') {
       const message = 'you look excited!'
-      debug(message)
+      analysisDebug(message)
       sendGenericMessage(message, userID, context)
     }
-    debug('Call to analyzeAffect')
+    analysisDebug('Call to analyzeAffect')
     setTimeout(() => { resolve({ success: true }) }, 100)
   })
 }
@@ -76,7 +76,7 @@ export function analyzeAffect (affectObj, userID, context) {
 // Stub function for triggering timed questions
 export function checkTimedTriggers (userInfo) {
   return new Promise((resolve, reject) => {
-    debug('Call to check timed triggers')
+    analysisDebug('Call to check timed triggers')
     setTimeout(() => { resolve({ success: true }) }, 100)
   })
 }
