@@ -32,8 +32,15 @@ describe('user controller test', function () {
   // Test user retrieval
   it('retrieves and verifies users', async function () {
     for (let i = 0; i < userData.length; i++) {
+      // Retrieve user info from the database
       const user = await DBUser.getUserDetails(userData[i]._id.$oid)
-      expect(user).to.deep.include(sanitizeUser(userData[i]))
+
+      // Sanitize the comparison object
+      const compare = sanitizeMongoJSON(userData[i])
+      delete compare.passwordHash
+
+      // Compare the two
+      expect(user).to.deep.include(compare)
     }
   })
 
@@ -44,42 +51,28 @@ describe('user controller test', function () {
   })
 })
 
-function sanitizeUser (user) {
-  // Process all ObjectIDs
-  const sanitized = {
-    ...user,
-    _id: new MongoDB.ObjectID(user._id.$oid),
-    teams: user.teams.map((team) => (new MongoDB.ObjectID(team.$oid)))
-  }
+function sanitizeMongoJSON (user) {
+  // Keep track of objects we've seen to avoid cyclic recursion
+  const seenObjects = []
 
-  if (sanitized.status && sanitized.status.currentAffectID) {
-    sanitized.status.currentAffectID = new MongoDB.ObjectID(user.status.currentAffectID.$oid)
-  }
+  // Inner function to recursively search for objects
+  function sanitizeDatesAndOIds (object) {
+    // Base case: convert $oid and $date to proper objects
+    if (object.$oid) { return new MongoDB.ObjectID(object.$oid) }
+    if (object.$date) { return new Date(object.$date) }
 
-  // Remove password hash
-  delete sanitized.passwordHash
-
-  // Sanitize all dates
-  const fields = ['lastLogin', 'lastWizardLogin']
-  fields.forEach((field) => {
-    if (sanitized[field]) {
-      sanitized[field].timestamp = new Date(
-        parseInt(user[field].timestamp.$date.$numberLong)
-      )
-    }
-  })
-
-  if (sanitized.lastContextLogin) {
-    const contextFields = ['discord', 'msTeams', 'slack']
-    contextFields.forEach((field) => {
-      if (sanitized.lastContextLogin[field]) {
-        sanitized.lastContextLogin[field].timestamp = new Date(
-          parseInt(user.lastContextLogin[field].timestamp.$date.$numberLong)
-        )
+    // Descend into any children objects
+    for (const k in object) {
+      if (typeof object[k] === 'object' && seenObjects.indexOf(object[k]) === -1) {
+        object[k] = sanitizeDatesAndOIds(object[k])
+        seenObjects.push(object[k])
       }
-    })
+    }
+
+    // Return the sanitized object
+    return object
   }
 
   // Return object for comparison
-  return sanitized
+  return sanitizeDatesAndOIds({ ...user })
 }
