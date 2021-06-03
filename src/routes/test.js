@@ -21,9 +21,12 @@ import { authenticateToken, decodeToken } from './auth.js'
 import Debug from 'debug'
 
 // for using the database
-import { ObjectID } from 'mongodb'
+import MongoDB from 'mongodb'
 
-// const debug = Debug('server:test')
+// const debug = Debug('karuna:server:test')
+
+// Extract ObjectID for easy usage
+const { ObjectID } = MongoDB
 
 */
 // Get database controllers

@@ -2,7 +2,7 @@
 import { connect as retrieveDBHandle, closeClient } from './connect.js'
 
 // To deal with ObjectIDs in the mongo format
-import { ObjectID } from 'mongodb'
+import MongoDB from 'mongodb'
 
 // Shared functions between different controllers
 import { listCollection } from './commonHelper.js'
@@ -13,7 +13,10 @@ import Debug from 'debug'
 // Re-export closeClient
 export { closeClient }
 
-const debug = Debug('mongo:userController')
+// Extract ObjectID for easy usage
+const { ObjectID } = MongoDB
+
+const debug = Debug('karuna:mongo:userController')
 
 /**
  * Retrieve the number of users in the user table

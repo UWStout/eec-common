@@ -1,15 +1,18 @@
 // New DB connector (refactored 6/1/2021)
 import { connect as retrieveDBHandle, closeClient } from './connect.js'
 
-// for using the database
-import { ObjectID } from 'mongodb'
+// For using the database
+import MongoDB from 'mongodb'
 
 // Re-export closeClient
 export { closeClient }
 
 // print messages only during debug (NOT CURRENTLY NEEDED)
 // import Debug from 'debug'
-// const debug = Debug('mongo:logController')
+// const debug = Debug('karuna:mongo:logController')
+
+// Extract ObjectID for easy usage
+const { ObjectID } = MongoDB
 
 /**
  * Log a message to the logging database

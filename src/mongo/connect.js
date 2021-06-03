@@ -7,7 +7,7 @@ import dotenv from 'dotenv'
 
 // print messages only during debug
 import Debug from 'debug'
-const debug = Debug('mongo:connect')
+const debug = Debug('karuna:mongo:connect')
 
 // Load .env config
 dotenv.config()
@@ -22,6 +22,9 @@ const clientHandle = new MongoDB.MongoClient(
   { useNewUrlParser: true, useUnifiedTopology: true }
 )
 
+// Promise that resolves once connection is active
+let connectPromise = null
+
 /**
  * Ensure there is a connection to the mongoDB instance and optionally return
  * a handle to the given database.
@@ -34,7 +37,13 @@ export async function connect (dbName) {
   if (!clientHandle.isConnected()) {
     try {
       debug('Connecting to mongo ...')
-      await clientHandle.connect()
+      if (connectPromise !== null) {
+        await connectPromise
+      } else {
+        connectPromise = clientHandle.connect()
+        await connectPromise
+        connectPromise = null
+      }
       debug('... success')
     } catch (err) {
       debug('Failed to connect to mongodb')

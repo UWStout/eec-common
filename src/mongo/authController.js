@@ -10,7 +10,7 @@ import Debug from 'debug'
 // Re-export closeClient
 export { closeClient }
 
-const debug = Debug('mongo:authController')
+const debug = Debug('karuna:mongo:authController')
 
 // How many rounds to use when generating hash salt for passwords
 const SALT_ROUNDS = 10

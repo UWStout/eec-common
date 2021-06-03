@@ -4,15 +4,18 @@ import { connect as retrieveDBHandle, closeClient } from './connect.js'
 // Shared functions between different controllers
 import { listCollection } from './commonHelper.js'
 
-// for using the database
-import { ObjectID } from 'mongodb'
+// For using the database
+import MongoDB from 'mongodb'
 
 // print messages only during debug
 import Debug from 'debug'
-const debug = Debug('mongo:affectController')
+const debug = Debug('karuna:mongo:affectController')
 
 // Re-export closeClient
 export { closeClient }
+
+// Extract ObjectID for easy usage
+const { ObjectID } = MongoDB
 
 /* Affect Functions */
 

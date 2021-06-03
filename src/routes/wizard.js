@@ -11,7 +11,7 @@ import Debug from 'debug'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const debug = Debug('server:wizard')
+const debug = Debug('karuna:server:wizard')
 
 // Path for redirection
 const REDIRECT_PATH = `${process.argv.SERVER_ROOT ? process.argv.SERVER_ROOT : ''}/oz/`
