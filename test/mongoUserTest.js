@@ -4,39 +4,82 @@
  * - chai: https://www.chaijs.com/api/bdd/
  */
 
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
+// File and path access
+import path from 'path'
+import fs from 'fs'
 
 // Database controller
-import { getDBUserController } from '../src/routes/dbSelector.js'
+import * as DBUser from '../src/mongo/userController.js'
 
-import { close } from '../src/mongo/connect.js'
+// Database helper
+import MongoDB from 'mongodb'
 
 // Setup the chai assertion library
 import { expect } from 'chai'
 
-import path from 'path'
-import fs from 'fs'
-
-// Get database auth and user controller objects
-const DBUser = getDBUserController()
-
 // Mocha function
 describe('user controller test', function () {
   // 'this' is current instance of Mocha
-  
-  // To-Do: data in testData is not properly formatted for testing, but should eventually be used for comparison against data in mongo database
-  // const rawUserData = fs.readFileSync(path.resolve('./testData/rawUsers/usersPage1.json'), { encoding: 'utf8' })
-  // const userData = JSON.parse(rawUserData)
+  let userData = []
 
-  it('retrieves a user', async function () {
-    const user = await DBUser.getUserDetails('5ff742f09bb9905f98eb348e')
-    expect(user).to.have.members([
-      { firstName: 'Seth' }, { lastName: 'Berrier' }
-    ])
+  // Runs once before the tests
+  before(function () {
+    // Read in and parse the exported user data
+    const rawUserData = fs.readFileSync(path.resolve('./test/data/Users.json'), { encoding: 'utf8' })
+    userData = JSON.parse(rawUserData)
   })
 
+  // Test user retrieval
+  it('retrieves and verifies users', async function () {
+    for (let i = 0; i < userData.length; i++) {
+      const user = await DBUser.getUserDetails(userData[i]._id.$oid)
+      expect(user).to.deep.include(sanitizeUser(userData[i]))
+    }
+  })
+
+  // Runs once after ALL tests completed
   after(function () {
-    close('karunaData')
+    // Close database connection
+    DBUser.closeClient()
   })
 })
+
+function sanitizeUser (user) {
+  // Process all ObjectIDs
+  const sanitized = {
+    ...user,
+    _id: new MongoDB.ObjectID(user._id.$oid),
+    teams: user.teams.map((team) => (new MongoDB.ObjectID(team.$oid)))
+  }
+
+  if (sanitized.status && sanitized.status.currentAffectID) {
+    sanitized.status.currentAffectID = new MongoDB.ObjectID(user.status.currentAffectID.$oid)
+  }
+
+  // Remove password hash
+  delete sanitized.passwordHash
+
+  // Sanitize all dates
+  const fields = ['lastLogin', 'lastWizardLogin']
+  fields.forEach((field) => {
+    if (sanitized[field]) {
+      sanitized[field].timestamp = new Date(
+        parseInt(user[field].timestamp.$date.$numberLong)
+      )
+    }
+  })
+
+  if (sanitized.lastContextLogin) {
+    const contextFields = ['discord', 'msTeams', 'slack']
+    contextFields.forEach((field) => {
+      if (sanitized.lastContextLogin[field]) {
+        sanitized.lastContextLogin[field].timestamp = new Date(
+          parseInt(user.lastContextLogin[field].timestamp.$date.$numberLong)
+        )
+      }
+    })
+  }
+
+  // Return object for comparison
+  return sanitized
+}
