@@ -1,14 +1,16 @@
 // File IO
-const fs = require('fs')
+import fs from 'fs'
 
 // MongoDB library
-const { ObjectID } = require('mongodb')
+import MongoDB from 'mongodb'
 
 // Password hashing library
-const bcrypt = require('bcrypt')
+import bcrypt from 'bcrypt'
 
 // Our own database helper functions
-const DBHelp = require('./dbHelper.js')
+import * as DBHelp from './dbHelper.js'
+
+const { ObjectID } = MongoDB.ObjectID
 
 // Helper function for hashing a password
 const SALT_ROUNDS = 10
@@ -44,7 +46,7 @@ function hashPassword (password) {
     const rawTeamStr = fs.readFileSync('./rawOrgsAndTeams/testTeams.json', { encoding: 'utf8' })
     let rawTeams = JSON.parse(rawTeamStr)
 
-    // Decorate with random org IDs (10% will remain null)
+    // Decorate with random org IDs (~10% will remain null)
     rawTeams = rawTeams.map((team, i) => {
       const randOrgId = new ObjectID(orgIDs[Math.floor(Math.random() * rawOrgs.length)])
       return {
@@ -71,15 +73,15 @@ function hashPassword (password) {
         const user = userPage[userIter]
 
         // Build team-list
-        const teamStrs = []
+        const teamStrings = []
         for (let idIter = 0; idIter < pageIter; idIter++) {
           let randomID = ''
           do {
             randomID = teamIDs[Math.floor(Math.random() * rawTeams.length)]
-          } while (teamStrs.indexOf(randomID) >= 0)
-          teamStrs.push(randomID)
+          } while (teamStrings.indexOf(randomID) >= 0)
+          teamStrings.push(randomID)
         }
-        const teams = teamStrs.map((teamStr) => { return new ObjectID(teamStr) })
+        const teams = teamStrings.map((teamStr) => { return new ObjectID(teamStr) })
 
         // Hash password
         const passwordHash = await hashPassword(user.login.password)
@@ -102,6 +104,7 @@ function hashPassword (password) {
     process.stdout.write(' done\n\n')
 
     // Insert users
+    await DBHelp.clearCollection(DBHandle, 'Users')
     await DBHelp.insertAllInCollection(DBHandle, 'Users', rawUsers)
 
     // Close connection
