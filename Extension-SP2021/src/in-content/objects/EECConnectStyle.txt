@@ -1,0 +1,60 @@
+/* The Icon for the Karuna Connect side-bar */
+.eec-connect {
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  width: 220px;
+  height: 24px;
+}
+
+.eec-status {
+  position: absolute;
+  top: 115px;
+  right: -5px;
+}
+
+.mood-modal {
+  position: absolute;
+  width: 185px;
+  bottom: 400px;
+  right: 150px;
+}
+
+#mood-share-modal {
+  position: absolute;
+  width: 250px;
+  bottom: 400px;
+  right: 75px;
+}
+
+#eec-history-panel {
+  position: absolute;
+  width: 220px;
+}
+
+.eec-mood-history-body {
+  height: 160px;
+  width: 160px;
+  overflow: auto;
+  backgroundColor: #cfcfcf;
+}
+
+.eec-mood-history-body::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 3px;
+  backgroundColor: #c2c2c2;
+}
+
+.eec-mood-history-body::-webkit-scrollbar:hover {
+  backgroundColor: #a3a3a3;
+}
+
+.eec-connect-icon {
+  display: block;
+  position: absolute;
+}
+
+.small-text {
+  font-size: 12px;
+  font-style: italic;
+}

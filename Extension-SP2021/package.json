@@ -1,0 +1,62 @@
+{
+  "name": "karuna-eec-extension",
+  "version": "0.2.0",
+  "description": "Web browser extension to integrate with the Karuna EEC project.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --watch src --exec npm run devbuild",
+    "clean": "rimraf dist",
+
+    "predevbuild": "node preBuild.js",
+    "devbuild": "run-s clean devbuild-background devbuild-in-content devbuild-popup",
+    "devbuild-background": "esbuild --bundle --sourcemap --define:_DEV_=true --outfile=dist/js/background.js src/background/background.js",
+    "devbuild-in-content": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV='development' --outfile=dist/js/in-content.js src/in-content/in-content.js",
+    "devbuild-popup": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV='development' --outfile=dist/js/popup.js src/popup/popup.jsx",
+    "postdevbuild": "node postBuild.js",
+
+    "prebuild": "node preBuild.js",
+    "build": "run-s clean build-background build-in-content build-popup",
+    "build-background": "esbuild --bundle --minify --define:_DEV_=false --outfile=dist/js/background.js src/background/background.js",
+    "build-in-content": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV='production' --outfile=dist/js/in-content.js src/in-content/in-content.js",
+    "build-popup": "esbuild --bundle --minify --loader:.css=css --define:_DEV_=false --define:process.env.NODE_ENV='production' --outfile=dist/js/popup.js src/popup/popup.jsx",
+    "postbuild": "node postBuild.js",
+
+    "test": "jest"
+  },
+  "author": "Seth Berrier, Larissa Ford, Bret Parsons, Aram Wahler",
+  "license": "MIT",
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.12.6",
+    "eslint": "^7.28.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "nodemon": "^2.0.7",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "@date-io/moment": "^2.10.11",
+    "@fortawesome/fontawesome-free": "^5.15.3",
+    "@juggle/resize-observer": "^3.3.1",
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/pickers": "^3.3.10",
+    "animate.css": "^4.1.1",
+    "axios": "^0.21.1",
+    "commonmark": "^0.29.3",
+    "debounce": "^1.2.1",
+    "eventemitter3": "^4.0.7",
+    "jquery": "^3.6.0",
+    "moment": "^2.29.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "socket.io-client": "^4.1.2",
+    "store2": "^2.12.0",
+    "tippy.js": "^6.3.1"
+  }
+}
