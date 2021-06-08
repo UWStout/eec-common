@@ -1,10 +1,9 @@
 /* global EventEmitter3 */
 
 // Import our custom HTML Elements
-import EECConnect from './objects/EECConnect.jsx'
-import EECBubble from './objects/EECBubble.js'
-import EECMessageTextModule from './objects/EECMessageTextModule.js'
+import EECUnified from './EECUnified.jsx'
 
+// Context enum
 import { CONTEXT } from '../util/contexts.js'
 
 // Colorful logger
@@ -63,22 +62,13 @@ let channelName = ''
 
 jQuery(document).ready(() => {
   // Define our custom elements
-  customElements.define('eec-connect', EECConnect)
-  customElements.define('eec-bubble', EECBubble)
-  customElements.define('eec-message-text-module', EECMessageTextModule)
-
-  // Setup global karuna bubble element
-  const bubbleElem = document.createElement('eec-bubble')
-  bubbleElem.setStatusEmitter(statusEmitter)
-  document.body.insertBefore(bubbleElem)
-  bubbleElem.setBackgroundPort(extensionPort)
-  bubbleElem.setContextName(contextName)
+  customElements.define('eec-unified', EECUnified)
 
   // Setup global Karuna Connect element
-  const karunaConnectElem = document.createElement('eec-connect')
-  karunaConnectElem.setupElementReact(contextName, statusEmitter)
-  document.body.insertBefore(karunaConnectElem)
-  karunaConnectElem.setBackgroundPort(extensionPort)
+  const karunaUnifiedElem = document.createElement('eec-unified')
+  karunaUnifiedElem.setupElementReact(contextName, statusEmitter)
+  document.body.insertBefore(karunaUnifiedElem)
+  karunaUnifiedElem.setBackgroundPort(extensionPort)
 
   // Callback function to execute when mutations are observed
   const mutationCallback = (mutationsList, observer) => {
@@ -86,7 +76,7 @@ jQuery(document).ready(() => {
     updateTextBoxes()
 
     // Signal that content has changed to the connect component
-    karunaConnectElem.onMutation()
+    karunaUnifiedElem.onMutation()
 
     // Check team and channel names on any page mutation.
     // We use optional chaining to avoid undefined errors
