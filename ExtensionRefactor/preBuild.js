@@ -16,7 +16,7 @@ fs.writeFileSync(
 
 // Read in all the FontAwesome CSS
 const FontAwesomeCSS = fs.readFileSync('./node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css', { encoding: 'utf-8' })
-const FontAwesomeCSSBrands= fs.readFileSync('./node_modules/@fortawesome/fontawesome-free/css/brands.min.css', { encoding: 'utf-8' })
+const FontAwesomeCSSBrands = fs.readFileSync('./node_modules/@fortawesome/fontawesome-free/css/brands.min.css', { encoding: 'utf-8' })
 const FontAwesomeCSSSolid = fs.readFileSync('./node_modules/@fortawesome/fontawesome-free/css/solid.min.css', { encoding: 'utf-8' })
 
 // Output it as a text file
