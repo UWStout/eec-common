@@ -34,26 +34,8 @@ const IS_SLACK = (contextName === CONTEXT.SLACK)
 // Initialize communication with background page
 const extensionPort = chrome.runtime.connect({ name: contextName })
 
-// Detect uncaught errors related to an invalidated extension and silence them
-window.addEventListener('error', (event) => {
-  if (event.error.message.includes('Extension context invalidated')) {
-    event.stopImmediatePropagation()
-  }
-})
-
-// Detect unloading of tab/page and send a disconnect to the communication port
-window.addEventListener('beforeunload', (event) => {
-  extensionPort.disconnect()
-})
-
 // Create event emitter to relay some data between elements
 const statusEmitter = new EventEmitter3()
-
-// DEBUGGING: Deal with Discord's hyper-aggressive capturing of keyboard events
-document.body.addEventListener('keypress', (event) => {
-  // Echo the keypress to the inner elements
-  statusEmitter.emit('keypress', event)
-})
 
 // State variables
 let userName = ''
@@ -64,7 +46,7 @@ jQuery(document).ready(() => {
   // Define our custom elements
   customElements.define('eec-unified', EECUnified)
 
-  // Setup global Karuna Connect element
+  // Setup global Unified Karuna element
   const karunaUnifiedElem = document.createElement('eec-unified')
   karunaUnifiedElem.setupElementReact(contextName, statusEmitter)
   document.body.insertBefore(karunaUnifiedElem)
@@ -76,7 +58,7 @@ jQuery(document).ready(() => {
     updateTextBoxes()
 
     // Signal that content has changed to the connect component
-    karunaUnifiedElem.onMutation()
+    // karunaUnifiedElem.onMutation()
 
     // Check team and channel names on any page mutation.
     // We use optional chaining to avoid undefined errors
@@ -135,18 +117,18 @@ function updateTextBoxes () {
       key = textBox.getAttribute('aria-label')
     }
     if (!EECMessageTextModuleList.has(key)) {
-      LOG(`Adding New EEC Message Text Module (${EECMessageTextModuleList.size + 1} added)`)
+      // LOG(`Adding New EEC Message Text Module (${EECMessageTextModuleList.size + 1} added)`)
 
       // Build in-line extension
-      const messageTextModuleElem = document.createElement('eec-message-text-module')
-      messageTextModuleElem.setStatusEmitter(statusEmitter)
-      messageTextModuleElem.contextName = contextName
-      messageTextModuleElem.setBackgroundPort(extensionPort)
-      messageTextModuleElem.setTextBox(textBox)
+      // const messageTextModuleElem = document.createElement('eec-message-text-module')
+      // messageTextModuleElem.setStatusEmitter(statusEmitter)
+      // messageTextModuleElem.contextName = contextName
+      // messageTextModuleElem.setBackgroundPort(extensionPort)
+      // messageTextModuleElem.setTextBox(textBox)
 
-      // Insert it and add to lookup map
-      textBox.parentNode.insertBefore(messageTextModuleElem, textBox.nextSibling)
-      EECMessageTextModuleList.set(key, messageTextModuleElem)
+      // // Insert it and add to lookup map
+      // textBox.parentNode.insertBefore(messageTextModuleElem, textBox.nextSibling)
+      // EECMessageTextModuleList.set(key, messageTextModuleElem)
     }
   })
 }

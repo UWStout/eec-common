@@ -14,7 +14,7 @@ export default function UnifiedApp (props) {
   const { emitter, context } = props
 
   return (
-    <ConnectComponent emitter={emitter} context={context} />
+    <ConnectComponent />
   )
 }
 

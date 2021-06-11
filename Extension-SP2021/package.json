@@ -4,24 +4,30 @@
   "description": "Web browser extension to integrate with the Karuna EEC project.",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch src --exec npm run devbuild",
+    "dev": "nodemon --exec npm run devbuild",
     "clean": "rimraf dist",
-    "predevbuild": "node preBuild.js",
+
     "devbuild": "run-s clean devbuild-background devbuild-in-content devbuild-popup",
     "devbuild-background": "esbuild --bundle --sourcemap --define:_DEV_=true --outfile=dist/js/background.js src/background/background.js",
     "devbuild-in-content": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV='development' --outfile=dist/js/in-content.js src/in-content/in-content.js",
     "devbuild-popup": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV='development' --outfile=dist/js/popup.js src/popup/popup.jsx",
     "postdevbuild": "node postBuild.js",
-    "prebuild": "node preBuild.js",
+
     "build": "run-s clean build-background build-in-content build-popup",
     "build-background": "esbuild --bundle --minify --define:_DEV_=false --outfile=dist/js/background.js src/background/background.js",
     "build-in-content": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV='production' --outfile=dist/js/in-content.js src/in-content/in-content.js",
     "build-popup": "esbuild --bundle --minify --loader:.css=css --define:_DEV_=false --define:process.env.NODE_ENV='production' --outfile=dist/js/popup.js src/popup/popup.jsx",
     "postbuild": "node postBuild.js",
+
     "test": "jest"
   },
   "author": "Seth Berrier, Larissa Ford, Bret Parsons, Aram Wahler",
   "license": "MIT",
+  "nodemonConfig": {
+    "watch": ["src"],
+    "ext": "js,json,jsx",
+    "delay": 2500
+  },
   "devDependencies": {
     "copyfiles": "^2.4.1",
     "esbuild": "^0.12.6",

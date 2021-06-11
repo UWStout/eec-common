@@ -32,9 +32,6 @@ class EECUnified extends HTMLElement {
       LOG(response)
       this.JWT = response.value
     })
-
-    // We are interested in window resizing
-    window.addEventListener('resize', this.onWindowResized.bind(this))
   }
 
   // MUST be called manually now (with an event emitter)
@@ -44,7 +41,7 @@ class EECUnified extends HTMLElement {
 
     // Setup root div for react unified app
     this.unifiedPanel = jQuery('<div>')
-    this.unifiedPanel.addClass('eec-unified')
+    this.unifiedPanel.addClass('eec-unified-root')
 
     // Attach the elements to the shadow DOM
     jQuery(this.shadowRoot).append(this.unifiedPanel)
@@ -91,10 +88,7 @@ class EECUnified extends HTMLElement {
     LOG('... mounted')
 
     // Start out hidden
-    this.updateVisibility(false)
-
-    // Setup status icons for other users
-    this.updateOtherStatusList()
+    // this.updateVisibility(false)
 
     // Setup to update the styling after deferring some time
     setTimeout(() => { this.setContextName.bind(this)(contextName) }, 200)
@@ -114,11 +108,11 @@ class EECUnified extends HTMLElement {
   backgroundMessage (message) {
     switch (message.type) {
       case 'context':
-        if (!CONTEXT_UTIL.isValidChannel(message.teamName, message.channelName, this.contextName)) {
-          this.updateVisibility(false)
-        } else {
-          this.updateVisibility(true)
-        }
+        // if (!CONTEXT_UTIL.isValidChannel(message.teamName, message.channelName, this.contextName)) {
+        //   this.updateVisibility(false)
+        // } else {
+        //   this.updateVisibility(true)
+        // }
         break
 
       case 'login':
@@ -126,12 +120,12 @@ class EECUnified extends HTMLElement {
         if (this.statusEmitter) {
           this.statusEmitter.emit('login')
         }
-        this.updateVisibility(true)
+        // this.updateVisibility(true)
         break
 
       case 'logout':
         this.JWT = null
-        this.updateVisibility(false)
+        // this.updateVisibility(false)
         break
     }
   }
@@ -139,25 +133,23 @@ class EECUnified extends HTMLElement {
   updateVisibility (show) {
     if (!show) {
       this.unifiedPanel.hide()
-      this.connectPanel.hide()
     } else if (this.JWT) {
       this.unifiedPanel.show()
-      this.connectPanel.show()
     }
   }
 
   setContextName (newContext) {
     this.contextName = newContext
-    switch (newContext) {
-      case CONTEXT_UTIL.CONTEXT.DISCORD:
-        this.unifiedPanel.css('top', '55px')
-        break
+    // switch (newContext) {
+    //   case CONTEXT_UTIL.CONTEXT.DISCORD:
+    //     this.unifiedPanel.css('top', '55px')
+    //     break
 
-      case CONTEXT_UTIL.CONTEXT.MS_TEAMS:
-      default:
-        this.unifiedPanel.css('top', '115px')
-        break
-    }
+    //   case CONTEXT_UTIL.CONTEXT.MS_TEAMS:
+    //   default:
+    //     this.unifiedPanel.css('top', '115px')
+    //     break
+    // }
   }
 }
 
