@@ -9,7 +9,11 @@ const useStyles = makeStyles((theme) => ({
   paperRoot: {
     margin: theme.spacing(1),
     width: theme.spacing(16),
-    height: theme.spacing(16)
+    height: theme.spacing(16),
+    position: 'absolute',
+    zIndex: 100,
+    right: -theme.spacing(13),
+    top: theme.spacing(40)
   }
 }))
 
