@@ -3,6 +3,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { CssBaseline } from '@material-ui/core'
+
 import ConnectComponent from './ConnectComponent.jsx'
 
 // Colorful logger
@@ -14,7 +16,10 @@ export default function UnifiedApp (props) {
   const { emitter, context } = props
 
   return (
-    <ConnectComponent />
+    <React.Fragment>
+      <CssBaseline />
+      <ConnectComponent />
+    </React.Fragment>
   )
 }
 
