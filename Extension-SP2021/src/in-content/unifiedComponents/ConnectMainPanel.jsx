@@ -4,6 +4,21 @@ import PropTypes from 'prop-types'
 import { Paper, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
+import PanelTitle from './PanelTitle.jsx'
+
+import { LoremIpsum } from 'lorem-ipsum'
+
+const lorem = new LoremIpsum({
+  sentencesPerParagraph: {
+    max: 8,
+    min: 4
+  },
+  wordsPerSentence: {
+    max: 16,
+    min: 4
+  }
+})
+
 const useStyles = makeStyles((theme) => ({
   // Styling of the root paper element
   paperRoot: {
@@ -36,6 +51,24 @@ const useStyles = makeStyles((theme) => ({
   // Style when the panel is hidden
   panelHidden: {
     right: -theme.spacing(35)
+  },
+
+  // Styling for the outer box
+  boxStyle: {
+    height: theme.spacing(60),
+    paddingTop: theme.spacing(5),
+    marginLeft: '-2px',
+    marginRight: '-7px'
+  },
+
+  // Styling for the primary content box
+  contentStyle: {
+    height: theme.spacing(54),
+    overflowY: 'auto'
+  },
+
+  paragraph: {
+    marginBottom: theme.spacing(2)
   }
 }))
 
@@ -49,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ConnectMainPanel (props) {
   // Deconstruct props and style class names
   const { hidden, onHide, waitToHide } = props
-  const { paperRoot, panelHidden, panelRetracted, panelExpanded } = useStyles()
+  const { paperRoot, panelHidden, panelRetracted, panelExpanded, contentStyle, boxStyle, paragraph } = useStyles()
 
   // Hover state of mouse
   const [mouseIsOver, setMouseIsOver] = React.useState(false)
@@ -57,11 +90,23 @@ export default function ConnectMainPanel (props) {
   // Handle to the pending hide request (if any)
   const [hideTimeout, setHideTimeout] = React.useState(false)
 
+  const [paragraphs, setParagraphs] = React.useState(['', ''])
+  React.useEffect(() => {
+    setParagraphs([
+      lorem.generateParagraphs(1),
+      lorem.generateParagraphs(1)
+    ])
+  }, [])
+
   // Function for queueing a hide request
-  const hide = () => {
-    if (onHide) {
-      const timeoutHandle = setTimeout(() => { onHide() }, waitToHide)
-      setHideTimeout(timeoutHandle)
+  const hide = (immediate) => {
+    if (onHide && !hidden) {
+      if (immediate) {
+        onHide()
+      } else {
+        const timeoutHandle = setTimeout(() => { onHide() }, waitToHide)
+        setHideTimeout(timeoutHandle)
+      }
     }
   }
 
@@ -79,11 +124,21 @@ export default function ConnectMainPanel (props) {
       elevation={5}
       className={`${paperRoot} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : panelRetracted)}`}
       onMouseEnter={() => { setMouseIsOver(true); cancelHide() }}
-      onMouseLeave={() => { setMouseIsOver(false); hide() }}
+      onMouseLeave={() => { setMouseIsOver(false); hide(false) }}
     >
-      <Typography variant='body1'>
-        {'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'}
-      </Typography>
+      <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
+      <div className={boxStyle}>
+        <div className={contentStyle}>
+          {/* Whatever we want to be the main content of the panel goes right here (replace text below) */}
+          <Typography variant='body1' className={paragraph}>
+            {paragraphs[0]}
+          </Typography>
+          <Typography variant='body1'>
+            {paragraphs[1]}
+          </Typography>
+          {/* End main content */}
+        </div>
+      </div>
     </Paper>
   )
 }

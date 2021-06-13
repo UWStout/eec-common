@@ -6,25 +6,24 @@
   "scripts": {
     "dev": "nodemon --exec npm run devbuild",
     "clean": "rimraf dist",
-
     "devbuild": "run-s clean devbuild-background devbuild-in-content devbuild-popup",
     "devbuild-background": "esbuild --bundle --sourcemap --define:_DEV_=true --outfile=dist/js/background.js src/background/background.js",
     "devbuild-in-content": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV='development' --outfile=dist/js/in-content.js src/in-content/in-content.js",
     "devbuild-popup": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV='development' --outfile=dist/js/popup.js src/popup/popup.jsx",
     "postdevbuild": "node postBuild.js",
-
     "build": "run-s clean build-background build-in-content build-popup",
     "build-background": "esbuild --bundle --minify --define:_DEV_=false --outfile=dist/js/background.js src/background/background.js",
     "build-in-content": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV='production' --outfile=dist/js/in-content.js src/in-content/in-content.js",
     "build-popup": "esbuild --bundle --minify --loader:.css=css --define:_DEV_=false --define:process.env.NODE_ENV='production' --outfile=dist/js/popup.js src/popup/popup.jsx",
     "postbuild": "node postBuild.js",
-
     "test": "jest"
   },
   "author": "Seth Berrier, Larissa Ford, Bret Parsons, Aram Wahler",
   "license": "MIT",
   "nodemonConfig": {
-    "watch": ["src"],
+    "watch": [
+      "src"
+    ],
     "ext": "js,json,jsx",
     "delay": 2500
   },
@@ -56,6 +55,7 @@
     "debounce": "^1.2.1",
     "eventemitter3": "^4.0.7",
     "jquery": "^3.6.0",
+    "lorem-ipsum": "^2.0.3",
     "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

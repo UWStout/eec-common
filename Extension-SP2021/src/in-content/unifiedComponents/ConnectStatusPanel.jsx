@@ -21,7 +21,10 @@ const useStyles = makeStyles((theme) => ({
     // Animate changes in the 'right' property
     transition: theme.transitions.create(
       ['right'], { duration: theme.transitions.duration.standard }
-    )
+    ),
+
+    // Show a pointer hand cursor to encourage clicking
+    cursor: 'pointer'
   },
 
   // Style when the panel is fully retracted
