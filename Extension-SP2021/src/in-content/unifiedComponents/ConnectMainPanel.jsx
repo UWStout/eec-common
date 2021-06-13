@@ -6,8 +6,8 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import PanelTitle from './PanelTitle.jsx'
 
+// Just for dummy content while testing
 import { LoremIpsum } from 'lorem-ipsum'
-
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
     max: 8,
