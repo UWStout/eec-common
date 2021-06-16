@@ -40,7 +40,7 @@ export default function PanelTitle (props) {
         </Grid>
       )}
       <Grid item xs={arrow === 'none' ? 12 : 10} className={itemStyle}>
-        <Typography variant='h6'>
+        <Typography aria-label='title' variant='h6'>
           {title}
         </Typography>
       </Grid>

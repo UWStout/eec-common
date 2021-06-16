@@ -19,17 +19,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function OpenArrow (props) {
-  const { showDouble, flipped } = props
+export default function OpenArrow ({ showDouble, flipped }) {
   const classes = useStyles()
 
   return (
     <React.Fragment>
       <Fade in={showDouble}>
-        <DoubleArrow className={flipped ? classes.flipped : classes.standard} />
+        <DoubleArrow data-testid="doubleArrow" className={flipped ? classes.flipped : classes.standard} />
       </Fade>
       <Fade in={!showDouble}>
-        <KeyboardArrowRight className={flipped ? classes.flipped : classes.standard} />
+        <KeyboardArrowRight data-testid="keyboardArrowRight" className={flipped ? classes.flipped : classes.standard} />
       </Fade>
     </React.Fragment>
   )
