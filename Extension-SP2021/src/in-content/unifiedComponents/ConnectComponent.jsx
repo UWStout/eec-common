@@ -34,13 +34,13 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // The sidebar Karuna Connect object
-export default function ConnectComponent (props) {
+export default function ConnectComponent () {
   // Deconstruct props and style class names
   const { rootDiscord, rootTeams } = useStyles()
   const { context, emitter } = props
 
   // Is the mouse over this component
-  const [mainPanelOpen, setMainPanelOpen] = React.useState(false)
+  const [mainPanelOpen, setMainPanelOpen] = useState(false)
 
   // Main render
   return (

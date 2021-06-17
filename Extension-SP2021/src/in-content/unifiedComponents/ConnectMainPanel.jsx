@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { Paper, Typography } from '@material-ui/core'
@@ -79,18 +79,17 @@ const useStyles = makeStyles((theme) => ({
  * @param {object} props Properties for the component (See propTypes)
  * @returns {React.Element} The element to render for this component
  */
-export default function ConnectMainPanel (props) {
+export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
   // Deconstruct props and style class names
-  const { hidden, onHide, waitToHide } = props
   const { paperRoot, panelHidden, panelRetracted, panelExpanded, contentStyle, boxStyle, paragraph } = useStyles()
 
   // Hover state of mouse
-  const [mouseIsOver, setMouseIsOver] = React.useState(false)
+  const [mouseIsOver, setMouseIsOver] = useState(false)
 
   // Handle to the pending hide request (if any)
-  const [hideTimeout, setHideTimeout] = React.useState(false)
+  const [hideTimeout, setHideTimeout] = useState(false)
 
-  const [paragraphs, setParagraphs] = React.useState(['', ''])
+  const [paragraphs, setParagraphs] = useState(['', ''])
   React.useEffect(() => {
     setParagraphs([
       lorem.generateParagraphs(1),
@@ -121,6 +120,7 @@ export default function ConnectMainPanel (props) {
   // Return the proper MUI elements
   return (
     <Paper
+      data-testid="connectMainPanel"
       elevation={5}
       className={`${paperRoot} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : panelRetracted)}`}
       onMouseEnter={() => { setMouseIsOver(true); cancelHide() }}
@@ -128,7 +128,7 @@ export default function ConnectMainPanel (props) {
     >
       <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
       <div className={boxStyle}>
-        <div className={contentStyle}>
+        <main className={contentStyle}>
           {/* Whatever we want to be the main content of the panel goes right here (replace text below) */}
           <Typography variant='body1' className={paragraph}>
             {paragraphs[0]}
@@ -137,7 +137,7 @@ export default function ConnectMainPanel (props) {
             {paragraphs[1]}
           </Typography>
           {/* End main content */}
-        </div>
+        </main>
       </div>
     </Paper>
   )

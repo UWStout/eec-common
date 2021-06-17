@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { Paper } from '@material-ui/core'
@@ -50,13 +50,12 @@ const useStyles = makeStyles((theme) => ({
  * @param {object} props Properties for the component (See propTypes)
  * @returns {React.Element} The element to render for this component
  */
-export default function ConnectStatusPanel (props) {
+export default function ConnectStatusPanel ({ hidden, onHide }) {
   // Deconstruct props and style class names
-  const { hidden, onHide } = props
   const { paperRoot, panelRetracted, panelExpanded, panelHidden } = useStyles()
 
   // Is the mouse over this component
-  const [mouseIsOver, setMouseIsOver] = React.useState(false)
+  const [mouseIsOver, setMouseIsOver] = useState(false)
 
   // Function to run when the component is clicked
   const clickCallback = () => {
@@ -67,6 +66,7 @@ export default function ConnectStatusPanel (props) {
   // Return the proper MUI elements
   return (
     <Paper
+      data-testid="connectStatusPanel"
       elevation={3}
       className={`${paperRoot} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : panelRetracted)}`}
       onMouseEnter={() => { setMouseIsOver(true) }}
