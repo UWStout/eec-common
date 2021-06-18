@@ -5,6 +5,7 @@ import { Paper, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 import PanelTitle from './PanelTitle.jsx'
+import ConnectMainContent from './ConnectMainContent.jsx'
 
 // Just for dummy content while testing
 import { LoremIpsum } from 'lorem-ipsum'
@@ -130,12 +131,7 @@ export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
       <div className={boxStyle}>
         <main className={contentStyle}>
           {/* Whatever we want to be the main content of the panel goes right here (replace text below) */}
-          <Typography variant='body1' className={paragraph}>
-            {paragraphs[0]}
-          </Typography>
-          <Typography variant='body1'>
-            {paragraphs[1]}
-          </Typography>
+          <ConnectMainContent />
           {/* End main content */}
         </main>
       </div>

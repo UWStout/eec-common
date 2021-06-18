@@ -18,7 +18,7 @@ export default function UnifiedApp (props) {
   return (
     <React.Fragment>
       <CssBaseline />
-      <ConnectComponent />
+      <ConnectComponent context={context} emitter={emitter} />
     </React.Fragment>
   )
 }
