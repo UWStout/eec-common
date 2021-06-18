@@ -1,0 +1,112 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConnectPanel ConnectStatusPanel expands on hover 1`] = `
+<DocumentFragment>
+  <div
+    class="MuiPaper-root makeStyles-paperRoot-25 makeStyles-panelExpanded-27 MuiPaper-elevation3 MuiPaper-rounded"
+    data-testid="connectStatusPanel"
+  >
+    <svg
+      aria-hidden="true"
+      class="MuiSvgIcon-root makeStyles-flipped-29"
+      data-testid="doubleArrow"
+      focusable="false"
+      style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M15.5 5H11l5 7-5 7h4.5l5-7z"
+      />
+      <path
+        d="M8.5 5H4l5 7-5 7h4.5l5-7z"
+      />
+    </svg>
+    <svg
+      aria-hidden="true"
+      class="MuiSvgIcon-root makeStyles-flipped-29"
+      data-testid="keyboardArrowRight"
+      focusable="false"
+      style="opacity: 0; webkit-transition: opacity 195ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 195ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"
+      />
+    </svg>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ConnectPanel ConnectStatusPanel hides when mouse moves away 1`] = `
+<DocumentFragment>
+  <div
+    class="MuiPaper-root makeStyles-paperRoot-31 makeStyles-panelRetracted-32 MuiPaper-elevation3 MuiPaper-rounded"
+    data-testid="connectStatusPanel"
+  >
+    <svg
+      aria-hidden="true"
+      class="MuiSvgIcon-root makeStyles-flipped-35"
+      data-testid="doubleArrow"
+      focusable="false"
+      style="opacity: 0; webkit-transition: opacity 195ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 195ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M15.5 5H11l5 7-5 7h4.5l5-7z"
+      />
+      <path
+        d="M8.5 5H4l5 7-5 7h4.5l5-7z"
+      />
+    </svg>
+    <svg
+      aria-hidden="true"
+      class="MuiSvgIcon-root makeStyles-flipped-35"
+      data-testid="keyboardArrowRight"
+      focusable="false"
+      style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"
+      />
+    </svg>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ConnectPanel ConnectStatusPanel shows up correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="MuiPaper-root makeStyles-paperRoot-1 makeStyles-panelRetracted-2 MuiPaper-elevation3 MuiPaper-rounded"
+    data-testid="connectStatusPanel"
+  >
+    <svg
+      aria-hidden="true"
+      class="MuiSvgIcon-root makeStyles-flipped-5"
+      data-testid="doubleArrow"
+      focusable="false"
+      style="opacity: 0; visibility: hidden;"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M15.5 5H11l5 7-5 7h4.5l5-7z"
+      />
+      <path
+        d="M8.5 5H4l5 7-5 7h4.5l5-7z"
+      />
+    </svg>
+    <svg
+      aria-hidden="true"
+      class="MuiSvgIcon-root makeStyles-flipped-5"
+      data-testid="keyboardArrowRight"
+      focusable="false"
+      style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"
+      />
+    </svg>
+  </div>
+</DocumentFragment>
+`;
