@@ -1,6 +1,6 @@
 /* global EventEmitter3 */
 
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // The sidebar Karuna Connect object
-export default function ConnectComponent () {
+export default function ConnectComponent (props) {
   // Deconstruct props and style class names
   const { rootDiscord, rootTeams } = useStyles()
   const { context, emitter } = props
