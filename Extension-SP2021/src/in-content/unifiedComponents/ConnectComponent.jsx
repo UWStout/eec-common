@@ -34,11 +34,9 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // The sidebar Karuna Connect object
-export default function ConnectComponent (props) {
+export default function ConnectComponent ({ context, emitter }) {
   // Deconstruct props and style class names
   const { rootDiscord, rootTeams } = useStyles()
-  const { context, emitter } = props
-
   // Is the mouse over this component
   const [mainPanelOpen, setMainPanelOpen] = useState(false)
 
@@ -52,6 +50,6 @@ export default function ConnectComponent (props) {
 }
 
 ConnectComponent.propTypes = {
-  emitter: PropTypes.instanceOf(EventEmitter3).isRequired,
+  emitter: PropTypes.instanceOf(EventEmitter3),
   context: PropTypes.string.isRequired
 }

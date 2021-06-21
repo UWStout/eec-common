@@ -12,9 +12,7 @@ import ConnectComponent from './ConnectComponent.jsx'
 // const LOG = makeLogger('CONNECT Component', 'lavender', 'black')
 
 // The sidebar Karuna Connect object
-export default function UnifiedApp (props) {
-  const { emitter, context } = props
-
+export default function UnifiedApp ({ emitter, context }) {
   return (
     <React.Fragment>
       <CssBaseline />
