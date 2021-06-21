@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
 
     // Set to be in front of all the other elements
-    zIndex: 100
+    // zIndex: 100
   },
   rootTeams: {
     // Sizing to fill the page
@@ -29,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
     top: '-100vh',
 
     // Set to be in front of all the other elements
-    zIndex: 100
+    // zIndex: 100
+
   }
 }))
 
@@ -50,6 +51,6 @@ export default function ConnectComponent ({ context, emitter }) {
 }
 
 ConnectComponent.propTypes = {
-  emitter: PropTypes.instanceOf(EventEmitter3),
+  emitter: PropTypes.instanceOf(EventEmitter3).isRequired,
   context: PropTypes.string.isRequired
 }

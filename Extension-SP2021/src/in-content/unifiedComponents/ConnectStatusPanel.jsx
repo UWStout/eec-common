@@ -15,8 +15,8 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(16),
 
     // Position element in window
-    position: 'absolute',
-    top: theme.spacing(40),
+    position: 'fixed',
+    top: '50%',
 
     // Animate changes in the 'right' property
     transition: theme.transitions.create(

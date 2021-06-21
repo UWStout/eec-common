@@ -19,8 +19,6 @@ import ConnectComponent from '../in-content/unifiedComponents/ConnectComponent.j
 
 expect.extend({ toBeVisible })
 
-it.todo('does this work?')
-
 describe('ConnectPanel', () => {
   afterEach(cleanup) // avoid memory leaks
 
