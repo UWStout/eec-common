@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
   // Style when the panel is fully expanded
   panelExpanded: {
-    right: -theme.spacing(20) // should be 8
+    right: -theme.spacing(8) // should be 8
   },
 
   // Style when the panel is hidden
