@@ -22,7 +22,9 @@
   "author": "Seth Berrier, Larissa Ford, Bret Parsons, Aram Wahler",
   "license": "MIT",
   "jest": {
-    "setupFiles": ["./src/tests/setup-jest.js"]
+    "setupFiles": [
+      "./src/tests/setup-jest.js"
+    ]
   },
   "nodemonConfig": {
     "watch": [
