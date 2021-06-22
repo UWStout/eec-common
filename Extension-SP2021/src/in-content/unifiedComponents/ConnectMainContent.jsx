@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
@@ -9,6 +10,7 @@ import { Grid, Typography } from '@material-ui/core'
 import { ExpandMore } from '@material-ui/icons'
 
 import StatusListItem from './StatusListItem.jsx'
+import AffectSurvey from './AffectSurvey.jsx'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
   },
   heading: {
     fontSize: theme.typography.pxToRem(15)
+  },
+  link: {
+    color: 'blue'
   }
 }))
 
@@ -60,16 +65,19 @@ const AccordionDetails = withStyles((theme) => ({
   }
 }))(MuiAccordionDetails)
 
-export default function ConnectMainContent(props) {
-  const classes = useStyles()
+export default function ConnectMainContent() {
+  const { root, link, heading } = useStyles()
   const [expanded, setExpanded] = useState('userStatus')
+
+  // open affect survey
+  const [affectSurveyOpen, setAffectSurveyOpen] = useState(false)
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
   }
 
   return (
-    <div className={classes.root}>
+    <div className={root}>
       {/* First list item: user status */}
       <Accordion square expanded={expanded === 'userStatus'} onChange={handleChange('userStatus')}>
         <AccordionSummary
@@ -82,7 +90,11 @@ export default function ConnectMainContent(props) {
         <AccordionDetails id="user-status-content" aria-labelledby="users-status-header">
           <Grid container>
             <Grid item xs={12}>
-              <Typography variant="body1">Currently I am feeling 😒</Typography><br />
+              <Typography variant="body1">
+                I'm feeling: <a className={link} onClick={() => setAffectSurveyOpen(!affectSurveyOpen)}> 😒 meh </a>
+              </Typography>
+              <br />
+              {affectSurveyOpen ? <AffectSurvey /> : null}
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1">My collaboration status is: 👬</Typography><br />
@@ -100,7 +112,7 @@ export default function ConnectMainContent(props) {
           aria-controls="team-status-content"
           id="team-status-header"
         >
-          <Typography className={classes.heading}>Team Status</Typography>
+          <Typography className={heading}>Team Status</Typography>
         </AccordionSummary>
         <AccordionDetails aria-labelledby="team-status-header" id="team-status-content">
           <StatusListItem userEmail="berriers@uwstout.edu" />

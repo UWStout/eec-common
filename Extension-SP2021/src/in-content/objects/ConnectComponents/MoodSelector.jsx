@@ -46,19 +46,19 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Menu of moods for user selection
-export default function MoodSelect (props) {
+export default function MoodSelect ({ currentAffectID, privacy, emojiList, handleChange, handleAffectClose, showAffect }) {
   // Styling classes
   const classes = useStyles()
 
   // Setup component state
   const [open, setOpen] = useState(false)
   const [shareDialog, setDialogOpen] = useState(false)
-  const [clickedMood, setClickedMood] = useState(props.currentAffectID || '0')
-  const [curPrivacy, setCurPrivacy] = useState(props.privacy.private)
-  const [silencePromptCB, setSilencePromptCB] = useState(!props.privacy.prompt)
+  const [clickedMood, setClickedMood] = useState(currentAffectID || '0')
+  const [curPrivacy, setCurPrivacy] = useState(privacy.private)
+  const [silencePromptCB, setSilencePromptCB] = useState(!privacy.prompt)
 
   // Check emoji list, stop here if it is null/empty
-  if (props.emojiList === null || props.emojiList.length < 1) {
+  if (emojiList === null || emojiList.length < 1) {
     return (
       <Button color="default" className={classes.panelButton} disabled>
         {EMOJI_UNKNOWN}
@@ -69,7 +69,7 @@ export default function MoodSelect (props) {
 
   // pushes emojis from the database into an array of Emoji objects
   const EMOJI = {}
-  props.emojiList.forEach((entry) => {
+  emojiList.forEach((entry) => {
     if (entry._id && entry.active) {
       EMOJI[entry._id] = {
         emote: <Emoji padMore key={entry._id} label={entry.name} symbol={entry.characterCodes[0]} />,
@@ -115,19 +115,19 @@ export default function MoodSelect (props) {
     )
 
     // Trigger callback for new mood
-    if (props.handleChange) {
-      props.handleChange(newMoodID, isPrivate)
+    if (handleChange) {
+      handleChange(newMoodID, isPrivate)
     } else {
       console.error('Handle change callback for mood missing')
     }
 
     // Close the dialog
     setDialogOpen(false)
-    props.handleAffectClose()
+    handleAffectClose()
   }
 
   // Hard-wired request to show the affect dialog
-  useEffect(() => { setOpen(props.showAffect) }, [props.showAffect])
+  useEffect(() => { setOpen(showAffect) }, [showAffect])
 
   // Maps the modal body with the desired emotes
   const body = (
@@ -173,7 +173,7 @@ export default function MoodSelect (props) {
   return (
     <div>
       <Button color="default" aria-controls="mood-menu" aria-haspopup="true" onClick={handleOpen} className={classes.panelButton}>
-        {props.currentAffectID && props.currentAffectID !== '0' ? EMOJI[props.currentAffectID].emote : EMOJI_UNKNOWN.emote}
+        {currentAffectID && currentAffectID !== '0' ? EMOJI[currentAffectID].emote : EMOJI_UNKNOWN.emote}
         Mood
       </Button>
       <Modal open={open} onClose={handleClose}>

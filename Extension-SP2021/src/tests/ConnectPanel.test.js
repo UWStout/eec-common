@@ -108,6 +108,16 @@ describe('ConnectPanel', () => {
     })
   })
 
+  describe('MoodSelect', () => {
+    it.todo('shows all the affects available')
+    it.todo('shows affects approved of by team')
+    it.todo('shows up when mood selector button is pressed')
+    it.todo('has a functional search bar at the top')
+    it.todo('changes position depending on where it was opened from')
+    it.todo('has an accordian element for recent, favorites, (which are near the top) and all emojis available')
+    it.todo('When an affect is selected, the user\'s privacy settings must be checked and a PrivacyDialog might be shown')
+  })
+
   it('shows ConnectStatusPanel on load', () => {
     const { getByTestId } = render(<ConnectComponent />)
 

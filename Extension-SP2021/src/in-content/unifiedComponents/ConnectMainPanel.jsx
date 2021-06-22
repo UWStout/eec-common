@@ -82,7 +82,15 @@ const useStyles = makeStyles((theme) => ({
  */
 export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
   // Deconstruct props and style class names
-  const { paperRoot, panelHidden, panelRetracted, panelExpanded, contentStyle, boxStyle, paragraph } = useStyles()
+  const {
+    paperRoot,
+    panelHidden,
+    panelRetracted,
+    panelExpanded,
+    contentStyle,
+    boxStyle,
+    paragraph
+  } = useStyles()
 
   // Hover state of mouse
   const [mouseIsOver, setMouseIsOver] = useState(false)
@@ -130,9 +138,7 @@ export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
       <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
       <div className={boxStyle}>
         <main className={contentStyle}>
-          {/* Whatever we want to be the main content of the panel goes right here (replace text below) */}
           <ConnectMainContent />
-          {/* End main content */}
         </main>
       </div>
     </Paper>

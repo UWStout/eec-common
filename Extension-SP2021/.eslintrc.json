@@ -45,6 +45,7 @@
     "react/static-property-placement": "off",
     "react/no-array-index-key": "off",
     "react/no-multi-comp": "off",
+    "react/jsx-no-literals": "off",
 
     // Lower some react rules to be warnings
     "react/jsx-indent": ["warn", 2],
@@ -52,7 +53,6 @@
     "react/jsx-one-expression-per-line": ["warn", { "allow": "single-child" }],
     "react/jsx-first-prop-new-line": "warn",
     "react/jsx-curly-newline": "warn",
-    "react/jsx-no-literals": "warn",
     "react/jsx-tag-spacing": "warn",
     "react/jsx-handler-names": "warn",
     "react/jsx-closing-tag-location": "warn",

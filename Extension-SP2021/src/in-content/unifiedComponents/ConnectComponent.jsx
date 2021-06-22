@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import ConnectStatusPanel from './ConnectStatusPanel.jsx'
 import ConnectMainPanel from './ConnectMainPanel.jsx'
+import MoodSelect from '../objects/ConnectComponents/MoodSelector.jsx'
 
 const useStyles = makeStyles((theme) => ({
   // Styling of the root paper element
@@ -14,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     // Sizing to fill the page
     position: 'relative',
     width: '100%',
-    height: '100%',
+    height: '100%'
 
     // Set to be in front of all the other elements
     // zIndex: 100
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
 
     // Ensure it is at the top of page (not the bottom)
-    top: '-100vh',
+    top: '-100vh'
 
     // Set to be in front of all the other elements
     // zIndex: 100
@@ -40,6 +41,12 @@ export default function ConnectComponent ({ context, emitter }) {
   const { rootDiscord, rootTeams } = useStyles()
   // Is the mouse over this component
   const [mainPanelOpen, setMainPanelOpen] = useState(false)
+
+  // Does the user want to choose an affect?
+  const [chooseAffect, setChooseAffect] = useState(true)
+
+  // TESTING - delete this later!
+  const privacy = { private: true, prompt: false }
 
   // Main render
   return (
