@@ -1,3 +1,5 @@
+
+
 /**
  * Generic chrome.runtime.sendMessage function to simplify AJAX calls to the background.
  * Background messages are processed in ServerAJAXComms.js which returns a promise.
@@ -24,9 +26,9 @@ export function sendMessageToBackground (messageObject, context = 'none',
 }
 
 export function retrieveAffectList (context = 'none') {
-  return new Promise ((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     // Retrieve the current list of emojis
-    backgroundMessage(
+    sendMessageToBackground(
       // Read from the back-end server using AJAX
       { type: 'ajax-getEmojiList' }, // <- only the message type is needed
       context,
@@ -40,9 +42,9 @@ export function retrieveAffectList (context = 'none') {
 }
 
 export function retrieveMoodPrivacy (context = 'none') {
-  return new Promise ((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     // Read the privacy settings from the background context
-    backgroundMessage(
+    sendMessageToBackground(
       // Read from browser local storage
       { type: 'read', key: 'privacy' }, // <- Message object (read/write) (key) [if writing] (value)
       context,
@@ -57,7 +59,7 @@ export function retrieveMoodPrivacy (context = 'none') {
 
 export function retrieveUserStatus (context = 'none') {
   return new Promise ((resolve, reject) => {
-    backgroundMessage(
+    sendMessageToBackground(
       { type: 'ajax-getUserStatus' },
       context,
       'Retrieving current user status failed: ',

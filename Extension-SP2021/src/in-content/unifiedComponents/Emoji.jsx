@@ -3,21 +3,26 @@ import PropTypes from 'prop-types'
 
 import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 
-function Emoji () {
+export default function Emoji ({ characterCode, name, description }) {
   return (
     <ListItem>
       <ListItemIcon>
-        😒
+        {characterCode[0]}
       </ListItemIcon>
       <ListItemText
-        primary="meh"
+        primary={name}
       />
     </ListItem>
   )
 }
 
 Emoji.propTypes = {
-
+  characterCode: PropTypes.arrayOf(PropTypes.string).isRequired,
+  name: PropTypes.string,
+  description: PropTypes.string
 }
 
-export default Emoji
+Emoji.defaultProps = {
+  name: '',
+  description: ''
+}

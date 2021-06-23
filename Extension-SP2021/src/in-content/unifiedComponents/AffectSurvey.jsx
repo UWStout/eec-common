@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'
@@ -10,6 +10,7 @@ import { ExpandMore } from '@material-ui/icons'
 
 import SearchBar from 'material-ui-search-bar'
 import Emoji from './Emoji.jsx'
+import { retrieveAffectList } from './backgroundHelper.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,6 +72,16 @@ export default function AffectSurvey ({ privacy }) {
   const { root, heading } = useStyles()
   const [expanded, setExpanded] = useState('favorite')
   const [searchEmoji, setSearchEmoji] = useState('')
+  const [emojiList, setEmojiList] = useState([])
+
+  useEffect(() => {
+    const getEmojis = async () => {
+      const emojisFromServer = await retrieveAffectList()
+      setEmojiList(emojisFromServer)
+    }
+
+    getEmojis()
+  }, [])
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
@@ -81,9 +92,12 @@ export default function AffectSurvey ({ privacy }) {
   }
 
   function generate (element) {
-    return [0, 1, 2].map((value) =>
+    return emojiList.map((emoji) =>
       React.cloneElement(element, {
-        key: value
+        key: emoji._id,
+        characterCode: emoji.characterCodes,
+        name: emoji.name,
+        description: emoji.description
       })
     )
   }
