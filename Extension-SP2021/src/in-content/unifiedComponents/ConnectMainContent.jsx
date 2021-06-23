@@ -65,7 +65,7 @@ const AccordionDetails = withStyles((theme) => ({
   }
 }))(MuiAccordionDetails)
 
-export default function ConnectMainContent() {
+export default function ConnectMainContent () {
   const { root, link, heading } = useStyles()
   const [expanded, setExpanded] = useState('userStatus')
 
