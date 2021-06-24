@@ -1,9 +1,11 @@
-
-
 /**
- * Generic chrome.runtime.sendMessage function to simplify AJAX calls to the background.
- * Background messages are processed in ServerAJAXComms.js which returns a promise.
- * @param {object} messageObject a message object which must at minimum include a type: string
+ * Generic chrome.runtime.sendMessage function to simplify interacting with the background part of the
+ * extension.  Background messages are processed as follows:
+ * - If 'type' is 'read' or 'write', it is processed near line 82 in ExtensionComms.js
+ * - If 'type' is 'getUser', 'login', or 'logout', is is also in ExtensionComms.js near line 82
+ * - If 'type' starts with 'ajax-' it will be processed in ServerAJAXComms.js
+ *
+ * @param {object} messageObject a message object which must at include a `type` string
  * @param {string} context Identifies the messaging tool in use (teams vs slack vs discord)
  * @param {string} errorMessage message to return as an alert
  * @param {function} errorCB Callback to run when an error occurs (takes no parameters)
@@ -58,7 +60,7 @@ export function retrieveMoodPrivacy (context = 'none') {
 }
 
 export function retrieveUserStatus (context = 'none') {
-  return new Promise ((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     sendMessageToBackground(
       { type: 'ajax-getUserStatus' },
       context,
