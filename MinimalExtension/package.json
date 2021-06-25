@@ -1,0 +1,43 @@
+{
+  "name": "karuna-minimal-extension",
+  "version": "0.1.0",
+  "description": "Minimal example extension for testing in the Karuna project.",
+  "main": "src/in-content.js",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon --exec npm run devbuild",
+    "clean": "rimraf dist",
+    "devbuild": "run-s clean devbuild-in-content ",
+    "devbuild-in-content": "esbuild --bundle --sourcemap --define:_DEV_=true --outfile=dist/js/in-content.js src/in-content.js",
+    "postdevbuild": "node postBuild.js",
+    "build": "run-s clean build-in-content",
+    "build-in-content": "esbuild --bundle --minify --define:_DEV_=false --outfile=dist/js/in-content.js src/in-content.js",
+    "postbuild": "node postBuild.js"
+  },
+  "author": "Seth Berrier, Larissa Ford, Bret Parsons, Aram Wahler",
+  "license": "MIT",
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ext": "js,json,jsx",
+    "delay": 500
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.12.6",
+    "eslint": "7.28.0",
+    "eslint-config-standard": "16.0.3",
+    "eslint-plugin-import": "2.23.4",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-promise": "5.1.0",
+    "nodemon": "^2.0.7",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "@webcomponents/webcomponentsjs": "^2.5.0",
+    "jquery": "^3.6.0",
+    "webextension-polyfill": "^0.8.0"
+  }
+}

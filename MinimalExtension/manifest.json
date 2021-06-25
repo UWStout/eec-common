@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "Karuna Minimal Extension",
+  "version": "0.1.0",
+  "description": "Minimal Testing Extension for the Karuna Project.",
+  "icons": {
+    "16": "images/icon-min-16.png",
+    "48": "images/icon-min-48.png",
+    "128": "images/icon-min-128.png",
+    "256": "images/icon-min-256.png",
+    "512": "images/icon-min-512.png"
+  },
+  "content_scripts": [{
+    "matches": [
+      "*://teams.microsoft.com/*",
+      "*://*.discord.com/*",
+      "*://*.discord.gg/*",
+      "*://*.slack.com/*"
+    ], "js": [
+      "lib/webcomponents-bundle.js",
+      "lib/jquery.slim.min.js",
+      "js/in-content.js"
+    ]
+  }],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; img-src * data: 'self'",
+  "permissions": [
+    "*://*.teams.microsoft.com/*",
+    "*://*.discord.com/*",
+    "*://*.discord.gg/*",
+    "*://*.slack.com/*"
+  ]
+}
