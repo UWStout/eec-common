@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Typography, Grid, Avatar}  from '@material-ui/core'
+import { Typography, Grid, Avatar } from '@material-ui/core'
 
 export default function StatusListItem (props) {
   const { userEmail } = props
