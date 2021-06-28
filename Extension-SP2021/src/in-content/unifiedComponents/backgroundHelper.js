@@ -54,7 +54,7 @@ export function retrieveMoodPrivacy (context = 'none') {
 
       // Success and failure callbacks
       (newPrivacy) => { return resolve(newPrivacy) },
-      () => { return reject(new Error('Failed to read privacy settings'))}
+      () => { return reject(new Error('Failed to read privacy settings')) }
     )
   })
 }
@@ -66,7 +66,7 @@ export function retrieveUserStatus (context = 'none') {
       context,
       'Retrieving current user status failed: ',
       (currentUserStatus) => { return resolve(currentUserStatus) },
-      () => { return reject(new Error('Failed to retrieve user status'))}
+      () => { return reject(new Error('Failed to retrieve user status')) }
     )
   })
 }
