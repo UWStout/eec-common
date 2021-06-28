@@ -16,3 +16,8 @@ export const StatusObjectShape = {
   collaboration: PropTypes.bool,
   timeToRespond: PropTypes.number
 }
+
+export const PrivacyObjectShape = {
+  private: PropTypes.bool,
+  prompt: PropTypes.bool
+}

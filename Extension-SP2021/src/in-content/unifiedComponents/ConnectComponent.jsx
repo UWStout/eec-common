@@ -1,13 +1,18 @@
 /* global EventEmitter3 */
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
 
 import ConnectStatusPanel from './ConnectStatusPanel.jsx'
 import ConnectMainPanel from './ConnectMainPanel.jsx'
-import MoodSelect from '../objects/ConnectComponents/MoodSelector.jsx'
+
+import * as HELPER from './backgroundHelper.js'
+
+// Colorful logger
+import { makeLogger } from '../../util/Logger.js'
+const LOG = makeLogger('CONNECT Component', 'lavender', 'black')
 
 const useStyles = makeStyles((theme) => ({
   // Styling of the root paper element
@@ -39,20 +44,69 @@ const useStyles = makeStyles((theme) => ({
 export default function ConnectComponent ({ context, emitter }) {
   // Deconstruct props and style class names
   const { rootDiscord, rootTeams } = useStyles()
+
   // Is the mouse over this component
   const [mainPanelOpen, setMainPanelOpen] = useState(false)
 
-  // Does the user want to choose an affect?
-  const [chooseAffect, setChooseAffect] = useState(true)
+  // Data shared throughout the connect panel is managed here
+  const [emojiList, setEmojiList] = useState([])
+  const [currentStatus, setCurrentStatus] = useState(null)
+  const [affectPrivacy, setAffectPrivacy] = useState(null)
 
-  // TESTING - delete this later!
-  const privacy = { private: true, prompt: false }
+  // Functions to retrieve state asynchronously
+  const getEmojiList = async () => {
+    try {
+      const emojisFromServer = await HELPER.retrieveAffectList()
+      LOG('New Emoji List', emojisFromServer)
+      setEmojiList(emojisFromServer)
+    } catch (err) {
+      LOG.error('Failed to retrieve emoji list', err)
+    }
+  }
+
+  const getAffectPrivacy = async () => {
+    try {
+      const privacyFromStorage = await HELPER.retrieveMoodPrivacy()
+      LOG('New Affect Privacy', privacyFromStorage)
+      setAffectPrivacy(privacyFromStorage)
+    } catch (err) {
+      LOG.error('Failed to retrieve affect privacy', err)
+    }
+  }
+
+  const getCurrentStatus = async () => {
+    try {
+      const currentStatusFromServer = await HELPER.retrieveUserStatus()
+      LOG('New Users Status', currentStatusFromServer)
+      setCurrentStatus(currentStatusFromServer)
+    } catch (err) {
+      LOG.error('Failed to retrieve user status', err)
+    }
+  }
+
+  // Retrieve initial values for all state
+  useEffect(() => {
+    getEmojiList()
+    getAffectPrivacy()
+    getCurrentStatus()
+  }, [])
 
   // Main render
   return (
     <div className={(context === 'msTeams' ? rootTeams : rootDiscord)}>
-      <ConnectStatusPanel hidden={mainPanelOpen} onHide={() => { setMainPanelOpen(true) }} />
-      <ConnectMainPanel hidden={!mainPanelOpen} onHide={() => { setMainPanelOpen(false) }} />
+      <ConnectStatusPanel
+        hidden={mainPanelOpen}
+        onHide={() => { setMainPanelOpen(true) }}
+        currentStatus={currentStatus}
+        affectPrivacy={affectPrivacy}
+      />
+      <ConnectMainPanel
+        hidden={!mainPanelOpen}
+        onHide={() => { setMainPanelOpen(false) }}
+        emojiList={emojiList}
+        currentStatus={currentStatus}
+        affectPrivacy={affectPrivacy}
+      />
     </div>
   )
 }

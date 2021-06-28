@@ -1,24 +1,14 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { Paper, Typography } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 import PanelTitle from './PanelTitle.jsx'
 import ConnectMainContent from './ConnectMainContent.jsx'
 
-// Just for dummy content while testing
-import { LoremIpsum } from 'lorem-ipsum'
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 8,
-    min: 4
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4
-  }
-})
+import { makeLogger } from '../../util/Logger.js'
+const LOG = makeLogger('CONNECT Main Panel', 'lime', 'black')
 
 const useStyles = makeStyles((theme) => ({
   // Styling of the root paper element
@@ -66,10 +56,6 @@ const useStyles = makeStyles((theme) => ({
   contentStyle: {
     height: theme.spacing(54),
     overflowY: 'auto'
-  },
-
-  paragraph: {
-    marginBottom: theme.spacing(2)
   }
 }))
 
@@ -80,7 +66,9 @@ const useStyles = makeStyles((theme) => ({
  * @param {object} props Properties for the component (See propTypes)
  * @returns {React.Element} The element to render for this component
  */
-export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
+export default function ConnectMainPanel (props) {
+  const { hidden, onHide, waitToHide, ...contentProps } = props
+
   // Deconstruct props and style class names
   const {
     paperRoot,
@@ -88,8 +76,7 @@ export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
     panelRetracted,
     panelExpanded,
     contentStyle,
-    boxStyle,
-    paragraph
+    boxStyle
   } = useStyles()
 
   // Hover state of mouse
@@ -97,14 +84,6 @@ export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
 
   // Handle to the pending hide request (if any)
   const [hideTimeout, setHideTimeout] = useState(false)
-
-  const [paragraphs, setParagraphs] = useState(['', ''])
-  React.useEffect(() => {
-    setParagraphs([
-      lorem.generateParagraphs(1),
-      lorem.generateParagraphs(1)
-    ])
-  }, [])
 
   // Function for queueing a hide request
   const hide = (immediate) => {
@@ -138,7 +117,7 @@ export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
       <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
       <div className={boxStyle}>
         <main className={contentStyle}>
-          <ConnectMainContent />
+          <ConnectMainContent {...contentProps} />
         </main>
       </div>
     </Paper>

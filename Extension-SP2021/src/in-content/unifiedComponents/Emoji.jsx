@@ -2,27 +2,23 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
+import { AffectObjectShape } from './dataTypeShapes'
 
-export default function Emoji ({ characterCode, name, description }) {
+export default function Emoji (props) {
+  const { affect, handleClick, ...restProps } = props
   return (
-    <ListItem>
-      <ListItemIcon>
-        {characterCode[0]}
-      </ListItemIcon>
-      <ListItemText
-        primary={name}
-      />
+    <ListItem onClick={(event) => { if (handleClick) { handleClick(affect) } }} {...restProps}>
+      <ListItemIcon>{affect.characterCodes[0]}</ListItemIcon>
+      <ListItemText primary={affect.name} />
     </ListItem>
   )
 }
 
 Emoji.propTypes = {
-  characterCode: PropTypes.arrayOf(PropTypes.string).isRequired,
-  name: PropTypes.string,
-  description: PropTypes.string
+  affect: PropTypes.shape(AffectObjectShape).isRequired,
+  handleClick: PropTypes.func
 }
 
 Emoji.defaultProps = {
-  name: '',
-  description: ''
+  handleClick: null
 }

@@ -12,6 +12,11 @@ import { ExpandMore } from '@material-ui/icons'
 import StatusListItem from './StatusListItem.jsx'
 import AffectSurvey from './AffectSurvey.jsx'
 
+import { StatusObjectShape } from './dataTypeShapes.js'
+
+import { makeLogger } from '../../util/Logger.js'
+const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%'
@@ -65,7 +70,8 @@ const AccordionDetails = withStyles((theme) => ({
   }
 }))(MuiAccordionDetails)
 
-export default function ConnectMainContent () {
+export default function ConnectMainContent (props) {
+  const { currentStatus } = props
   const { root, link, heading } = useStyles()
   const [expanded, setExpanded] = useState('userStatus')
 
@@ -85,16 +91,19 @@ export default function ConnectMainContent () {
           aria-controls="user-status-content"
           id="user-status-header"
         >
-          <StatusListItem userEmail="Seth.berrier@gmail.com" />
+          <StatusListItem currentStatus={currentStatus} userEmail="Seth.berrier@gmail.com" />
         </AccordionSummary>
         <AccordionDetails id="user-status-content" aria-labelledby="users-status-header">
           <Grid container>
             <Grid item xs={12}>
               <Typography variant="body1">
-                I'm feeling: <a className={link} onClick={() => setAffectSurveyOpen(!affectSurveyOpen)}> 😒 meh </a>
+                {'I\'m feeling: '}<a className={link} onClick={() => setAffectSurveyOpen(!affectSurveyOpen)}>{' 😒 meh '}</a>
               </Typography>
               <br />
-              {affectSurveyOpen ? <AffectSurvey /> : null}
+              {
+                affectSurveyOpen &&
+                <AffectSurvey {...props} />
+              }
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body1">My collaboration status is: 👬</Typography><br />
@@ -123,5 +132,9 @@ export default function ConnectMainContent () {
 }
 
 ConnectMainContent.propTypes = {
+  currentStatus: PropTypes.shape(StatusObjectShape)
+}
 
+ConnectMainContent.defaultProps = {
+  currentStatus: null
 }
