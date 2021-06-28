@@ -22,12 +22,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// DEBUG: Test data for recent emojis
 const recentList = [
   '6008928508baff43187a74f0',
   '6008928508baff43187a7504',
   '6008928508baff43187a74f8'
 ]
 
+// DEBUG: Test data for favorite emojis
 const favList = [
   '6008928508baff43187a74f9',
   '6008928508baff43187a7502',

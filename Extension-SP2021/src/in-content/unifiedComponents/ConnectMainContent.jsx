@@ -10,7 +10,7 @@ import { Grid, Typography } from '@material-ui/core'
 import { ExpandMore } from '@material-ui/icons'
 
 import StatusListItem from './StatusListItem.jsx'
-import AffectSurvey from './AffectSurvey.jsx'
+import AffectSurveyList from './AffectSurveyList.jsx'
 
 import { StatusObjectShape } from './dataTypeShapes.js'
 
@@ -102,7 +102,7 @@ export default function ConnectMainContent (props) {
               <br />
               {
                 affectSurveyOpen &&
-                <AffectSurvey {...props} />
+                <AffectSurveyList {...props} />
               }
             </Grid>
             <Grid item xs={12}>

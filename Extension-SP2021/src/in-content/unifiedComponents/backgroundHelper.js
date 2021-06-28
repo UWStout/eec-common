@@ -53,7 +53,7 @@ export function retrieveMoodPrivacy (context = 'none') {
       'Failed to read privacy preferences: ', // <- Message logged to console on error
 
       // Success and failure callbacks
-      (newPrivacy) => { return resolve(newPrivacy) },
+      (newPrivacy) => { return resolve(newPrivacy.value) },
       () => { return reject(new Error('Failed to read privacy settings')) }
     )
   })
