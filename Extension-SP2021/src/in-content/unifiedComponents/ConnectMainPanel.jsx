@@ -34,17 +34,17 @@ const useStyles = makeStyles((theme) => ({
 
   // Style when the panel is retracted
   panelRetracted: {
-    right: -theme.spacing(2) // -theme.spacing(16)
+    right: -theme.spacing(16)
   },
 
   // Style when the panel is fully expanded
   panelExpanded: {
-    right: -theme.spacing(2) // -theme.spacing(2)
+    right: -theme.spacing(2)
   },
 
   // Style when the panel is hidden
   panelHidden: {
-    right: -theme.spacing(2) // -theme.spacing(35)
+    right: -theme.spacing(35)
   },
 
   // Styling for the outer box
