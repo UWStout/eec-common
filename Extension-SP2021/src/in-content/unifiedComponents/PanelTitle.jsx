@@ -9,7 +9,7 @@ import { KeyboardArrowRight, KeyboardArrowLeft } from '@material-ui/icons'
 const useStyles = makeStyles((theme) => ({
   rootStyle: {
     position: 'absolute',
-    width: '85%',
+    width: `calc(100% - ${theme.spacing(4)})`,
     borderBottom: '3px solid grey',
     backgroundColor: 'white'
   },

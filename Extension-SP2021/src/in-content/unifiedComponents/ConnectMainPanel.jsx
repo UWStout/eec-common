@@ -16,12 +16,15 @@ const useStyles = makeStyles((theme) => ({
     // Margins and sizing
     padding: theme.spacing(2),
     paddingRight: theme.spacing(4),
-    width: theme.spacing(25),
-    height: theme.spacing(60),
+    width: theme.spacing(39),
+
+    // TODO: Think critically about minHeight, make fit minimal plus some buffer
+    // minHeight: theme.spacing(50),
+    maxHeight: `calc(80vh - ${theme.spacing(8)}px)`,
 
     // Position element in window
-    position: 'fixed',
-    top: '20%',
+    position: 'absolute',
+    top: '20vh',
 
     // Animate changes in the 'right' property
     transition: theme.transitions.create(
@@ -31,31 +34,30 @@ const useStyles = makeStyles((theme) => ({
 
   // Style when the panel is retracted
   panelRetracted: {
-    right: -theme.spacing(16)
+    right: -theme.spacing(2) // -theme.spacing(16)
   },
 
   // Style when the panel is fully expanded
   panelExpanded: {
-    right: -theme.spacing(2)
+    right: -theme.spacing(2) // -theme.spacing(2)
   },
 
   // Style when the panel is hidden
   panelHidden: {
-    right: -theme.spacing(35)
+    right: -theme.spacing(2) // -theme.spacing(35)
   },
 
   // Styling for the outer box
   boxStyle: {
-    height: theme.spacing(60),
     paddingTop: theme.spacing(5),
-    marginLeft: '-2px',
-    marginRight: '-7px'
+    marginLeft: '-3px',
+    marginRight: '-10px'
   },
 
   // Styling for the primary content box
   contentStyle: {
-    height: theme.spacing(54),
-    overflowY: 'auto'
+    overflowY: 'auto',
+    overflowX: 'hidden'
   }
 }))
 

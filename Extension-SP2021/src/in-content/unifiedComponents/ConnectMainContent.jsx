@@ -29,10 +29,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Accordion = withStyles({
+const Accordion = withStyles((theme) => ({
   root: {
     border: '1px solid rgba(0, 0, 0, .125)',
     boxShadow: 'none',
+    paddingRight: theme.spacing(2),
+    width: `calc(100% - ${theme.spacing(2)}px)`,
     '&:not(:last-child)': {
       borderBottom: 0
     },
@@ -44,13 +46,16 @@ const Accordion = withStyles({
     }
   },
   expanded: {}
-})(MuiAccordion)
+}))(MuiAccordion)
 
-const AccordionSummary = withStyles({
+const AccordionSummary = withStyles((theme) => ({
   root: {
     backgroundColor: 'rgba(0, 0, 0, .03)',
     borderBottom: '1px solid rgba(0, 0, 0, .125)',
     marginBottom: -1,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    width: `calc(100% - ${theme.spacing(2)}px)`,
     minHeight: 56,
     '&$expanded': {
       minHeight: 56
@@ -62,7 +67,7 @@ const AccordionSummary = withStyles({
     }
   },
   expanded: {}
-})(MuiAccordionSummary)
+}))(MuiAccordionSummary)
 
 const AccordionDetails = withStyles((theme) => ({
   root: {

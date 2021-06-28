@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse, Typography } from '@material-ui/core'
-import { ExpandMore, ExpandLess, Favorite, History } from '@material-ui/icons'
+import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse } from '@material-ui/core'
+import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/icons'
 
 import SearchBar from 'material-ui-search-bar'
 import Emoji from './Emoji.jsx'
@@ -16,11 +16,34 @@ const useStyles = makeStyles((theme) => ({
   },
   nested: {
     // paddingLeft: theme.spacing(2)
+  },
+  searchBar: {
+    paddingBottom: theme.spacing(2)
+  },
+  listRoot: {
+    width: '100%',
+    border: '1px solid lightgrey'
+  },
+  listItem: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2)
+  },
+  innerList: {
+    overflowY: 'auto',
+
+    // DEBUG: Can this be dynamic / responsive?
+    maxHeight: '280px'
   }
 }))
 
 // DEBUG: Test data for recent emojis
 const recentList = [
+  '6008928508baff43187a74f0',
+  '6008928508baff43187a7504',
+  '6008928508baff43187a74f8',
+  '6008928508baff43187a74f0',
+  '6008928508baff43187a7504',
+  '6008928508baff43187a74f8',
   '6008928508baff43187a74f0',
   '6008928508baff43187a7504',
   '6008928508baff43187a74f8'
@@ -38,9 +61,9 @@ const favList = [
  **/
 export default function AffectSurveyList (props) {
   const { affectPrivacy, currentStatus, emojiList } = props
-  const { root, nested } = useStyles()
+  const { root, searchBar, nested, listRoot, innerList, listItem } = useStyles()
 
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState('all')
 
   const [searchEmoji, setSearchEmoji] = useState('')
   const findEmoji = (emoji) => {
@@ -62,6 +85,7 @@ export default function AffectSurveyList (props) {
   // Build list of emoji Elements
   const allEmojiElements = emojiList.map((emoji) => (
     <Emoji
+      className={listItem}
       key={emoji._id}
       affect={emoji}
       handleClick={onSelection}
@@ -76,6 +100,7 @@ export default function AffectSurveyList (props) {
     ))
     .map((favEmoji) => (
       <Emoji
+        className={listItem}
         key={favEmoji._id}
         affect={favEmoji}
         handleClick={onSelection}
@@ -90,6 +115,7 @@ export default function AffectSurveyList (props) {
     ))
     .map((recentEmoji) => (
       <Emoji
+        className={listItem}
         key={recentEmoji._id}
         affect={recentEmoji}
         handleClick={onSelection}
@@ -99,15 +125,17 @@ export default function AffectSurveyList (props) {
     ))
 
   return (
-    <React.Fragment>
-      <SearchBar
-        value={searchEmoji}
-        onClick={() => setExpanded(false)}
-        onChange={(emoji) => setSearchEmoji(emoji)}
-        onRequestSearch={() => findEmoji(searchEmoji)}
-        placeholder={'emojis'}
-      />
-      <List dense>
+    <div className={root}>
+      <div className={searchBar}>
+        <SearchBar
+          value={searchEmoji}
+          onClick={() => setExpanded('all')}
+          onChange={(emoji) => setSearchEmoji(emoji)}
+          onRequestSearch={() => findEmoji(searchEmoji)}
+          placeholder={'search emojis'}
+        />
+      </div>
+      <List dense className={listRoot}>
         { /* Recent sub-list */
           recentEmojiElements?.length > 0 &&
           <React.Fragment>
@@ -117,9 +145,11 @@ export default function AffectSurveyList (props) {
               {expanded === 'recent' ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={expanded === 'recent'} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                {recentEmojiElements}
-              </List>
+              <div className={innerList}>
+                <List component="div" disablePadding>
+                  {recentEmojiElements}
+                </List>
+              </div>
             </Collapse>
             <Divider />
           </React.Fragment>
@@ -134,18 +164,33 @@ export default function AffectSurveyList (props) {
               {expanded === 'favorites' ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={expanded === 'favorites'} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                {favEmojiElements}
-              </List>
+              <div className={innerList}>
+                <List component="div" disablePadding>
+                  {favEmojiElements}
+                </List>
+              </div>
             </Collapse>
             <Divider />
           </React.Fragment>
         }
 
         {/* List of all emojis */}
-        {allEmojiElements}
+        <React.Fragment>
+          <ListItem button onClick={() => toggleExpanded('all')} className={nested}>
+            <ListItemIcon><Mood /></ListItemIcon>
+            <ListItemText primary="All Moods" />
+            {expanded === 'all' ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={expanded === 'all'} timeout="auto" unmountOnExit>
+            <div className={innerList}>
+              <List component="div" disablePadding>
+                {allEmojiElements}
+              </List>
+            </div>
+          </Collapse>
+        </React.Fragment>
       </List>
-    </React.Fragment>
+    </div>
   )
 }
 
