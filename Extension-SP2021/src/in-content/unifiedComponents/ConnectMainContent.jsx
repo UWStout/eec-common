@@ -6,7 +6,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import MuiAccordion from '@material-ui/core/Accordion'
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid, Typography, Link, Collapse } from '@material-ui/core'
 import { ExpandMore } from '@material-ui/icons'
 
 import StatusListItem from './StatusListItem.jsx'
@@ -23,9 +23,6 @@ const useStyles = makeStyles((theme) => ({
   },
   heading: {
     fontSize: theme.typography.pxToRem(15)
-  },
-  link: {
-    color: 'blue'
   }
 }))
 
@@ -77,7 +74,7 @@ const AccordionDetails = withStyles((theme) => ({
 
 export default function ConnectMainContent (props) {
   const { currentStatus, emojiList } = props
-  const { root, link, heading } = useStyles()
+  const { root, heading } = useStyles()
   const [expanded, setExpanded] = useState('userStatus')
 
   // open affect survey
@@ -86,6 +83,11 @@ export default function ConnectMainContent (props) {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
   }
+
+  // Lookup the affect from the list
+  const affect = emojiList.find((item) => {
+    return item._id === currentStatus?.currentAffectID
+  })
 
   return (
     <div className={root}>
@@ -99,22 +101,28 @@ export default function ConnectMainContent (props) {
           <StatusListItem currentStatus={currentStatus} emojiList={emojiList} userEmail="Seth.berrier@gmail.com" />
         </AccordionSummary>
         <AccordionDetails id="user-status-content" aria-labelledby="users-status-header">
-          <Grid container>
+          <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="body1">
-                {'I\'m feeling: '}<a className={link} onClick={() => setAffectSurveyOpen(!affectSurveyOpen)}>{' 😒 meh '}</a>
+                {'I\'m feeling: '}
+                <Link href='#' onClick={() => setAffectSurveyOpen(!affectSurveyOpen)}>
+                  {`${affect ? affect.characterCodes[0] : '?'} ${affect ? affect.name : '[none]'}`}
+                </Link>
               </Typography>
-              <br />
-              {
-                affectSurveyOpen &&
+              <Collapse in={affectSurveyOpen} timeout="auto" unmountOnExit>
                 <AffectSurveyList onDismissSurvey={() => { setAffectSurveyOpen(false) }} {...props} />
-              }
+              </Collapse>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="body1">My collaboration status is: 👬</Typography><br />
+              <Typography variant="body1">
+                {'My collaboration status is: '}
+                {currentStatus ? (currentStatus.collaboration ? '🧑‍🤝‍🧑' : '🧍') : '?'}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="body1">I generally take 52h to respond</Typography>
+              <Typography variant="body1">
+                {`I generally take ${currentStatus?.timeToRespond > 0 ? (currentStatus.timeToRespond / 60).toFixed(1) : '?'}h to respond`}
+              </Typography>
             </Grid>
           </Grid>
         </AccordionDetails>

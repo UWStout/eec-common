@@ -1,19 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Typography, Grid, Avatar, Tooltip } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import { Typography, Grid, Avatar } from '@material-ui/core'
+
+import CustomTooltip from './CustomTooltip.jsx'
 
 import { StatusObjectShape, AffectObjectShape } from './dataTypeShapes.js'
-
-const CustomTooltip = withStyles((theme) => ({
-  tooltip: {
-    backgroundColor: 'black',
-    color: 'white',
-    boxShadow: theme.shadows[1],
-    fontSize: 11
-  }
-}))(Tooltip)
 
 export default function StatusListItem (props) {
   const { userEmail, emojiList, currentStatus } = props
@@ -38,13 +30,17 @@ export default function StatusListItem (props) {
               <Grid item>
                 <Grid container spacing={1}>
                   <Grid item>
-                    <Typography variant='body1'>{affect ? affect.characterCodes[0] : '?'}</Typography>
+                    <CustomTooltip placement='right' title={affect ? affect.name : 'none'}>
+                      <Typography variant='body1'>{affect ? affect.characterCodes[0] : '?'}</Typography>
+                    </CustomTooltip>
                   </Grid>
                   <Grid item>
-                    <Typography variant='body1'>{currentStatus ? (currentStatus.collaboration ? '👫' : '') : '?'}</Typography>
+                    <CustomTooltip placement='right' title={currentStatus ? (currentStatus.collaboration ? 'teamwork' : 'solo') : 'unknown'}>
+                      <Typography variant='body1'>{currentStatus ? (currentStatus.collaboration ? '👫' : '🧍') : '?'}</Typography>
+                    </CustomTooltip>
                   </Grid>
                   <Grid item>
-                    <CustomTooltip PopperProps={{ disablePortal: true }} placement='top' title={currentStatus?.timeToRespond > 0 ? `${currentStatus.timeToRespond} mins` : '? mins'}>
+                    <CustomTooltip placement='right' title={currentStatus?.timeToRespond > 0 ? `${currentStatus.timeToRespond} mins` : '? mins'}>
                       <Typography variant='body1'>🕐</Typography>
                     </CustomTooltip>
                   </Grid>
@@ -56,9 +52,6 @@ export default function StatusListItem (props) {
       </Grid>
     </Grid>
   )
-}
-
-StatusListItem.propTypes = {
 }
 
 StatusListItem.propTypes = {

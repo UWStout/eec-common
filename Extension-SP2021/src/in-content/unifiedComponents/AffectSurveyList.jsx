@@ -19,10 +19,8 @@ const LOG = makeLogger('CONNECT Affect Survey', 'pink', 'black')
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    paddingTop: theme.spacing(2),
     width: '100%'
-  },
-  nested: {
-    // paddingLeft: theme.spacing(2)
   },
   searchBar: {
     paddingBottom: theme.spacing(2)
@@ -70,7 +68,7 @@ function searchFilter (fullList, searchText) {
  **/
 export default function AffectSurveyList (props) {
   const { affectPrivacy, onDismissSurvey, currentStatus, emojiList, updateCurrentAffect, updatePrivacy } = props
-  const { root, searchBar, nested, listRoot, innerList, listItem } = useStyles()
+  const { root, searchBar, listRoot, innerList, listItem } = useStyles()
 
   const [searchText, setSearchText] = useState('')
   const onSearchTextChanged = Debounce((newText) => {
@@ -173,7 +171,7 @@ export default function AffectSurveyList (props) {
         { /* Recent sub-list */
           recentEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
-            <ListItem button onClick={() => toggleExpanded('recent')} className={nested}>
+            <ListItem button onClick={() => toggleExpanded('recent')}>
               <ListItemIcon><History /></ListItemIcon>
               <ListItemText primary="Recent" />
               {expanded === 'recent' ? <ExpandLess /> : <ExpandMore />}
@@ -192,7 +190,7 @@ export default function AffectSurveyList (props) {
         { /* Favorites sub-list */
           favEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
-            <ListItem button onClick={() => toggleExpanded('favorites')} className={nested}>
+            <ListItem button onClick={() => toggleExpanded('favorites')}>
               <ListItemIcon><Favorite /></ListItemIcon>
               <ListItemText primary="Favorites" />
               {expanded === 'favorites' ? <ExpandLess /> : <ExpandMore />}
@@ -210,7 +208,7 @@ export default function AffectSurveyList (props) {
 
         {/* List of all emojis */}
         <React.Fragment>
-          <ListItem button onClick={() => toggleExpanded('all')} className={nested}>
+          <ListItem button onClick={() => toggleExpanded('all')}>
             <ListItemIcon><Mood /></ListItemIcon>
             <ListItemText primary="All Moods" />
             {expanded === 'all' ? <ExpandLess /> : <ExpandMore />}
