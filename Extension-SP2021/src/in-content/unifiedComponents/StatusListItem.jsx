@@ -1,10 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Typography, Grid, Avatar } from '@material-ui/core'
+import { Typography, Grid, Avatar, Tooltip } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
+
+import { StatusObjectShape, AffectObjectShape } from './dataTypeShapes.js'
+
+const CustomTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: 'black',
+    color: 'white',
+    boxShadow: theme.shadows[1],
+    fontSize: 11
+  }
+}))(Tooltip)
 
 export default function StatusListItem (props) {
-  const { userEmail } = props
+  const { userEmail, emojiList, currentStatus } = props
+
+  // Lookup the affect from the list
+  const affect = emojiList.find((item) => {
+    return item._id === currentStatus?.currentAffectID
+  })
 
   return (
     <Grid container>
@@ -16,18 +33,20 @@ export default function StatusListItem (props) {
           <Grid item>
             <Grid container direction="column">
               <Grid item>
-                <Typography noWrap variant='body1'>My Statuses</Typography>
+                <Typography noWrap variant='body1'>{userEmail === '' ? 'My Statuses' : userEmail}</Typography>
               </Grid>
               <Grid item>
                 <Grid container spacing={1}>
                   <Grid item>
-                    <Typography variant='body1'>😁</Typography>
+                    <Typography variant='body1'>{affect ? affect.characterCodes[0] : '?'}</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography variant='body1'>👫</Typography>
+                    <Typography variant='body1'>{currentStatus ? (currentStatus.collaboration ? '👫' : '') : '?'}</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography variant='body1'>🕐</Typography>
+                    <CustomTooltip PopperProps={{ disablePortal: true }} placement='top' title={currentStatus?.timeToRespond > 0 ? `${currentStatus.timeToRespond} mins` : '? mins'}>
+                      <Typography variant='body1'>🕐</Typography>
+                    </CustomTooltip>
                   </Grid>
                 </Grid>
               </Grid>
@@ -40,5 +59,15 @@ export default function StatusListItem (props) {
 }
 
 StatusListItem.propTypes = {
-  userEmail: PropTypes.string.isRequired
+}
+
+StatusListItem.propTypes = {
+  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)).isRequired,
+  userEmail: PropTypes.string,
+  currentStatus: PropTypes.shape(StatusObjectShape)
+}
+
+StatusListItem.defaultProps = {
+  userEmail: '',
+  currentStatus: null
 }

@@ -1,14 +1,21 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
+import Debounce from 'debounce'
+
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse } from '@material-ui/core'
 import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/icons'
 
 import SearchBar from 'material-ui-search-bar'
+
 import Emoji from './Emoji.jsx'
+import PrivacyDialog from './PrivacyDialog.jsx'
 
 import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape } from './dataTypeShapes.js'
+
+import { makeLogger } from '../../util/Logger.js'
+const LOG = makeLogger('CONNECT Affect Survey', 'pink', 'black')
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,12 +47,6 @@ const useStyles = makeStyles((theme) => ({
 const recentList = [
   '6008928508baff43187a74f0',
   '6008928508baff43187a7504',
-  '6008928508baff43187a74f8',
-  '6008928508baff43187a74f0',
-  '6008928508baff43187a7504',
-  '6008928508baff43187a74f8',
-  '6008928508baff43187a74f0',
-  '6008928508baff43187a7504',
   '6008928508baff43187a74f8'
 ]
 
@@ -56,20 +57,28 @@ const favList = [
   '6008928508baff43187a7509'
 ]
 
+// Function to filter a list of affects by given text
+function searchFilter (fullList, searchText) {
+  return fullList.filter((curItem) => {
+    const text = searchText.toLowerCase()
+    return curItem.name.toLowerCase().includes(text) || curItem.description.toLowerCase().includes(searchText)
+  })
+}
+
 /**
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { affectPrivacy, currentStatus, emojiList } = props
+  const { affectPrivacy, onDismissSurvey, currentStatus, emojiList, updateCurrentAffect, updatePrivacy } = props
   const { root, searchBar, nested, listRoot, innerList, listItem } = useStyles()
 
+  const [searchText, setSearchText] = useState('')
+  const onSearchTextChanged = Debounce((newText) => {
+    LOG('Search text changed:', newText)
+    setSearchText(newText)
+  }, 200)
+
   const [expanded, setExpanded] = useState('all')
-
-  const [searchEmoji, setSearchEmoji] = useState('')
-  const findEmoji = (emoji) => {
-
-  }
-
   const toggleExpanded = (which) => {
     if (which !== expanded) {
       setExpanded(which)
@@ -78,12 +87,37 @@ export default function AffectSurveyList (props) {
     }
   }
 
+  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
+  const updateAndClose = async (newPrivacy) => {
+    if (onDismissSurvey) {
+      await updateCurrentAffect(selectedAffectID, newPrivacy.private)
+      await updatePrivacy(newPrivacy)
+      onDismissSurvey()
+    }
+  }
+
+  const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
+  const privacyDialogClosed = (canceled, newPrivacy) => {
+    LOG('Privacy Dialog Dismissed:', newPrivacy)
+    setPrivacyDialogOpen(false)
+    if (!canceled) {
+      updateAndClose(newPrivacy)
+    }
+  }
+
   const onSelection = (affect) => {
     console.log(`[[AFFECT SURVEY]]: ${affect?._id} emoji selected`)
+    setSelectedAffectID(affect?._id)
+    if (affectPrivacy.prompt) {
+      setPrivacyDialogOpen(true)
+    } else {
+      updateAndClose(affectPrivacy)
+    }
   }
 
   // Build list of emoji Elements
-  const allEmojiElements = emojiList.map((emoji) => (
+  const filteredEmojis = (searchText === '' ? emojiList : searchFilter(emojiList, searchText))
+  const allEmojiElements = filteredEmojis.map((emoji) => (
     <Emoji
       className={listItem}
       key={emoji._id}
@@ -94,7 +128,7 @@ export default function AffectSurveyList (props) {
     />
   ))
 
-  const favEmojiElements = emojiList
+  const favEmojiElements = filteredEmojis
     .filter((curEmoji) => (
       favList.some((favID) => (favID === curEmoji._id))
     ))
@@ -109,7 +143,7 @@ export default function AffectSurveyList (props) {
       />
     ))
 
-  const recentEmojiElements = emojiList
+  const recentEmojiElements = filteredEmojis
     .filter((curEmoji) => (
       recentList.some((recentID) => (recentID === curEmoji._id))
     ))
@@ -126,18 +160,18 @@ export default function AffectSurveyList (props) {
 
   return (
     <div className={root}>
+      <PrivacyDialog isOpen={privacyDialogOpen} onDialogClose={privacyDialogClosed} privacy={affectPrivacy} />
       <div className={searchBar}>
         <SearchBar
-          value={searchEmoji}
+          value={searchText}
           onClick={() => setExpanded('all')}
-          onChange={(emoji) => setSearchEmoji(emoji)}
-          onRequestSearch={() => findEmoji(searchEmoji)}
+          onChange={onSearchTextChanged}
           placeholder={'search emojis'}
         />
       </div>
       <List dense className={listRoot}>
         { /* Recent sub-list */
-          recentEmojiElements?.length > 0 &&
+          recentEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
             <ListItem button onClick={() => toggleExpanded('recent')} className={nested}>
               <ListItemIcon><History /></ListItemIcon>
@@ -156,7 +190,7 @@ export default function AffectSurveyList (props) {
         }
 
         { /* Favorites sub-list */
-          favEmojiElements?.length > 0 &&
+          favEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
             <ListItem button onClick={() => toggleExpanded('favorites')} className={nested}>
               <ListItemIcon><Favorite /></ListItemIcon>
@@ -197,5 +231,12 @@ export default function AffectSurveyList (props) {
 AffectSurveyList.propTypes = {
   emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)).isRequired,
   currentStatus: PropTypes.shape(StatusObjectShape).isRequired,
-  affectPrivacy: PropTypes.shape(PrivacyObjectShape).isRequired
+  affectPrivacy: PropTypes.shape(PrivacyObjectShape).isRequired,
+  updateCurrentAffect: PropTypes.func.isRequired,
+  updatePrivacy: PropTypes.func.isRequired,
+  onDismissSurvey: PropTypes.func
+}
+
+AffectSurveyList.defaultProps = {
+  onDismissSurvey: null
 }

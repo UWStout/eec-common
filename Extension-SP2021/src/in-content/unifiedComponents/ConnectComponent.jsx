@@ -56,17 +56,19 @@ export default function ConnectComponent ({ context, emitter }) {
   // Functions to retrieve state asynchronously
   const getEmojiList = async () => {
     try {
-      const emojisFromServer = await HELPER.retrieveAffectList()
-      LOG('New Emoji List', emojisFromServer)
-      setEmojiList(emojisFromServer)
+      const emojisFromServer = await HELPER.retrieveAffectList(context)
+      // Filter out inactive emojis (old ones that have been removed)
+      const filteredEmojis = emojisFromServer.filter((current) => (current.active))
+      LOG('New Emoji List', filteredEmojis)
+      setEmojiList(filteredEmojis)
     } catch (err) {
       LOG.error('Failed to retrieve emoji list', err)
     }
   }
 
-  const getAffectPrivacy = async () => {
+  const getPrivacy = async () => {
     try {
-      const privacyFromStorage = await HELPER.retrieveMoodPrivacy()
+      const privacyFromStorage = await HELPER.retrieveMoodPrivacy(context)
       LOG('New Affect Privacy', privacyFromStorage)
       setAffectPrivacy(privacyFromStorage)
     } catch (err) {
@@ -74,9 +76,24 @@ export default function ConnectComponent ({ context, emitter }) {
     }
   }
 
+  const updatePrivacy = async (newPrivacy) => {
+    if (!newPrivacy) {
+      LOG.error('(WARNING) Refusing to set privacy to null/undefined')
+      return
+    }
+
+    try {
+      await HELPER.setMoodPrivacy(newPrivacy, context)
+      LOG('Affect Privacy Updated', newPrivacy)
+      setAffectPrivacy(newPrivacy)
+    } catch (err) {
+      LOG.error('Failed to update affect privacy', err)
+    }
+  }
+
   const getCurrentStatus = async () => {
     try {
-      const currentStatusFromServer = await HELPER.retrieveUserStatus()
+      const currentStatusFromServer = await HELPER.retrieveUserStatus(context)
       LOG('New Users Status', currentStatusFromServer)
       setCurrentStatus(currentStatusFromServer)
     } catch (err) {
@@ -84,10 +101,25 @@ export default function ConnectComponent ({ context, emitter }) {
     }
   }
 
+  const updateCurrentAffect = async (newAffectID, privacy = true) => {
+    if (!newAffectID) {
+      LOG.error('(WARNING) Refusing to set current mood to null/undefined')
+      return
+    }
+
+    try {
+      await HELPER.updateCurrentAffect(newAffectID, privacy, context)
+      LOG('Current Mood Updated', newAffectID)
+      await getCurrentStatus()
+    } catch (err) {
+      LOG.error('Failed to update current affect', err)
+    }
+  }
+
   // Retrieve initial values for all state
   useEffect(() => {
     getEmojiList()
-    getAffectPrivacy()
+    getPrivacy()
     getCurrentStatus()
   }, [])
 
@@ -106,6 +138,8 @@ export default function ConnectComponent ({ context, emitter }) {
         emojiList={emojiList}
         currentStatus={currentStatus}
         affectPrivacy={affectPrivacy}
+        updateCurrentAffect={updateCurrentAffect}
+        updatePrivacy={updatePrivacy}
       />
     </div>
   )

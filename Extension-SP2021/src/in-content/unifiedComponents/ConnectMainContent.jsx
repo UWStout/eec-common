@@ -12,7 +12,7 @@ import { ExpandMore } from '@material-ui/icons'
 import StatusListItem from './StatusListItem.jsx'
 import AffectSurveyList from './AffectSurveyList.jsx'
 
-import { StatusObjectShape } from './dataTypeShapes.js'
+import { StatusObjectShape, AffectObjectShape } from './dataTypeShapes.js'
 
 import { makeLogger } from '../../util/Logger.js'
 const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
@@ -76,7 +76,7 @@ const AccordionDetails = withStyles((theme) => ({
 }))(MuiAccordionDetails)
 
 export default function ConnectMainContent (props) {
-  const { currentStatus } = props
+  const { currentStatus, emojiList } = props
   const { root, link, heading } = useStyles()
   const [expanded, setExpanded] = useState('userStatus')
 
@@ -96,7 +96,7 @@ export default function ConnectMainContent (props) {
           aria-controls="user-status-content"
           id="user-status-header"
         >
-          <StatusListItem currentStatus={currentStatus} userEmail="Seth.berrier@gmail.com" />
+          <StatusListItem currentStatus={currentStatus} emojiList={emojiList} userEmail="Seth.berrier@gmail.com" />
         </AccordionSummary>
         <AccordionDetails id="user-status-content" aria-labelledby="users-status-header">
           <Grid container>
@@ -107,7 +107,7 @@ export default function ConnectMainContent (props) {
               <br />
               {
                 affectSurveyOpen &&
-                <AffectSurveyList {...props} />
+                <AffectSurveyList onDismissSurvey={() => { setAffectSurveyOpen(false) }} {...props} />
               }
             </Grid>
             <Grid item xs={12}>
@@ -129,7 +129,7 @@ export default function ConnectMainContent (props) {
           <Typography className={heading}>Team Status</Typography>
         </AccordionSummary>
         <AccordionDetails aria-labelledby="team-status-header" id="team-status-content">
-          <StatusListItem userEmail="berriers@uwstout.edu" />
+          <StatusListItem emojiList={emojiList} userEmail="berriers@uwstout.edu" />
         </AccordionDetails>
       </Accordion>
     </div>
@@ -137,6 +137,7 @@ export default function ConnectMainContent (props) {
 }
 
 ConnectMainContent.propTypes = {
+  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)).isRequired,
   currentStatus: PropTypes.shape(StatusObjectShape)
 }
 
