@@ -3,14 +3,21 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'
+
 import MuiAccordion from '@material-ui/core/Accordion'
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
-import { Grid, Typography } from '@material-ui/core'
+
+import { Grid, Typography, Link, Collapse } from '@material-ui/core'
 import { ExpandMore } from '@material-ui/icons'
 
 import StatusListItem from './StatusListItem.jsx'
-import AffectSurvey from './AffectSurvey.jsx'
+import AffectSurveyList from './AffectSurveyList.jsx'
+
+import { StatusObjectShape, AffectObjectShape } from './dataTypeShapes.js'
+
+import { makeLogger } from '../../util/Logger.js'
+const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,16 +25,15 @@ const useStyles = makeStyles((theme) => ({
   },
   heading: {
     fontSize: theme.typography.pxToRem(15)
-  },
-  link: {
-    color: 'blue'
   }
 }))
 
-const Accordion = withStyles({
+const Accordion = withStyles((theme) => ({
   root: {
     border: '1px solid rgba(0, 0, 0, .125)',
     boxShadow: 'none',
+    paddingRight: theme.spacing(2),
+    width: `calc(100% - ${theme.spacing(2)}px)`,
     '&:not(:last-child)': {
       borderBottom: 0
     },
@@ -39,13 +45,16 @@ const Accordion = withStyles({
     }
   },
   expanded: {}
-})(MuiAccordion)
+}))(MuiAccordion)
 
-const AccordionSummary = withStyles({
+const AccordionSummary = withStyles((theme) => ({
   root: {
     backgroundColor: 'rgba(0, 0, 0, .03)',
     borderBottom: '1px solid rgba(0, 0, 0, .125)',
     marginBottom: -1,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    width: `calc(100% - ${theme.spacing(2)}px)`,
     minHeight: 56,
     '&$expanded': {
       minHeight: 56
@@ -57,7 +66,7 @@ const AccordionSummary = withStyles({
     }
   },
   expanded: {}
-})(MuiAccordionSummary)
+}))(MuiAccordionSummary)
 
 const AccordionDetails = withStyles((theme) => ({
   root: {
@@ -65,8 +74,9 @@ const AccordionDetails = withStyles((theme) => ({
   }
 }))(MuiAccordionDetails)
 
-export default function ConnectMainContent () {
-  const { root, link, heading } = useStyles()
+export default function ConnectMainContent (props) {
+  const { currentStatus, emojiList } = props
+  const { root, heading } = useStyles()
   const [expanded, setExpanded] = useState('userStatus')
 
   // open affect survey
@@ -75,6 +85,11 @@ export default function ConnectMainContent () {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
   }
+
+  // Lookup the affect from the list
+  const affect = emojiList.find((item) => {
+    return item._id === currentStatus?.currentAffectID
+  })
 
   return (
     <div className={root}>
@@ -85,22 +100,31 @@ export default function ConnectMainContent () {
           aria-controls="user-status-content"
           id="user-status-header"
         >
-          <StatusListItem userEmail="Seth.berrier@gmail.com" />
+          <StatusListItem currentStatus={currentStatus} emojiList={emojiList} userEmail="Seth.berrier@gmail.com" />
         </AccordionSummary>
         <AccordionDetails id="user-status-content" aria-labelledby="users-status-header">
-          <Grid container>
+          <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="body1">
-                I'm feeling: <a className={link} onClick={() => setAffectSurveyOpen(!affectSurveyOpen)}> 😒 meh </a>
+                {'I\'m feeling: '}
+                <Link href='#' onClick={() => setAffectSurveyOpen(!affectSurveyOpen)}>
+                  {`${affect ? affect.characterCodes[0] : '?'} ${affect ? affect.name : '[none]'}`}
+                </Link>
               </Typography>
-              <br />
-              {affectSurveyOpen ? <AffectSurvey /> : null}
+              <Collapse in={affectSurveyOpen} timeout="auto" unmountOnExit>
+                <AffectSurveyList onDismissSurvey={() => { setAffectSurveyOpen(false) }} {...props} />
+              </Collapse>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="body1">My collaboration status is: 👬</Typography><br />
+              <Typography variant="body1">
+                {'My collaboration status is: '}
+                {currentStatus ? (currentStatus.collaboration ? '🧑‍🤝‍🧑' : '🧍') : '?'}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="body1">I generally take 52h to respond</Typography>
+              <Typography variant="body1">
+                {`I generally take ${currentStatus?.timeToRespond > 0 ? (currentStatus.timeToRespond / 60).toFixed(1) : '?'}h to respond`}
+              </Typography>
             </Grid>
           </Grid>
         </AccordionDetails>
@@ -115,7 +139,7 @@ export default function ConnectMainContent () {
           <Typography className={heading}>Team Status</Typography>
         </AccordionSummary>
         <AccordionDetails aria-labelledby="team-status-header" id="team-status-content">
-          <StatusListItem userEmail="berriers@uwstout.edu" />
+          <StatusListItem emojiList={emojiList} userEmail="berriers@uwstout.edu" />
         </AccordionDetails>
       </Accordion>
     </div>
@@ -123,5 +147,10 @@ export default function ConnectMainContent () {
 }
 
 ConnectMainContent.propTypes = {
+  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)).isRequired,
+  currentStatus: PropTypes.shape(StatusObjectShape)
+}
 
+ConnectMainContent.defaultProps = {
+  currentStatus: null
 }

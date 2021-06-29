@@ -1,24 +1,14 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { Paper, Typography } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 import PanelTitle from './PanelTitle.jsx'
 import ConnectMainContent from './ConnectMainContent.jsx'
 
-// Just for dummy content while testing
-import { LoremIpsum } from 'lorem-ipsum'
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 8,
-    min: 4
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4
-  }
-})
+import { makeLogger } from '../../util/Logger.js'
+const LOG = makeLogger('CONNECT Main Panel', 'lime', 'black')
 
 const useStyles = makeStyles((theme) => ({
   // Styling of the root paper element
@@ -26,12 +16,15 @@ const useStyles = makeStyles((theme) => ({
     // Margins and sizing
     padding: theme.spacing(2),
     paddingRight: theme.spacing(4),
-    width: theme.spacing(25),
-    height: theme.spacing(60),
+    width: theme.spacing(39),
+
+    // TODO: Think critically about minHeight, make fit minimal plus some buffer
+    // minHeight: theme.spacing(50),
+    maxHeight: `calc(80vh - ${theme.spacing(8)}px)`,
 
     // Position element in window
-    position: 'fixed',
-    top: '20%',
+    position: 'absolute',
+    top: '20vh',
 
     // Animate changes in the 'right' property
     transition: theme.transitions.create(
@@ -46,30 +39,25 @@ const useStyles = makeStyles((theme) => ({
 
   // Style when the panel is fully expanded
   panelExpanded: {
-    right: -theme.spacing(2)
+    right: -theme.spacing(1)
   },
 
   // Style when the panel is hidden
   panelHidden: {
-    right: -theme.spacing(35)
+    right: -theme.spacing(50)
   },
 
   // Styling for the outer box
   boxStyle: {
-    height: theme.spacing(60),
     paddingTop: theme.spacing(5),
-    marginLeft: '-2px',
-    marginRight: '-7px'
+    marginLeft: '-3px',
+    marginRight: '-10px'
   },
 
   // Styling for the primary content box
   contentStyle: {
-    height: theme.spacing(54),
-    overflowY: 'auto'
-  },
-
-  paragraph: {
-    marginBottom: theme.spacing(2)
+    overflowY: 'auto',
+    overflowX: 'hidden'
   }
 }))
 
@@ -80,7 +68,9 @@ const useStyles = makeStyles((theme) => ({
  * @param {object} props Properties for the component (See propTypes)
  * @returns {React.Element} The element to render for this component
  */
-export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
+export default function ConnectMainPanel (props) {
+  const { hidden, onHide, waitToHide, ...contentProps } = props
+
   // Deconstruct props and style class names
   const {
     paperRoot,
@@ -88,8 +78,7 @@ export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
     panelRetracted,
     panelExpanded,
     contentStyle,
-    boxStyle,
-    paragraph
+    boxStyle
   } = useStyles()
 
   // Hover state of mouse
@@ -97,14 +86,6 @@ export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
 
   // Handle to the pending hide request (if any)
   const [hideTimeout, setHideTimeout] = useState(false)
-
-  const [paragraphs, setParagraphs] = useState(['', ''])
-  React.useEffect(() => {
-    setParagraphs([
-      lorem.generateParagraphs(1),
-      lorem.generateParagraphs(1)
-    ])
-  }, [])
 
   // Function for queueing a hide request
   const hide = (immediate) => {
@@ -138,7 +119,7 @@ export default function ConnectMainPanel ({ hidden, onHide, waitToHide }) {
       <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
       <div className={boxStyle}>
         <main className={contentStyle}>
-          <ConnectMainContent />
+          <ConnectMainContent {...contentProps} />
         </main>
       </div>
     </Paper>

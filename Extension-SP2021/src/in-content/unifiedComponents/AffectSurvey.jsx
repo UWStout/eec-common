@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'
@@ -10,7 +10,8 @@ import { ExpandMore } from '@material-ui/icons'
 
 import SearchBar from 'material-ui-search-bar'
 import Emoji from './Emoji.jsx'
-import { retrieveAffectList } from './backgroundHelper.js'
+
+import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape } from './dataTypeShapes.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,6 +21,20 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.pxToRem(15)
   }
 }))
+
+// DEBUG: Test data for recent emojis
+const recentList = [
+  '6008928508baff43187a74f0',
+  '6008928508baff43187a7504',
+  '6008928508baff43187a74f8'
+]
+
+// DEBUG: Test data for favorite emojis
+const favList = [
+  '6008928508baff43187a74f9',
+  '6008928508baff43187a7502',
+  '6008928508baff43187a7509'
+]
 
 const Accordion = withStyles({
   root: {
@@ -68,20 +83,12 @@ const AccordionDetails = withStyles((theme) => ({
 /**
  * affect survey pops up in the panel and in the bubble.
  **/
-export default function AffectSurvey ({ privacy }) {
+export default function AffectSurvey (props) {
+  const { affectPrivacy, currentStatus, emojiList } = props
   const { root, heading } = useStyles()
+
   const [expanded, setExpanded] = useState('favorite')
   const [searchEmoji, setSearchEmoji] = useState('')
-  const [emojiList, setEmojiList] = useState([])
-
-  useEffect(() => {
-    const getEmojis = async () => {
-      const emojisFromServer = await retrieveAffectList()
-      setEmojiList(emojisFromServer)
-    }
-
-    getEmojis()
-  }, [])
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
@@ -91,16 +98,48 @@ export default function AffectSurvey ({ privacy }) {
 
   }
 
-  function generate (element) {
-    return emojiList.map((emoji) =>
-      React.cloneElement(element, {
-        key: emoji._id,
-        characterCode: emoji.characterCodes,
-        name: emoji.name,
-        description: emoji.description
-      })
-    )
+  const onSelection = (affect) => {
+    console.log(`[[AFFECT SURVEY]]: ${affect?._id} emoji selected`)
   }
+
+  // Build list of emoji Elements
+  const allEmojiElements = emojiList.map((emoji) => (
+    <Emoji
+      key={emoji._id}
+      affect={emoji}
+      handleClick={onSelection}
+      button
+      selected={(currentStatus.currentAffectID === emoji._id)}
+    />
+  ))
+
+  const favEmojiElements = emojiList
+    .filter((curEmoji) => (
+      favList.some((favID) => (favID === curEmoji._id))
+    ))
+    .map((favEmoji) => (
+      <Emoji
+        key={favEmoji._id}
+        affect={favEmoji}
+        handleClick={onSelection}
+        button
+        selected={(currentStatus.currentAffectID === favEmoji._id)}
+      />
+    ))
+
+  const recentEmojiElements = emojiList
+    .filter((curEmoji) => (
+      recentList.some((recentID) => (recentID === curEmoji._id))
+    ))
+    .map((recentEmoji) => (
+      <Emoji
+        key={recentEmoji._id}
+        affect={recentEmoji}
+        handleClick={onSelection}
+        button
+        selected={(currentStatus.currentAffectID === recentEmoji._id)}
+      />
+    ))
 
   return (
     <React.Fragment>
@@ -124,9 +163,7 @@ export default function AffectSurvey ({ privacy }) {
           <AccordionDetails id="favorite-emoji-content" aria-labelledby="favorite-emoji-header">
             {/* To-do: make this a list, and affect component inside listItem */}
             <List dense>
-              {generate(
-                <Emoji />
-              )}
+              {favEmojiElements}
             </List>
           </AccordionDetails>
         </Accordion>
@@ -140,11 +177,9 @@ export default function AffectSurvey ({ privacy }) {
           >
             <Typography className={heading}>recent</Typography>
           </AccordionSummary>
-          <AccordionDetails id="favorite-emoji-content" aria-labelledby="favorite-emoji-header">
+          <AccordionDetails id="recent-emoji-content" aria-labelledby="recent-emoji-header">
             <List dense>
-              {generate(
-                <Emoji />
-              )}
+              {recentEmojiElements}
             </List>
           </AccordionDetails>
         </Accordion>
@@ -158,11 +193,9 @@ export default function AffectSurvey ({ privacy }) {
           >
             <Typography className={heading}>All emojis</Typography>
           </AccordionSummary>
-          <AccordionDetails id="favorite-emoji-content" aria-labelledby="favorite-emoji-header">
+          <AccordionDetails id="all-emoji-content" aria-labelledby="all-emoji-header">
             <List dense>
-              {generate(
-                <Emoji />
-              )}
+              {allEmojiElements}
             </List>
           </AccordionDetails>
         </Accordion>
@@ -172,5 +205,7 @@ export default function AffectSurvey ({ privacy }) {
 }
 
 AffectSurvey.propTypes = {
-
+  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)).isRequired,
+  currentStatus: PropTypes.shape(StatusObjectShape).isRequired,
+  affectPrivacy: PropTypes.shape(PrivacyObjectShape).isRequired
 }

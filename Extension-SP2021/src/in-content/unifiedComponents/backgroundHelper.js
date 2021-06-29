@@ -53,8 +53,45 @@ export function retrieveMoodPrivacy (context = 'none') {
       'Failed to read privacy preferences: ', // <- Message logged to console on error
 
       // Success and failure callbacks
-      (newPrivacy) => { return resolve(newPrivacy) },
-      () => { return reject(new Error('Failed to read privacy settings')) }
+      (newPrivacy) => {
+        if (!newPrivacy.value || newPrivacy.value === 'undefined') {
+          return resolve({ private: false, prompt: true })
+        }
+        return resolve(newPrivacy.value)
+      },
+      () => { return reject(new Error('Failed to READ privacy settings')) }
+    )
+  })
+}
+
+export function updateCurrentAffect (affectID, privacy, context = 'none') {
+  return new Promise((resolve, reject) => {
+    // Read the privacy settings from the background context
+    sendMessageToBackground(
+      // Send to the back-end server using AJAX
+      { type: 'ajax-setUserAffect', affectID: affectID, privacy },
+      context,
+      'Failed to set new mood ID: ', // <- Message logged to console on error
+
+      // Success and failure callbacks
+      () => { return resolve() },
+      () => { return reject(new Error('Failed to set new mood ID')) }
+    )
+  })
+}
+
+export function setMoodPrivacy (newPrivacy, context = 'none') {
+  return new Promise((resolve, reject) => {
+    // Read the privacy settings from the background context
+    sendMessageToBackground(
+      // Read from browser local storage
+      { type: 'write', key: 'privacy', value: newPrivacy }, // <- Message object (read/write) (key) [if writing] (value)
+      context,
+      'Failed to WRITE privacy preferences: ', // <- Message logged to console on error
+
+      // Success and failure callbacks
+      () => { return resolve() },
+      () => { return reject(new Error('Failed to WRITE privacy settings')) }
     )
   })
 }
