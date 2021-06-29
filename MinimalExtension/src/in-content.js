@@ -1,7 +1,27 @@
 import MinTestShadow from './shadowElement.js'
 
 // Avoid jQuery conflicts
-$.noConflict()
+// $.noConflict()
+
+// should be a global variable, or maybe a prop
+let lastAction = ''
+
+export function getLastAction() {
+  return lastAction
+}
+
+// if not in input box, prevent typing?
+$(document).on("keydown mousedown", function (e) {
+  
+    if (e.type === 'mousedown'){
+      lastAction = 'click'
+    } else if (e.keyCode === 9) {
+      lastAction = 'tab'
+    } else if (e.type === 'keydown') {
+      lastAction = 'type'
+    }
+    console.log('last action was ', lastAction)
+});
 
 // Inject some inputs into the DOM
 jQuery(document).ready(() => {
