@@ -1,27 +1,11 @@
 import MinTestShadow from './shadowElement.js'
 
+// Colorful logger
+import { makeLogger } from './Logger.js'
+const LOG = makeLogger('CONTENT Root', 'maroon', 'white')
+
 // Avoid jQuery conflicts
-// $.noConflict()
-
-// should be a global variable, or maybe a prop
-let lastAction = ''
-
-export function getLastAction() {
-  return lastAction
-}
-
-// if not in input box, prevent typing?
-$(document).on("keydown mousedown", function (e) {
-  
-    if (e.type === 'mousedown'){
-      lastAction = 'click'
-    } else if (e.keyCode === 9) {
-      lastAction = 'tab'
-    } else if (e.type === 'keydown') {
-      lastAction = 'type'
-    }
-    console.log('last action was ', lastAction)
-});
+$.noConflict()
 
 // Inject some inputs into the DOM
 jQuery(document).ready(() => {

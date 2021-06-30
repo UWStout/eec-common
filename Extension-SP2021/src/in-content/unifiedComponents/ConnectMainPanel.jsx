@@ -119,7 +119,7 @@ export default function ConnectMainPanel (props) {
       <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
       <div className={boxStyle}>
         <main className={contentStyle}>
-          <ConnectMainContent {...contentProps} />
+          <ConnectMainContent hidden={hidden} retracted={!mouseIsOver} {...contentProps} />
         </main>
       </div>
     </Paper>

@@ -32,6 +32,42 @@ class EECUnified extends HTMLElement {
       LOG(response)
       this.JWT = response.value
     })
+
+    // Initialize the focus manager
+    this.lastAction = ''
+    this.setupFocusManager()
+
+    // Record when we lose focus
+    this.addEventListener('blur', (e) => {
+      LOG('blur event')
+      if (this.lastAction === 'type') {
+        LOG('- Type-Blur Focus')
+        this.lastFocusedElement.focus()
+      } else {
+        this.lastFocusedElement = e.path[0]
+        this.wasBlurred = true
+      }
+    })
+  }
+
+  setupFocusManager () {
+    // if not in input box, prevent typing?
+    jQuery(document).on('keydown mousedown', (e) => {
+      if (e.type === 'mousedown') {
+        this.lastAction = 'click'
+      } else if (e.keyCode === 9) {
+        this.lastAction = 'tab'
+      } else if (e.type === 'keydown') {
+        if (this.wasBlurred) {
+          this.wasBlurred = false
+          LOG('- Blur-Type Focus')
+          this.lastFocusedElement.focus()
+        } else {
+          this.lastFocusedElement = this.shadowRoot.activeElement
+          this.lastAction = 'type'
+        }
+      }
+    })
   }
 
   // MUST be called manually now (with an event emitter)

@@ -75,7 +75,7 @@ const AccordionDetails = withStyles((theme) => ({
 }))(MuiAccordionDetails)
 
 export default function ConnectMainContent (props) {
-  const { currentStatus, emojiList } = props
+  const { hidden, retracted, currentStatus, emojiList } = props
   const { root, heading } = useStyles()
   const [expanded, setExpanded] = useState('userStatus')
 
@@ -111,8 +111,8 @@ export default function ConnectMainContent (props) {
                   {`${affect ? affect.characterCodes[0] : '?'} ${affect ? affect.name : '[none]'}`}
                 </Link>
               </Typography>
-              <Collapse in={affectSurveyOpen} timeout="auto" unmountOnExit>
-                <AffectSurveyList onDismissSurvey={() => { setAffectSurveyOpen(false) }} {...props} />
+              <Collapse in={!hidden && affectSurveyOpen} timeout="auto" unmountOnExit>
+                <AffectSurveyList noInteraction={hidden || retracted} onDismissSurvey={() => { setAffectSurveyOpen(false) }} {...props} />
               </Collapse>
             </Grid>
             <Grid item xs={12}>
@@ -147,6 +147,8 @@ export default function ConnectMainContent (props) {
 }
 
 ConnectMainContent.propTypes = {
+  hidden: PropTypes.bool.isRequired,
+  retracted: PropTypes.bool.isRequired,
   emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)).isRequired,
   currentStatus: PropTypes.shape(StatusObjectShape)
 }

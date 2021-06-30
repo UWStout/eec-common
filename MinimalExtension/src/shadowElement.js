@@ -1,4 +1,9 @@
 import { getLastAction} from './in-content.js'
+
+// Colorful logger
+import { makeLogger } from './Logger.js'
+const LOG = makeLogger('SHADOW Element', 'blue', 'white')
+
 class MinTestShadow extends HTMLElement {
   constructor () {
     super()
@@ -9,11 +14,32 @@ class MinTestShadow extends HTMLElement {
       delegatesFocus: true
     })
 
+    // Initialize the focus manager
+    this.lastAction = ''
+    this.setupFocusManager()
+
+    // Record when we lose focus
     this.addEventListener('blur', (e) => {
-      if (getLastAction() === 'type') {
+      LOG('blur event')
+      if (this.lastAction === 'type') {
+        LOG('PRE-FOCUSING')
         this.focus()
       }
-    });
+    })
+  }
+
+  setupFocusManager () {
+    // if not in input box, prevent typing?
+    jQuery(document).on("keydown mousedown", (e) => {  
+      if (e.type === 'mousedown'){
+        this.lastAction = 'click'
+      } else if (e.keyCode === 9) {
+        this.lastAction = 'tab'
+      } else if (e.type === 'keydown') {
+        this.lastAction = 'type'
+      }
+      LOG('Last Action:', this.lastAction)
+    })
   }
 
   appendToShadow(childElement) {

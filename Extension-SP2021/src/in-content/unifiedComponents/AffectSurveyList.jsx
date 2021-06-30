@@ -67,7 +67,7 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { affectPrivacy, onDismissSurvey, currentStatus, emojiList, updateCurrentAffect, updatePrivacy } = props
+  const { affectPrivacy, onDismissSurvey, currentStatus, emojiList, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
 
   const [searchText, setSearchText] = useState('')
@@ -165,6 +165,7 @@ export default function AffectSurveyList (props) {
           onClick={() => setExpanded('all')}
           onChange={onSearchTextChanged}
           placeholder={'search emojis'}
+          disabled={noInteraction}
         />
       </div>
       <List dense className={listRoot}>
@@ -232,6 +233,7 @@ AffectSurveyList.propTypes = {
   affectPrivacy: PropTypes.shape(PrivacyObjectShape).isRequired,
   updateCurrentAffect: PropTypes.func.isRequired,
   updatePrivacy: PropTypes.func.isRequired,
+  noInteraction: PropTypes.bool.isRequired,
   onDismissSurvey: PropTypes.func
 }
 
