@@ -59,7 +59,10 @@ const favList = [
 function searchFilter (fullList, searchText) {
   return fullList.filter((curItem) => {
     const text = searchText.toLowerCase()
-    return curItem.name.toLowerCase().includes(text) || curItem.description.toLowerCase().includes(searchText)
+    return (
+      (curItem.name && curItem.name.toLowerCase().includes(text)) ||
+      (curItem.description && curItem.description.toLowerCase().includes(searchText))
+    )
   })
 }
 
