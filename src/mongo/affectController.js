@@ -207,7 +207,7 @@ export async function insertAffectHistoryEntry (affectID, relatedID, isUser, isP
  * @param {String} dateEnd the Date to look before for other dates (can be null)
  * @return {Promise} Resolves only if the query was successful, rejects otherwise
  */
-export function listAffectHistory (affectLogID, dateStart, dateEnd) {
+export function listAffectHistory (userID, affectLogID, dateStart, dateEnd) {
   let findThis
   if (affectLogID) {
     findThis = { _id: new ObjectID(affectLogID) }
@@ -217,14 +217,34 @@ export function listAffectHistory (affectLogID, dateStart, dateEnd) {
     findThis = { timestamp: { $gte: new Date(dateStart) } }
   } else if (dateEnd) { // finds timestamps before a certain date (inclusive)
     findThis = { timestamp: { $lte: new Date(dateEnd) } }
+  } else if (userID) {
+    findThis = 
+      {$where: function() {
+        var deepIterate = function  (obj, value) {
+            for (var field in obj) {
+                if (obj[field] == value){
+                    return true;
+                }
+                var found = false;
+                if ( typeof obj[field] === 'object') {
+                    found = deepIterate(obj[field], value)
+                    if (found) { return true; }
+                }
+            }
+            return false;
+        };
+        return deepIterate(this, userID)
+      }}
   } else {
     findThis = {}
   }
+  // necessary for sorting by timestamp
+  const sort = {'_id': -1}
 
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('AffectHistory')
-        .find(findThis)
+        .find(findThis).sort(sort)
         .toArray(function (err, result) {
           if (err) {
             debug('Failed to find affect history')
