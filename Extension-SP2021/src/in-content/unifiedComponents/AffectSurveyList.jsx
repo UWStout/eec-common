@@ -57,6 +57,10 @@ const favList = [
 
 // Function to filter a list of affects by given text
 function searchFilter (fullList, searchText) {
+  if (!searchText || searchText === '') {
+    return fullList
+  }
+
   return fullList.filter((curItem) => {
     const text = searchText.toLowerCase()
     return (
