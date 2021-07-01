@@ -43,6 +43,22 @@ export function retrieveAffectList (context = 'none') {
   })
 }
 
+export function retrieveAffectHistoryList (context = 'none') {
+  return new Promise((resolve, reject) => {
+    // Retrieve the full affect History list
+    sendMessageToBackground(
+      // Read from the back-end server using AJAX
+      { type: 'ajax-getAffectHistory' }, // <- only the message type is needed
+      context,
+      'Mood history retrieval failed: ',
+
+      // Success and failure callbacks
+      (data) => { return resolve(data) },
+      () => { return reject(new Error('failed to retrieve mood history list')) }
+    )
+  })
+}
+
 export function retrieveMoodPrivacy (context = 'none') {
   return new Promise((resolve, reject) => {
     // Read the privacy settings from the background context

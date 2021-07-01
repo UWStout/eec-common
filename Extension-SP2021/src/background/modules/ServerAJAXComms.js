@@ -22,6 +22,10 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       promise = getEmojiList()
       break
 
+    case 'ajax-getAffectHistory':
+      promise = listAffectHistory(userData.id)
+      break
+
     case 'ajax-getUserStatus':
       if (!userData.id) {
         promise = Promise.reject(new Error('No user id available (not logged in?)'))
@@ -105,6 +109,22 @@ function getEmojiList () {
     requestPromise.catch((error) => { reject(error) })
   })
 }
+
+function listAffectHistory (userID) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/listHistory/userID/${userID}/affectLogID/dateStart/dateEnd`, config)
+
+    // Listen for server response or error
+    requestPromise.then((response) => {
+      const moodHistoryList = response.data
+      resolve(moodHistoryList)
+    })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
 
 function getUserStatus (userID) {
   return new Promise((resolve, reject) => {

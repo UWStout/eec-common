@@ -234,8 +234,9 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
 })
 
 // 31. test affectController's function listAffectHistory (IDsOnly = true, perPage = 25, page = 1, sortBy = '', sortOrder = 1, filterBy = '', filter = '')
-router.get('/listHistory/affectLogID/:affectLogID?/dateStart/:dateStart?/dateEnd/:dateEnd?', authenticateToken, async (req, res) => {
+router.get('/listHistory/userID/:userID?/affectLogID/:affectLogID?/dateStart/:dateStart?/dateEnd/:dateEnd?', authenticateToken, async (req, res) => {
   // Extract and check required fields
+  const userID = req.params.userID
   const affectLogID = req.params.affectLogID
   const dateStart = req.params.dateStart
   const dateEnd = req.params.dateEnd
@@ -247,12 +248,17 @@ router.get('/listHistory/affectLogID/:affectLogID?/dateStart/:dateStart?/dateEnd
     res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
+  // check if userID is a reasonable parameter for ObjectID
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
   // TO-DO: check if date is valid
 
   // attempt to get affect details
   debug('attempting to list affect history')
   try {
-    const affectLog = await DBAffect.listAffectHistory(affectLogID, dateStart, dateEnd)
+    const affectLog = await DBAffect.listAffectHistory(userID, affectLogID, dateStart, dateEnd)
     return res.json(affectLog)
   } catch (error) {
     debug('Failed to list affect history')

@@ -50,6 +50,7 @@ export default function ConnectComponent ({ context, emitter }) {
 
   // Data shared throughout the connect panel is managed here
   const [emojiList, setEmojiList] = useState([])
+  const [moodHistoryList, setMoodHistoryList] = useState([])
   const [currentStatus, setCurrentStatus] = useState(null)
   const [affectPrivacy, setAffectPrivacy] = useState(null)
 
@@ -63,6 +64,25 @@ export default function ConnectComponent ({ context, emitter }) {
       setEmojiList(filteredEmojis)
     } catch (err) {
       LOG.error('Failed to retrieve emoji list', err)
+    }
+  }
+
+  const getMoodHistoryList = async () => {
+    try {
+      const moodHistoryFromServer = await HELPER.retrieveAffectHistoryList(context)
+      // get only the 10 most recent moods from the affect list
+      // and make an array of only the affectIDs
+      const mostRecentMoodsWithDuplicates = moodHistoryFromServer
+        .map((item) => {
+          return item.affectID
+        })
+
+      const mostRecentMoods = [...new Set(mostRecentMoodsWithDuplicates)].splice(0, 10)
+
+      LOG('New Mood History List', mostRecentMoods)
+      setMoodHistoryList(mostRecentMoods)
+    } catch (err) {
+      LOG.error('Failed to retrieve mood history list', err)
     }
   }
 
@@ -119,6 +139,7 @@ export default function ConnectComponent ({ context, emitter }) {
   // Retrieve initial values for all state
   useEffect(() => {
     getEmojiList()
+    getMoodHistoryList()
     getPrivacy()
     getCurrentStatus()
   }, [])
@@ -136,6 +157,7 @@ export default function ConnectComponent ({ context, emitter }) {
         hidden={!mainPanelOpen}
         onHide={() => { setMainPanelOpen(false) }}
         emojiList={emojiList}
+        recentList={moodHistoryList}
         currentStatus={currentStatus}
         affectPrivacy={affectPrivacy}
         updateCurrentAffect={updateCurrentAffect}

@@ -42,11 +42,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // DEBUG: Test data for recent emojis
-const recentList = [
-  '6008928508baff43187a74f0',
-  '6008928508baff43187a7504',
-  '6008928508baff43187a74f8'
-]
+// const recentListTest = [
+//   '6008928508baff43187a74f0',
+//   '6008928508baff43187a7504',
+//   '6008928508baff43187a74f8'
+// ]
 
 // DEBUG: Test data for favorite emojis
 const favList = [
@@ -74,7 +74,7 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { affectPrivacy, onDismissSurvey, currentStatus, emojiList, updateCurrentAffect, updatePrivacy, noInteraction } = props
+  const { affectPrivacy, onDismissSurvey, currentStatus, recentList, emojiList, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
 
   const [searchText, setSearchText] = useState('')
@@ -236,6 +236,7 @@ export default function AffectSurveyList (props) {
 
 AffectSurveyList.propTypes = {
   emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)).isRequired,
+  recentList: PropTypes.arrayOf(PropTypes.string).isRequired,
   currentStatus: PropTypes.shape(StatusObjectShape).isRequired,
   affectPrivacy: PropTypes.shape(PrivacyObjectShape).isRequired,
   updateCurrentAffect: PropTypes.func.isRequired,
