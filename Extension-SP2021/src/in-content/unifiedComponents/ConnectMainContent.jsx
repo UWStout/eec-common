@@ -142,6 +142,15 @@ export default function ConnectMainContent (props) {
           <StatusListItem emojiList={emojiList} userEmail="berriers@uwstout.edu" />
         </AccordionDetails>
       </Accordion>
+      <Accordion square>
+        <AccordionSummary
+          aria-controls="team-culture"
+          id="team-culture"
+        >
+          <Typography className={heading}>Team Culture</Typography>
+        </AccordionSummary>
+      </Accordion>
+
     </div>
   )
 }
