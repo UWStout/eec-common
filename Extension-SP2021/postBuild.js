@@ -5,6 +5,12 @@ const path = require('path')
 // Copy-files library
 const copyFiles = require('copyfiles')
 
+// Is this a dev build?
+let _DEV_ = false
+if (process.argv.find((arg) => { return arg === 'dev' })) {
+  _DEV_ = true
+}
+
 // Local directories used below
 const distDir = path.join(path.resolve(__dirname), 'dist')
 const cssDir = path.join(distDir, 'css')
@@ -25,9 +31,8 @@ ensureExists([distDir, cssDir, htmlDir, imagesDir, libsDir])
 function errCB (err) { if (err) { console.error(err) } }
 
 // Essential Extension files
-fs.copyFile('./manifest.json', path.join(distDir, 'manifest.json'), errCB)
 fs.copyFile('./src/popup/popup.html', path.join(htmlDir, 'popup.html'), errCB)
-fs.copyFile('./images/icon-128.png', path.join(distDir, '128.png'), errCB)
+fs.copyFile(`./images/icon-${_DEV_ ? 'dev-' : ''}128.png`, path.join(distDir, '128.png'), errCB)
 copyFiles(['./images/*.png', imagesDir], true, errCB)
 
 // 3rd party library JS
