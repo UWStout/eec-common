@@ -147,6 +147,7 @@ export default function AffectSurveyList (props) {
         selected={(currentStatus.currentAffectID === favEmoji._id)}
       />
     ))
+  LOG(recentList)
 
   const recentEmojiElements = filteredEmojis
     .filter((curEmoji) => (
@@ -162,6 +163,11 @@ export default function AffectSurveyList (props) {
         selected={(currentStatus.currentAffectID === recentEmoji._id)}
       />
     ))
+  recentEmojiElements.sort(function (a, b) {
+    return recentList.indexOf(a.key) - recentList.indexOf(b.key)
+  })
+
+  LOG(recentEmojiElements)
 
   return (
     <div className={root}>
