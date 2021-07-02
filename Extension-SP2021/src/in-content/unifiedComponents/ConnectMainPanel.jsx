@@ -87,6 +87,10 @@ export default function ConnectMainPanel (props) {
   // Handle to the pending hide request (if any)
   const [hideTimeout, setHideTimeout] = useState(false)
 
+  // Handle to the pending retract request (if any)
+  const [retractTimeout, setRetractTimeout] = useState(false)
+  const [isRetracted, setIsRetracted] = useState(false)
+
   // Function for queueing a hide request
   const hide = (immediate) => {
     if (onHide && !hidden) {
@@ -107,14 +111,35 @@ export default function ConnectMainPanel (props) {
     }
   }
 
+  // Function for queueing a retract request
+  const retract = (immediate) => {
+    if (!isRetracted) {
+      if (immediate) {
+        setIsRetracted(true)
+      } else {
+        const timeoutHandle = setTimeout(() => { setIsRetracted(true) }, waitToHide / 2)
+        setRetractTimeout(timeoutHandle)
+      }
+    }
+  }
+
+  // Function for canceling a pending retract request
+  const cancelRetract = () => {
+    if (retractTimeout) {
+      clearTimeout(retractTimeout)
+      setRetractTimeout(false)
+      setIsRetracted(false)
+    }
+  }
+
   // Return the proper MUI elements
   return (
     <Paper
       data-testid="connectMainPanel"
       elevation={5}
-      className={`${paperRoot} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : panelRetracted)}`}
-      onMouseEnter={() => { setMouseIsOver(true); cancelHide() }}
-      onMouseLeave={() => { setMouseIsOver(false); hide(false) }}
+      className={`${paperRoot} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : (isRetracted ? panelRetracted : panelExpanded))}`}
+      onMouseEnter={() => { setMouseIsOver(true); cancelHide(); cancelRetract() }}
+      onMouseLeave={() => { setMouseIsOver(false); hide(false); retract(false) }}
     >
       <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
       <div className={boxStyle}>
