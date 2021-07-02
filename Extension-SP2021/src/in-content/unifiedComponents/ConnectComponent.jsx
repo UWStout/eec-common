@@ -70,14 +70,13 @@ export default function ConnectComponent ({ context, emitter }) {
   const getMoodHistoryList = async () => {
     try {
       const moodHistoryFromServer = await HELPER.retrieveAffectHistoryList(context)
-      // get only the 10 most recent moods from the affect list
-      // and make an array of only the affectIDs
+      // make an array of only the affectIDs
       const mostRecentMoodsWithDuplicates = moodHistoryFromServer
         .map((item) => {
           return item.affectID
         })
-
-      const mostRecentMoods = [...new Set(mostRecentMoodsWithDuplicates)].splice(0, 10)
+      // new Set gets rid of duplicates and slice gets the first 10
+      const mostRecentMoods = [...new Set(mostRecentMoodsWithDuplicates)].slice(0, 10)
 
       LOG('New Mood History List', mostRecentMoods)
       setMoodHistoryList(mostRecentMoods)
