@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import ConnectStatusPanel from './ConnectStatusPanel.jsx'
 import ConnectMainPanel from './ConnectMainPanel.jsx'
 import PersistentBubble from './PersistentBubble.jsx'
+import FeedbackDialogue from './FeedbackDialogue.jsx'
 
 import * as HELPER from './backgroundHelper.js'
 
@@ -48,12 +49,14 @@ export default function ConnectComponent ({ context, emitter }) {
 
   // Is the mouse over this component
   const [mainPanelOpen, setMainPanelOpen] = useState(false)
+  const [feedbackDialogueOpen, setFeedbackDialogueOpen] = useState(false)
 
   // Data shared throughout the connect panel is managed here
   const [emojiList, setEmojiList] = useState([])
   const [moodHistoryList, setMoodHistoryList] = useState([])
   const [currentStatus, setCurrentStatus] = useState(null)
   const [affectPrivacy, setAffectPrivacy] = useState(null)
+  const [contextIndicator, setContextIndicator] = useState(false)
 
   // Functions to retrieve state asynchronously
   const getEmojiList = async () => {
@@ -163,7 +166,12 @@ export default function ConnectComponent ({ context, emitter }) {
         updateCurrentAffect={updateCurrentAffect}
         updatePrivacy={updatePrivacy}
       />
-      <PersistentBubble style={{ fontSize: 50 }} />
+      <FeedbackDialogue hidden={!feedbackDialogueOpen} onHide={() => { setFeedbackDialogueOpen(false) }} />
+      <PersistentBubble
+        style={{ fontSize: 60 }}
+        openFeedbackDialogue={() => { setFeedbackDialogueOpen(!feedbackDialogueOpen) }}
+        isContextIndicated={contextIndicator}
+      />
     </div>
   )
 }
