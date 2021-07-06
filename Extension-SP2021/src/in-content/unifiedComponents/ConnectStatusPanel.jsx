@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
-import OpenArrow from './OpenArrow.jsx'
+import OpenArrow from './PanelOpenArrow.jsx'
 
 const useStyles = makeStyles((theme) => ({
   // Styling of the root paper element

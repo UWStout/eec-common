@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import ConnectStatusPanel from './ConnectStatusPanel.jsx'
 import ConnectMainPanel from './ConnectMainPanel.jsx'
+import PersistentBubble from './PersistentBubble.jsx'
 
 import * as HELPER from './backgroundHelper.js'
 
@@ -162,6 +163,7 @@ export default function ConnectComponent ({ context, emitter }) {
         updateCurrentAffect={updateCurrentAffect}
         updatePrivacy={updatePrivacy}
       />
+      <PersistentBubble style={{ fontSize: 50 }} />
     </div>
   )
 }
