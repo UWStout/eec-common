@@ -56,7 +56,7 @@ export default function ConnectComponent ({ context, emitter }) {
   const [moodHistoryList, setMoodHistoryList] = useState([])
   const [currentStatus, setCurrentStatus] = useState(null)
   const [affectPrivacy, setAffectPrivacy] = useState(null)
-  const [contextIndicator, setContextIndicator] = useState(false)
+  const [contextIndicator, setContextIndicator] = useState(true)
 
   // Functions to retrieve state asynchronously
   const getEmojiList = async () => {
@@ -149,26 +149,27 @@ export default function ConnectComponent ({ context, emitter }) {
 
   // Main render
   return (
-    <div className={(context === 'msTeams' ? rootTeams : rootDiscord)}>
-      <ConnectStatusPanel
-        hidden={mainPanelOpen}
-        onHide={() => { setMainPanelOpen(true) }}
-        currentStatus={currentStatus}
-        affectPrivacy={affectPrivacy}
-      />
-      <ConnectMainPanel
-        hidden={!mainPanelOpen}
-        onHide={() => { setMainPanelOpen(false) }}
-        emojiList={emojiList}
-        recentList={moodHistoryList}
-        currentStatus={currentStatus}
-        affectPrivacy={affectPrivacy}
-        updateCurrentAffect={updateCurrentAffect}
-        updatePrivacy={updatePrivacy}
-      />
-      <FeedbackDialogue hidden={!feedbackDialogueOpen} onHide={() => { setFeedbackDialogueOpen(false) }} />
+    <div>
+      <div className={(context === 'msTeams' ? rootTeams : rootDiscord)}>
+        <ConnectStatusPanel
+          hidden={mainPanelOpen}
+          onHide={() => { setMainPanelOpen(true) }}
+          currentStatus={currentStatus}
+          affectPrivacy={affectPrivacy}
+        />
+        <ConnectMainPanel
+          hidden={!mainPanelOpen}
+          onHide={() => { setMainPanelOpen(false) }}
+          emojiList={emojiList}
+          recentList={moodHistoryList}
+          currentStatus={currentStatus}
+          affectPrivacy={affectPrivacy}
+          updateCurrentAffect={updateCurrentAffect}
+          updatePrivacy={updatePrivacy}
+        />
+        {/* <FeedbackDialogue hidden={!feedbackDialogueOpen} onHide={() => { setFeedbackDialogueOpen(false) }} /> */}
+      </div>
       <PersistentBubble
-        style={{ fontSize: 60 }}
         openFeedbackDialogue={() => { setFeedbackDialogueOpen(!feedbackDialogueOpen) }}
         isContextIndicated={contextIndicator}
       />
