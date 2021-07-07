@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { makeStyles, withStyles } from '@material-ui/core/styles'
-import { SvgIcon, IconButton, Typography, Tooltip } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { SvgIcon, IconButton, Typography, Tooltip, Paper } from '@material-ui/core'
+
+import FeedbackDialogue from './FeedbackDialogue'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,14 +16,19 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 16,
     color: 'white',
     position: 'absolute',
-    bottom: theme.spacing(7.5),
-    right: theme.spacing(5.5)
+    bottom: theme.spacing(5),
+    right: theme.spacing(2.3)
+  },
+  tooltip: {
+    backgroundColor: 'white',
+    zIndex: 100
   }
 }))
-
 function PersistentBubble (props) {
   const { openFeedbackDialogue, isContextIndicated } = props
-  const { root, contextIndicator } = useStyles()
+  const classes = useStyles()
+
+  const [isHover, setIsHover] = useState(false)
 
   const clickCallback = () => {
     if (openFeedbackDialogue) { openFeedbackDialogue() }
@@ -29,8 +36,20 @@ function PersistentBubble (props) {
 
   return (
     <div>
-      <Tooltip title="feedback dialogue" aria-label="open Karuna feedback dialogue" arrow>
-        <IconButton onClick={clickCallback} className={root} aria-label="open feedback dialogue">
+      <Tooltip
+        open={isHover}
+        title={
+          <div style={{ backgroundColor: 'white', padding: 8, borderRadius: 4 }}>
+            Karuna Bubble
+          </div>
+        } aria-label="open Karuna feedback dialogue" arrow
+      >
+        <IconButton 
+          onClick={clickCallback} 
+          className={classes.root} 
+          aria-label="open feedback dialogue"
+          onMouseOver={() => setIsHover(true)}
+          >
           <SvgIcon style={{ fontSize: 60 }}>
             <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -46,15 +65,15 @@ function PersistentBubble (props) {
               </g>
             </svg>
           </SvgIcon>
+          {isContextIndicated
+            ? <div className={classes.contextIndicator}>
+              <Typography>
+                { 'NVC' }
+              </Typography>
+              </div>
+            : null}
         </IconButton>
       </Tooltip>
-      {isContextIndicated
-        ? <div className={contextIndicator}>
-          <Typography variant="h9">
-            { 'NVC' }
-          </Typography>
-        </div>
-        : null}
     </div>
   )
 }

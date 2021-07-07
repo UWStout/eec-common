@@ -31,7 +31,7 @@ function FeedbackDialogue (props) {
   return (
     <Grid container className={`${root} ${hidden ? feedbackHidden : null}`} >
       <Grid item>
-        <Paper className={paperRoot}>
+        <Paper className={paperRoot} {...props}>
           <Grid container>
             <Grid item>
               <Tooltip>
