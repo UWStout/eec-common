@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography, Grid, IconButton } from '@material-ui/core'
+
+import { Request, Need, Feeling, Observation } from './NVCelements.jsx'
 
 const useStyles = makeStyles((theme) => ({
   rootStyle: {
@@ -18,18 +20,22 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function FeedbackDialogueDetails (props) {
+  const { title } = props
   const { rootStyle, itemStyle } = useStyles()
 
   return (
-    <Grid container spacing={1} className={rootStyle}>
-      <Grid item xs={12} className={itemStyle}>
+    <Grid container spacing={1} >
+      <Grid item xs={12} className={rootStyle}>
         <Typography aria-label='title' variant='h6'>
-          {'Karuna Bubble'}
+          {title}
         </Typography>
       </Grid>
       <Grid item xs={12} className={itemStyle}>
-        <Typography aria-label='title' variant='body'>
-          {'Karuna Bubble'}
+        <Typography aria-label='title' variant='body2'>
+          {title === 'Observation' ? <Observation /> : null}
+          {title === 'Request' ? <Request /> : null}
+          {title === 'Need' ? <Need /> : null}
+          {title === 'Feeling' ? <Feeling /> : null}
         </Typography>
       </Grid>
     </Grid>
@@ -37,7 +43,7 @@ function FeedbackDialogueDetails (props) {
 }
 
 FeedbackDialogueDetails.propTypes = {
-
+  title: PropTypes.string.isRequired
 }
 
 export default FeedbackDialogueDetails

@@ -18,7 +18,7 @@ const Tooltip = withStyles((theme) => ({
     border: '1px solid white',
     color: '#4A4A4A',
     fontSize: 12,
-    width: 210
+    maxWidth: 210
   }
 }))(MuiTooltip)
 
@@ -36,6 +36,7 @@ export default function FeedbackDialogue (props) {
 
   return (
     <Tooltip
+      interactive
       placement='top-end'
       open={!hidden}
       title={<FeedbackDialogueContent />}
@@ -49,7 +50,6 @@ export default function FeedbackDialogue (props) {
 
 FeedbackDialogue.propTypes = {
   hidden: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
   children: PropTypes.node,
   offset: PropTypes.string
 }
