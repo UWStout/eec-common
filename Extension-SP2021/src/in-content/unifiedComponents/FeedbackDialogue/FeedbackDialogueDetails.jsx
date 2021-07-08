@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Typography, Grid, IconButton } from '@material-ui/core'
+import { Typography, Grid } from '@material-ui/core'
 
 import { Request, Need, Feeling, Observation } from './NVCelements.jsx'
 
