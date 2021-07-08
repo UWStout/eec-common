@@ -168,7 +168,7 @@ export default function ConnectComponent ({ context, emitter }) {
           updatePrivacy={updatePrivacy}
         />
       </div>
-      <FeedbackDialogue hidden={!feedbackDialogueOpen} onHide={() => { setFeedbackDialogueOpen(!feedbackDialogueOpen) }}>
+      <FeedbackDialogue hidden={!feedbackDialogueOpen}>
         <PersistentBubble
           isContextIndicated={contextIndicator}
           openFeedbackDialogue={() => { setFeedbackDialogueOpen(!feedbackDialogueOpen) }}

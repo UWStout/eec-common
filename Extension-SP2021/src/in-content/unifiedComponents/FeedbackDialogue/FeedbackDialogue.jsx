@@ -23,7 +23,7 @@ const Tooltip = withStyles((theme) => ({
 }))(MuiTooltip)
 
 export default function FeedbackDialogue (props) {
-  const { openFeedbackDialogue, children, offset, ...restProps } = props
+  const { hidden, children, offset, ...restProps } = props
 
   // Customization of the popper for our crazy setup
   const newPopperProps = {
@@ -37,7 +37,7 @@ export default function FeedbackDialogue (props) {
   return (
     <Tooltip
       placement='top-end'
-      open
+      open={!hidden}
       title={<FeedbackDialogueContent />}
       PopperProps={newPopperProps}
       arrow
@@ -48,7 +48,8 @@ export default function FeedbackDialogue (props) {
 }
 
 FeedbackDialogue.propTypes = {
-  openFeedbackDialogue: PropTypes.func.isRequired,
+  hidden: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired,
   children: PropTypes.node,
   offset: PropTypes.string
 }
