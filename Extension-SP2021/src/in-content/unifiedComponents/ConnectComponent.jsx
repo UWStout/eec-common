@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import ConnectStatusPanel from './ConnectStatusPanel.jsx'
 import ConnectMainPanel from './ConnectMainPanel.jsx'
 import { PersistentBubble } from './PersistentBubble.jsx'
-import FeedbackDialogue from './FeedbackDialogue.jsx'
+import FeedbackDialogue from './FeedbackDialogue/FeedbackDialogue.jsx'
 
 import * as HELPER from './backgroundHelper.js'
 

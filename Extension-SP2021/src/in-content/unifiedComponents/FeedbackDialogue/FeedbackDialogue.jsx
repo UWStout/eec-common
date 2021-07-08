@@ -4,18 +4,21 @@ import PropTypes from 'prop-types'
 import { Tooltip as MuiTooltip } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
+import FeedbackDialogueContent from './FeedbackDialogueContent.jsx'
+
 const Tooltip = withStyles((theme) => ({
   arrow: {
     '&:before': {
-      border: '1px solid #E6E8ED'
+      border: '1px solid white'
     },
     color: theme.palette.common.white
   },
   tooltip: {
     backgroundColor: theme.palette.common.white,
-    border: '1px solid #E6E8ED',
+    border: '1px solid white',
     color: '#4A4A4A',
-    fontSize: 11
+    fontSize: 12,
+    width: 210
   }
 }))(MuiTooltip)
 
@@ -32,7 +35,13 @@ export default function FeedbackDialogue (props) {
   }
 
   return (
-    <Tooltip placement='top' open title={'Karuna'} PopperProps={newPopperProps} arrow>
+    <Tooltip
+      placement='top-end'
+      open
+      title={<FeedbackDialogueContent />}
+      PopperProps={newPopperProps}
+      arrow
+    >
       {children}
     </Tooltip>
   )
