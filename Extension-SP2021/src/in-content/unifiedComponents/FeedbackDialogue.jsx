@@ -1,56 +1,50 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Paper, Typography, Grid, Tooltip } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { Tooltip as MuiTooltip } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
 
-import AffectSurveyList from './AffectSurveyList.jsx'
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    position: 'absolute',
-    bottom: '-90vh',
-    right: '-1vw',
-    // Show a pointer hand cursor to encourage clicking
-    cursor: 'pointer'
+const Tooltip = withStyles((theme) => ({
+  arrow: {
+    '&:before': {
+      border: '1px solid #E6E8ED'
+    },
+    color: theme.palette.common.white
   },
-
-  paperRoot: {
-    padding: theme.spacing(2)
-  },
-
-  // Style when the panel is hidden
-  feedbackHidden: {
-    right: -theme.spacing(18)
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    border: '1px solid #E6E8ED',
+    color: '#4A4A4A',
+    fontSize: 11
   }
-}))
+}))(MuiTooltip)
 
-function FeedbackDialogue (props) {
-  const { hidden, onHide } = props
-  const { paperRoot, root, feedbackHidden } = useStyles()
+export default function FeedbackDialogue (props) {
+  const { openFeedbackDialogue, children, offset, ...restProps } = props
+
+  // Customization of the popper for our crazy setup
+  const newPopperProps = {
+    disablePortal: true,
+    modifiers: {
+      offset: { offset },
+      flip: { enabled: false }
+    }
+  }
+
   return (
-    <Grid container className={`${root} ${hidden ? feedbackHidden : null}`} >
-      <Grid item>
-        <Paper className={paperRoot} {...props}>
-          <Grid container>
-            <Grid item>
-              <Tooltip>
-                <Typography aria-label='title' variant='h6'>
-                  {'Karuna Bubble'}
-                </Typography>
-                {/* <AffectSurveyList /> */}
-              </Tooltip>
-            </Grid>
-          </Grid>
-        </Paper>
-      </Grid>
-    </Grid>
+    <Tooltip placement='top' open title={'Karuna'} PopperProps={newPopperProps} arrow>
+      {children}
+    </Tooltip>
   )
 }
 
 FeedbackDialogue.propTypes = {
-  hidden: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired
+  openFeedbackDialogue: PropTypes.func.isRequired,
+  children: PropTypes.node,
+  offset: PropTypes.string
 }
 
-export default FeedbackDialogue
+FeedbackDialogue.defaultProps = {
+  children: null,
+  offset: '-10, -20'
+}

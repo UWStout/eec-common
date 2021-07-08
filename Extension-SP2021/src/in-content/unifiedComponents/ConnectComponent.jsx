@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import ConnectStatusPanel from './ConnectStatusPanel.jsx'
 import ConnectMainPanel from './ConnectMainPanel.jsx'
-import PersistentBubble from './PersistentBubble.jsx'
+import { PersistentBubble } from './PersistentBubble.jsx'
 import FeedbackDialogue from './FeedbackDialogue.jsx'
 
 import * as HELPER from './backgroundHelper.js'
@@ -167,12 +167,13 @@ export default function ConnectComponent ({ context, emitter }) {
           updateCurrentAffect={updateCurrentAffect}
           updatePrivacy={updatePrivacy}
         />
-        {/* <FeedbackDialogue hidden={!feedbackDialogueOpen} onHide={() => { setFeedbackDialogueOpen(false) }} /> */}
       </div>
-      <PersistentBubble
-        openFeedbackDialogue={() => { setFeedbackDialogueOpen(!feedbackDialogueOpen) }}
-        isContextIndicated={contextIndicator}
-      />
+      <FeedbackDialogue hidden={!feedbackDialogueOpen} onHide={() => { setFeedbackDialogueOpen(!feedbackDialogueOpen) }}>
+        <PersistentBubble
+          isContextIndicated={contextIndicator}
+          openFeedbackDialogue={() => { setFeedbackDialogueOpen(!feedbackDialogueOpen) }}
+        />
+      </FeedbackDialogue>
     </div>
   )
 }
