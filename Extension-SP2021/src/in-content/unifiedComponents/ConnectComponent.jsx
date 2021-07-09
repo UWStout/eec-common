@@ -49,7 +49,9 @@ export default function ConnectComponent ({ context, emitter }) {
 
   // Is the mouse over this component
   const [mainPanelOpen, setMainPanelOpen] = useState(false)
+
   const [feedbackDialogueOpen, setFeedbackDialogueOpen] = useState(false)
+  const [feedbackHideTimeout, setFeedbackHideTimeout] = useState(false)
 
   // Data shared throughout the connect panel is managed here
   const [emojiList, setEmojiList] = useState([])
@@ -168,10 +170,16 @@ export default function ConnectComponent ({ context, emitter }) {
           updatePrivacy={updatePrivacy}
         />
       </div>
-      <FeedbackDialogue hidden={!feedbackDialogueOpen} onHide={() => { setFeedbackDialogueOpen(false) }}>
+      <FeedbackDialogue
+        setHideTimeout={setFeedbackHideTimeout}
+        hideTimeout={feedbackHideTimeout}
+        hidden={!feedbackDialogueOpen} onHide={() => { setFeedbackDialogueOpen(false) }}>
         <PersistentBubble
           isContextIndicated={contextIndicator}
-          openFeedbackDialogue={() => { setFeedbackDialogueOpen(!feedbackDialogueOpen) }}
+          hidden={!feedbackDialogueOpen}
+          setOpen={setFeedbackDialogueOpen}
+          hideTimeout={feedbackHideTimeout}
+          setHideTimeout={setFeedbackHideTimeout}
         />
       </FeedbackDialogue>
     </div>

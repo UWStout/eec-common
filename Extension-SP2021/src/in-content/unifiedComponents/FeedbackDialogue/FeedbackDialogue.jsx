@@ -51,6 +51,7 @@ export default function FeedbackDialogue (props) {
 }
 
 FeedbackDialogue.propTypes = {
+  hidden: PropTypes.bool.isRequired,
   children: PropTypes.node,
   offset: PropTypes.string
 }

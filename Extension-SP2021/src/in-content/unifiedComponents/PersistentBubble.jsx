@@ -18,18 +18,48 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(2.3)
   }
 }))
-export const PersistentBubble = React.forwardRef(function PersistentBubble(props, ref) {
-  const { isContextIndicated, openFeedbackDialogue } = props
+export const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref) {
+  const { hidden, hideTimeout, setHideTimeout, isContextIndicated, setOpen } = props
   const classes = useStyles()
 
+  // Function for queueing a hide request
+  const hide = (immediate) => {
+    console.log('hide called')
+    if (setOpen) {
+      if (immediate) {
+        setOpen(false)
+      } else {
+        const timeoutHandle = setTimeout(() => { setOpen(false) }, 3000)
+        setHideTimeout(timeoutHandle)
+      }
+    }
+  }
+
   const clickCallback = () => {
-    if (openFeedbackDialogue) { openFeedbackDialogue() }
+    if (setOpen) {
+      cancelHide()
+      setOpen(hidden)
+    }
+    if (!hidden) {
+      hide(false)
+    }
+  }
+
+  // Function for canceling a pending hide request
+  const cancelHide = () => {
+    console.log('cancel hide called')
+    if (hideTimeout) {
+      clearTimeout(hideTimeout)
+      setHideTimeout(false)
+    }
   }
 
   return (
     <IconButton
       ref={ref}
       onClick={clickCallback}
+      onMouseEnter={cancelHide}
+      onMouseLeave={() => hide(false)}
       className={classes.root}
       aria-label="open feedback dialogue"
     >

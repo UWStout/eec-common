@@ -9,18 +9,11 @@ import FeedbackDialogueDetails from './FeedbackDialogueDetails.jsx'
 function FeedbackDialogueContent (props) {
   const [seeDetails, setSeeDetails] = useState(false)
   const [title, setTitle] = useState('')
-  const { hidden, onHide, waitToHide } = props
-  
-  // Handle to the pending hide request (if any)
-  const [hideTimeout, setHideTimeout] = useState(false)
-
-  useEffect(() => {
-    const timeoutHandle = setTimeout(() => { onHide() }, waitToHide)
-    setHideTimeout(timeoutHandle)
-  }, [hidden])
+  const { hideTimeout, setHideTimeout, hidden, onHide, waitToHide } = props
 
   // Function for queueing a hide request
   const hide = (immediate) => {
+    console.log('hide called')
     if (onHide && !hidden) {
       if (immediate) {
         onHide()
@@ -33,6 +26,7 @@ function FeedbackDialogueContent (props) {
 
   // Function for canceling a pending hide request
   const cancelHide = () => {
+    console.log('cancel hide called')
     if (hideTimeout) {
       clearTimeout(hideTimeout)
       setHideTimeout(false)
