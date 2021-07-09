@@ -52,6 +52,10 @@ export default function ConnectComponent ({ context, emitter }) {
 
   const [feedbackDialogueOpen, setFeedbackDialogueOpen] = useState(false)
   const [feedbackHideTimeout, setFeedbackHideTimeout] = useState(false)
+  const [seeFeedbackDetails, setSeeFeedbackDetails] = useState(false)
+  const [seeFeedbackAffectSurvey, setSeeFeedbackAffectSurvey] = useState(false)
+  const [seeFeedbackObservation, setSeeFeedbackObservation] = useState(true)
+  const [feedbackTitle, setFeedbackTitle] = useState('karuna')
 
   // Data shared throughout the connect panel is managed here
   const [emojiList, setEmojiList] = useState([])
@@ -141,6 +145,25 @@ export default function ConnectComponent ({ context, emitter }) {
     }
   }
 
+  const hideFeedbackDialogue = (immediate) => {
+    if (feedbackDialogueOpen) {
+      if (immediate) {
+        setFeedbackDialogueOpen(false)
+      } else {
+        const timeoutHandle = setTimeout(() => { setFeedbackDialogueOpen(false) }, 3000)
+        setFeedbackHideTimeout(timeoutHandle)
+      }
+    }
+  }
+
+  // Function for canceling a pending hide request
+  const cancelHideFeedbackDialogue = () => {
+    if (feedbackHideTimeout) {
+      clearTimeout(feedbackHideTimeout)
+      setFeedbackHideTimeout(false)
+    }
+  }
+
   // Retrieve initial values for all state
   useEffect(() => {
     getEmojiList()
@@ -171,15 +194,18 @@ export default function ConnectComponent ({ context, emitter }) {
         />
       </div>
       <FeedbackDialogue
-        setHideTimeout={setFeedbackHideTimeout}
-        hideTimeout={feedbackHideTimeout}
-        hidden={!feedbackDialogueOpen} onHide={() => { setFeedbackDialogueOpen(false) }}>
+        emojiList={emojiList} recentList={moodHistoryList} currentStatus={currentStatus} affectPrivacy={affectPrivacy} updateCurrentAffect={updateCurrentAffect} updatePrivacy={updatePrivacy}
+        hidden={!feedbackDialogueOpen} onHide={hideFeedbackDialogue} cancelHide={cancelHideFeedbackDialogue}
+        seeDetails={seeFeedbackDetails} setSeeDetails={setSeeFeedbackDetails}
+        seeAffectSurvey={seeFeedbackAffectSurvey} setSeeAffectSurvey={setSeeFeedbackAffectSurvey}
+        seeObservations={seeFeedbackObservation} setSeeObservations={setSeeFeedbackObservation}
+        title={feedbackTitle} setTitle={setFeedbackTitle}
+      >
         <PersistentBubble
           isContextIndicated={contextIndicator}
           hidden={!feedbackDialogueOpen}
           setOpen={setFeedbackDialogueOpen}
-          hideTimeout={feedbackHideTimeout}
-          setHideTimeout={setFeedbackHideTimeout}
+          onHide={hideFeedbackDialogue} cancelHide={cancelHideFeedbackDialogue}
         />
       </FeedbackDialogue>
     </div>

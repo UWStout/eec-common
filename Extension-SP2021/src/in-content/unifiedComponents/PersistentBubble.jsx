@@ -19,21 +19,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 export const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref) {
-  const { hidden, hideTimeout, setHideTimeout, isContextIndicated, setOpen } = props
+  const { hidden, onHide, cancelHide, isContextIndicated, setOpen } = props
   const classes = useStyles()
-
-  // Function for queueing a hide request
-  const hide = (immediate) => {
-    console.log('hide called')
-    if (setOpen) {
-      if (immediate) {
-        setOpen(false)
-      } else {
-        const timeoutHandle = setTimeout(() => { setOpen(false) }, 3000)
-        setHideTimeout(timeoutHandle)
-      }
-    }
-  }
 
   const clickCallback = () => {
     if (setOpen) {
@@ -41,16 +28,7 @@ export const PersistentBubble = React.forwardRef(function PersistentBubble (prop
       setOpen(hidden)
     }
     if (!hidden) {
-      hide(false)
-    }
-  }
-
-  // Function for canceling a pending hide request
-  const cancelHide = () => {
-    console.log('cancel hide called')
-    if (hideTimeout) {
-      clearTimeout(hideTimeout)
-      setHideTimeout(false)
+      onHide(false)
     }
   }
 
@@ -59,7 +37,7 @@ export const PersistentBubble = React.forwardRef(function PersistentBubble (prop
       ref={ref}
       onClick={clickCallback}
       onMouseEnter={cancelHide}
-      onMouseLeave={() => hide(false)}
+      onMouseLeave={() => onHide(false)}
       className={classes.root}
       aria-label="open feedback dialogue"
     >
@@ -88,3 +66,15 @@ export const PersistentBubble = React.forwardRef(function PersistentBubble (prop
     </IconButton>
   )
 })
+
+PersistentBubble.propTypes = {
+  hidden: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired,
+  cancelHide: PropTypes.func.isRequired,
+  isContextIndicated: PropTypes.bool,
+  setOpen: PropTypes.func.isRequired
+}
+
+PersistentBubble.defaultProps = {
+  isContextIndicated: false
+}

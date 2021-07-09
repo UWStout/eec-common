@@ -21,12 +21,13 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function FeedbackDialogueObservation (props) {
-  const { setTitle, setSeeDetails } = props
+  const { setTitle, setSeeDetails, setSeeObservations } = props
   const classes = useStyles()
 
   function openDetails (title) {
     setTitle(title)
     setSeeDetails(true)
+    setSeeObservations(false)
     window.dispatchEvent(new CustomEvent('resize'))
   }
 
@@ -37,12 +38,12 @@ function FeedbackDialogueObservation (props) {
           {'I observe the following NVC elements:'}
         </Typography>
       </Grid>
-      <Grid item className={classes.observationItem}>
+      <Grid item className={`${classes.observationItem} ${classes.clickable}`}>
         <ul >
-          <li className={classes.clickable} onClick={() => { openDetails('Observation') }}>Observation</li>
-          <li className={classes.clickable} onClick={() => { openDetails('Feeling') }}>Feeling</li>
-          <li className={classes.clickable} onClick={() => { openDetails('Need') }}>Need</li>
-          <li className={classes.clickable} onClick={() => { openDetails('Request') }}>Request</li>
+          <li onClick={() => { openDetails('Observation') }}>Observation</li>
+          <li onClick={() => { openDetails('Feeling') }}>Feeling</li>
+          <li onClick={() => { openDetails('Need') }}>Need</li>
+          <li onClick={() => { openDetails('Request') }}>Request</li>
         </ul>
         <p>
           What other elements could I use?

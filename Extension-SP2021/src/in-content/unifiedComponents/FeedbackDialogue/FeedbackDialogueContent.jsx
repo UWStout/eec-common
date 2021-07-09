@@ -5,40 +5,17 @@ import { Grid } from '@material-ui/core'
 
 import FeedbackDialogueObservation from './FeedbackDialogueObservation.jsx'
 import FeedbackDialogueDetails from './FeedbackDialogueDetails.jsx'
+import AffectSurveyList from '../AffectSurveyList.jsx'
 
 function FeedbackDialogueContent (props) {
-  const [seeDetails, setSeeDetails] = useState(false)
-  const [title, setTitle] = useState('')
-  const { hideTimeout, setHideTimeout, hidden, onHide, waitToHide } = props
-
-  // Function for queueing a hide request
-  const hide = (immediate) => {
-    console.log('hide called')
-    if (onHide && !hidden) {
-      if (immediate) {
-        onHide()
-      } else {
-        const timeoutHandle = setTimeout(() => { onHide() }, waitToHide)
-        setHideTimeout(timeoutHandle)
-      }
-    }
-  }
-
-  // Function for canceling a pending hide request
-  const cancelHide = () => {
-    console.log('cancel hide called')
-    if (hideTimeout) {
-      clearTimeout(hideTimeout)
-      setHideTimeout(false)
-    }
-  }
+  const { title, setTitle, setSeeDetails, setSeeAffectSurvey, setSeeObservations, seeAffectSurvey, seeObservations, seeDetails, onHide, cancelHide } = props
 
   return (
     <Grid container spacing={1} >
-      <Grid item onMouseEnter={cancelHide} onMouseLeave={() => hide(false)}>
-        {seeDetails
-          ? <FeedbackDialogueDetails title={title} />
-          : <FeedbackDialogueObservation setTitle={setTitle} setSeeDetails={setSeeDetails} />}
+      <Grid item onMouseEnter={cancelHide} onMouseLeave={() => onHide(false)}>
+        {seeObservations ? <FeedbackDialogueObservation setTitle={setTitle} setSeeObservations={setSeeObservations} setSeeDetails={setSeeDetails} /> : null}
+        {seeDetails ? <FeedbackDialogueDetails title={title} setSeeObservations={setSeeObservations} setSeeDetails={setSeeDetails} /> : null}
+        {seeAffectSurvey ? <AffectSurveyList {...props} /> : null}
       </Grid>
     </Grid>
   )
@@ -47,12 +24,16 @@ function FeedbackDialogueContent (props) {
 FeedbackDialogueContent.propTypes = {
   hidden: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
-  /** Milliseconds to wait before hiding the panel */
-  waitToHide: PropTypes.number
+  cancelHide: PropTypes.func.isRequired,
+  seeAffectSurvey: PropTypes.bool,
+  seeObservations: PropTypes.bool,
+  seeDetails: PropTypes.bool
 }
 
 FeedbackDialogueContent.defaultProps = {
-  waitToHide: 3000
+  seeObservations: true,
+  seeAffectSurvey: false,
+  seeDetails: false
 }
 
 export default FeedbackDialogueContent

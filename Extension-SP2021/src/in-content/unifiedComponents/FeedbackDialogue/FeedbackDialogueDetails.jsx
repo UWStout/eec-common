@@ -16,12 +16,21 @@ const useStyles = makeStyles((theme) => ({
   itemStyle: {
     display: 'flex',
     alignItems: 'center'
+  },
+  clickable: {
+    color: '#4fa6ff',
+    cursor: 'pointer'
   }
 }))
 
 function FeedbackDialogueDetails (props) {
-  const { title } = props
-  const { rootStyle, itemStyle } = useStyles()
+  const { title, setSeeDetails, setSeeObservations } = props
+  const { rootStyle, itemStyle, clickable } = useStyles()
+
+  function openObservations () {
+    setSeeDetails(false)
+    setSeeObservations(true)
+  }
 
   return (
     <Grid container spacing={1} >
@@ -35,6 +44,9 @@ function FeedbackDialogueDetails (props) {
         {title === 'Request' ? <Request /> : null}
         {title === 'Need' ? <Need /> : null}
         {title === 'Feeling' ? <Feeling /> : null}
+      </Grid>
+      <Grid item xs={12} spacing={1} className={clickable}>
+        <p onClick={openObservations}>go back to NVC elements</p>
       </Grid>
     </Grid>
   )
