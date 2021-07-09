@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography, Grid } from '@material-ui/core'
 
-import { Request, Need, Feeling, Observation } from './NVCelements.jsx'
+import { Request, Need, Feeling, Observation } from './NVCElements.jsx'
 
 const useStyles = makeStyles((theme) => ({
   rootStyle: {
@@ -24,12 +24,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function FeedbackDialogueDetails (props) {
-  const { title, setSeeDetails, setSeeObservations } = props
+  const { title, changeDisplayedFeedback } = props
   const { rootStyle, itemStyle, clickable } = useStyles()
 
+  // Return back to observations feedback
   function openObservations () {
-    setSeeDetails(false)
-    setSeeObservations(true)
+    changeDisplayedFeedback('observations')
   }
 
   return (
@@ -45,15 +45,16 @@ function FeedbackDialogueDetails (props) {
         {title === 'Need' ? <Need /> : null}
         {title === 'Feeling' ? <Feeling /> : null}
       </Grid>
-      <Grid item xs={12} spacing={1} className={clickable}>
-        <p onClick={openObservations}>go back to NVC elements</p>
+      <Grid item xs={12} className={clickable}>
+        <p onClick={openObservations}>{'go back to NVC elements'}</p>
       </Grid>
     </Grid>
   )
 }
 
 FeedbackDialogueDetails.propTypes = {
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  changeDisplayedFeedback: PropTypes.func.isRequired
 }
 
 export default FeedbackDialogueDetails

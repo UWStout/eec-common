@@ -21,3 +21,26 @@ export const PrivacyObjectShape = {
   private: PropTypes.bool,
   prompt: PropTypes.bool
 }
+
+/** Default objects to use when none are available */
+export const DEFAULT = {
+  AffectObjectShape: {
+    _id: '',
+    name: '',
+    description: '',
+    characterCodes: ['X'],
+    related: [],
+    active: false
+  },
+
+  StatusObjectShape: {
+    currentAffectID: '',
+    collaboration: false,
+    timeToRespond: -1
+  },
+
+  PrivacyObjectShape: {
+    private: true,
+    prompt: true
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 import { Tooltip as MuiTooltip } from '@material-ui/core'
@@ -25,7 +25,8 @@ const Tooltip = withStyles((theme) => ({
 }))(MuiTooltip)
 
 export default function FeedbackDialogue (props) {
-  const { hidden, children, offset, ...restProps } = props
+  // Deconstruct the props
+  const { children, offset, hidden, ...restProps } = props
 
   // Customization of the popper for our crazy setup
   const newPopperProps = {

@@ -5,7 +5,7 @@ import { Typography, Grid, Avatar } from '@material-ui/core'
 
 import CustomTooltip from './CustomTooltip.jsx'
 
-import { StatusObjectShape, AffectObjectShape } from './dataTypeShapes.js'
+import { StatusObjectShape, AffectObjectShape } from '../dataTypeShapes.js'
 
 export default function StatusListItem (props) {
   const { userEmail, emojiList, currentStatus } = props

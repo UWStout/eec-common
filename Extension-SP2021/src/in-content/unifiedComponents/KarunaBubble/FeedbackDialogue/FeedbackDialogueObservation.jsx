@@ -20,15 +20,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function FeedbackDialogueObservation (props) {
-  const { setTitle, setSeeDetails, setSeeObservations } = props
+export default function FeedbackDialogueObservation (props) {
+  // Deconstruct props
+  const { setTitle, changeDisplayedFeedback } = props
+
+  // Build style classnames
   const classes = useStyles()
 
+  // Callback to switch feedback to 'details' of some sort
   function openDetails (title) {
     setTitle(title)
-    setSeeDetails(true)
-    setSeeObservations(false)
-    window.dispatchEvent(new CustomEvent('resize'))
+    changeDisplayedFeedback('details')
   }
 
   return (
@@ -40,15 +42,15 @@ function FeedbackDialogueObservation (props) {
       </Grid>
       <Grid item className={`${classes.observationItem} ${classes.clickable}`}>
         <ul >
-          <li onClick={() => { openDetails('Observation') }}>Observation</li>
-          <li onClick={() => { openDetails('Feeling') }}>Feeling</li>
-          <li onClick={() => { openDetails('Need') }}>Need</li>
-          <li onClick={() => { openDetails('Request') }}>Request</li>
+          <li onClick={() => { openDetails('Observation') }}>{'Observation'}</li>
+          <li onClick={() => { openDetails('Feeling') }}>{'Feeling'}</li>
+          <li onClick={() => { openDetails('Need') }}>{'Need'}</li>
+          <li onClick={() => { openDetails('Request') }}>{'Request'}</li>
         </ul>
         <p>
-          What other elements could I use?
+          {'What other elements could I use?'}
           <br />
-          More about NVC
+          {'More about NVC'}
         </p>
       </Grid>
     </Grid>
@@ -57,7 +59,5 @@ function FeedbackDialogueObservation (props) {
 
 FeedbackDialogueObservation.propTypes = {
   setTitle: PropTypes.func.isRequired,
-  setSeeDetails: PropTypes.func.isRequired
+  changeDisplayedFeedback: PropTypes.func.isRequired
 }
-
-export default FeedbackDialogueObservation

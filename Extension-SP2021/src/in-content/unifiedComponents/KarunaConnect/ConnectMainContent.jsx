@@ -12,11 +12,11 @@ import { Grid, Typography, Link, Collapse } from '@material-ui/core'
 import { ExpandMore } from '@material-ui/icons'
 
 import StatusListItem from './StatusListItem.jsx'
-import AffectSurveyList from './AffectSurveyList.jsx'
+import AffectSurveyList from '../AffectSurvey/AffectSurveyList.jsx'
 
-import { StatusObjectShape, AffectObjectShape } from './dataTypeShapes.js'
+import { StatusObjectShape, AffectObjectShape } from '../dataTypeShapes.js'
 
-import { makeLogger } from '../../util/Logger.js'
+import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
 
 const useStyles = makeStyles((theme) => ({

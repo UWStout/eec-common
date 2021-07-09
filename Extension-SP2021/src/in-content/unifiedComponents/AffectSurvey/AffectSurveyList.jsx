@@ -12,9 +12,9 @@ import SearchBar from 'material-ui-search-bar'
 import Emoji from './Emoji.jsx'
 import PrivacyDialog from './PrivacyDialog.jsx'
 
-import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape } from './dataTypeShapes.js'
+import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../dataTypeShapes.js'
 
-import { makeLogger } from '../../util/Logger.js'
+import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Affect Survey', 'pink', 'black')
 
 const useStyles = makeStyles((theme) => ({
@@ -241,10 +241,11 @@ export default function AffectSurveyList (props) {
 }
 
 AffectSurveyList.propTypes = {
-  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)).isRequired,
-  recentList: PropTypes.arrayOf(PropTypes.string).isRequired,
-  currentStatus: PropTypes.shape(StatusObjectShape).isRequired,
-  affectPrivacy: PropTypes.shape(PrivacyObjectShape).isRequired,
+  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)),
+  recentList: PropTypes.arrayOf(PropTypes.string),
+  currentStatus: PropTypes.shape(StatusObjectShape),
+  affectPrivacy: PropTypes.shape(PrivacyObjectShape),
+
   updateCurrentAffect: PropTypes.func.isRequired,
   updatePrivacy: PropTypes.func.isRequired,
   noInteraction: PropTypes.bool.isRequired,
@@ -252,5 +253,9 @@ AffectSurveyList.propTypes = {
 }
 
 AffectSurveyList.defaultProps = {
+  emojiList: [],
+  recentList: [],
+  currentStatus: DEFAULT.StatusObjectShape,
+  affectPrivacy: DEFAULT.PrivacyObjectShape,
   onDismissSurvey: null
 }

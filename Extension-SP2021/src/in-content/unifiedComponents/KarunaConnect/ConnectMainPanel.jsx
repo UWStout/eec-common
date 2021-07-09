@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import PanelTitle from './PanelTitle.jsx'
 import ConnectMainContent from './ConnectMainContent.jsx'
 
-import { makeLogger } from '../../util/Logger.js'
+import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Main Panel', 'lime', 'black')
 
 const useStyles = makeStyles((theme) => ({

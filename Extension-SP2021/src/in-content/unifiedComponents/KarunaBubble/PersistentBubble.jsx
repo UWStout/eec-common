@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { SvgIcon, IconButton, Typography, Tooltip, Paper } from '@material-ui/core'
+import { SvgIcon, IconButton, Typography } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,9 +16,13 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     bottom: theme.spacing(5),
     right: theme.spacing(2.3)
+  },
+  iconStyle: {
+    fontSize: 60
   }
 }))
-export const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref) {
+
+const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref) {
   const { hidden, onHide, cancelHide, isContextIndicated, setOpen } = props
   const classes = useStyles()
 
@@ -41,7 +45,7 @@ export const PersistentBubble = React.forwardRef(function PersistentBubble (prop
       className={classes.root}
       aria-label="open feedback dialogue"
     >
-      <SvgIcon style={{ fontSize: 60 }}>
+      <SvgIcon className={classes.iconStyle}>
         <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <filter id="a">
@@ -56,13 +60,12 @@ export const PersistentBubble = React.forwardRef(function PersistentBubble (prop
           </g>
         </svg>
       </SvgIcon>
-      {isContextIndicated
-        ? <div className={classes.contextIndicator}>
+      {isContextIndicated &&
+        <div className={classes.contextIndicator}>
           <Typography>
             { 'NVC' }
           </Typography>
-          </div>
-        : null}
+        </div>}
     </IconButton>
   )
 })
@@ -78,3 +81,5 @@ PersistentBubble.propTypes = {
 PersistentBubble.defaultProps = {
   isContextIndicated: false
 }
+
+export default PersistentBubble
