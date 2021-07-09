@@ -31,12 +31,10 @@ function FeedbackDialogueDetails (props) {
         </Typography>
       </Grid>
       <Grid item xs={12} className={itemStyle}>
-        <Typography aria-label='title' variant='body2'>
-          {title === 'Observation' ? <Observation /> : null}
-          {title === 'Request' ? <Request /> : null}
-          {title === 'Need' ? <Need /> : null}
-          {title === 'Feeling' ? <Feeling /> : null}
-        </Typography>
+        {title === 'Observation' ? <Observation /> : null}
+        {title === 'Request' ? <Request /> : null}
+        {title === 'Need' ? <Need /> : null}
+        {title === 'Feeling' ? <Feeling /> : null}
       </Grid>
     </Grid>
   )

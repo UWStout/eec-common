@@ -24,6 +24,12 @@ function FeedbackDialogueObservation (props) {
   const { setTitle, setSeeDetails } = props
   const classes = useStyles()
 
+  function openDetails (title) {
+    setTitle(title)
+    setSeeDetails(true)
+    window.dispatchEvent(new CustomEvent('resize'))
+  }
+
   return (
     <Grid container spacing={1} >
       <Grid item className={classes.observation}>
@@ -33,10 +39,10 @@ function FeedbackDialogueObservation (props) {
       </Grid>
       <Grid item className={classes.observationItem}>
         <ul >
-          <li className={classes.clickable} onClick={() => { setTitle('Observation'); setSeeDetails(true) }}>Observation</li>
-          <li className={classes.clickable} onClick={() => { setTitle('Feeling'); setSeeDetails(true) }}>Feeling</li>
-          <li className={classes.clickable} onClick={() => { setTitle('Need'); setSeeDetails(true) }}>Need</li>
-          <li className={classes.clickable} onClick={() => { setTitle('Request'); setSeeDetails(true) }}>Request</li>
+          <li className={classes.clickable} onClick={() => { openDetails('Observation') }}>Observation</li>
+          <li className={classes.clickable} onClick={() => { openDetails('Feeling') }}>Feeling</li>
+          <li className={classes.clickable} onClick={() => { openDetails('Need') }}>Need</li>
+          <li className={classes.clickable} onClick={() => { openDetails('Request') }}>Request</li>
         </ul>
         <p>
           What other elements could I use?

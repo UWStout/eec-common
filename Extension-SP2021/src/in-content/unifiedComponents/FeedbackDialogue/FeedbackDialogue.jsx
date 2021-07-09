@@ -18,7 +18,9 @@ const Tooltip = withStyles((theme) => ({
     border: '1px solid white',
     color: '#4A4A4A',
     fontSize: 12,
-    maxWidth: 210
+    maxWidth: 210,
+    // maxHeight: 180,
+    // overflow: scroll
   }
 }))(MuiTooltip)
 
