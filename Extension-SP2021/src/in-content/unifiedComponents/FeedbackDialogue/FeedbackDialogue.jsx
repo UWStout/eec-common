@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { Tooltip as MuiTooltip } from '@material-ui/core'
@@ -18,9 +18,9 @@ const Tooltip = withStyles((theme) => ({
     border: '1px solid white',
     color: '#4A4A4A',
     fontSize: 12,
-    maxWidth: 210,
-    // maxHeight: 180,
-    // overflow: scroll
+    maxWidth: 210
+    // maxHeight: 180, // the words overflow when this is on
+    // overflow: scroll // gets rid of the arrow for some reason?
   }
 }))(MuiTooltip)
 
@@ -41,7 +41,7 @@ export default function FeedbackDialogue (props) {
       interactive
       placement='top-end'
       open={!hidden}
-      title={<FeedbackDialogueContent />}
+      title={<FeedbackDialogueContent {...restProps} />}
       PopperProps={newPopperProps}
       arrow
     >
@@ -51,7 +51,6 @@ export default function FeedbackDialogue (props) {
 }
 
 FeedbackDialogue.propTypes = {
-  hidden: PropTypes.bool.isRequired,
   children: PropTypes.node,
   offset: PropTypes.string
 }
