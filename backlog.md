@@ -1,5 +1,6 @@
-# July A Sprint Tasks
-- [ ] (L) Basic Karuna Bubble, restore prior functionality but in Material UI
+# Current Sprint
+## July A Sprint Backlog
+- [x] (L) Basic Karuna Bubble, restore prior functionality but in Material UI
 - [ ] (M) Global state management for React
 - [ ] (?) Bubble Contextual Feedback
 - [ ] (?) Text underlining of contextual elements
@@ -7,7 +8,8 @@
 - [ ] (S) Three-Status Icons in the Status Panel
 - [ ] (M) Explore importance of MUI Grid
 
-# Summer Priority Tasks:
+# Product Backlog
+## Summer Priority Tasks
 - [ ] (?) Wireframing and IA for extension-popup/settings
 - [ ] (L) User and Team settings implementation
 - [ ] (M) Team-status section of Karuna Connect Panel
@@ -19,8 +21,11 @@
 - [ ] (S) Avatar colors and letters
 - [ ] (M) 3rd Party Usernames/ID
 
-# Stretch Tasks:
+## Stretch Tasks
 - [ ] (M) Avatar Images
 - [ ] (L) Watson Integration for bubble
 - [ ] (L) Email validation (2FA) and integration (2ary message channel)
 - [ ] (M) 3rd Party authenticator app as alternative to email
+
+# Previous Sprints
+Backlogs for completed sprints can be found here
