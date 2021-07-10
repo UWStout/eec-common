@@ -3,9 +3,11 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
+import { RecoilRoot } from 'recoil'
+
 import { CssBaseline } from '@material-ui/core'
 
-import * as HELPER from './backgroundHelper.js'
+import * as HELPER from './data/backgroundHelper.js'
 
 import KarunaConnect from './KarunaConnect.jsx'
 import KarunaBubble from './KarunaBubble.jsx'
@@ -125,9 +127,11 @@ export default function UnifiedApp ({ emitter, context }) {
   return (
     <React.Fragment>
       <CssBaseline />
-      <KarunaConnect context={context} {...commonProps} />
-      <KarunaBubble context={context} {...commonProps} />
-      <MessageTextWrapper context={context} />
+      <RecoilRoot>
+        <KarunaConnect context={context} {...commonProps} />
+        <KarunaBubble context={context} {...commonProps} />
+        <MessageTextWrapper context={context} />
+      </RecoilRoot>
     </React.Fragment>
   )
 }

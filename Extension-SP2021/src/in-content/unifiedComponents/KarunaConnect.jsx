@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { ConnectVisibilityState, BubbleVisibilityState } from './data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -44,8 +47,17 @@ export default function KarunaConnect (props) {
   // Create and deconstruct style class names
   const { rootDiscord, rootTeams } = useStyles()
 
-  // Is the mouse over this component
-  const [mainPanelOpen, setMainPanelOpen] = useState(false)
+  // Full state and setter for visibility of main connect panel (GLOBAL STATE)
+  const [mainPanelOpen, setMainPanelOpen] = useRecoilState(ConnectVisibilityState)
+
+  // Setter for visibility of bubble feedback (GLOBAL STATE)
+  const setBubbleFeedbackOpen = useSetRecoilState(BubbleVisibilityState)
+
+  // Ensure bubble feedback closes whenever we open the main panel
+  const openMainPanel = () => {
+    setBubbleFeedbackOpen(false)
+    setMainPanelOpen(true)
+  }
 
   // Main render
   return (
@@ -53,7 +65,7 @@ export default function KarunaConnect (props) {
       <div className={(context === 'msTeams' ? rootTeams : rootDiscord)}>
         <ConnectStatusPanel
           hidden={mainPanelOpen}
-          onHide={() => { setMainPanelOpen(true) }}
+          onHide={openMainPanel}
           currentStatus={restProps.currentStatus}
           affectPrivacy={restProps.affectPrivacy}
         />

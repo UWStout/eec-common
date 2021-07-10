@@ -8,7 +8,7 @@ import {
 
 import { OpenInBrowser } from '@material-ui/icons/'
 
-import { PrivacyObjectShape } from '../dataTypeShapes.js'
+import { PrivacyObjectShape } from '../data/dataTypeShapes.js'
 
 import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Privacy Dialog', 'yellow', 'black')

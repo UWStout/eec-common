@@ -40,10 +40,10 @@ function FeedbackDialogueDetails (props) {
         </Typography>
       </Grid>
       <Grid item xs={12} className={itemStyle}>
-        {title === 'Observation' ? <Observation /> : null}
-        {title === 'Request' ? <Request /> : null}
-        {title === 'Need' ? <Need /> : null}
-        {title === 'Feeling' ? <Feeling /> : null}
+        {title === 'Observation' && <Observation />}
+        {title === 'Request' && <Request />}
+        {title === 'Need' && <Need />}
+        {title === 'Feeling' && <Feeling />}
       </Grid>
       <Grid item xs={12} className={clickable}>
         <p onClick={openObservations}>{'go back to NVC elements'}</p>

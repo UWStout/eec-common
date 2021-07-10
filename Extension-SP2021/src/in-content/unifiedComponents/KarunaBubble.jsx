@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { ConnectVisibilityState, BubbleVisibilityState } from './data/globalState.js'
+
 import PersistentBubble from './KarunaBubble/PersistentBubble.jsx'
 import FeedbackDialogue from './KarunaBubble/FeedbackDialogue/FeedbackDialogue.jsx'
 
@@ -13,12 +16,25 @@ export default function KarunaBubble (props) {
   // De-structure props
   const { context, ...restProps } = props
 
+  // Full state and setter for visibility of main connect panel (GLOBAL STATE)
+  const setMainConnectPanelOpen = useSetRecoilState(ConnectVisibilityState)
+
   // Hide/Show the feedback dialog
-  const [feedbackDialogueOpen, setFeedbackDialogueOpen] = useState(false)
+  const [feedbackDialogueOpen, setFeedbackDialogueOpen] = useRecoilState(BubbleVisibilityState)
+
+  // Timeout for hiding the feedback dialog
   const [feedbackHideTimeout, setFeedbackHideTimeout] = useState(false)
 
   // Data shared throughout the connect panel is managed here
   const [contextIndicator, setContextIndicator] = useState(true)
+
+  // Ensure the main connect panel is closed any time we open the feedback dialog
+  const openCloseFeedbackDialog = (open) => {
+    if (open) {
+      setMainConnectPanelOpen(false)
+    }
+    setFeedbackDialogueOpen(open)
+  }
 
   // Hide the feedback dialog (possibly after a set timeout)
   const hideFeedbackDialogue = (immediate) => {
@@ -51,7 +67,7 @@ export default function KarunaBubble (props) {
       <PersistentBubble
         isContextIndicated={contextIndicator}
         hidden={!feedbackDialogueOpen}
-        setOpen={setFeedbackDialogueOpen}
+        setOpen={openCloseFeedbackDialog}
         onHide={hideFeedbackDialogue}
         cancelHide={cancelHideFeedbackDialogue}
       />

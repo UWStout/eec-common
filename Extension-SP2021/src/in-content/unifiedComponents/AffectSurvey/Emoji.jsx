@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
-import { AffectObjectShape } from '../dataTypeShapes.js'
+import { AffectObjectShape } from '../data/dataTypeShapes.js'
 
 export default function Emoji (props) {
   const { affect, handleClick, ...restProps } = props

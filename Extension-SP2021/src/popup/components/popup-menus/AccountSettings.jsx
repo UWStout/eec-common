@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 
 import Team from '../Team.jsx'
-import { backgroundMessage } from '../../../in-content/objects/AJAXHelper.js'
+import { backgroundMessage } from './AJAXHelper.js'
 
 const useStyles = makeStyles({
   AccountSettingsBody: {
