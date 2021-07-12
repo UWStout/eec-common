@@ -5,14 +5,14 @@ import { Grid } from '@material-ui/core'
 
 import FeedbackDialogueObservation from './FeedbackDialogueObservation.jsx'
 import FeedbackDialogueDetails from './FeedbackDialogueDetails.jsx'
-import AffectSurveyList from '../../AffectSurvey/AffectSurveyList.jsx'
+import FeedbackDialogueAffectSurvey from './FeedbackDialogueAffectSurvey.jsx'
 
 export default function FeedbackDialogueContent (props) {
   // Deconstruct the props
   const { onHide, cancelHide, ...restProps } = props
 
   // Displayed state
-  const [displayedFeedback, setDisplayedFeedback] = useState('observations')
+  const [displayedFeedback, setDisplayedFeedback] = useState('affectSurvey')
   const [title, setTitle] = useState('karuna')
 
   // Trigger a resize event every time the feedback content changes
@@ -37,7 +37,7 @@ export default function FeedbackDialogueContent (props) {
           />}
 
         {displayedFeedback === 'affectSurvey' &&
-          <AffectSurveyList
+          <FeedbackDialogueAffectSurvey
             changeDisplayedFeedback={changeDisplayedFeedback}
             {...restProps}
           />}

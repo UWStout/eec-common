@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // DEBUG: Test data for recent emojis
-// const recentListTest = [
+// const moodHistoryListTest = [
 //   '6008928508baff43187a74f0',
 //   '6008928508baff43187a7504',
 //   '6008928508baff43187a74f8'
@@ -74,7 +74,7 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { affectPrivacy, onDismissSurvey, currentStatus, recentList, emojiList, updateCurrentAffect, updatePrivacy, noInteraction } = props
+  const { affectPrivacy, onDismissSurvey, currentStatus, moodHistoryList, emojiList, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
 
   const [searchText, setSearchText] = useState('')
@@ -150,7 +150,7 @@ export default function AffectSurveyList (props) {
 
   const recentEmojiElements = filteredEmojis
     .filter((curEmoji) => (
-      recentList.some((recentID) => (recentID === curEmoji._id))
+      moodHistoryList.some((recentID) => (recentID === curEmoji._id))
     ))
     .map((recentEmoji) => (
       <Emoji
@@ -163,10 +163,10 @@ export default function AffectSurveyList (props) {
       />
     ))
   // sort the recentEmojiElements so that it is ordered by date
-  // - recentList was already ordered, this sorts recentEmojiElements
-  //   by its key so that it matches recentList
+  // - moodHistoryList was already ordered, this sorts recentEmojiElements
+  //   by its key so that it matches moodHistoryList
   recentEmojiElements.sort(function (a, b) {
-    return recentList.indexOf(a.key) - recentList.indexOf(b.key)
+    return moodHistoryList.indexOf(a.key) - moodHistoryList.indexOf(b.key)
   })
 
   return (
@@ -242,7 +242,7 @@ export default function AffectSurveyList (props) {
 
 AffectSurveyList.propTypes = {
   emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)),
-  recentList: PropTypes.arrayOf(PropTypes.string),
+  moodHistoryList: PropTypes.arrayOf(PropTypes.string),
   currentStatus: PropTypes.shape(StatusObjectShape),
   affectPrivacy: PropTypes.shape(PrivacyObjectShape),
 
@@ -254,7 +254,7 @@ AffectSurveyList.propTypes = {
 
 AffectSurveyList.defaultProps = {
   emojiList: [],
-  recentList: [],
+  moodHistoryList: [],
   currentStatus: DEFAULT.StatusObjectShape,
   affectPrivacy: DEFAULT.PrivacyObjectShape,
   onDismissSurvey: null
