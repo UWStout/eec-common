@@ -1,5 +1,5 @@
 // Functions from other background modules
-import { readValue, writeValue, retrieveUser } from './DataStorage.js'
+import { readValue, writeValue, clearValue, retrieveUser } from './DataStorage.js'
 import { getSocket, announceSession, endSession } from './SocketComms.js'
 import { processAjaxRequest } from './ServerAJAXComms.js'
 
@@ -132,12 +132,13 @@ function oneTimeMessage (message, sender, sendResponse) {
 
       case 'logout':
         // Clear the token in all sessions
-        writeValue('JWT', null)
+        clearValue('JWT')
         for (const portName in portSessions) {
           portSessions[portName].postMessage(
             { type: 'logout' }
           )
         }
+        sendResponse('ok')
         return resolve('ok')
 
       // Unknown messages

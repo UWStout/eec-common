@@ -1,9 +1,10 @@
 /* global EventEmitter3 */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, Suspense } from 'react'
 import PropTypes from 'prop-types'
 
-import { RecoilRoot } from 'recoil'
+import { useSetRecoilState } from 'recoil'
+import { LoggedInUserState } from './data/globalState.js'
 
 import { CssBaseline } from '@material-ui/core'
 
@@ -18,15 +19,34 @@ import { makeLogger } from '../../util/Logger.js'
 const LOG = makeLogger('UNIFIED React App', 'lavender', 'black')
 
 // The sidebar Karuna Connect object
-export default function UnifiedApp ({ emitter, context }) {
+export default function UnifiedApp (props) {
+  // De-construct props
+  const { emitter, context } = props
+
+  // Track logged in state globally
+  const setLoggedInUserState = useSetRecoilState(LoggedInUserState)
+  useEffect(() => {
+    // When a login occurs, update basic user info
+    emitter.on('login', async () => {
+      const userInfo = await HELPER.retrieveBasicUserInfo()
+      setLoggedInUserState(userInfo)
+    })
+
+    // Clear user info on a logout
+    emitter.on('logout', () => {
+      setLoggedInUserState({})
+    })
+  }, [emitter, setLoggedInUserState])
+
   // General to all karuna components
   const [moodHistoryList, setMoodHistoryList] = useState([])
   const [emojiList, setEmojiList] = useState([])
   const [currentStatus, setCurrentStatus] = useState(null)
   const [affectPrivacy, setAffectPrivacy] = useState(null)
 
-  // Functions to retrieve state asynchronously
-  const getEmojiList = async () => {
+  // Functions to retrieve state asynchronously (wrapped in
+  // 'useCallback' so they don't change every render)
+  const getEmojiList = useCallback(async () => {
     try {
       const emojisFromServer = await HELPER.retrieveAffectList(context)
       // Filter out inactive emojis (old ones that have been removed)
@@ -34,11 +54,11 @@ export default function UnifiedApp ({ emitter, context }) {
       LOG('New Emoji List', filteredEmojis)
       setEmojiList(filteredEmojis)
     } catch (err) {
-      LOG.error('Failed to retrieve emoji list', err)
+      LOG('Failed to retrieve emoji list:', err.message)
     }
-  }
+  }, [context])
 
-  const getMoodHistoryList = async () => {
+  const getMoodHistoryList = useCallback(async () => {
     try {
       const moodHistoryFromServer = await HELPER.retrieveAffectHistoryList(context)
       // make an array of only the affectIDs
@@ -52,20 +72,39 @@ export default function UnifiedApp ({ emitter, context }) {
       LOG('New Mood History List', mostRecentMoods)
       setMoodHistoryList(mostRecentMoods)
     } catch (err) {
-      LOG.error('Failed to retrieve mood history list', err)
+      LOG('Failed to retrieve mood history list:', err.message)
     }
-  }
+  }, [context])
 
-  const getPrivacy = async () => {
+  const getPrivacy = useCallback(async () => {
     try {
       const privacyFromStorage = await HELPER.retrieveMoodPrivacy(context)
       LOG('New Affect Privacy', privacyFromStorage)
       setAffectPrivacy(privacyFromStorage)
     } catch (err) {
-      LOG.error('Failed to retrieve affect privacy', err)
+      LOG('Failed to retrieve affect privacy:', err.message)
     }
-  }
+  }, [context])
 
+  const getCurrentStatus = useCallback(async () => {
+    try {
+      const currentStatusFromServer = await HELPER.retrieveUserStatus(context)
+      LOG('New Users Status', currentStatusFromServer)
+      setCurrentStatus(currentStatusFromServer)
+    } catch (err) {
+      LOG('Failed to retrieve user status:', err.message)
+    }
+  }, [context])
+
+  // Retrieve initial values for all state
+  useEffect(() => {
+    getEmojiList()
+    getMoodHistoryList()
+    getPrivacy()
+    getCurrentStatus()
+  }, [getCurrentStatus, getEmojiList, getMoodHistoryList, getPrivacy])
+
+  // Functions to update state asynchronously
   const updatePrivacy = async (newPrivacy) => {
     if (!newPrivacy) {
       LOG.error('(WARNING) Refusing to set privacy to null/undefined')
@@ -77,17 +116,7 @@ export default function UnifiedApp ({ emitter, context }) {
       LOG('Affect Privacy Updated', newPrivacy)
       setAffectPrivacy(newPrivacy)
     } catch (err) {
-      LOG.error('Failed to update affect privacy', err)
-    }
-  }
-
-  const getCurrentStatus = async () => {
-    try {
-      const currentStatusFromServer = await HELPER.retrieveUserStatus(context)
-      LOG('New Users Status', currentStatusFromServer)
-      setCurrentStatus(currentStatusFromServer)
-    } catch (err) {
-      LOG.error('Failed to retrieve user status', err)
+      LOG.error('Failed to update affect privacy:', err.message)
     }
   }
 
@@ -102,17 +131,9 @@ export default function UnifiedApp ({ emitter, context }) {
       LOG('Current Mood Updated', newAffectID)
       await getCurrentStatus()
     } catch (err) {
-      LOG.error('Failed to update current affect', err)
+      LOG.error('Failed to update current affect:', err.message)
     }
   }
-
-  // Retrieve initial values for all state
-  useEffect(() => {
-    getEmojiList()
-    getMoodHistoryList()
-    getPrivacy()
-    getCurrentStatus()
-  }, [])
 
   // Group of props that we pass to several different children components
   const commonProps = {
@@ -127,11 +148,13 @@ export default function UnifiedApp ({ emitter, context }) {
   return (
     <React.Fragment>
       <CssBaseline />
-      <RecoilRoot>
+      <Suspense fallback={<div />}>
         <KarunaConnect context={context} {...commonProps} />
+      </Suspense>
+      <Suspense fallback={<div />}>
         <KarunaBubble context={context} {...commonProps} />
-        <MessageTextWrapper context={context} />
-      </RecoilRoot>
+      </Suspense>
+      <MessageTextWrapper context={context} />
     </React.Fragment>
   )
 }

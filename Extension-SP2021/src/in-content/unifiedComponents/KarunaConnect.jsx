@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { useRecoilState, useSetRecoilState } from 'recoil'
-import { ConnectVisibilityState, BubbleVisibilityState } from './data/globalState.js'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { ConnectVisibilityState, BubbleVisibilityState, ValidUserState } from './data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -47,6 +47,9 @@ export default function KarunaConnect (props) {
   // Create and deconstruct style class names
   const { rootDiscord, rootTeams } = useStyles()
 
+  // State of user login (GLOBAL STATE)
+  const userLoggedIn = useRecoilValue(ValidUserState)
+
   // Full state and setter for visibility of main connect panel (GLOBAL STATE)
   const [mainPanelOpen, setMainPanelOpen] = useRecoilState(ConnectVisibilityState)
 
@@ -64,7 +67,7 @@ export default function KarunaConnect (props) {
     <div>
       <div className={(context === 'msTeams' ? rootTeams : rootDiscord)}>
         <ConnectStatusPanel
-          hidden={mainPanelOpen}
+          hidden={!userLoggedIn || mainPanelOpen}
           onHide={openMainPanel}
           currentStatus={restProps.currentStatus}
           affectPrivacy={restProps.affectPrivacy}

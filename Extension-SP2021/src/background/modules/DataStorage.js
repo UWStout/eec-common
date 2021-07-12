@@ -3,7 +3,7 @@ import store from 'store2'
 
 /**
  * Read a value from the extension's LocalStorage. The string 'key/context' should be
- * unique. If not context is provided, then key itself should be unique.
+ * unique. If no context is provided, then key itself should be unique.
  * @param {string} key Unique identifier ("name") for the value
  * @param {string} [context] Name of a context (matching those in util/contexts.js)
  * @return {any} The original value stored for the given key (possibly 'undefined')
@@ -15,7 +15,7 @@ export function readValue (key, context) {
 
 /**
  * Write a value to the extension's LocalStorage. The string 'key/context' should be
- * unique. If not context is provided, then key itself should be unique.
+ * unique. If no context is provided, then key itself should be unique.
  * @param {string} key Unique identifier ("name") for the value
  * @param {any} data Object containing the data to be stored.
  * @param {string} [context] Name of a context (matching those in util/contexts.js)
@@ -36,18 +36,68 @@ export function writeValue (key, data, context, overwrite = true) {
   return true
 }
 
-export function retrieveToken () {
-  return readValue('JWT')
+/**
+ * Clear a value from the extension's LocalStorage. The string 'key/context' should be
+ * unique. If no context is provided, then key itself should be unique.
+ * @param {string} key Unique identifier ("name") for the value
+ * @param {string} [context] Name of a context (matching those in util/contexts.js)
+ */
+export function clearValue (key, context) {
+  const keyContext = context ? `${context}/${key}` : key
+  return store.local.remove(keyContext)
 }
 
-export function retrieveUser () {
-  const JWT = retrieveToken()
-  if (!JWT) { return {} }
-
+/**
+ * Decode the payload of an encoded JWT without regard for weather it passes
+ * signature verification or is expired.
+ * @param {string} JWT A properly encoded (but possibly invalid) json web token
+ * @returns {object} The payload parsed into a JS object
+ */
+export function decodeJWTPayload (JWT) {
   try {
     // Base64 decode second field in the token (the payload)
     const jsonStr = atob(JWT.split('.')[1])
-    const jsonObj = JSON.parse(jsonStr)
+    return JSON.parse(jsonStr)
+  } catch (err) {
+    console.log('[[BACKGROUND]]: Error decoding JWT')
+    console.log(err)
+    return undefined
+  }
+}
+
+/**
+ * Retrieve the JWT stored in this exetnsion's local storage (only if not expired).
+ * If the token is expired, this function will clear the token from storage and return
+ * undefined.
+ * @returns {string|object} The raw JWT string or the payload decoded to a JS object
+ */
+export function retrieveToken (decode = false) {
+  // Read from local storage and return nothing if not defined
+  const JWT = readValue('JWT')
+  if (!JWT) { return }
+
+  // Check if the token has expired
+  const jsonObj = decodeJWTPayload(JWT)
+  if (Math.floor(Date.now() / 1000) < (jsonObj?.exp ? jsonObj.exp : 0)) {
+    return (decode ? jsonObj : JWT)
+  }
+
+  // Clear stale token
+  console.log('JWT has expired, clearing.')
+  clearValue('JWT')
+  return undefined
+}
+
+/**
+ * Attempt to decode the locally stored JWT and return simple user info (db id,
+ * email, first and last name, user type). If the JWT is not found or is expired
+ * it will return an empty object.
+ * @returns {object} Basic user info as decoded from the stored JWT
+ */
+export function retrieveUser () {
+  // Try to retrieve and decode the JWT
+  const jsonObj = retrieveToken(true)
+  if (jsonObj?.id) {
     return {
       id: jsonObj.id,
       email: jsonObj.email,
@@ -55,9 +105,8 @@ export function retrieveUser () {
       lastName: jsonObj.lastName,
       userType: jsonObj.userType
     }
-  } catch (err) {
-    console.log('[[BACKGROUND]]: Error decoding JWT')
-    console.log(err)
-    return {}
   }
+
+  // Failed to retrieve or decode
+  return {}
 }

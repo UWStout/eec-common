@@ -19,16 +19,30 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       break
 
     case 'ajax-getEmojiList':
-      promise = getEmojiList()
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = getEmojiList()
+      }
       break
 
     case 'ajax-getAffectHistory':
-      promise = listAffectHistory(userData.id)
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = listAffectHistory(userData.id)
+      }
       break
 
     case 'ajax-getUserStatus':
       if (!userData.id) {
-        promise = Promise.reject(new Error('No user id available (not logged in?)'))
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
       } else {
         promise = getUserStatus(userData.id)
       }
@@ -36,7 +50,9 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
 
     case 'ajax-setUserAffect':
       if (!userData.id) {
-        promise = Promise.reject(new Error('No user id available (not logged in?)'))
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
       } else {
         promise = setUserAffect(userData.id, message.context, message.affectID, message.privacy)
       }
@@ -44,7 +60,9 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
 
     case 'ajax-setCollaboration':
       if (!userData.id) {
-        promise = Promise.reject(new Error('No user id available (not logged in?)'))
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
       } else {
         promise = setCollaboration(userData.id, message.context, message.collaboration)
       }
@@ -52,7 +70,9 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
 
     case 'ajax-setTimeToRespond':
       if (!userData.id) {
-        promise = Promise.reject(new Error('No user id available (not logged in?)'))
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
       } else {
         promise = setTimeToRespond(userData.id, message.context, message.timeToRespond)
       }
@@ -82,6 +102,11 @@ function authorizationHeader () {
   }
 }
 
+// Allow 401 responses to 'resolve' instead of 'reject'
+function validateStatus (status) {
+  return ((status >= 200 && status < 300) || status === 401)
+}
+
 function validateAccount (email, password, context) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
@@ -98,12 +123,12 @@ function validateAccount (email, password, context) {
 function getEmojiList () {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/list?fullInfo&perPage=500`, config)
 
     // Listen for server response or error
     requestPromise.then((response) => {
-      const emojiList = response.data.data
+      const emojiList = response?.data?.data
       resolve(emojiList)
     })
     requestPromise.catch((error) => { reject(error) })
@@ -113,26 +138,25 @@ function getEmojiList () {
 function listAffectHistory (userID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/listHistory/userID/${userID}/affectLogID/dateStart/dateEnd`, config)
 
     // Listen for server response or error
     requestPromise.then((response) => {
-      const moodHistoryList = response.data
+      const moodHistoryList = response?.data
       resolve(moodHistoryList)
     })
     requestPromise.catch((error) => { reject(error) })
   })
 }
 
-
 function getUserStatus (userID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/status/${userID}`, config)
     requestPromise.then((response) => {
-      return resolve(response.data)
+      return resolve(response?.data)
     })
 
     // Reject on error from the first request (request to get user status)

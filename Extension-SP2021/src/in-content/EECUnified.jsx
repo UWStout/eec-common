@@ -2,12 +2,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+// Recoil state management
+import { RecoilRoot } from 'recoil'
+
 // Material-UI Setup
 import { create as JSSCreate } from 'jss'
 import { MuiThemeProvider, createMuiTheme, StylesProvider, jssPreset } from '@material-ui/core/styles'
 
 // Custom React Component
 import UnifiedApp from './unifiedComponents/UnifiedApp.jsx'
+
+// For global state initialization
+import { setMessagingContext } from './unifiedComponents/data/globalState.js'
 
 // Utility enums and functions for app context management
 import * as CONTEXT_UTIL from '../util/contexts.js'
@@ -114,9 +120,14 @@ class EECUnified extends HTMLElement {
     // Give React control of the root element for the unified panel
     LOG('Mounting react unified component ...')
     ReactDOM.render(
+      // Allows isolation of MUI styles to the shadow DOM
       <StylesProvider jss={jss}>
+        {/* Provides custom portals to popovers and modals */}
         <MuiThemeProvider theme={theme}>
-          <UnifiedApp context={this.contextName} emitter={this.statusEmitter} />
+          {/* Provides access to global state throughout App */}
+          <RecoilRoot>
+            <UnifiedApp context={this.contextName} emitter={this.statusEmitter} />
+          </RecoilRoot>
         </MuiThemeProvider>
       </StylesProvider>,
       this.unifiedPanel[0]
@@ -161,6 +172,9 @@ class EECUnified extends HTMLElement {
 
       case 'logout':
         this.JWT = null
+        if (this.statusEmitter) {
+          this.statusEmitter.emit('logout')
+        }
         // this.updateVisibility(false)
         break
     }
@@ -176,6 +190,7 @@ class EECUnified extends HTMLElement {
 
   setContextName (newContext) {
     this.contextName = newContext
+    setMessagingContext(newContext)
     // switch (newContext) {
     //   case CONTEXT_UTIL.CONTEXT.DISCORD:
     //     this.unifiedPanel.css('top', '55px')
