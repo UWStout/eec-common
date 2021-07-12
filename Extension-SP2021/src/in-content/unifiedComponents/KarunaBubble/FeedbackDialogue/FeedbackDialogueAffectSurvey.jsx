@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 
 function FeedbackDialogueAffectSurvey (props) {
   const classes = useStyles()
-  const { changeDisplayedFeedback, emojiList, currentStatus, moodHistoryList, ...restProps } = props
+  const { changeDisplayedFeedback, emojiList, currentStatus, ...restProps } = props
 
   // Lookup the affect from the list
   const affect = emojiList.find((item) => {
@@ -39,7 +39,6 @@ function FeedbackDialogueAffectSurvey (props) {
           changeDisplayedFeedback={changeDisplayedFeedback}
           emojiList={emojiList}
           currentStatus={currentStatus}
-          moodHistoryList={moodHistoryList}
           {...restProps}
         />
       </Grid>
