@@ -11,7 +11,7 @@ import SearchBar from 'material-ui-search-bar'
 
 import Emoji from './Emoji.jsx'
 import PrivacyDialog from './PrivacyDialog.jsx'
-
+import PrivacyDialogue from './PrivacyDialogV2.jsx'
 import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../data/dataTypeShapes.js'
 
 import { makeLogger } from '../../../util/Logger.js'
@@ -101,10 +101,10 @@ export default function AffectSurveyList (props) {
     }
   }
 
-  const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
-  const privacyDialogClosed = (canceled, newPrivacy) => {
+  const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
+  const privacyDialogueClosed = (canceled, newPrivacy) => {
     LOG('Privacy Dialog Dismissed:', newPrivacy)
-    setPrivacyDialogOpen(false)
+    setPrivacyDialogueOpen(false)
     if (!canceled) {
       updateAndClose(newPrivacy)
     }
@@ -114,8 +114,7 @@ export default function AffectSurveyList (props) {
     console.log(`[[AFFECT SURVEY]]: ${affect?._id} emoji selected`)
     setSelectedAffectID(affect?._id)
     if (affectPrivacy.prompt) {
-      setPrivacyDialogOpen(true)
-      onOpenSurvey()
+      setPrivacyDialogueOpen(true)
     } else {
       updateAndClose(affectPrivacy)
     }
@@ -171,21 +170,25 @@ export default function AffectSurveyList (props) {
   })
 
   return (
-    <div className={root}>
-      {onOpenSurvey
-        ? null
-        : <PrivacyDialog isOpen={privacyDialogOpen} onDialogClose={privacyDialogClosed} privacy={affectPrivacy} />}
-      <div className={searchBar}>
-        <SearchBar
-          value={searchText}
-          onClick={() => setExpanded('all')}
-          onChange={onSearchTextChanged}
-          placeholder={'search emojis'}
-          disabled={noInteraction}
-        />
-      </div>
-      <List dense className={listRoot}>
-        { /* Recent sub-list */
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    <React.Fragment>
+      {(privacyDialogueOpen && !onOpenSurvey)
+        ? <PrivacyDialogue
+            onDialogueClose={privacyDialogueClosed}
+            privacy={affectPrivacy}
+          />
+        : <div className={root}>
+          <div className={searchBar}>
+            <SearchBar
+              value={searchText}
+              onClick={() => setExpanded('all')}
+              onChange={onSearchTextChanged}
+              placeholder={'search emojis'}
+              disabled={noInteraction}
+            />
+          </div>
+          <List dense className={listRoot}>
+            { /* Recent sub-list */
           recentEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
             <ListItem button onClick={() => toggleExpanded('recent')}>
@@ -204,7 +207,7 @@ export default function AffectSurveyList (props) {
           </React.Fragment>
         }
 
-        { /* Favorites sub-list */
+            { /* Favorites sub-list */
           favEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
             <ListItem button onClick={() => toggleExpanded('favorites')}>
@@ -223,23 +226,24 @@ export default function AffectSurveyList (props) {
           </React.Fragment>
         }
 
-        {/* List of all emojis */}
-        <React.Fragment>
-          <ListItem button onClick={() => toggleExpanded('all')}>
-            <ListItemIcon><Mood /></ListItemIcon>
-            <ListItemText primary="All Moods" />
-            {expanded === 'all' ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={expanded === 'all'} timeout="auto" unmountOnExit>
-            <div className={innerList}>
-              <List component="div" disablePadding>
-                {allEmojiElements}
-              </List>
-            </div>
-          </Collapse>
-        </React.Fragment>
-      </List>
-    </div>
+            {/* List of all emojis */}
+            <React.Fragment>
+              <ListItem button onClick={() => toggleExpanded('all')}>
+                <ListItemIcon><Mood /></ListItemIcon>
+                <ListItemText primary="All Moods" />
+                {expanded === 'all' ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <Collapse in={expanded === 'all'} timeout="auto" unmountOnExit>
+                <div className={innerList}>
+                  <List component="div" disablePadding>
+                    {allEmojiElements}
+                  </List>
+                </div>
+              </Collapse>
+            </React.Fragment>
+          </List>
+          </div>}
+    </React.Fragment>
   )
 }
 

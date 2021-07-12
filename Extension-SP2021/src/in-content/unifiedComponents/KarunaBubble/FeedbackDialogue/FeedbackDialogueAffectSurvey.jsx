@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
 
 import AffectSurveyList from '../../AffectSurvey/AffectSurveyList.jsx'
-import FeedbackDialoguePrivacy from './FeedbackDialoguePrivacy.jsx'
+import PrivacyDialogue from '../../AffectSurvey/PrivacyDialogV2.jsx'
 import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../../data/dataTypeShapes.js'
 
 const useStyles = makeStyles((theme) => ({
@@ -52,7 +52,7 @@ function FeedbackDialogueAffectSurvey (props) {
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <React.Fragment>
       {privacyDialogueOpen
-        ? <FeedbackDialoguePrivacy
+        ? <PrivacyDialogue
             onDialogueClose={privacyDialogueClosed}
             privacy={affectPrivacy}
           />

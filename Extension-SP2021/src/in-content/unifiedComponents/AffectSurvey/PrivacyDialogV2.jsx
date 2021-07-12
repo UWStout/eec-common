@@ -5,10 +5,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography, FormGroup, FormControlLabel, Link, Button, Checkbox } from '@material-ui/core'
 import { OpenInBrowser } from '@material-ui/icons/'
 
-import AffectSurveyList from '../../AffectSurvey/AffectSurveyList.jsx'
-import { PrivacyObjectShape } from '../../data/dataTypeShapes.js'
+import AffectSurveyList from './AffectSurveyList.jsx'
+import { PrivacyObjectShape } from '../data/dataTypeShapes.js'
 
-import { makeLogger } from '../../../../util/Logger.js'
+import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Privacy Dialog', 'yellow', 'black')
 
 const useStyles = makeStyles((theme) => ({
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function FeedbackDialoguePrivacy (props) {
+function PrivacyDialogue (props) {
   const classes = useStyles()
   const { privacy, onDialogueClose } = props
   const [promptState, setPromptState] = useState(privacy.prompt)
@@ -99,8 +99,8 @@ function FeedbackDialoguePrivacy (props) {
   )
 }
 
-FeedbackDialoguePrivacy.propTypes = {
+PrivacyDialogue.propTypes = {
   privacy: PropTypes.shape(PrivacyObjectShape).isRequired
 }
 
-export default FeedbackDialoguePrivacy
+export default PrivacyDialogue
