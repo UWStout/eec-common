@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center'
   },
   observation: {
-    color: 'gray'
+    color: 'grey'
   },
   observationItem: {
     color: '#4fa6ff'
