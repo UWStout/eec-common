@@ -1,8 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { useRecoilValue } from 'recoil'
+import { ValidUserState } from '../data/globalState'
+
 import { makeStyles } from '@material-ui/core/styles'
 import { SvgIcon, IconButton, Typography } from '@material-ui/core'
+import { AccountCircle } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,6 +21,12 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(5),
     right: theme.spacing(2.3)
   },
+  accountIndicator: {
+    fontSize: 16,
+    position: 'absolute',
+    bottom: '37px',
+    right: '23px'
+  },
   iconStyle: {
     fontSize: 60
   }
@@ -25,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
 const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref) {
   const { hidden, onHide, cancelHide, isContextIndicated, setOpen } = props
   const classes = useStyles()
+
+  // State of user login (GLOBAL STATE)
+  const userLoggedIn = useRecoilValue(ValidUserState)
 
   const clickCallback = () => {
     if (setOpen) {
@@ -60,7 +73,11 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
           </g>
         </svg>
       </SvgIcon>
-      {isContextIndicated &&
+      {!userLoggedIn &&
+        <div className={classes.accountIndicator}>
+          <AccountCircle />
+        </div>}
+      {userLoggedIn && isContextIndicated &&
         <div className={classes.contextIndicator}>
           <Typography>
             { 'NVC' }

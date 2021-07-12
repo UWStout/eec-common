@@ -1,3 +1,7 @@
+// Colorful logger
+import { makeLogger } from '../../../util/Logger.js'
+const LOG = makeLogger('BACKGROUND Helper', '#27213C', '#EEF4ED')
+
 /**
  * Generic chrome.runtime.sendMessage function to simplify interacting with the background part of the
  * extension.  Background messages are processed as follows:
@@ -15,9 +19,9 @@ export function sendMessageToBackground (messageObject, context = 'none',
   errorMessage = 'Unknown error', successCB = null, errorCB = null) {
   chrome.runtime.sendMessage({ ...messageObject, context }, (data) => {
     if (data && data.error) {
-      console.error(errorMessage + '\n' + data.error.message + '\n' + data.error)
+      LOG(errorMessage, data.error)
       if (errorCB) {
-        return errorCB()
+        return errorCB(data.error)
       }
     }
 
@@ -38,7 +42,7 @@ export function retrieveAffectList (context = 'none') {
 
       // Success and failure callbacks
       (data) => { return resolve(data) },
-      () => { return reject(new Error('Failed to retrieve emoji list')) }
+      (message) => { return reject(new Error(message)) }
     )
   })
 }
@@ -54,7 +58,7 @@ export function retrieveAffectHistoryList (context = 'none') {
 
       // Success and failure callbacks
       (data) => { return resolve(data) },
-      () => { return reject(new Error('failed to retrieve mood history list')) }
+      (message) => { return reject(new Error(message)) }
     )
   })
 }
@@ -75,7 +79,7 @@ export function retrieveMoodPrivacy (context = 'none') {
         }
         return resolve(newPrivacy.value)
       },
-      () => { return reject(new Error('Failed to READ privacy settings')) }
+      (message) => { return reject(new Error(message)) }
     )
   })
 }
@@ -91,7 +95,7 @@ export function updateCurrentAffect (affectID, privacy, context = 'none') {
 
       // Success and failure callbacks
       () => { return resolve() },
-      () => { return reject(new Error('Failed to set new mood ID')) }
+      (message) => { return reject(new Error(message)) }
     )
   })
 }
@@ -107,7 +111,7 @@ export function setMoodPrivacy (newPrivacy, context = 'none') {
 
       // Success and failure callbacks
       () => { return resolve() },
-      () => { return reject(new Error('Failed to WRITE privacy settings')) }
+      (message) => { return reject(new Error(message)) }
     )
   })
 }
@@ -119,7 +123,19 @@ export function retrieveUserStatus (context = 'none') {
       context,
       'Retrieving current user status failed: ',
       (currentUserStatus) => { return resolve(currentUserStatus) },
-      () => { return reject(new Error('Failed to retrieve user status')) }
+      (message) => { return reject(new Error(message)) }
+    )
+  })
+}
+
+export function retrieveBasicUserInfo () {
+  return new Promise((resolve, reject) => {
+    sendMessageToBackground(
+      { type: 'getuser' },
+      'N/A', // Context doesn't matter
+      'Retrieving basic user info failed: ',
+      (userInfo) => { return resolve(userInfo) },
+      (message) => { return reject(new Error(message)) }
     )
   })
 }
