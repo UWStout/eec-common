@@ -24,6 +24,8 @@ const useStyles = makeStyles((theme) => ({
 function PrivacyDialogue (props) {
   const classes = useStyles()
   const { privacy, onClose, onUpdate } = props
+
+  // should probably be a global state from the database since the user probably wants this to be remembered
   const [promptState, setPromptState] = useState(privacy.prompt)
 
   const onDialogueClose = (canceled, newPrivacy) => {
@@ -60,17 +62,22 @@ function PrivacyDialogue (props) {
       <Grid item className={classes.body}>
         <FormGroup row>
           <Grid container>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <Typography variant={'body2'} onClick={(event) => { handleClose(event, 'private') }}>
                 {'No, Keep Private'}
               </Typography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <Typography variant={'body2'} onClick={(event) => { handleClose(event, 'public') }}>
                 {'Yes, Share'}
               </Typography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
+              <Typography variant={'body2'} onClick={(event) => { handleClose(event, 'canceled') }}>
+                {'Cancel'}
+              </Typography>
+            </Grid>
+            <Grid item xs={4}>
               <Link>
                 <Typography variant={'caption'}>
                   {'Why share?'}
@@ -79,7 +86,7 @@ function PrivacyDialogue (props) {
 
               </Link>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <Link>
                 <Typography variant={'caption'}>
                   {'Is this'}
