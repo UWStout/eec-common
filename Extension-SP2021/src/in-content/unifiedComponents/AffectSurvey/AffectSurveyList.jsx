@@ -11,7 +11,7 @@ import SearchBar from 'material-ui-search-bar'
 
 import Emoji from './Emoji.jsx'
 import PrivacyDialog from './PrivacyDialog.jsx'
-import PrivacyDialogue from './PrivacyDialogV2.jsx'
+import PrivacyDialogue from './PrivacyDialog.jsx'
 import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../data/dataTypeShapes.js'
 
 import { makeLogger } from '../../../util/Logger.js'
@@ -74,8 +74,10 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { affectPrivacy, onDismissSurvey, onOpenSurvey, currentStatus, moodHistoryList, emojiList, updateCurrentAffect, updatePrivacy, noInteraction } = props
+  const { affectPrivacy, onBubbleOpenSurvey, currentStatus, moodHistoryList, emojiList, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
+  const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
+  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
 
   const [searchText, setSearchText] = useState('')
   const onSearchTextChanged = Debounce((newText) => {
@@ -92,22 +94,9 @@ export default function AffectSurveyList (props) {
     }
   }
 
-  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
-  const updateAndClose = async (newPrivacy) => {
-    if (onDismissSurvey) {
-      await updateCurrentAffect(selectedAffectID, newPrivacy.private)
-      await updatePrivacy(newPrivacy)
-      onDismissSurvey()
-    }
-  }
-
-  const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
-  const privacyDialogueClosed = (canceled, newPrivacy) => {
-    LOG('Privacy Dialog Dismissed:', newPrivacy)
-    setPrivacyDialogueOpen(false)
-    if (!canceled) {
-      updateAndClose(newPrivacy)
-    }
+  const update = async (newPrivacy) => {
+    await updateCurrentAffect(selectedAffectID, newPrivacy?.private)
+    await updatePrivacy(newPrivacy)
   }
 
   const onSelection = (affect) => {
@@ -116,7 +105,7 @@ export default function AffectSurveyList (props) {
     if (affectPrivacy.prompt) {
       setPrivacyDialogueOpen(true)
     } else {
-      updateAndClose(affectPrivacy)
+      update(affectPrivacy)
     }
   }
 
@@ -127,7 +116,7 @@ export default function AffectSurveyList (props) {
       className={listItem}
       key={emoji._id}
       affect={emoji}
-      handleClick={onOpenSurvey || onSelection}
+      handleClick={onBubbleOpenSurvey || onSelection}
       button
       selected={(currentStatus.currentAffectID === emoji._id)}
     />
@@ -142,7 +131,7 @@ export default function AffectSurveyList (props) {
         className={listItem}
         key={favEmoji._id}
         affect={favEmoji}
-        handleClick={onOpenSurvey || onSelection}
+        handleClick={onBubbleOpenSurvey || onSelection}
         button
         selected={(currentStatus.currentAffectID === favEmoji._id)}
       />
@@ -157,7 +146,7 @@ export default function AffectSurveyList (props) {
         className={listItem}
         key={recentEmoji._id}
         affect={recentEmoji}
-        handleClick={onOpenSurvey || onSelection}
+        handleClick={onBubbleOpenSurvey || onSelection}
         button
         selected={(currentStatus.currentAffectID === recentEmoji._id)}
       />
@@ -172,9 +161,10 @@ export default function AffectSurveyList (props) {
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <React.Fragment>
-      {(privacyDialogueOpen && !onOpenSurvey)
+      {(privacyDialogueOpen && !onBubbleOpenSurvey)
         ? <PrivacyDialogue
-            onDialogueClose={privacyDialogueClosed}
+            onUpdate={update}
+            onClose={() => { setPrivacyDialogueOpen(false) }}
             privacy={affectPrivacy}
           />
         : <div className={root}>
@@ -252,17 +242,17 @@ AffectSurveyList.propTypes = {
   moodHistoryList: PropTypes.arrayOf(PropTypes.string),
   currentStatus: PropTypes.shape(StatusObjectShape),
   affectPrivacy: PropTypes.shape(PrivacyObjectShape),
+  onBubbleOpenSurvey: PropTypes.func,
 
   updateCurrentAffect: PropTypes.func.isRequired,
   updatePrivacy: PropTypes.func.isRequired,
-  noInteraction: PropTypes.bool.isRequired,
-  onDismissSurvey: PropTypes.func
+  noInteraction: PropTypes.bool.isRequired
 }
 
 AffectSurveyList.defaultProps = {
+  onBubbleOpenSurvey: null,
   emojiList: [],
   moodHistoryList: [],
   currentStatus: DEFAULT.StatusObjectShape,
-  affectPrivacy: DEFAULT.PrivacyObjectShape,
-  onDismissSurvey: null
+  affectPrivacy: DEFAULT.PrivacyObjectShape
 }

@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
 
 import AffectSurveyList from '../../AffectSurvey/AffectSurveyList.jsx'
-import PrivacyDialogue from '../../AffectSurvey/PrivacyDialogV2.jsx'
+import PrivacyDialogue from '../../AffectSurvey/PrivacyDialog.jsx'
 import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../../data/dataTypeShapes.js'
 
 const useStyles = makeStyles((theme) => ({
@@ -16,35 +16,28 @@ const useStyles = makeStyles((theme) => ({
 
 function FeedbackDialogueAffectSurvey (props) {
   const classes = useStyles()
-  const { affectPrivacy, changeDisplayedFeedback, emojiList, currentStatus, updateCurrentAffect, updatePrivacy, ...restProps } = props
+  const { affectPrivacy, changeDisplayedFeedback, emojiList, currentStatus, updatePrivacy, updateCurrentAffect, ...restProps } = props
+  const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
+  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
 
   // Lookup the affect from the list
   const affect = emojiList.find((item) => {
     return item._id === currentStatus?.currentAffectID
   })
 
-  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
-  const updateAndClose = async (newPrivacy) => {
+  const update = async (newPrivacy) => {
     await updateCurrentAffect(selectedAffectID, newPrivacy?.private)
     await updatePrivacy(newPrivacy)
-    setPrivacyDialogueOpen(false)
-  }
-
-  const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
-  const privacyDialogueClosed = (canceled, newPrivacy) => {
-    setPrivacyDialogueOpen(false)
-    if (!canceled) {
-      updateAndClose(newPrivacy)
-    }
   }
 
   const onSelection = (affect) => {
     console.log(`[[FEEDBACK AFFECT SURVEY]]: ${affect?._id} emoji selected`)
     setSelectedAffectID(affect?._id)
+    window.dispatchEvent(new CustomEvent('resize'))
     if (affectPrivacy?.prompt) {
       setPrivacyDialogueOpen(true)
     } else {
-      updateAndClose(affectPrivacy)
+      update(affectPrivacy)
     }
   }
 
@@ -53,7 +46,8 @@ function FeedbackDialogueAffectSurvey (props) {
     <React.Fragment>
       {privacyDialogueOpen
         ? <PrivacyDialogue
-            onDialogueClose={privacyDialogueClosed}
+            onUpdate={update}
+            onClose={() => { setPrivacyDialogueOpen(false) }}
             privacy={affectPrivacy}
           />
         : <Grid container spacing={1}>
@@ -72,9 +66,8 @@ function FeedbackDialogueAffectSurvey (props) {
               setFeedbackSelectedAffectID={setSelectedAffectID}
               emojiList={emojiList}
               currentStatus={currentStatus}
-              onOpenSurvey={onSelection}
-              onDismissSurvey={privacyDialogueClosed}
-              updatePrivacy={updatePrivacy}
+              onBubbleOpenSurvey={onSelection}
+              onDismissSurvey={() => { setPrivacyDialogueOpen(false) }}
               {...restProps}
             />
           </Grid>

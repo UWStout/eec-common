@@ -1,11 +1,8 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import {
-  Dialog, DialogContent, DialogContentText, Grid,
-  FormGroup, FormControlLabel, Link, Button, Checkbox
-} from '@material-ui/core'
-
+import { makeStyles } from '@material-ui/core/styles'
+import { Grid, Typography, FormGroup, FormControlLabel, Link, Button, Checkbox } from '@material-ui/core'
 import { OpenInBrowser } from '@material-ui/icons/'
 
 import { PrivacyObjectShape } from '../data/dataTypeShapes.js'
@@ -13,14 +10,33 @@ import { PrivacyObjectShape } from '../data/dataTypeShapes.js'
 import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Privacy Dialog', 'yellow', 'black')
 
-export default function PrivacyDialog (props) {
-  const { privacy, isOpen, onDialogClose } = props
+const useStyles = makeStyles((theme) => ({
+  title: {
+    color: 'gray'
+  },
+  body: {
+    color: '#4fa6ff',
+    textAlign: 'center',
+    cursor: 'pointer'
+  }
+}))
+
+function PrivacyDialogue (props) {
+  const classes = useStyles()
+  const { privacy, onClose, onUpdate } = props
   const [promptState, setPromptState] = useState(privacy.prompt)
+
+  const onDialogueClose = (canceled, newPrivacy) => {
+    if (!canceled) {
+      onUpdate(newPrivacy)
+    }
+    onClose()
+  }
 
   const handleClose = (event, reason) => {
     LOG('Dialog Close:', reason)
-    if (onDialogClose) {
-      onDialogClose(
+    if (onDialogueClose) {
+      onDialogueClose(
         (reason !== 'public' && reason !== 'private'),
         {
           private: reason !== 'public',
@@ -35,34 +51,46 @@ export default function PrivacyDialog (props) {
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleClose}>
-      <DialogContent>
-        <DialogContentText>
+    <Grid container spacing={1}>
+      <Grid item className={classes.title}>
+        <Typography>
           {'Do you want to share your response with your team?'}
-        </DialogContentText>
+        </Typography>
+      </Grid>
+      <Grid item className={classes.body}>
         <FormGroup row>
           <Grid container>
             <Grid item xs={6}>
-              <Button autoFocus onClick={(event) => { handleClose(event, 'private') }} color="primary">
+              <Typography variant={'body2'} onClick={(event) => { handleClose(event, 'private') }}>
                 {'No, Keep Private'}
-              </Button>
+              </Typography>
             </Grid>
             <Grid item xs={6}>
-              <Button onClick={(event) => { handleClose(event, 'public') }} color="primary">
+              <Typography variant={'body2'} onClick={(event) => { handleClose(event, 'public') }}>
                 {'Yes, Share'}
-              </Button>
+              </Typography>
             </Grid>
             <Grid item xs={6}>
               <Link>
-                {'Why share?'}
-                <OpenInBrowser />
+                <Typography variant={'caption'}>
+                  {'Why share?'}
+                  <OpenInBrowser fontSize={'small'} />
+                </Typography>
+
               </Link>
             </Grid>
             <Grid item xs={6}>
               <Link>
-                {'Is this secure?'}
-                <OpenInBrowser />
+                <Typography variant={'caption'}>
+                  {'Is this'}
+                  <OpenInBrowser fontSize={'small'} />
+                  <br />
+                  {'secure?'}
+                </Typography>
               </Link>
+            </Grid>
+            <Grid item xs={12} >
+              <br />
             </Grid>
           </Grid>
         </FormGroup>
@@ -72,18 +100,15 @@ export default function PrivacyDialog (props) {
             label="Save my response and don't show this message again."
           />
         </FormGroup>
-      </DialogContent>
-    </Dialog>
+      </Grid>
+    </Grid>
   )
 }
 
-PrivacyDialog.propTypes = {
-  isOpen: PropTypes.bool,
-  onDialogClose: PropTypes.func,
-  privacy: PropTypes.shape(PrivacyObjectShape).isRequired
+PrivacyDialogue.propTypes = {
+  privacy: PropTypes.shape(PrivacyObjectShape).isRequired,
+  onClose: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired
 }
 
-PrivacyDialog.defaultProps = {
-  isOpen: false,
-  onDialogClose: null
-}
+export default PrivacyDialogue
