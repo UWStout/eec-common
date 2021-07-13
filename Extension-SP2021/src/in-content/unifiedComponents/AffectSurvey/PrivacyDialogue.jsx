@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 function PrivacyDialogue (props) {
   const classes = useStyles()
-  const { privacy, onClose, onUpdate } = props
+  const { privacy, onClose, onUpdate, onCancel } = props
 
   // should probably be a global state from the database since the user probably wants this to be remembered
   const [promptState, setPromptState] = useState(privacy.prompt)
@@ -31,6 +31,8 @@ function PrivacyDialogue (props) {
   const onDialogueClose = (canceled, newPrivacy) => {
     if (!canceled) {
       onUpdate(newPrivacy)
+    } else if (onCancel) {
+      onCancel()
     }
     onClose()
   }
@@ -115,7 +117,12 @@ function PrivacyDialogue (props) {
 PrivacyDialogue.propTypes = {
   privacy: PropTypes.shape(PrivacyObjectShape).isRequired,
   onClose: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired
+  onUpdate: PropTypes.func.isRequired,
+  onCancel: PropTypes.func
+}
+
+PrivacyDialogue.defaultProps = {
+  onCancel: null
 }
 
 export default PrivacyDialogue

@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
@@ -81,6 +81,8 @@ export default function ConnectMainContent (props) {
   const { hidden, retracted, currentStatus } = props
   const { root, heading } = useStyles()
   const [expanded, setExpanded] = useState('userStatus')
+  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
+  const [selectedAffect, setSelectedAffect] = useState(null)
 
   // Subscribe to the global emojiList state
   const emojiList = useRecoilValue(EmojiListState)
@@ -92,10 +94,17 @@ export default function ConnectMainContent (props) {
     setExpanded(isExpanded ? panel : false)
   }
 
-  // Lookup the affect from the list
-  const affect = emojiList.find((item) => {
+  const currentAffect = emojiList.find((item) => {
     return item._id === currentStatus?.currentAffectID
   })
+
+  useEffect(() => {
+    const affect = emojiList.find((item) => {
+      if (selectedAffectID) return item._id === selectedAffectID
+      else return item._id === currentStatus?.currentAffectID
+    })
+    setSelectedAffect(affect)
+  }, [selectedAffectID])
 
   return (
     <div className={root}>
@@ -106,7 +115,7 @@ export default function ConnectMainContent (props) {
           aria-controls="user-status-content"
           id="user-status-header"
         >
-          <StatusListItem currentStatus={currentStatus} emojiList={emojiList} userEmail="Seth.berrier@gmail.com" />
+          <StatusListItem currentStatus={currentStatus} affect={currentAffect} userEmail="Seth.berrier@gmail.com" />
         </AccordionSummary>
         <AccordionDetails id="user-status-content" aria-labelledby="users-status-header">
           <Grid container spacing={2}>
@@ -114,11 +123,11 @@ export default function ConnectMainContent (props) {
               <Typography variant="body1">
                 {'I\'m feeling: '}
                 <Link href='#' onClick={() => setAffectSurveyOpen(!affectSurveyOpen)}>
-                  {`${affect ? affect.characterCodes[0] : '?'} ${affect ? affect.name : '[none]'}`}
+                  {`${selectedAffect ? selectedAffect.characterCodes[0] : (currentAffect ? currentAffect.characterCodes[0] : '?')} ${selectedAffect ? selectedAffect.name : (currentAffect ? currentAffect.name : '[none]')}`}
                 </Link>
               </Typography>
               <Collapse in={!hidden && affectSurveyOpen} timeout="auto" unmountOnExit>
-                <AffectSurveyList noInteraction={hidden || retracted} onDismissSurvey={() => { setAffectSurveyOpen(false) }} {...props} />
+                <AffectSurveyList selectedAffectID={selectedAffectID} setSelectedAffectID={setSelectedAffectID} noInteraction={hidden || retracted} onDismissSurvey={() => { setAffectSurveyOpen(false) }} {...props} />
               </Collapse>
             </Grid>
             <Grid item xs={12}>

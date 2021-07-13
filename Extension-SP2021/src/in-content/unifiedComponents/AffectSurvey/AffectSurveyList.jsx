@@ -76,10 +76,13 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { affectPrivacy, onBubbleOpenSurvey, currentStatus, moodHistoryList, updateCurrentAffect, updatePrivacy, noInteraction } = props
+  const { setSelectedAffectID, selectedAffectID, affectPrivacy, onBubbleOpenSurvey, currentStatus, moodHistoryList, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
   const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
-  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
+
+  // Hide/Show the feedback dialog
+  // const [selectedAffectID, setSelectedAffectID] = useRecoilState(SelectedUserMood)
+  // const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
 
   // Subscribe to the global emojiList state
   const emojiList = useRecoilValue(EmojiListState)
@@ -102,6 +105,10 @@ export default function AffectSurveyList (props) {
   const update = async (newPrivacy) => {
     await updateCurrentAffect(selectedAffectID, newPrivacy?.private)
     await updatePrivacy(newPrivacy)
+  }
+
+  const cancel = () => {
+    setSelectedAffectID(currentStatus?.currentAffectID)
   }
 
   const onSelection = (affect) => {
@@ -168,6 +175,7 @@ export default function AffectSurveyList (props) {
     <React.Fragment>
       {(privacyDialogueOpen && !onBubbleOpenSurvey)
         ? <PrivacyDialogue
+            onCancel={cancel}
             onUpdate={update}
             onClose={() => { setPrivacyDialogueOpen(false) }}
             privacy={affectPrivacy}
