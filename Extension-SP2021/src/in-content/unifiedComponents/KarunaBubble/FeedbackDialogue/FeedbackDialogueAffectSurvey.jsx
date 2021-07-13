@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
 
 import AffectSurveyList from '../../AffectSurvey/AffectSurveyList.jsx'
-import PrivacyDialogue from '../../AffectSurvey/PrivacyDialog.jsx'
+import PrivacyDialogue from '../../AffectSurvey/PrivacyDialogue.jsx'
 import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../../data/dataTypeShapes.js'
 
 const useStyles = makeStyles((theme) => ({

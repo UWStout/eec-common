@@ -10,8 +10,8 @@ import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/ic
 import SearchBar from 'material-ui-search-bar'
 
 import Emoji from './Emoji.jsx'
-import PrivacyDialog from './PrivacyDialog.jsx'
-import PrivacyDialogue from './PrivacyDialog.jsx'
+import PrivacyDialog from './PrivacyDialogue.jsx'
+import PrivacyDialogue from './PrivacyDialogue.jsx'
 import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../data/dataTypeShapes.js'
 
 import { makeLogger } from '../../../util/Logger.js'
