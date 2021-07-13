@@ -1,14 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { UserStatusState } from '../data/globalState.js'
+import { useRecoilValue } from 'recoil'
+
 import { Typography, Grid, Avatar } from '@material-ui/core'
 
 import CustomTooltip from './CustomTooltip.jsx'
 
-import { StatusObjectShape, AffectObjectShape } from '../data/dataTypeShapes.js'
+import { AffectObjectShape } from '../data/dataTypeShapes.js'
 
 export default function StatusListItem (props) {
-  const { userEmail, currentStatus, affect } = props
+  const { userEmail, affect } = props
+
+  // Subscribe to changes in current status (GLOBAL STATE)
+  const currentStatus = useRecoilValue(UserStatusState)
 
   return (
     <Grid container>
@@ -51,11 +57,9 @@ export default function StatusListItem (props) {
 
 StatusListItem.propTypes = {
   affect: PropTypes.shape(AffectObjectShape).isRequired,
-  userEmail: PropTypes.string,
-  currentStatus: PropTypes.shape(StatusObjectShape)
+  userEmail: PropTypes.string
 }
 
 StatusListItem.defaultProps = {
-  userEmail: '',
-  currentStatus: null
+  userEmail: ''
 }
