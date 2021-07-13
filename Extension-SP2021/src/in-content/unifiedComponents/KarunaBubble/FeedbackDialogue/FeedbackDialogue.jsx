@@ -17,8 +17,8 @@ const Tooltip = withStyles((theme) => ({
     backgroundColor: theme.palette.common.white,
     border: '1px solid white',
     color: '#4A4A4A',
-    fontSize: 12,
-    maxWidth: 210
+    fontSize: 12
+    // maxWidth: 210
     // maxHeight: 180, // the words overflow when this is on
     // overflow: scroll // gets rid of the arrow for some reason?
   }

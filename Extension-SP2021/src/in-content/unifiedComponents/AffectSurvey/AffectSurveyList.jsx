@@ -13,8 +13,7 @@ import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/ic
 import SearchBar from 'material-ui-search-bar'
 
 import Emoji from './Emoji.jsx'
-import PrivacyDialog from './PrivacyDialog.jsx'
-
+import PrivacyDialogue from './PrivacyDialogue.jsx'
 import { PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../data/dataTypeShapes.js'
 
 import { makeLogger } from '../../../util/Logger.js'
@@ -77,8 +76,10 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { affectPrivacy, onDismissSurvey, currentStatus, moodHistoryList, updateCurrentAffect, updatePrivacy, noInteraction } = props
+  const { affectPrivacy, onBubbleOpenSurvey, currentStatus, moodHistoryList, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
+  const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
+  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
 
   // Subscribe to the global emojiList state
   const emojiList = useRecoilValue(EmojiListState)
@@ -98,31 +99,18 @@ export default function AffectSurveyList (props) {
     }
   }
 
-  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
-  const updateAndClose = async (newPrivacy) => {
-    if (onDismissSurvey) {
-      await updateCurrentAffect(selectedAffectID, newPrivacy.private)
-      await updatePrivacy(newPrivacy)
-      onDismissSurvey()
-    }
-  }
-
-  const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
-  const privacyDialogClosed = (canceled, newPrivacy) => {
-    LOG('Privacy Dialog Dismissed:', newPrivacy)
-    setPrivacyDialogOpen(false)
-    if (!canceled) {
-      updateAndClose(newPrivacy)
-    }
+  const update = async (newPrivacy) => {
+    await updateCurrentAffect(selectedAffectID, newPrivacy?.private)
+    await updatePrivacy(newPrivacy)
   }
 
   const onSelection = (affect) => {
     console.log(`[[AFFECT SURVEY]]: ${affect?._id} emoji selected`)
     setSelectedAffectID(affect?._id)
     if (affectPrivacy.prompt) {
-      setPrivacyDialogOpen(true)
+      setPrivacyDialogueOpen(true)
     } else {
-      updateAndClose(affectPrivacy)
+      update(affectPrivacy)
     }
   }
 
@@ -133,7 +121,7 @@ export default function AffectSurveyList (props) {
       className={listItem}
       key={emoji._id}
       affect={emoji}
-      handleClick={onSelection}
+      handleClick={onBubbleOpenSurvey || onSelection}
       button
       selected={(currentStatus.currentAffectID === emoji._id)}
     />
@@ -148,7 +136,7 @@ export default function AffectSurveyList (props) {
         className={listItem}
         key={favEmoji._id}
         affect={favEmoji}
-        handleClick={onSelection}
+        handleClick={onBubbleOpenSurvey || onSelection}
         button
         selected={(currentStatus.currentAffectID === favEmoji._id)}
       />
@@ -163,7 +151,7 @@ export default function AffectSurveyList (props) {
         className={listItem}
         key={recentEmoji._id}
         affect={recentEmoji}
-        handleClick={onSelection}
+        handleClick={onBubbleOpenSurvey || onSelection}
         button
         selected={(currentStatus.currentAffectID === recentEmoji._id)}
       />
@@ -176,19 +164,26 @@ export default function AffectSurveyList (props) {
   })
 
   return (
-    <div className={root}>
-      <PrivacyDialog isOpen={privacyDialogOpen} onDialogClose={privacyDialogClosed} privacy={affectPrivacy} />
-      <div className={searchBar}>
-        <SearchBar
-          value={searchText}
-          onClick={() => setExpanded('all')}
-          onChange={onSearchTextChanged}
-          placeholder={'search emojis'}
-          disabled={noInteraction}
-        />
-      </div>
-      <List dense className={listRoot}>
-        { /* Recent sub-list */
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    <React.Fragment>
+      {(privacyDialogueOpen && !onBubbleOpenSurvey)
+        ? <PrivacyDialogue
+            onUpdate={update}
+            onClose={() => { setPrivacyDialogueOpen(false) }}
+            privacy={affectPrivacy}
+          />
+        : <div className={root}>
+          <div className={searchBar}>
+            <SearchBar
+              value={searchText}
+              onClick={() => setExpanded('all')}
+              onChange={onSearchTextChanged}
+              placeholder={'search emojis'}
+              disabled={noInteraction}
+            />
+          </div>
+          <List dense className={listRoot}>
+            { /* Recent sub-list */
           recentEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
             <ListItem button onClick={() => toggleExpanded('recent')}>
@@ -207,7 +202,7 @@ export default function AffectSurveyList (props) {
           </React.Fragment>
         }
 
-        { /* Favorites sub-list */
+            { /* Favorites sub-list */
           favEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
             <ListItem button onClick={() => toggleExpanded('favorites')}>
@@ -226,23 +221,24 @@ export default function AffectSurveyList (props) {
           </React.Fragment>
         }
 
-        {/* List of all emojis */}
-        <React.Fragment>
-          <ListItem button onClick={() => toggleExpanded('all')}>
-            <ListItemIcon><Mood /></ListItemIcon>
-            <ListItemText primary="All Moods" />
-            {expanded === 'all' ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={expanded === 'all'} timeout="auto" unmountOnExit>
-            <div className={innerList}>
-              <List component="div" disablePadding>
-                {allEmojiElements}
-              </List>
-            </div>
-          </Collapse>
-        </React.Fragment>
-      </List>
-    </div>
+            {/* List of all emojis */}
+            <React.Fragment>
+              <ListItem button onClick={() => toggleExpanded('all')}>
+                <ListItemIcon><Mood /></ListItemIcon>
+                <ListItemText primary="All Moods" />
+                {expanded === 'all' ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <Collapse in={expanded === 'all'} timeout="auto" unmountOnExit>
+                <div className={innerList}>
+                  <List component="div" disablePadding>
+                    {allEmojiElements}
+                  </List>
+                </div>
+              </Collapse>
+            </React.Fragment>
+          </List>
+          </div>}
+    </React.Fragment>
   )
 }
 
@@ -250,16 +246,16 @@ AffectSurveyList.propTypes = {
   moodHistoryList: PropTypes.arrayOf(PropTypes.string),
   currentStatus: PropTypes.shape(StatusObjectShape),
   affectPrivacy: PropTypes.shape(PrivacyObjectShape),
+  onBubbleOpenSurvey: PropTypes.func,
 
   updateCurrentAffect: PropTypes.func.isRequired,
   updatePrivacy: PropTypes.func.isRequired,
-  noInteraction: PropTypes.bool.isRequired,
-  onDismissSurvey: PropTypes.func
+  noInteraction: PropTypes.bool.isRequired
 }
 
 AffectSurveyList.defaultProps = {
+  onBubbleOpenSurvey: null,
   moodHistoryList: [],
   currentStatus: DEFAULT.StatusObjectShape,
-  affectPrivacy: DEFAULT.PrivacyObjectShape,
-  onDismissSurvey: null
+  affectPrivacy: DEFAULT.PrivacyObjectShape
 }

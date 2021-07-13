@@ -6,7 +6,6 @@ import { Grid } from '@material-ui/core'
 import FeedbackDialogueObservation from './FeedbackDialogueObservation.jsx'
 import FeedbackDialogueDetails from './FeedbackDialogueDetails.jsx'
 import FeedbackDialogueAffectSurvey from './FeedbackDialogueAffectSurvey.jsx'
-
 export default function FeedbackDialogueContent (props) {
   // Deconstruct the props
   const { onHide, cancelHide, ...restProps } = props
