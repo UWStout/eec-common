@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
+import { useRecoilValue } from 'recoil'
+import { EmojiListState } from '../../data/globalState.js'
+
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
 
@@ -16,9 +19,12 @@ const useStyles = makeStyles((theme) => ({
 
 function FeedbackDialogueAffectSurvey (props) {
   const classes = useStyles()
-  const { affectPrivacy, changeDisplayedFeedback, emojiList, currentStatus, updatePrivacy, updateCurrentAffect, ...restProps } = props
+  const { affectPrivacy, changeDisplayedFeedback, currentStatus, updatePrivacy, updateCurrentAffect, ...restProps } = props
   const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
   const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
+
+  // Subscribe to the global emojiList state
+  const emojiList = useRecoilValue(EmojiListState)
 
   // Lookup the affect from the list
   const affect = emojiList.find((item) => {
@@ -28,10 +34,6 @@ function FeedbackDialogueAffectSurvey (props) {
   const update = async (newPrivacy) => {
     await updateCurrentAffect(selectedAffectID, newPrivacy?.private)
     await updatePrivacy(newPrivacy)
-  }
-
-  const cancel = () => {
-    setSelectedAffectID(currentStatus?.currentAffectID)
   }
 
   const onSelection = (affect) => {
@@ -50,7 +52,6 @@ function FeedbackDialogueAffectSurvey (props) {
     <React.Fragment>
       {privacyDialogueOpen
         ? <PrivacyDialogue
-            onCancel={cancel}
             onUpdate={update}
             onClose={() => { setPrivacyDialogueOpen(false) }}
             privacy={affectPrivacy}

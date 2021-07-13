@@ -31,7 +31,7 @@ function PrivacyDialogue (props) {
   const onDialogueClose = (canceled, newPrivacy) => {
     if (!canceled) {
       onUpdate(newPrivacy)
-    } else {
+    } else if (onCancel) {
       onCancel()
     }
     onClose()

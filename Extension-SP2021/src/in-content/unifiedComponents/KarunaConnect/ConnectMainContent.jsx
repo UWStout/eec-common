@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
+import { useRecoilValue } from 'recoil'
+import { EmojiListState } from '../data/globalState.js'
+
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 import MuiAccordion from '@material-ui/core/Accordion'
@@ -14,7 +17,7 @@ import { ExpandMore } from '@material-ui/icons'
 import StatusListItem from './StatusListItem.jsx'
 import AffectSurveyList from '../AffectSurvey/AffectSurveyList.jsx'
 
-import { StatusObjectShape, AffectObjectShape } from '../data/dataTypeShapes.js'
+import { StatusObjectShape } from '../data/dataTypeShapes.js'
 
 import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
@@ -75,11 +78,14 @@ const AccordionDetails = withStyles((theme) => ({
 }))(MuiAccordionDetails)
 
 export default function ConnectMainContent (props) {
-  const { hidden, retracted, currentStatus, emojiList } = props
+  const { hidden, retracted, currentStatus } = props
   const { root, heading } = useStyles()
   const [expanded, setExpanded] = useState('userStatus')
   const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
   const [selectedAffect, setSelectedAffect] = useState(null)
+
+  // Subscribe to the global emojiList state
+  const emojiList = useRecoilValue(EmojiListState)
 
   // open affect survey
   const [affectSurveyOpen, setAffectSurveyOpen] = useState(false)
@@ -167,7 +173,6 @@ export default function ConnectMainContent (props) {
 ConnectMainContent.propTypes = {
   hidden: PropTypes.bool.isRequired,
   retracted: PropTypes.bool.isRequired,
-  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)).isRequired,
   currentStatus: PropTypes.shape(StatusObjectShape)
 }
 

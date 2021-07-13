@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { useRecoilState } from 'recoil'
-import { SelectedUserMood } from '../data/globalState.js'
-
 import Debounce from 'debounce'
+
+import { useRecoilValue } from 'recoil'
+import { EmojiListState } from '../data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse } from '@material-ui/core'
@@ -14,7 +14,7 @@ import SearchBar from 'material-ui-search-bar'
 
 import Emoji from './Emoji.jsx'
 import PrivacyDialogue from './PrivacyDialogue.jsx'
-import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../data/dataTypeShapes.js'
+import { PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../data/dataTypeShapes.js'
 
 import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Affect Survey', 'pink', 'black')
@@ -76,13 +76,16 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { selectedAffectID, setSelectedAffectID, affectPrivacy, onBubbleOpenSurvey, currentStatus, moodHistoryList, emojiList, updateCurrentAffect, updatePrivacy, noInteraction } = props
+  const { setSelectedAffectID, selectedAffectID, affectPrivacy, onBubbleOpenSurvey, currentStatus, moodHistoryList, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
   const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
 
   // Hide/Show the feedback dialog
   // const [selectedAffectID, setSelectedAffectID] = useRecoilState(SelectedUserMood)
   // const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
+
+  // Subscribe to the global emojiList state
+  const emojiList = useRecoilValue(EmojiListState)
 
   const [searchText, setSearchText] = useState('')
   const onSearchTextChanged = Debounce((newText) => {
@@ -248,7 +251,6 @@ export default function AffectSurveyList (props) {
 }
 
 AffectSurveyList.propTypes = {
-  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)),
   moodHistoryList: PropTypes.arrayOf(PropTypes.string),
   currentStatus: PropTypes.shape(StatusObjectShape),
   affectPrivacy: PropTypes.shape(PrivacyObjectShape),
@@ -261,7 +263,6 @@ AffectSurveyList.propTypes = {
 
 AffectSurveyList.defaultProps = {
   onBubbleOpenSurvey: null,
-  emojiList: [],
   moodHistoryList: [],
   currentStatus: DEFAULT.StatusObjectShape,
   affectPrivacy: DEFAULT.PrivacyObjectShape
