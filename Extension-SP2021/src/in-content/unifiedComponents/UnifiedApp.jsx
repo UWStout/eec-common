@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, Suspense } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
-import { LoggedInUserState } from './data/globalState.js'
+import { LoggedInUserState, SelectedUserMood } from './data/globalState.js'
 
 import { CssBaseline } from '@material-ui/core'
 
@@ -25,6 +25,8 @@ export default function UnifiedApp (props) {
 
   // Track logged in state globally
   const setLoggedInUserState = useSetRecoilState(LoggedInUserState)
+  const setSelectedUserMood = useSetRecoilState(SelectedUserMood)
+
   useEffect(() => {
     // When a login occurs, update basic user info
     emitter.on('login', async () => {
@@ -91,6 +93,7 @@ export default function UnifiedApp (props) {
       const currentStatusFromServer = await HELPER.retrieveUserStatus(context)
       LOG('New Users Status', currentStatusFromServer)
       setCurrentStatus(currentStatusFromServer)
+      setSelectedUserMood(currentStatusFromServer?.currentAffectID)
     } catch (err) {
       LOG('Failed to retrieve user status:', err.message)
     }

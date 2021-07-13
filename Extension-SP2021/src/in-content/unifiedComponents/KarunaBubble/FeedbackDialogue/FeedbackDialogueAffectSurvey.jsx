@@ -30,6 +30,10 @@ function FeedbackDialogueAffectSurvey (props) {
     await updatePrivacy(newPrivacy)
   }
 
+  const cancel = () => {
+    setSelectedAffectID(currentStatus?.currentAffectID)
+  }
+
   const onSelection = (affect) => {
     console.log(`[[FEEDBACK AFFECT SURVEY]]: ${affect?._id} emoji selected`)
     setSelectedAffectID(affect?._id)
@@ -46,6 +50,7 @@ function FeedbackDialogueAffectSurvey (props) {
     <React.Fragment>
       {privacyDialogueOpen
         ? <PrivacyDialogue
+            onCancel={cancel}
             onUpdate={update}
             onClose={() => { setPrivacyDialogueOpen(false) }}
             privacy={affectPrivacy}

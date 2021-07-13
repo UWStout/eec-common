@@ -50,3 +50,8 @@ export const ValidUserState = selector({
     return (userState?.id !== undefined)
   }
 })
+
+export const SelectedUserMood = atom({
+  key: 'SelectedUserMood',
+  default: ''
+})

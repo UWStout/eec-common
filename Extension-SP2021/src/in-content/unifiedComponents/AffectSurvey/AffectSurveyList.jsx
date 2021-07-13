@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
+import { useRecoilState } from 'recoil'
+import { SelectedUserMood } from '../data/globalState.js'
+
 import Debounce from 'debounce'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -10,7 +13,6 @@ import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/ic
 import SearchBar from 'material-ui-search-bar'
 
 import Emoji from './Emoji.jsx'
-import PrivacyDialog from './PrivacyDialogue.jsx'
 import PrivacyDialogue from './PrivacyDialogue.jsx'
 import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../data/dataTypeShapes.js'
 
@@ -74,10 +76,13 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { affectPrivacy, onBubbleOpenSurvey, currentStatus, moodHistoryList, emojiList, updateCurrentAffect, updatePrivacy, noInteraction } = props
+  const { selectedAffectID, setSelectedAffectID, affectPrivacy, onBubbleOpenSurvey, currentStatus, moodHistoryList, emojiList, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
   const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
-  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
+
+  // Hide/Show the feedback dialog
+  // const [selectedAffectID, setSelectedAffectID] = useRecoilState(SelectedUserMood)
+  // const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
 
   const [searchText, setSearchText] = useState('')
   const onSearchTextChanged = Debounce((newText) => {
@@ -97,6 +102,10 @@ export default function AffectSurveyList (props) {
   const update = async (newPrivacy) => {
     await updateCurrentAffect(selectedAffectID, newPrivacy?.private)
     await updatePrivacy(newPrivacy)
+  }
+
+  const cancel = () => {
+    setSelectedAffectID(currentStatus?.currentAffectID)
   }
 
   const onSelection = (affect) => {
@@ -163,6 +172,7 @@ export default function AffectSurveyList (props) {
     <React.Fragment>
       {(privacyDialogueOpen && !onBubbleOpenSurvey)
         ? <PrivacyDialogue
+            onCancel={cancel}
             onUpdate={update}
             onClose={() => { setPrivacyDialogueOpen(false) }}
             privacy={affectPrivacy}

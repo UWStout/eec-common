@@ -8,12 +8,7 @@ import CustomTooltip from './CustomTooltip.jsx'
 import { StatusObjectShape, AffectObjectShape } from '../data/dataTypeShapes.js'
 
 export default function StatusListItem (props) {
-  const { userEmail, emojiList, currentStatus } = props
-
-  // Lookup the affect from the list
-  const affect = emojiList.find((item) => {
-    return item._id === currentStatus?.currentAffectID
-  })
+  const { userEmail, currentStatus, affect } = props
 
   return (
     <Grid container>
@@ -55,7 +50,7 @@ export default function StatusListItem (props) {
 }
 
 StatusListItem.propTypes = {
-  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)).isRequired,
+  affect: PropTypes.shape(AffectObjectShape).isRequired,
   userEmail: PropTypes.string,
   currentStatus: PropTypes.shape(StatusObjectShape)
 }
