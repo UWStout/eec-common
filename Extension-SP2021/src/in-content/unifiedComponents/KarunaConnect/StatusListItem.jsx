@@ -1,14 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { useRecoilValue } from 'recoil'
+import { EmojiListState } from '../data/globalState.js'
+
 import { Typography, Grid, Avatar } from '@material-ui/core'
 
 import CustomTooltip from './CustomTooltip.jsx'
 
-import { StatusObjectShape, AffectObjectShape } from '../data/dataTypeShapes.js'
+import { StatusObjectShape } from '../data/dataTypeShapes.js'
 
 export default function StatusListItem (props) {
-  const { userEmail, emojiList, currentStatus } = props
+  const { userEmail, currentStatus } = props
+
+  // Subscribe to the global emojiList state
+  const emojiList = useRecoilValue(EmojiListState)
 
   // Lookup the affect from the list
   const affect = emojiList.find((item) => {
@@ -55,7 +61,6 @@ export default function StatusListItem (props) {
 }
 
 StatusListItem.propTypes = {
-  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)).isRequired,
   userEmail: PropTypes.string,
   currentStatus: PropTypes.shape(StatusObjectShape)
 }

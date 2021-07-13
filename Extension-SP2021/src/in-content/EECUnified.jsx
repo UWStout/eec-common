@@ -126,7 +126,9 @@ class EECUnified extends HTMLElement {
         <MuiThemeProvider theme={theme}>
           {/* Provides access to global state throughout App */}
           <RecoilRoot>
-            <UnifiedApp context={this.contextName} emitter={this.statusEmitter} />
+            <React.Suspense fallback={<div />}>
+              <UnifiedApp context={this.contextName} emitter={this.statusEmitter} />
+            </React.Suspense>
           </RecoilRoot>
         </MuiThemeProvider>
       </StylesProvider>,

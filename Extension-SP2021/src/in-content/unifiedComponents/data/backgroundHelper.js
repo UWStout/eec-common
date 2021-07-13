@@ -84,14 +84,44 @@ export function retrieveMoodPrivacy (context = 'none') {
   })
 }
 
-export function updateCurrentAffect (affectID, privacy, context = 'none') {
+export function setCurrentAffect (affectID, privacy, context = 'none') {
   return new Promise((resolve, reject) => {
-    // Read the privacy settings from the background context
+    // Send updated affect/mood status to the background process
     sendMessageToBackground(
       // Send to the back-end server using AJAX
-      { type: 'ajax-setUserAffect', affectID: affectID, privacy },
+      { type: 'ajax-setUserAffect', affectID, privacy },
       context,
       'Failed to set new mood ID: ', // <- Message logged to console on error
+
+      // Success and failure callbacks
+      () => { return resolve() },
+      (message) => { return reject(new Error(message)) }
+    )
+  })
+}
+
+export function setCurrentCollaboration (collaboration, context = 'none') {
+  return new Promise((resolve, reject) => {
+    // Send updated collaboration status to the background process
+    sendMessageToBackground(
+      { type: 'ajax-setCollaboration', collaboration },
+      context,
+      'Failed to set new collaboration status: ', // <- Message logged to console on error
+
+      // Success and failure callbacks
+      () => { return resolve() },
+      (message) => { return reject(new Error(message)) }
+    )
+  })
+}
+
+export function setTimeToRespond (timeToRespond, context = 'none') {
+  return new Promise((resolve, reject) => {
+    // Send updated "time to respond" to the background process
+    sendMessageToBackground(
+      { type: 'ajax-setTimeToRespond', timeToRespond },
+      context,
+      'Failed to set new time to respond: ', // <- Message logged to console on error
 
       // Success and failure callbacks
       () => { return resolve() },

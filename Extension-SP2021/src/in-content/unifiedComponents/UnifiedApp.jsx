@@ -1,6 +1,6 @@
 /* global EventEmitter3 */
 
-import React, { useState, useEffect, useCallback, Suspense } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
@@ -40,23 +40,8 @@ export default function UnifiedApp (props) {
 
   // General to all karuna components
   const [moodHistoryList, setMoodHistoryList] = useState([])
-  const [emojiList, setEmojiList] = useState([])
   const [currentStatus, setCurrentStatus] = useState(null)
   const [affectPrivacy, setAffectPrivacy] = useState(null)
-
-  // Functions to retrieve state asynchronously (wrapped in
-  // 'useCallback' so they don't change every render)
-  const getEmojiList = useCallback(async () => {
-    try {
-      const emojisFromServer = await HELPER.retrieveAffectList(context)
-      // Filter out inactive emojis (old ones that have been removed)
-      const filteredEmojis = emojisFromServer.filter((current) => (current.active))
-      LOG('New Emoji List', filteredEmojis)
-      setEmojiList(filteredEmojis)
-    } catch (err) {
-      LOG('Failed to retrieve emoji list:', err.message)
-    }
-  }, [context])
 
   const getMoodHistoryList = useCallback(async () => {
     try {
@@ -98,11 +83,10 @@ export default function UnifiedApp (props) {
 
   // Retrieve initial values for all state
   useEffect(() => {
-    getEmojiList()
     getMoodHistoryList()
     getPrivacy()
     getCurrentStatus()
-  }, [getCurrentStatus, getEmojiList, getMoodHistoryList, getPrivacy])
+  }, [getCurrentStatus, getMoodHistoryList, getPrivacy])
 
   // Functions to update state asynchronously
   const updatePrivacy = async (newPrivacy) => {
@@ -127,7 +111,7 @@ export default function UnifiedApp (props) {
     }
 
     try {
-      await HELPER.updateCurrentAffect(newAffectID, privacy, context)
+      await HELPER.setCurrentAffect(newAffectID, privacy, context)
       LOG('Current Mood Updated', newAffectID)
       await getCurrentStatus()
     } catch (err) {
@@ -137,7 +121,6 @@ export default function UnifiedApp (props) {
 
   // Group of props that we pass to several different children components
   const commonProps = {
-    emojiList,
     moodHistoryList,
     currentStatus,
     affectPrivacy,
@@ -148,12 +131,8 @@ export default function UnifiedApp (props) {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Suspense fallback={<div />}>
-        <KarunaConnect context={context} {...commonProps} />
-      </Suspense>
-      <Suspense fallback={<div />}>
-        <KarunaBubble context={context} {...commonProps} />
-      </Suspense>
+      <KarunaConnect context={context} {...commonProps} />
+      <KarunaBubble context={context} {...commonProps} />
       <MessageTextWrapper context={context} />
     </React.Fragment>
   )

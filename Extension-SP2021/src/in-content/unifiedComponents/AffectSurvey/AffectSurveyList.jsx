@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 
 import Debounce from 'debounce'
 
+import { useRecoilValue } from 'recoil'
+import { EmojiListState } from '../data/globalState.js'
+
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse } from '@material-ui/core'
 import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/icons'
@@ -12,7 +15,7 @@ import SearchBar from 'material-ui-search-bar'
 import Emoji from './Emoji.jsx'
 import PrivacyDialog from './PrivacyDialog.jsx'
 
-import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../data/dataTypeShapes.js'
+import { PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../data/dataTypeShapes.js'
 
 import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Affect Survey', 'pink', 'black')
@@ -74,8 +77,11 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { affectPrivacy, onDismissSurvey, currentStatus, moodHistoryList, emojiList, updateCurrentAffect, updatePrivacy, noInteraction } = props
+  const { affectPrivacy, onDismissSurvey, currentStatus, moodHistoryList, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
+
+  // Subscribe to the global emojiList state
+  const emojiList = useRecoilValue(EmojiListState)
 
   const [searchText, setSearchText] = useState('')
   const onSearchTextChanged = Debounce((newText) => {
@@ -241,7 +247,6 @@ export default function AffectSurveyList (props) {
 }
 
 AffectSurveyList.propTypes = {
-  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)),
   moodHistoryList: PropTypes.arrayOf(PropTypes.string),
   currentStatus: PropTypes.shape(StatusObjectShape),
   affectPrivacy: PropTypes.shape(PrivacyObjectShape),
@@ -253,7 +258,6 @@ AffectSurveyList.propTypes = {
 }
 
 AffectSurveyList.defaultProps = {
-  emojiList: [],
   moodHistoryList: [],
   currentStatus: DEFAULT.StatusObjectShape,
   affectPrivacy: DEFAULT.PrivacyObjectShape,
