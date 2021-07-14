@@ -52,8 +52,9 @@ const useStyles = makeStyles((theme) => ({
  * @param {object} props Properties for the component (See propTypes)
  * @returns {React.Element} The element to render for this component
  */
-export default function ConnectStatusDrawer ({ hidden, onHide }) {
+export default function ConnectStatusDrawer (props) {
   // Deconstruct props and style class names
+  const { hidden, onHide } = props
   const { root, paperRoot, panelRetracted, panelExpanded, panelHidden } = useStyles()
 
   // Is the mouse over this component

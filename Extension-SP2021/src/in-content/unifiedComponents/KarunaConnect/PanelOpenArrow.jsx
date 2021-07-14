@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function OpenArrow ({ showDouble, flipped }) {
+export default function OpenArrow (props) {
+  const { showDouble, flipped } = props
   const classes = useStyles()
 
   return (
