@@ -39,27 +39,7 @@ export default function UnifiedApp (props) {
   }, [emitter, setLoggedInUserState])
 
   // General to all karuna components
-  const [moodHistoryList, setMoodHistoryList] = useState([])
-  const [currentStatus, setCurrentStatus] = useState(null)
   const [affectPrivacy, setAffectPrivacy] = useState(null)
-
-  const getMoodHistoryList = useCallback(async () => {
-    try {
-      const moodHistoryFromServer = await HELPER.retrieveAffectHistoryList(context)
-      // make an array of only the affectIDs
-      const mostRecentMoodsWithDuplicates = moodHistoryFromServer
-        .map((item) => {
-          return item.affectID
-        })
-      // new Set gets rid of duplicates and slice gets the first 10
-      const mostRecentMoods = [...new Set(mostRecentMoodsWithDuplicates)].slice(0, 10)
-
-      LOG('New Mood History List', mostRecentMoods)
-      setMoodHistoryList(mostRecentMoods)
-    } catch (err) {
-      LOG('Failed to retrieve mood history list:', err.message)
-    }
-  }, [context])
 
   const getPrivacy = useCallback(async () => {
     try {
@@ -71,22 +51,10 @@ export default function UnifiedApp (props) {
     }
   }, [context])
 
-  const getCurrentStatus = useCallback(async () => {
-    try {
-      const currentStatusFromServer = await HELPER.retrieveUserStatus(context)
-      LOG('New Users Status', currentStatusFromServer)
-      setCurrentStatus(currentStatusFromServer)
-    } catch (err) {
-      LOG('Failed to retrieve user status:', err.message)
-    }
-  }, [context])
-
   // Retrieve initial values for all state
   useEffect(() => {
-    getMoodHistoryList()
     getPrivacy()
-    getCurrentStatus()
-  }, [getCurrentStatus, getMoodHistoryList, getPrivacy])
+  }, [getPrivacy])
 
   // Functions to update state asynchronously
   const updatePrivacy = async (newPrivacy) => {
@@ -104,25 +72,9 @@ export default function UnifiedApp (props) {
     }
   }
 
-  const updateCurrentAffect = async (newAffectID, privacy = true) => {
-    if (!newAffectID) {
-      LOG.error('(WARNING) Refusing to set current mood to null/undefined')
-      return
-    }
-
-    try {
-      await HELPER.setCurrentAffect(newAffectID, privacy, context)
-      LOG('Current Mood Updated', newAffectID)
-      await getCurrentStatus()
-    } catch (err) {
-      LOG.error('Failed to update current affect:', err.message)
-    }
-  }
-
   // Group of props that we pass to several different children components
   const commonProps = {
     affectPrivacy,
-    updateCurrentAffect,
     updatePrivacy
   }
 

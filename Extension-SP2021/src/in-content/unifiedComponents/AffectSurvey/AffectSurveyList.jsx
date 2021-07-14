@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 
 import Debounce from 'debounce'
 
-import { useRecoilValue } from 'recoil'
-import { EmojiListState, UserStatusState, AffectHistoryListState } from '../data/globalState.js'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { EmojiListState, UserStatusState, AffectHistoryListState, UserAffectIDState } from '../data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse } from '@material-ui/core'
@@ -14,7 +14,7 @@ import SearchBar from 'material-ui-search-bar'
 
 import Emoji from './Emoji.jsx'
 import PrivacyDialog from './PrivacyDialog.jsx'
-import { PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../data/dataTypeShapes.js'
+import { PrivacyObjectShape, DEFAULT } from '../data/dataTypeShapes.js'
 
 import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Affect Survey', 'pink', 'black')
@@ -69,14 +69,17 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { setSelectedAffectID, selectedAffectID, affectPrivacy, onBubbleOpenSurvey, updateCurrentAffect, updatePrivacy, noInteraction } = props
+  const { setSelectedAffectID, selectedAffectID, affectPrivacy, onBubbleOpenSurvey, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
   const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
 
-  // Subscribe to the global emojiList state, moodHistoryList, and current status (GLOBAL STATE)
+  // Subscribe to changes to the global emojiList state, moodHistoryList, and current status (GLOBAL STATE)
   const emojiList = useRecoilValue(EmojiListState)
   const currentStatus = useRecoilValue(UserStatusState)
   const moodHistoryList = useRecoilValue(AffectHistoryListState)
+
+  // Mutator for global mood state (GLOBAL STATE)
+  const setUserAffectID = useSetRecoilState(UserAffectIDState)
 
   const [searchText, setSearchText] = useState('')
   const onSearchTextChanged = Debounce((newText) => {
@@ -94,7 +97,8 @@ export default function AffectSurveyList (props) {
   }
 
   const update = async (newPrivacy) => {
-    await updateCurrentAffect(selectedAffectID, newPrivacy?.private)
+    setUserAffectID(selectedAffectID)
+    // await updateCurrentAffect(selectedAffectID, newPrivacy?.private)
     await updatePrivacy(newPrivacy)
   }
 
@@ -242,19 +246,14 @@ export default function AffectSurveyList (props) {
 }
 
 AffectSurveyList.propTypes = {
-  moodHistoryList: PropTypes.arrayOf(PropTypes.string),
-  currentStatus: PropTypes.shape(StatusObjectShape),
   affectPrivacy: PropTypes.shape(PrivacyObjectShape),
   onBubbleOpenSurvey: PropTypes.func,
 
-  updateCurrentAffect: PropTypes.func.isRequired,
   updatePrivacy: PropTypes.func.isRequired,
   noInteraction: PropTypes.bool.isRequired
 }
 
 AffectSurveyList.defaultProps = {
   onBubbleOpenSurvey: null,
-  moodHistoryList: [],
-  currentStatus: DEFAULT.StatusObjectShape,
   affectPrivacy: DEFAULT.PrivacyObjectShape
 }

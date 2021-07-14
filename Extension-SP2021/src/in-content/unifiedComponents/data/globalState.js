@@ -51,6 +51,42 @@ export const ValidUserState = selector({
   }
 })
 
+/** Privacy preferences data for sharing mood */
+export const PrivacyPrefsState = atom({
+  key: 'PrivacyPrefsState',
+  default: {
+    private: true,
+    prompt: true
+  },
+  effects_UNSTABLE: [
+    ({ setSelf, onSet }) => {
+      // Initialize
+      setSelf(HELPER.retrieveMoodPrivacy(MSG_CONTEXT))
+
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Logged in user updated', newVal)
+      })
+    }
+  ]
+})
+
+/** Selector to set Privacy Preferences (with side-effects) */
+export const PrivacyPrefsStateSetter = selector({
+  key: 'PrivacyPrefsStateSetter',
+  get: ({ get }) => {
+    return get(PrivacyPrefsState)
+  },
+
+  set: ({ set }, newPrivacy) => {
+    // Update local cached state
+    set(PrivacyPrefsState, { ...newPrivacy })
+
+    // Send to the database
+    HELPER.setMoodPrivacy(newPrivacy, MSG_CONTEXT)
+  }
+})
+
 /** List of available affects/emojis */
 export const AffectListState = atom({
   key: 'AffectListState',
