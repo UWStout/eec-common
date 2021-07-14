@@ -69,7 +69,6 @@ export default function KarunaConnect (props) {
         <ConnectStatusDrawer
           hidden={!userLoggedIn || mainPanelOpen}
           onHide={openMainPanel}
-          currentStatus={restProps.currentStatus}
           affectPrivacy={restProps.affectPrivacy}
         />
         <ConnectMainDrawer

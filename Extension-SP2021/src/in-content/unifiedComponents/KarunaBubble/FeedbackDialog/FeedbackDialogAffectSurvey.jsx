@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
-import { EmojiListState } from '../../data/globalState.js'
+import { EmojiListState, UserStatusState } from '../../data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
@@ -19,12 +19,14 @@ const useStyles = makeStyles((theme) => ({
 
 function FeedbackDialogAffectSurvey (props) {
   const classes = useStyles()
-  const { affectPrivacy, changeDisplayedFeedback, currentStatus, updatePrivacy, updateCurrentAffect, ...restProps } = props
+  const { changeDisplayedFeedback, affectPrivacy, updatePrivacy, updateCurrentAffect, ...restProps } = props
+
+  // Subscribe to the global emojiList state and current status (GLOBAL STATE)
+  const emojiList = useRecoilValue(EmojiListState)
+  const currentStatus = useRecoilValue(UserStatusState)
+
   const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
   const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
-
-  // Subscribe to the global emojiList state
-  const emojiList = useRecoilValue(EmojiListState)
 
   // Lookup the affect from the list
   const affect = emojiList.find((item) => {
