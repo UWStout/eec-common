@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import Debounce from 'debounce'
 
 import { useRecoilValue } from 'recoil'
-import { EmojiListState } from '../data/globalState.js'
+import { EmojiListState, UserStatusState, AffectHistoryListState } from '../data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse } from '@material-ui/core'
@@ -69,16 +69,14 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { setSelectedAffectID, selectedAffectID, affectPrivacy, onBubbleOpenSurvey, currentStatus, moodHistoryList, updateCurrentAffect, updatePrivacy, noInteraction } = props
+  const { setSelectedAffectID, selectedAffectID, affectPrivacy, onBubbleOpenSurvey, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
   const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
 
-  // Hide/Show the feedback dialog
-  // const [selectedAffectID, setSelectedAffectID] = useRecoilState(SelectedUserMood)
-  // const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
-
-  // Subscribe to the global emojiList state
+  // Subscribe to the global emojiList state, moodHistoryList, and current status (GLOBAL STATE)
   const emojiList = useRecoilValue(EmojiListState)
+  const currentStatus = useRecoilValue(UserStatusState)
+  const moodHistoryList = useRecoilValue(AffectHistoryListState)
 
   const [searchText, setSearchText] = useState('')
   const onSearchTextChanged = Debounce((newText) => {

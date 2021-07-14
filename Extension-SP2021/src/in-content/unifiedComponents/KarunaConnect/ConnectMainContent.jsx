@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
-import { EmojiListState } from '../data/globalState.js'
+import { EmojiListState, UserStatusState } from '../data/globalState.js'
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
@@ -78,14 +78,16 @@ const AccordionDetails = withStyles((theme) => ({
 }))(MuiAccordionDetails)
 
 export default function ConnectMainContent (props) {
-  const { hidden, retracted, currentStatus } = props
+  const { hidden, retracted } = props
   const { root, heading } = useStyles()
+
+  // Subscribe to the global emojiList state and current status (GLOBAL STATE)
+  const emojiList = useRecoilValue(EmojiListState)
+  const currentStatus = useRecoilValue(UserStatusState)
+
   const [expanded, setExpanded] = useState('userStatus')
   const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
   const [selectedAffect, setSelectedAffect] = useState(null)
-
-  // Subscribe to the global emojiList state
-  const emojiList = useRecoilValue(EmojiListState)
 
   // open affect survey
   const [affectSurveyOpen, setAffectSurveyOpen] = useState(false)
@@ -104,7 +106,7 @@ export default function ConnectMainContent (props) {
       else return item._id === currentStatus?.currentAffectID
     })
     setSelectedAffect(affect)
-  }, [selectedAffectID])
+  }, [currentStatus?.currentAffectID, emojiList, selectedAffectID])
 
   return (
     <div className={root}>
@@ -115,7 +117,7 @@ export default function ConnectMainContent (props) {
           aria-controls="user-status-content"
           id="user-status-header"
         >
-          <StatusListItem currentStatus={currentStatus} affect={currentAffect} userEmail="Seth.berrier@gmail.com" />
+          <StatusListItem affect={currentAffect} userEmail="Seth.berrier@gmail.com" />
         </AccordionSummary>
         <AccordionDetails id="user-status-content" aria-labelledby="users-status-header">
           <Grid container spacing={2}>

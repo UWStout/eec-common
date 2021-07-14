@@ -121,8 +121,6 @@ export default function UnifiedApp (props) {
 
   // Group of props that we pass to several different children components
   const commonProps = {
-    moodHistoryList,
-    currentStatus,
     affectPrivacy,
     updateCurrentAffect,
     updatePrivacy
