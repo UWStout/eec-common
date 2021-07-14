@@ -46,13 +46,13 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 /**
- * A small panel with an arrow that expands when hovered to show the user's status.
+ * A small drawer/side-sheet with an arrow that expands when hovered to show the user's status.
  * Will transition to the main panel when clicked.
  *
  * @param {object} props Properties for the component (See propTypes)
  * @returns {React.Element} The element to render for this component
  */
-export default function ConnectStatusPanel ({ hidden, onHide }) {
+export default function ConnectStatusDrawer ({ hidden, onHide }) {
   // Deconstruct props and style class names
   const { root, paperRoot, panelRetracted, panelExpanded, panelHidden } = useStyles()
 
@@ -110,7 +110,7 @@ export default function ConnectStatusPanel ({ hidden, onHide }) {
   )
 }
 
-ConnectStatusPanel.propTypes = {
+ConnectStatusDrawer.propTypes = {
   /** Is the panel hidden */
   hidden: PropTypes.bool,
 
@@ -118,7 +118,7 @@ ConnectStatusPanel.propTypes = {
   onHide: PropTypes.func
 }
 
-ConnectStatusPanel.defaultProps = {
+ConnectStatusDrawer.defaultProps = {
   hidden: false,
   onHide: null
 }

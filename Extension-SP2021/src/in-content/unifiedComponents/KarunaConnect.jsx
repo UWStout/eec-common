@@ -6,8 +6,8 @@ import { ConnectVisibilityState, BubbleVisibilityState, ValidUserState } from '.
 
 import { makeStyles } from '@material-ui/core/styles'
 
-import ConnectStatusPanel from './KarunaConnect/ConnectStatusPanel.jsx'
-import ConnectMainPanel from './KarunaConnect/ConnectMainPanel.jsx'
+import ConnectStatusDrawer from './KarunaConnect/ConnectStatusDrawer.jsx'
+import ConnectMainDrawer from './KarunaConnect/ConnectMainDrawer.jsx'
 
 // Colorful logger
 import { makeLogger } from '../../util/Logger.js'
@@ -66,13 +66,13 @@ export default function KarunaConnect (props) {
   return (
     <div>
       <div className={(context === 'msTeams' ? rootTeams : rootDiscord)}>
-        <ConnectStatusPanel
+        <ConnectStatusDrawer
           hidden={!userLoggedIn || mainPanelOpen}
           onHide={openMainPanel}
           currentStatus={restProps.currentStatus}
           affectPrivacy={restProps.affectPrivacy}
         />
-        <ConnectMainPanel
+        <ConnectMainDrawer
           hidden={!mainPanelOpen}
           onHide={() => { setMainPanelOpen(false) }}
           {...restProps}

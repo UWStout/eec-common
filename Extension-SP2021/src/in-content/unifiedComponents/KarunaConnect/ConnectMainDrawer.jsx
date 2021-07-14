@@ -62,13 +62,14 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 /**
- * The main Karuna Connect panel showing info about user status, team status,
- * and more with functionality to update status.
+ * The main drawer/side-sheet for the connect panel showing info about
+ * the current user's status, their team's status, and more with
+ * functionality to update the current user's status.
  *
  * @param {object} props Properties for the component (See propTypes)
  * @returns {React.Element} The element to render for this component
  */
-export default function ConnectMainPanel (props) {
+export default function ConnectMainDrawer (props) {
   const { hidden, onHide, waitToHide, ...contentProps } = props
 
   // Deconstruct props and style class names
@@ -151,7 +152,7 @@ export default function ConnectMainPanel (props) {
   )
 }
 
-ConnectMainPanel.propTypes = {
+ConnectMainDrawer.propTypes = {
   /** Is the panel hidden */
   hidden: PropTypes.bool,
 
@@ -162,7 +163,7 @@ ConnectMainPanel.propTypes = {
   waitToHide: PropTypes.number
 }
 
-ConnectMainPanel.defaultProps = {
+ConnectMainDrawer.defaultProps = {
   hidden: false,
   onHide: null,
   waitToHide: 3000
