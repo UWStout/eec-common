@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function PrivacyDialogue (props) {
+function PrivacyDialog (props) {
   const classes = useStyles()
   const { privacy, onClose, onUpdate, onCancel } = props
 
@@ -114,15 +114,15 @@ function PrivacyDialogue (props) {
   )
 }
 
-PrivacyDialogue.propTypes = {
+PrivacyDialog.propTypes = {
   privacy: PropTypes.shape(PrivacyObjectShape).isRequired,
   onClose: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
   onCancel: PropTypes.func
 }
 
-PrivacyDialogue.defaultProps = {
+PrivacyDialog.defaultProps = {
   onCancel: null
 }
 
-export default PrivacyDialogue
+export default PrivacyDialog
