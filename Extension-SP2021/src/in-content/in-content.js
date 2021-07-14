@@ -57,9 +57,6 @@ jQuery(document).ready(() => {
     // Attempt to update EEC text-boxes (if needed)
     updateTextBoxes()
 
-    // Signal that content has changed to the connect component
-    // karunaUnifiedElem.onMutation()
-
     // Check team and channel names on any page mutation.
     // We use optional chaining to avoid undefined errors
     const oldValues = { userName, teamName, channelName }
@@ -97,7 +94,6 @@ jQuery(document).ready(() => {
 })
 
 // Track and inject the extension for each text-box
-const EECMessageTextModuleList = new Map()
 function updateTextBoxes () {
   // Get all text-box elements
   let textBoxes
@@ -109,26 +105,6 @@ function updateTextBoxes () {
     textBoxes = document.querySelectorAll('[role="textbox"]')
   }
 
-  // Loop over each text-box and install an extension element
-  // for it if one does not already exist.
-  textBoxes.forEach((textBox) => {
-    let key = textBox
-    if (IS_DISCORD) {
-      key = textBox.getAttribute('aria-label')
-    }
-    if (!EECMessageTextModuleList.has(key)) {
-      // LOG(`Adding New EEC Message Text Module (${EECMessageTextModuleList.size + 1} added)`)
-
-      // Build in-line extension
-      // const messageTextModuleElem = document.createElement('eec-message-text-module')
-      // messageTextModuleElem.setStatusEmitter(statusEmitter)
-      // messageTextModuleElem.contextName = contextName
-      // messageTextModuleElem.setBackgroundPort(extensionPort)
-      // messageTextModuleElem.setTextBox(textBox)
-
-      // // Insert it and add to lookup map
-      // textBox.parentNode.insertBefore(messageTextModuleElem, textBox.nextSibling)
-      // EECMessageTextModuleList.set(key, messageTextModuleElem)
-    }
-  })
+  // Send updated list of text-boxes to the unified app
+  statusEmitter.emit('updateTextBoxes', textBoxes)
 }

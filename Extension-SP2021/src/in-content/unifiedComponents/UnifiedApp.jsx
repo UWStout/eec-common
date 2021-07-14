@@ -12,10 +12,10 @@ import * as HELPER from './data/backgroundHelper.js'
 
 import KarunaConnect from './KarunaConnect.jsx'
 import KarunaBubble from './KarunaBubble.jsx'
-import MessageTextWrapper from './MessageTextWrapper.jsx'
 
 // Colorful logger
 import { makeLogger } from '../../util/Logger.js'
+import KarunaTextBoxManager from './KarunaTextBoxManager.jsx'
 const LOG = makeLogger('UNIFIED React App', 'lavender', 'black')
 
 // The sidebar Karuna Connect object
@@ -83,7 +83,7 @@ export default function UnifiedApp (props) {
       <CssBaseline />
       <KarunaConnect context={context} {...commonProps} />
       <KarunaBubble context={context} {...commonProps} />
-      <MessageTextWrapper context={context} />
+      <KarunaTextBoxManager context={context} emitter={emitter} />
     </React.Fragment>
   )
 }
