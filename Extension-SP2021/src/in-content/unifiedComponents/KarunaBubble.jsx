@@ -5,7 +5,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil'
 import { ConnectVisibilityState, BubbleVisibilityState } from './data/globalState.js'
 
 import PersistentBubble from './KarunaBubble/PersistentBubble.jsx'
-import FeedbackDialogue from './KarunaBubble/FeedbackDialogue/FeedbackDialogue.jsx'
+import FeedbackDialog from './KarunaBubble/FeedbackDialog/FeedbackDialog.jsx'
 
 // Colorful logger
 import { makeLogger } from '../../util/Logger.js'
@@ -20,7 +20,7 @@ export default function KarunaBubble (props) {
   const setMainConnectPanelOpen = useSetRecoilState(ConnectVisibilityState)
 
   // Hide/Show the feedback dialog
-  const [feedbackDialogueOpen, setFeedbackDialogueOpen] = useRecoilState(BubbleVisibilityState)
+  const [FeedbackDialogOpen, setFeedbackDialogOpen] = useRecoilState(BubbleVisibilityState)
 
   // Timeout for hiding the feedback dialog
   const [feedbackHideTimeout, setFeedbackHideTimeout] = useState(false)
@@ -33,23 +33,23 @@ export default function KarunaBubble (props) {
     if (open) {
       setMainConnectPanelOpen(false)
     }
-    setFeedbackDialogueOpen(open)
+    setFeedbackDialogOpen(open)
   }
 
   // Hide the feedback dialog (possibly after a set timeout)
-  const hideFeedbackDialogue = (immediate) => {
-    if (feedbackDialogueOpen) {
+  const hideFeedbackDialog = (immediate) => {
+    if (FeedbackDialogOpen) {
       if (immediate) {
-        setFeedbackDialogueOpen(false)
+        setFeedbackDialogOpen(false)
       } else {
-        const timeoutHandle = setTimeout(() => { setFeedbackDialogueOpen(false) }, 3000)
+        const timeoutHandle = setTimeout(() => { setFeedbackDialogOpen(false) }, 3000)
         setFeedbackHideTimeout(timeoutHandle)
       }
     }
   }
 
   // Function for canceling a pending hide request
-  const cancelHideFeedbackDialogue = () => {
+  const cancelHideFeedbackDialog = () => {
     if (feedbackHideTimeout) {
       clearTimeout(feedbackHideTimeout)
       setFeedbackHideTimeout(false)
@@ -58,20 +58,20 @@ export default function KarunaBubble (props) {
 
   // Main render
   return (
-    <FeedbackDialogue
-      hidden={!feedbackDialogueOpen}
-      onHide={hideFeedbackDialogue}
-      cancelHide={cancelHideFeedbackDialogue}
+    <FeedbackDialog
+      hidden={!FeedbackDialogOpen}
+      onHide={hideFeedbackDialog}
+      cancelHide={cancelHideFeedbackDialog}
       {...restProps}
     >
       <PersistentBubble
         isContextIndicated={contextIndicator}
-        hidden={!feedbackDialogueOpen}
+        hidden={!FeedbackDialogOpen}
         setOpen={openCloseFeedbackDialog}
-        onHide={hideFeedbackDialogue}
-        cancelHide={cancelHideFeedbackDialogue}
+        onHide={hideFeedbackDialog}
+        cancelHide={cancelHideFeedbackDialog}
       />
-    </FeedbackDialogue>
+    </FeedbackDialog>
   )
 }
 

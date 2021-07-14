@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 
 import { Grid } from '@material-ui/core'
 
-import FeedbackDialogueObservation from './FeedbackDialogueObservation.jsx'
-import FeedbackDialogueDetails from './FeedbackDialogueDetails.jsx'
-import FeedbackDialogueAffectSurvey from './FeedbackDialogueAffectSurvey.jsx'
-export default function FeedbackDialogueContent (props) {
+import FeedbackDialogObservation from './FeedbackDialogObservation.jsx'
+import FeedbackDialogDetails from './FeedbackDialogDetails.jsx'
+import FeedbackDialogAffectSurvey from './FeedbackDialogAffectSurvey.jsx'
+export default function FeedbackDialogContent (props) {
   // Deconstruct the props
   const { onHide, cancelHide, ...restProps } = props
 
@@ -24,19 +24,19 @@ export default function FeedbackDialogueContent (props) {
     <Grid container spacing={1} >
       <Grid item onMouseEnter={cancelHide} onMouseLeave={() => onHide(false)}>
         {displayedFeedback === 'observations' &&
-          <FeedbackDialogueObservation
+          <FeedbackDialogObservation
             changeDisplayedFeedback={changeDisplayedFeedback}
             setTitle={setTitle}
           />}
 
         {displayedFeedback === 'details' &&
-          <FeedbackDialogueDetails
+          <FeedbackDialogDetails
             changeDisplayedFeedback={changeDisplayedFeedback}
             title={title}
           />}
 
         {displayedFeedback === 'affectSurvey' &&
-          <FeedbackDialogueAffectSurvey
+          <FeedbackDialogAffectSurvey
             changeDisplayedFeedback={changeDisplayedFeedback}
             {...restProps}
           />}
@@ -45,7 +45,7 @@ export default function FeedbackDialogueContent (props) {
   )
 }
 
-FeedbackDialogueContent.propTypes = {
+FeedbackDialogContent.propTypes = {
   onHide: PropTypes.func.isRequired,
   cancelHide: PropTypes.func.isRequired
 }

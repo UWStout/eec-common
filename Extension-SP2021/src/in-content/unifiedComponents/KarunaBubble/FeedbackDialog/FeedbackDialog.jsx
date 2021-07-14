@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Tooltip as MuiTooltip } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
-import FeedbackDialogueContent from './FeedbackDialogueContent.jsx'
+import FeedbackDialogContent from './FeedbackDialogContent.jsx'
 
 const Tooltip = withStyles((theme) => ({
   arrow: {
@@ -24,7 +24,7 @@ const Tooltip = withStyles((theme) => ({
   }
 }))(MuiTooltip)
 
-export default function FeedbackDialogue (props) {
+export default function FeedbackDialog (props) {
   // Deconstruct the props
   const { children, offset, hidden, ...restProps } = props
 
@@ -42,7 +42,7 @@ export default function FeedbackDialogue (props) {
       interactive
       placement='top-end'
       open={!hidden}
-      title={<FeedbackDialogueContent {...restProps} />}
+      title={<FeedbackDialogContent {...restProps} />}
       PopperProps={newPopperProps}
       arrow
     >
@@ -51,13 +51,13 @@ export default function FeedbackDialogue (props) {
   )
 }
 
-FeedbackDialogue.propTypes = {
+FeedbackDialog.propTypes = {
   hidden: PropTypes.bool.isRequired,
   children: PropTypes.node,
   offset: PropTypes.string
 }
 
-FeedbackDialogue.defaultProps = {
+FeedbackDialog.defaultProps = {
   children: null,
   offset: '-10, -20'
 }

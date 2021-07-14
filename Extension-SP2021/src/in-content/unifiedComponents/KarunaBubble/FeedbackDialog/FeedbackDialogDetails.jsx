@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function FeedbackDialogueDetails (props) {
+function FeedbackDialogDetails (props) {
   const { title, changeDisplayedFeedback } = props
   const { rootStyle, itemStyle, clickable } = useStyles()
 
@@ -52,9 +52,9 @@ function FeedbackDialogueDetails (props) {
   )
 }
 
-FeedbackDialogueDetails.propTypes = {
+FeedbackDialogDetails.propTypes = {
   title: PropTypes.string.isRequired,
   changeDisplayedFeedback: PropTypes.func.isRequired
 }
 
-export default FeedbackDialogueDetails
+export default FeedbackDialogDetails

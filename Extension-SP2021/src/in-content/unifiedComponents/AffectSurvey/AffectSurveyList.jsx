@@ -43,13 +43,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-// DEBUG: Test data for recent emojis
-// const moodHistoryListTest = [
-//   '6008928508baff43187a74f0',
-//   '6008928508baff43187a7504',
-//   '6008928508baff43187a74f8'
-// ]
-
 // DEBUG: Test data for favorite emojis
 const favList = [
   '6008928508baff43187a74f9',
@@ -78,7 +71,7 @@ function searchFilter (fullList, searchText) {
 export default function AffectSurveyList (props) {
   const { setSelectedAffectID, selectedAffectID, affectPrivacy, onBubbleOpenSurvey, currentStatus, moodHistoryList, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
-  const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
+  const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
 
   // Hide/Show the feedback dialog
   // const [selectedAffectID, setSelectedAffectID] = useRecoilState(SelectedUserMood)
@@ -115,7 +108,7 @@ export default function AffectSurveyList (props) {
     console.log(`[[AFFECT SURVEY]]: ${affect?._id} emoji selected`)
     setSelectedAffectID(affect?._id)
     if (affectPrivacy.prompt) {
-      setPrivacyDialogueOpen(true)
+      setPrivacyDialogOpen(true)
     } else {
       update(affectPrivacy)
     }
@@ -173,11 +166,11 @@ export default function AffectSurveyList (props) {
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <React.Fragment>
-      {(privacyDialogueOpen && !onBubbleOpenSurvey)
+      {(privacyDialogOpen && !onBubbleOpenSurvey)
         ? <PrivacyDialog
             onCancel={cancel}
             onUpdate={update}
-            onClose={() => { setPrivacyDialogueOpen(false) }}
+            onClose={() => { setPrivacyDialogOpen(false) }}
             privacy={affectPrivacy}
           />
         : <div className={root}>

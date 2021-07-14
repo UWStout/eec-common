@@ -28,7 +28,7 @@ function PrivacyDialog (props) {
   // should probably be a global state from the database since the user probably wants this to be remembered
   const [promptState, setPromptState] = useState(privacy.prompt)
 
-  const onDialogueClose = (canceled, newPrivacy) => {
+  const onDialogClose = (canceled, newPrivacy) => {
     if (!canceled) {
       onUpdate(newPrivacy)
     } else if (onCancel) {
@@ -39,8 +39,8 @@ function PrivacyDialog (props) {
 
   const handleClose = (event, reason) => {
     LOG('Dialog Close:', reason)
-    if (onDialogueClose) {
-      onDialogueClose(
+    if (onDialogClose) {
+      onDialogClose(
         (reason !== 'public' && reason !== 'private'),
         {
           private: reason !== 'public',

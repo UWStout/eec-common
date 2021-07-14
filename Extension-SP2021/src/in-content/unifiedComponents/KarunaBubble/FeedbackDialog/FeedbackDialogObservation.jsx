@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function FeedbackDialogueObservation (props) {
+export default function FeedbackDialogObservation (props) {
   // Deconstruct props
   const { setTitle, changeDisplayedFeedback } = props
 
@@ -57,7 +57,7 @@ export default function FeedbackDialogueObservation (props) {
   )
 }
 
-FeedbackDialogueObservation.propTypes = {
+FeedbackDialogObservation.propTypes = {
   setTitle: PropTypes.func.isRequired,
   changeDisplayedFeedback: PropTypes.func.isRequired
 }

@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
 
 import AffectSurveyList from '../../AffectSurvey/AffectSurveyList.jsx'
-import PrivacyDialogue from '../../AffectSurvey/PrivacyDialogue.jsx'
+import PrivacyDialog from '../../AffectSurvey/PrivacyDialog.jsx'
 import { AffectObjectShape, PrivacyObjectShape, StatusObjectShape, DEFAULT } from '../../data/dataTypeShapes.js'
 
 const useStyles = makeStyles((theme) => ({
@@ -17,10 +17,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function FeedbackDialogueAffectSurvey (props) {
+function FeedbackDialogAffectSurvey (props) {
   const classes = useStyles()
   const { affectPrivacy, changeDisplayedFeedback, currentStatus, updatePrivacy, updateCurrentAffect, ...restProps } = props
-  const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false)
+  const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
   const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
 
   // Subscribe to the global emojiList state
@@ -41,7 +41,7 @@ function FeedbackDialogueAffectSurvey (props) {
     setSelectedAffectID(affect?._id)
     window.dispatchEvent(new CustomEvent('resize'))
     if (affectPrivacy?.prompt) {
-      setPrivacyDialogueOpen(true)
+      setPrivacyDialogOpen(true)
     } else {
       update(affectPrivacy)
     }
@@ -50,10 +50,10 @@ function FeedbackDialogueAffectSurvey (props) {
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <React.Fragment>
-      {privacyDialogueOpen
-        ? <PrivacyDialogue
+      {privacyDialogOpen
+        ? <PrivacyDialog
             onUpdate={update}
-            onClose={() => { setPrivacyDialogueOpen(false) }}
+            onClose={() => { setPrivacyDialogOpen(false) }}
             privacy={affectPrivacy}
           />
         : <Grid container spacing={1}>
@@ -73,7 +73,7 @@ function FeedbackDialogueAffectSurvey (props) {
               emojiList={emojiList}
               currentStatus={currentStatus}
               onBubbleOpenSurvey={onSelection}
-              onDismissSurvey={() => { setPrivacyDialogueOpen(false) }}
+              onDismissSurvey={() => { setPrivacyDialogOpen(false) }}
               {...restProps}
             />
           </Grid>
@@ -82,7 +82,7 @@ function FeedbackDialogueAffectSurvey (props) {
     </React.Fragment>
   )
 }
-FeedbackDialogueAffectSurvey.propTypes = {
+FeedbackDialogAffectSurvey.propTypes = {
   changeDisplayedFeedback: PropTypes.func.isRequired,
   emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)),
   currentStatus: PropTypes.shape(StatusObjectShape),
@@ -95,7 +95,7 @@ FeedbackDialogueAffectSurvey.propTypes = {
   onDismissSurvey: PropTypes.func
 }
 
-FeedbackDialogueAffectSurvey.defaultProps = {
+FeedbackDialogAffectSurvey.defaultProps = {
   emojiList: [],
   moodHistoryList: [],
   currentStatus: DEFAULT.StatusObjectShape,
@@ -103,4 +103,4 @@ FeedbackDialogueAffectSurvey.defaultProps = {
   onDismissSurvey: null
 }
 
-export default FeedbackDialogueAffectSurvey
+export default FeedbackDialogAffectSurvey
