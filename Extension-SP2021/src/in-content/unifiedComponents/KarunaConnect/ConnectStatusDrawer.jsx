@@ -120,12 +120,12 @@ export default function ConnectStatusDrawer (props) {
           </Grid>
           <Grid item xs={12}>
             <CustomTooltip placement='left' title={currentStatus ? (currentStatus.collaboration ? 'teamwork' : 'solo') : 'unknown'}>
-              <Typography variant='body1'>{currentStatus ? (currentStatus.collaboration ? '👫' : '🧍') : '?'}</Typography>
+              <Typography variant='body1' align='center' gutterBottom='true'>{currentStatus ? (currentStatus.collaboration ? '👫' : '🧍') : '?'}</Typography>
             </CustomTooltip>
           </Grid>
           <Grid item xs={12}>
             <CustomTooltip placement='left' title={currentStatus?.timeToRespond > 0 ? `${currentStatus.timeToRespond} mins` : '? mins'}>
-              <Typography variant='body1'>🕐</Typography>
+              <Typography variant='body1' align='center'>🕐</Typography>
             </CustomTooltip>
           </Grid>
         </Grid>
