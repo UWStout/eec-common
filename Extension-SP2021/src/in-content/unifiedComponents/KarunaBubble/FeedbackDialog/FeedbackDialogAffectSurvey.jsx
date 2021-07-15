@@ -26,35 +26,17 @@ function FeedbackDialogAffectSurvey (props) {
   const currentStatus = useRecoilValue(UserStatusState)
 
   const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
-  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
 
   // Lookup the affect from the list
   const affect = emojiList.find((item) => {
     return item._id === currentStatus?.currentAffectID
   })
 
-  const update = async (newPrivacy) => {
-    await updateCurrentAffect(selectedAffectID, newPrivacy?.private)
-    await updatePrivacy(newPrivacy)
-  }
-
-  const onSelection = (affect) => {
-    console.log(`[[FEEDBACK AFFECT SURVEY]]: ${affect?._id} emoji selected`)
-    setSelectedAffectID(affect?._id)
-    window.dispatchEvent(new CustomEvent('resize'))
-    if (affectPrivacy?.prompt) {
-      setPrivacyDialogOpen(true)
-    } else {
-      update(affectPrivacy)
-    }
-  }
-
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <React.Fragment>
       {privacyDialogOpen
         ? <PrivacyDialog
-            onUpdate={update}
             onClose={() => { setPrivacyDialogOpen(false) }}
             privacy={affectPrivacy}
           />
@@ -71,10 +53,7 @@ function FeedbackDialogAffectSurvey (props) {
           </Grid>
           <Grid item>
             <AffectSurveyList
-              setFeedbackSelectedAffectID={setSelectedAffectID}
-              emojiList={emojiList}
-              currentStatus={currentStatus}
-              onBubbleOpenSurvey={onSelection}
+              onBubbleOpenSurvey={() => setPrivacyDialogOpen(true)}
               onDismissSurvey={() => { setPrivacyDialogOpen(false) }}
               {...restProps}
             />
@@ -86,9 +65,6 @@ function FeedbackDialogAffectSurvey (props) {
 }
 FeedbackDialogAffectSurvey.propTypes = {
   changeDisplayedFeedback: PropTypes.func.isRequired,
-  emojiList: PropTypes.arrayOf(PropTypes.shape(AffectObjectShape)),
-  currentStatus: PropTypes.shape(StatusObjectShape),
-  moodHistoryList: PropTypes.arrayOf(PropTypes.string),
   affectPrivacy: PropTypes.shape(PrivacyObjectShape),
 
   updateCurrentAffect: PropTypes.func.isRequired,
@@ -98,9 +74,6 @@ FeedbackDialogAffectSurvey.propTypes = {
 }
 
 FeedbackDialogAffectSurvey.defaultProps = {
-  emojiList: [],
-  moodHistoryList: [],
-  currentStatus: DEFAULT.StatusObjectShape,
   affectPrivacy: DEFAULT.PrivacyObjectShape,
   onDismissSurvey: null
 }

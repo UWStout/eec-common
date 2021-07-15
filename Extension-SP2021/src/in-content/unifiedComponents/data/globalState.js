@@ -25,6 +25,12 @@ export const BubbleVisibilityState = atom({
   default: false
 })
 
+/** Has the user selected a new mood */
+export const SelectedAffectState = atom({
+  key: 'SelectedAffectState',
+  default: ''
+})
+
 /** Basic info for current user */
 export const LoggedInUserState = atom({
   key: 'LoggedInUserState',

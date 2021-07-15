@@ -3,8 +3,14 @@ import PropTypes from 'prop-types'
 
 import Debounce from 'debounce'
 
-import { useRecoilValue } from 'recoil'
-import { EmojiListState, UserStatusState, AffectHistoryListState } from '../data/globalState.js'
+import { useRecoilValue, useRecoilState } from 'recoil'
+import {
+  EmojiListState,
+  UserStatusState,
+  AffectHistoryListState,
+  UserAffectIDState,
+  SelectedAffectState 
+} from '../data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse } from '@material-ui/core'
@@ -69,7 +75,7 @@ function searchFilter (fullList, searchText) {
  * affect survey pops up in the panel and in the bubble.
  **/
 export default function AffectSurveyList (props) {
-  const { setSelectedAffectID, selectedAffectID, affectPrivacy, onBubbleOpenSurvey, updateCurrentAffect, updatePrivacy, noInteraction } = props
+  const { selectedAffectID, setSelectedAffectID, affectPrivacy, onBubbleOpenSurvey, updateCurrentAffect, updatePrivacy, noInteraction } = props
   const { root, searchBar, listRoot, innerList, listItem } = useStyles()
   const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
 
@@ -106,7 +112,8 @@ export default function AffectSurveyList (props) {
     console.log(`[[AFFECT SURVEY]]: ${affect?._id} emoji selected`)
     setSelectedAffectID(affect?._id)
     if (affectPrivacy.prompt) {
-      setPrivacyDialogOpen(true)
+      if (onBubbleOpenSurvey) onBubbleOpenSurvey()
+      else setPrivacyDialogOpen(true)
     } else {
       update(affectPrivacy)
     }
@@ -119,7 +126,7 @@ export default function AffectSurveyList (props) {
       className={listItem}
       key={emoji._id}
       affect={emoji}
-      handleClick={onBubbleOpenSurvey || onSelection}
+      handleClick={onSelection}
       button
       selected={(currentStatus.currentAffectID === emoji._id)}
     />
@@ -134,7 +141,7 @@ export default function AffectSurveyList (props) {
         className={listItem}
         key={favEmoji._id}
         affect={favEmoji}
-        handleClick={onBubbleOpenSurvey || onSelection}
+        handleClick={onSelection}
         button
         selected={(currentStatus.currentAffectID === favEmoji._id)}
       />
@@ -149,7 +156,7 @@ export default function AffectSurveyList (props) {
         className={listItem}
         key={recentEmoji._id}
         affect={recentEmoji}
-        handleClick={onBubbleOpenSurvey || onSelection}
+        handleClick={onSelection}
         button
         selected={(currentStatus.currentAffectID === recentEmoji._id)}
       />
@@ -242,8 +249,6 @@ export default function AffectSurveyList (props) {
 }
 
 AffectSurveyList.propTypes = {
-  moodHistoryList: PropTypes.arrayOf(PropTypes.string),
-  currentStatus: PropTypes.shape(StatusObjectShape),
   affectPrivacy: PropTypes.shape(PrivacyObjectShape),
   onBubbleOpenSurvey: PropTypes.func,
 
@@ -254,7 +259,5 @@ AffectSurveyList.propTypes = {
 
 AffectSurveyList.defaultProps = {
   onBubbleOpenSurvey: null,
-  moodHistoryList: [],
-  currentStatus: DEFAULT.StatusObjectShape,
   affectPrivacy: DEFAULT.PrivacyObjectShape
 }
