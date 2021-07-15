@@ -8,7 +8,7 @@ import FeedbackDialogDetails from './FeedbackDialogDetails.jsx'
 import FeedbackDialogAffectSurvey from './FeedbackDialogAffectSurvey.jsx'
 export default function FeedbackDialogContent (props) {
   // Deconstruct the props
-  const { onHide, cancelHide, ...restProps } = props
+  const { onHide, cancelHide } = props
 
   // Displayed state
   const [displayedFeedback, setDisplayedFeedback] = useState('affectSurvey')
@@ -36,10 +36,7 @@ export default function FeedbackDialogContent (props) {
           />}
 
         {displayedFeedback === 'affectSurvey' &&
-          <FeedbackDialogAffectSurvey
-            changeDisplayedFeedback={changeDisplayedFeedback}
-            {...restProps}
-          />}
+          <FeedbackDialogAffectSurvey />}
       </Grid>
     </Grid>
   )

@@ -1,38 +1,17 @@
 <mxfile>
     <diagram id="-BwBF-LefVqxusglZkwU" name="Page-1">
-        <mxGraphModel dx="1488" dy="394" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="754" dy="425" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="101" value="" style="group" parent="1" vertex="1" connectable="0">
-                    <mxGeometry x="649" y="334" width="180" height="110" as="geometry"/>
+                <mxCell id="186" value="" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.04597701149425287;" vertex="1" parent="1">
+                    <mxGeometry x="12.5" y="660" width="590" height="435" as="geometry"/>
                 </mxCell>
-                <mxCell id="99" value="#Emoji" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="101" vertex="1">
-                    <mxGeometry x="20" y="20" width="160" height="90" as="geometry">
-                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="100" value="" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="99" vertex="1">
-                    <mxGeometry y="26" width="160" height="64" as="geometry"/>
-                </mxCell>
-                <mxCell id="97" value="#Emoji" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="101" vertex="1">
-                    <mxGeometry x="10" y="10" width="160" height="90" as="geometry">
-                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="98" value="" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="97" vertex="1">
-                    <mxGeometry y="26" width="160" height="64" as="geometry"/>
-                </mxCell>
-                <mxCell id="95" value="#Emoji" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="101" vertex="1">
-                    <mxGeometry width="160" height="90" as="geometry">
-                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="96" value="" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="95" vertex="1">
-                    <mxGeometry y="26" width="160" height="64" as="geometry"/>
+                <mxCell id="185" value="" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.09278350515463918;" vertex="1" parent="1">
+                    <mxGeometry x="230" y="20" width="610" height="450" as="geometry"/>
                 </mxCell>
                 <mxCell id="73" value="" style="group" parent="1" vertex="1" connectable="0">
-                    <mxGeometry x="650" y="140" width="180" height="136" as="geometry"/>
+                    <mxGeometry x="650" y="120" width="180" height="136" as="geometry"/>
                 </mxCell>
                 <mxCell id="70" value="" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="73" vertex="1">
                     <mxGeometry x="20" y="20" width="160" height="116" as="geometry">
@@ -67,11 +46,20 @@
                 <mxCell id="66" value=" " style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fillColor=#ffffff;" parent="64" vertex="1">
                     <mxGeometry y="90" width="160" height="26" as="geometry"/>
                 </mxCell>
-                <mxCell id="49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="3" target="15" edge="1">
+                <mxCell id="190" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="3" target="15">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
+                <mxCell id="191" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="11">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="10" y="122"/>
+                            <mxPoint x="10" y="420"/>
+                            <mxPoint x="110" y="420"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
                 <mxCell id="3" value="#UnifiedApp" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;strokeWidth=1;" parent="1" vertex="1">
-                    <mxGeometry x="20" y="10" width="180" height="184" as="geometry"/>
+                    <mxGeometry x="20" y="30" width="180" height="184" as="geometry"/>
                 </mxCell>
                 <mxCell id="43" value="&lt;br&gt;Root component that holds all functionality for the entire Karuna extension front-end" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=#000000;strokeWidth=1;fontStyle=2" parent="3" vertex="1">
                     <mxGeometry y="26" width="180" height="54" as="geometry"/>
@@ -88,8 +76,16 @@
                 <mxCell id="48" value="l: affectPrivacy (R)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="3" vertex="1">
                     <mxGeometry y="158" width="180" height="26" as="geometry"/>
                 </mxCell>
+                <mxCell id="195" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="11" target="104">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="125" y="640"/>
+                            <mxPoint x="110" y="640"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
                 <mxCell id="11" value="#KarunaBubble" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="880" y="60" width="170" height="204" as="geometry"/>
+                    <mxGeometry x="25" y="440" width="170" height="204" as="geometry"/>
                 </mxCell>
                 <mxCell id="102" value="&lt;br&gt;Root of the 'Karuna Bubble' part of the extension. This will maintain a conversation between Karuna and the current user." style="text;html=1;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;" parent="11" vertex="1">
                     <mxGeometry y="26" width="170" height="74" as="geometry"/>
@@ -106,8 +102,26 @@
                 <mxCell id="103" value="l: contextIndicator" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="11" vertex="1">
                     <mxGeometry y="178" width="170" height="26" as="geometry"/>
                 </mxCell>
+                <mxCell id="178" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="15" target="25">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="220" y="349"/>
+                            <mxPoint x="220" y="40"/>
+                            <mxPoint x="320" y="40"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="179" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="15" target="29">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="220" y="349"/>
+                            <mxPoint x="220" y="200"/>
+                            <mxPoint x="320" y="200"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
                 <mxCell id="15" value="#KarunaConnect" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="20" y="240" width="180" height="178" as="geometry">
+                    <mxGeometry x="20" y="230" width="180" height="178" as="geometry">
                         <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
@@ -123,11 +137,8 @@
                 <mxCell id="18" value="g: BubbleVisibilityState (R)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="15" vertex="1">
                     <mxGeometry y="152" width="180" height="26" as="geometry"/>
                 </mxCell>
-                <mxCell id="22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.998;exitY=0.139;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="3" target="11" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
                 <mxCell id="25" value="#ConnectStatusDrawer" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="240" y="79" width="160" height="126" as="geometry">
+                    <mxGeometry x="240" y="59" width="160" height="126" as="geometry">
                         <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
@@ -137,17 +148,11 @@
                 <mxCell id="59" value="l: mouseIsOver (RW)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="25" vertex="1">
                     <mxGeometry y="100" width="160" height="26" as="geometry"/>
                 </mxCell>
-                <mxCell id="60" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="51" target="35" edge="1">
-                    <mxGeometry relative="1" as="geometry">
-                        <Array as="points">
-                            <mxPoint x="420" y="322"/>
-                            <mxPoint x="420" y="80"/>
-                            <mxPoint x="520" y="80"/>
-                        </Array>
-                    </mxGeometry>
+                <mxCell id="180" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="29" target="35">
+                    <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="29" value="#ConnectMainDrawer" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="240" y="240" width="160" height="204" as="geometry">
+                    <mxGeometry x="240" y="220" width="160" height="204" as="geometry">
                         <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
@@ -166,11 +171,17 @@
                 <mxCell id="58" value="l: isRetracted (RW)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="29" vertex="1">
                     <mxGeometry y="178" width="160" height="26" as="geometry"/>
                 </mxCell>
-                <mxCell id="74" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="35" target="40" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                <mxCell id="181" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="35" target="38">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="620" y="220"/>
+                            <mxPoint x="620" y="80"/>
+                            <mxPoint x="719" y="80"/>
+                        </Array>
+                    </mxGeometry>
                 </mxCell>
                 <mxCell id="35" value="#ConnectMainContent" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="440" y="100" width="160" height="280" as="geometry">
+                    <mxGeometry x="440" y="80" width="160" height="280" as="geometry">
                         <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
@@ -193,7 +204,7 @@
                     <mxGeometry y="254" width="160" height="26" as="geometry"/>
                 </mxCell>
                 <mxCell id="38" value="#StatusListItem" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="639" y="130" width="160" height="116" as="geometry">
+                    <mxGeometry x="639" y="110" width="160" height="116" as="geometry">
                         <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
@@ -203,99 +214,44 @@
                 <mxCell id="39" value="g: UserStatusState (R)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fillColor=#ffffff;" parent="38" vertex="1">
                     <mxGeometry y="90" width="160" height="26" as="geometry"/>
                 </mxCell>
-                <mxCell id="40" value="#AffectSurveyList" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="440" y="418" width="160" height="194" as="geometry">
-                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="75" value="&lt;br&gt;Component to ask the user what their current mood is and update their status accordingly.&amp;nbsp;" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="40" vertex="1">
-                    <mxGeometry y="26" width="160" height="64" as="geometry"/>
-                </mxCell>
-                <mxCell id="41" value="g: EmojiListState (R)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="40" vertex="1">
-                    <mxGeometry y="90" width="160" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="82" value="l: expanded (RW)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="40" vertex="1">
-                    <mxGeometry y="116" width="160" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="81" value="l: privacyDialogOpen (RW)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="40" vertex="1">
-                    <mxGeometry y="142" width="160" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="80" value="l: searchText (RW)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="40" vertex="1">
-                    <mxGeometry y="168" width="160" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="44" target="25" edge="1">
+                <mxCell id="196" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="104" target="116">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="390" y="20" as="targetPoint"/>
                         <Array as="points">
-                            <mxPoint x="220" y="322"/>
-                            <mxPoint x="220" y="60"/>
-                            <mxPoint x="320" y="60"/>
+                            <mxPoint x="110" y="880"/>
+                            <mxPoint x="120" y="880"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="44" target="29" edge="1">
+                <mxCell id="197" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="104" target="120">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="400" y="220" as="targetPoint"/>
                         <Array as="points">
-                            <mxPoint x="220" y="322"/>
-                            <mxPoint x="220" y="220"/>
-                            <mxPoint x="320" y="220"/>
+                            <mxPoint x="110" y="880"/>
+                            <mxPoint x="307" y="880"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="63" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="61" target="38" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="83" value="#PrivacyDialog" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="639" y="480" width="160" height="116" as="geometry">
-                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="84" value="&lt;br&gt;Dialog to prompt the user if they wish to keep their current mood private or share it with their team.&amp;nbsp;" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="83" vertex="1">
-                    <mxGeometry y="26" width="160" height="64" as="geometry"/>
-                </mxCell>
-                <mxCell id="86" value="l: promptState (RW)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="83" vertex="1">
-                    <mxGeometry y="90" width="160" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="89" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" parent="1" source="75" target="83" edge="1">
+                <mxCell id="199" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="104" target="124">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="601" y="489" as="sourcePoint"/>
                         <Array as="points">
-                            <mxPoint x="719" y="460"/>
+                            <mxPoint x="110" y="880"/>
+                            <mxPoint x="500" y="880"/>
                         </Array>
                     </mxGeometry>
-                </mxCell>
-                <mxCell id="91" value="#Emoji" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="639" y="324" width="160" height="90" as="geometry">
-                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="92" value="&lt;br&gt;Items to include in the AffectSurveyList for showing a particular affect with an icon and a name.&amp;nbsp;" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="91" vertex="1">
-                    <mxGeometry y="26" width="160" height="64" as="geometry"/>
-                </mxCell>
-                <mxCell id="94" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="75" target="91" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="104" value="#FeedbackDialog" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="880" y="300" width="170" height="204" as="geometry"/>
+                    <mxGeometry x="30" y="680" width="170" height="172" as="geometry"/>
                 </mxCell>
-                <mxCell id="105" value="&lt;br&gt;Root of the 'Karuna Bubble' part of the extension. This will maintain a conversation between Karuna and the current user." style="text;html=1;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;" parent="104" vertex="1">
-                    <mxGeometry y="26" width="170" height="74" as="geometry"/>
+                <mxCell id="105" value="&lt;br&gt;A Popup dialog for Karuna to provide feedback to the user and to prompt them for information. Toggled by clicking on the Persistent Bubble." style="text;html=1;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;" parent="104" vertex="1">
+                    <mxGeometry y="26" width="170" height="94" as="geometry"/>
                 </mxCell>
-                <mxCell id="106" value="g: ConnectVisibilityState (W)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="104" vertex="1">
-                    <mxGeometry y="100" width="170" height="26" as="geometry"/>
+                <mxCell id="106" value="l: displayedFeedback (RW)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="104" vertex="1">
+                    <mxGeometry y="120" width="170" height="26" as="geometry"/>
                 </mxCell>
-                <mxCell id="107" value="g: BubbleVisibilityState (RW)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="104" vertex="1">
-                    <mxGeometry y="126" width="170" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="108" value="l: feedbackHideTimeout" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="104" vertex="1">
-                    <mxGeometry y="152" width="170" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="109" value="l: contextIndicator" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="104" vertex="1">
-                    <mxGeometry y="178" width="170" height="26" as="geometry"/>
+                <mxCell id="107" value="l: title (RW)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="104" vertex="1">
+                    <mxGeometry y="146" width="170" height="26" as="geometry"/>
                 </mxCell>
                 <mxCell id="110" value="#PersistentBubble" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="1100" y="60" width="170" height="194" as="geometry"/>
+                    <mxGeometry x="240" y="680" width="170" height="194" as="geometry"/>
                 </mxCell>
                 <mxCell id="111" value="&lt;br&gt;The persistent speech bubble icon displayed for interacting with and anchoring the Karuna Bubble." style="text;html=1;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;" parent="110" vertex="1">
                     <mxGeometry y="26" width="170" height="64" as="geometry"/>
@@ -311,6 +267,153 @@
                 </mxCell>
                 <mxCell id="115" value="l: contextIndicator" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="110" vertex="1">
                     <mxGeometry y="168" width="170" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="116" value="#FeedbackDialogObservation" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="35" y="900" width="170" height="172" as="geometry"/>
+                </mxCell>
+                <mxCell id="117" value="&lt;br&gt;A Popup dialog for Karuna to provide feedback to the user and to prompt them for information. Toggled by clicking on the Persistent Bubble." style="text;html=1;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;" vertex="1" parent="116">
+                    <mxGeometry y="26" width="170" height="94" as="geometry"/>
+                </mxCell>
+                <mxCell id="118" value="l: displayedFeedback (RW)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="116">
+                    <mxGeometry y="120" width="170" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="119" value="l: title (RW)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="116">
+                    <mxGeometry y="146" width="170" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="120" value="#FeedbackDialogDetails" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="220" y="900" width="175" height="162" as="geometry"/>
+                </mxCell>
+                <mxCell id="121" value="&lt;br&gt;A Popup dialog for Karuna to provide feedback to the user and to prompt them for information. Toggled by clicking on the Persistent Bubble." style="text;html=1;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;" vertex="1" parent="120">
+                    <mxGeometry y="26" width="175" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="122" value="l: displayedFeedback (RW)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="120">
+                    <mxGeometry y="110" width="175" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="123" value="l: title (RW)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="120">
+                    <mxGeometry y="136" width="175" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="124" value="#FeedbackDialogAffectSurvey" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" vertex="1" parent="1">
+                    <mxGeometry x="405" y="900" width="190" height="162" as="geometry"/>
+                </mxCell>
+                <mxCell id="125" value="&lt;br&gt;A Popup dialog for Karuna to provide feedback to the user and to prompt them for information. Toggled by clicking on the Persistent Bubble." style="text;html=1;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;" vertex="1" parent="124">
+                    <mxGeometry y="26" width="190" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="126" value="l: displayedFeedback (RW)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="124">
+                    <mxGeometry y="110" width="190" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="127" value="l: title (RW)" style="text;strokeColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="124">
+                    <mxGeometry y="136" width="190" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="193" value="" style="group" vertex="1" connectable="0" parent="1">
+                    <mxGeometry x="630" y="530" width="210" height="550" as="geometry"/>
+                </mxCell>
+                <mxCell id="188" value="" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;size=0.03636363636363636;" vertex="1" parent="193">
+                    <mxGeometry width="210" height="550" as="geometry"/>
+                </mxCell>
+                <mxCell id="201" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="193" source="40" target="83">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="89" y="232.6923076923077"/>
+                            <mxPoint x="119" y="232.6923076923077"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="202" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="193" source="40" target="91">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="30" y="381"/>
+                            <mxPoint x="89" y="381"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="40" value="#AffectSurveyList" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="193" vertex="1">
+                    <mxGeometry x="9" y="21.153846153846153" width="160" height="203.69230769230768" as="geometry">
+                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="75" value="&lt;br&gt;Component to ask the user what their current mood is and update their status accordingly.&amp;nbsp;" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="40" vertex="1">
+                    <mxGeometry y="26" width="160" height="67.6923076923077" as="geometry"/>
+                </mxCell>
+                <mxCell id="41" value="g: EmojiListState (R)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="40" vertex="1">
+                    <mxGeometry y="93.6923076923077" width="160" height="27.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="82" value="l: expanded (RW)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="40" vertex="1">
+                    <mxGeometry y="121.1923076923077" width="160" height="27.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="81" value="l: privacyDialogOpen (RW)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="40" vertex="1">
+                    <mxGeometry y="148.69230769230768" width="160" height="27.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="80" value="l: searchText (RW)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="40" vertex="1">
+                    <mxGeometry y="176.19230769230768" width="160" height="27.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="83" value="#PrivacyDialog" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="193" vertex="1">
+                    <mxGeometry x="39" y="245.3846153846154" width="160" height="121.1923076923077" as="geometry">
+                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="84" value="&lt;br&gt;Dialog to prompt the user if they wish to keep their current mood private or share it with their team.&amp;nbsp;" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="83" vertex="1">
+                    <mxGeometry y="26" width="160" height="67.6923076923077" as="geometry"/>
+                </mxCell>
+                <mxCell id="86" value="l: promptState (RW)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="83" vertex="1">
+                    <mxGeometry y="93.6923076923077" width="160" height="27.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="192" value="" style="group" vertex="1" connectable="0" parent="193">
+                    <mxGeometry x="9" y="399.9992307692308" width="190" height="116.34615384615385" as="geometry"/>
+                </mxCell>
+                <mxCell id="101" value="" style="group" parent="192" vertex="1" connectable="0">
+                    <mxGeometry x="10" width="180" height="116.34615384615385" as="geometry"/>
+                </mxCell>
+                <mxCell id="99" value="#Emoji" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="101" vertex="1">
+                    <mxGeometry x="20" y="31.73076923076923" width="160" height="93.6923076923077" as="geometry">
+                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="100" value="" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="99" vertex="1">
+                    <mxGeometry y="26" width="160" height="67.6923076923077" as="geometry"/>
+                </mxCell>
+                <mxCell id="97" value="#Emoji" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="101" vertex="1">
+                    <mxGeometry x="10" y="21.153846153846153" width="160" height="93.6923076923077" as="geometry">
+                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="98" value="" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="97" vertex="1">
+                    <mxGeometry y="26" width="160" height="67.6923076923077" as="geometry"/>
+                </mxCell>
+                <mxCell id="95" value="#Emoji" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="101" vertex="1">
+                    <mxGeometry y="10.576923076923077" width="160" height="93.6923076923077" as="geometry">
+                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="96" value="" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="95" vertex="1">
+                    <mxGeometry y="26" width="160" height="67.6923076923077" as="geometry"/>
+                </mxCell>
+                <mxCell id="91" value="#Emoji" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="192" vertex="1">
+                    <mxGeometry width="160" height="93.6923076923077" as="geometry">
+                        <mxRectangle x="20" y="80" width="160" height="26" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="92" value="&lt;br&gt;Items to include in the AffectSurveyList for showing a particular affect with an icon and a name.&amp;nbsp;" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontStyle=2;strokeColor=#000000;fillColor=#ffffff;" parent="91" vertex="1">
+                    <mxGeometry y="26" width="160" height="67.6923076923077" as="geometry"/>
+                </mxCell>
+                <mxCell id="182" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="35" target="40">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="520" y="400"/>
+                            <mxPoint x="719" y="400"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="198" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="102" target="110">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="200" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="125" target="40">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="617" y="968"/>
+                            <mxPoint x="617" y="510"/>
+                            <mxPoint x="679" y="510"/>
+                        </Array>
+                    </mxGeometry>
                 </mxCell>
             </root>
         </mxGraphModel>

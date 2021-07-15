@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
  * @returns {React.Element} The element to render for this component
  */
 export default function ConnectMainDrawer (props) {
-  const { hidden, onHide, waitToHide, ...contentProps } = props
+  const { hidden, onHide, waitToHide } = props
 
   // Deconstruct props and style class names
   const {
@@ -145,7 +145,7 @@ export default function ConnectMainDrawer (props) {
       <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
       <div className={boxStyle}>
         <main className={contentStyle}>
-          <ConnectMainContent hidden={hidden} retracted={!mouseIsOver} {...contentProps} />
+          <ConnectMainContent hidden={hidden} retracted={!mouseIsOver} />
         </main>
       </div>
     </Paper>

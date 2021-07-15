@@ -2,10 +2,16 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Grid, Typography, FormGroup, FormControlLabel, Link, Button, Checkbox } from '@material-ui/core'
+import { Grid, Typography, FormGroup, FormControlLabel, Link, Checkbox } from '@material-ui/core'
 import { OpenInBrowser } from '@material-ui/icons/'
 
-import { PrivacyObjectShape } from '../data/dataTypeShapes.js'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import {
+  PrivacyPrefsState,
+  PrivacyPrefsStateSetter,
+  UserAffectIDState,
+  SelectedAffectState
+} from '../data/globalState.js'
 
 import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Privacy Dialog', 'yellow', 'black')
@@ -23,14 +29,25 @@ const useStyles = makeStyles((theme) => ({
 
 function PrivacyDialog (props) {
   const classes = useStyles()
-  const { privacy, onClose, onUpdate, onCancel } = props
+  const { onClose, onCancel } = props
+
+  // GLOBAL STATES
+  const setPrivacy = useSetRecoilState(PrivacyPrefsStateSetter)
+  const setCurrentAffect = useSetRecoilState(UserAffectIDState)
+  const selectedAffectID = useRecoilValue(SelectedAffectState)
+  const privacy = useRecoilValue(PrivacyPrefsState)
 
   // should probably be a global state from the database since the user probably wants this to be remembered
   const [promptState, setPromptState] = useState(privacy.prompt)
 
+  const update = (newPrivacy) => {
+    setCurrentAffect(selectedAffectID)
+    setPrivacy(newPrivacy)
+  }
+
   const onDialogClose = (canceled, newPrivacy) => {
     if (!canceled) {
-      onUpdate(newPrivacy)
+      update(newPrivacy)
     } else if (onCancel) {
       onCancel()
     }
@@ -115,9 +132,7 @@ function PrivacyDialog (props) {
 }
 
 PrivacyDialog.propTypes = {
-  privacy: PropTypes.shape(PrivacyObjectShape).isRequired,
   onClose: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired,
   onCancel: PropTypes.func
 }
 

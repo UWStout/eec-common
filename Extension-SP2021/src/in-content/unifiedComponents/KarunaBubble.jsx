@@ -14,7 +14,7 @@ const LOG = makeLogger('BUBBLE Component', 'lavender', 'black')
 // The karuna dialog bubble
 export default function KarunaBubble (props) {
   // De-structure props
-  const { context, ...restProps } = props
+  const { context } = props
 
   // Full state and setter for visibility of main connect panel (GLOBAL STATE)
   const setMainConnectPanelOpen = useSetRecoilState(ConnectVisibilityState)
@@ -62,7 +62,6 @@ export default function KarunaBubble (props) {
       hidden={!FeedbackDialogOpen}
       onHide={hideFeedbackDialog}
       cancelHide={cancelHideFeedbackDialog}
-      {...restProps}
     >
       <PersistentBubble
         isContextIndicated={contextIndicator}

@@ -10,8 +10,8 @@ import ConnectStatusDrawer from './KarunaConnect/ConnectStatusDrawer.jsx'
 import ConnectMainDrawer from './KarunaConnect/ConnectMainDrawer.jsx'
 
 // Colorful logger
-import { makeLogger } from '../../util/Logger.js'
-const LOG = makeLogger('CONNECT Component', 'lavender', 'black')
+// import { makeLogger } from '../../util/Logger.js'
+// const LOG = makeLogger('CONNECT Component', 'lavender', 'black')
 
 const useStyles = makeStyles((theme) => ({
   // Styling of the root paper element
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 // The sidebar Karuna Connect object
 export default function KarunaConnect (props) {
   // Deconstruct props
-  const { context, ...restProps } = props
+  const { context } = props
 
   // Create and deconstruct style class names
   const { rootDiscord, rootTeams } = useStyles()
@@ -64,19 +64,15 @@ export default function KarunaConnect (props) {
 
   // Main render
   return (
-    <div>
-      <div className={(context === 'msTeams' ? rootTeams : rootDiscord)}>
-        <ConnectStatusDrawer
-          hidden={!userLoggedIn || mainPanelOpen}
-          onHide={openMainPanel}
-          affectPrivacy={restProps.affectPrivacy}
-        />
-        <ConnectMainDrawer
-          hidden={!mainPanelOpen}
-          onHide={() => { setMainPanelOpen(false) }}
-          {...restProps}
-        />
-      </div>
+    <div className={(context === 'msTeams' ? rootTeams : rootDiscord)}>
+      <ConnectStatusDrawer
+        hidden={!userLoggedIn || mainPanelOpen}
+        onHide={openMainPanel}
+      />
+      <ConnectMainDrawer
+        hidden={!mainPanelOpen}
+        onHide={() => { setMainPanelOpen(false) }}
+      />
     </div>
   )
 }

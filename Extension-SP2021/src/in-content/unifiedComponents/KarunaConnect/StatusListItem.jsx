@@ -48,10 +48,11 @@ export default function StatusListItem (props) {
 }
 
 StatusListItem.propTypes = {
-  affect: PropTypes.shape(AffectObjectShape).isRequired,
+  affect: PropTypes.shape(AffectObjectShape),
   userEmail: PropTypes.string
 }
 
 StatusListItem.defaultProps = {
+  affect: null,
   userEmail: ''
 }

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
-import { EmojiListState, UserStatusState } from '../data/globalState.js'
+import { EmojiListState, SelectedAffectState, UserStatusState } from '../data/globalState.js'
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
@@ -17,10 +17,8 @@ import { ExpandMore } from '@material-ui/icons'
 import StatusListItem from './StatusListItem.jsx'
 import AffectSurveyList from '../AffectSurvey/AffectSurveyList.jsx'
 
-import { StatusObjectShape } from '../data/dataTypeShapes.js'
-
-import { makeLogger } from '../../../util/Logger.js'
-const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
+// import { makeLogger } from '../../../util/Logger.js'
+// const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -86,7 +84,7 @@ export default function ConnectMainContent (props) {
   const currentStatus = useRecoilValue(UserStatusState)
 
   const [expanded, setExpanded] = useState('userStatus')
-  const [selectedAffectID, setSelectedAffectID] = useState(currentStatus?.currentAffectID)
+  const selectedAffectID = useRecoilValue(SelectedAffectState)
   const [selectedAffect, setSelectedAffect] = useState(null)
 
   // open affect survey
@@ -129,7 +127,7 @@ export default function ConnectMainContent (props) {
                 </Link>
               </Typography>
               <Collapse in={!hidden && affectSurveyOpen} timeout="auto" unmountOnExit>
-                <AffectSurveyList selectedAffectID={selectedAffectID} setSelectedAffectID={setSelectedAffectID} noInteraction={hidden || retracted} onDismissSurvey={() => { setAffectSurveyOpen(false) }} {...props} />
+                <AffectSurveyList noInteraction={hidden || retracted} onDismissSurvey={() => { setAffectSurveyOpen(false) }} />
               </Collapse>
             </Grid>
             <Grid item xs={12}>
@@ -174,10 +172,5 @@ export default function ConnectMainContent (props) {
 
 ConnectMainContent.propTypes = {
   hidden: PropTypes.bool.isRequired,
-  retracted: PropTypes.bool.isRequired,
-  currentStatus: PropTypes.shape(StatusObjectShape)
-}
-
-ConnectMainContent.defaultProps = {
-  currentStatus: null
+  retracted: PropTypes.bool.isRequired
 }
