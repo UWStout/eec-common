@@ -8,9 +8,15 @@ import OpenArrow from './PanelOpenArrow.jsx'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
+    display: 'flex',
     position: 'absolute',
     top: '20vh',
+    height: '83.18px',
+    width: '64px',
+    paddingTop: theme.spacing(1),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
 
     // Animate changes in the 'right' property
     transition: theme.transitions.create(
@@ -21,27 +27,24 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer'
   },
 
-  // Styling of the root paper element
-  paperRoot: {
-    paddingTop: theme.spacing(1),
-    paddingRight: theme.spacing(4),
-    paddingBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(1)
-  },
-
   // Style when the panel is fully retracted
   panelRetracted: {
-    right: 'calc(-100% + 46px)' // right: -theme.spacing(13)
+    right: 'calc(0% - 48px)'
   },
 
   // Style when the panel is fully expanded
   panelExpanded: {
-    right: 'calc(-100% + 90px)' // right: -theme.spacing(8) // should be 8
+    right: 'calc(0% - 8px)'
   },
 
   // Style when the panel is hidden
   panelHidden: {
-    right: '-100%' // right: -theme.spacing(18)
+    right: '-10%'
+  },
+
+  // Styling of Grid container
+  gridContRoot: {
+    flexGrow: 1
   }
 }))
 
@@ -55,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ConnectStatusDrawer (props) {
   // Deconstruct props and style class names
   const { hidden, onHide } = props
-  const { root, paperRoot, panelRetracted, panelExpanded, panelHidden } = useStyles()
+  const { root, gridContRoot, panelRetracted, panelExpanded, panelHidden } = useStyles()
 
   // Is the mouse over this component
   const [mouseIsOver, setMouseIsOver] = useState(false)
@@ -68,46 +71,50 @@ export default function ConnectStatusDrawer (props) {
 
   // Return the proper MUI elements
   return (
-    <Grid
-      container
+    <Paper
       data-testid="connectStatusPanel"
+      elevation={3}
       className={`${root} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : panelRetracted)}`}
       onMouseEnter={() => { setMouseIsOver(true) }}
       onMouseLeave={() => { setMouseIsOver(false) }}
       onClick={clickCallback}
     >
-      <Paper elevation={3} className={paperRoot}>
+      <Grid
+        container
+        className={gridContRoot}
+        direction='column'
+        justify='center'
+        spacing={2}
+      >
         <Grid
-          container
           item
-          direction='row'
-          wrap="nowrap"
-          spacing={4}
+          container
+          xs={6}
+          justify='center'
         >
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <OpenArrow showDouble={mouseIsOver} flipped />
           </Grid>
-          <Grid
-            container
-            item
-            direction="column"
-            wrap="nowrap"
-            spacing={1}
-            xs={6}
-          >
-            <Grid item xs={12}>
-              <Typography variant='body1'>😀</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant='body1'>😀</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant='body1'>😀</Typography>
-            </Grid>
+        </Grid>
+        <Grid
+          item
+          container
+          direction="column"
+          wrap="nowrap"
+          xs={6}
+        >
+          <Grid item xs={12}>
+            <Typography variant='body1' align='center' gutterBottom='true'>😀</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant='body1' align='center' gutterBottom='true'>😀</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant='body1' align='center'>😀</Typography>
           </Grid>
         </Grid>
-      </Paper>
-    </Grid>
+      </Grid>
+    </Paper>
   )
 }
 
