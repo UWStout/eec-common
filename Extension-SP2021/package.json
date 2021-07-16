@@ -68,7 +68,7 @@
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "animate.css": "^4.1.1",
     "axios": "^0.21.1",
-    "commonmark": "^0.29.3",
+    "commonmark": "^0.30.0",
     "debounce": "^1.2.1",
     "eventemitter3": "^4.0.7",
     "jquery": "^3.6.0",
