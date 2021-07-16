@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
-import { ValidUserState } from '../data/globalState'
+import { ValidUserState, NVCIdentifiedState } from '../data/globalState'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { SvgIcon, IconButton, Typography } from '@material-ui/core'
@@ -33,7 +33,9 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref) {
-  const { hidden, onHide, cancelHide, isContextIndicated, setOpen } = props
+  const { hidden, onHide, cancelHide, setOpen } = props
+  const isContextIndicated = useRecoilValue(NVCIdentifiedState)
+
   const classes = useStyles()
 
   // State of user login (GLOBAL STATE)
@@ -91,12 +93,7 @@ PersistentBubble.propTypes = {
   hidden: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
   cancelHide: PropTypes.func.isRequired,
-  isContextIndicated: PropTypes.bool,
   setOpen: PropTypes.func.isRequired
-}
-
-PersistentBubble.defaultProps = {
-  isContextIndicated: false
 }
 
 export default PersistentBubble

@@ -257,15 +257,10 @@ export default function AffectSurveyList (props) {
 }
 
 AffectSurveyList.propTypes = {
-  affectPrivacy: PropTypes.shape(PrivacyObjectShape),
   onBubbleOpenSurvey: PropTypes.func,
-
-  updateCurrentAffect: PropTypes.func.isRequired,
-  updatePrivacy: PropTypes.func.isRequired,
   noInteraction: PropTypes.bool.isRequired
 }
 
 AffectSurveyList.defaultProps = {
-  onBubbleOpenSurvey: null,
-  affectPrivacy: DEFAULT.PrivacyObjectShape
+  onBubbleOpenSurvey: null
 }

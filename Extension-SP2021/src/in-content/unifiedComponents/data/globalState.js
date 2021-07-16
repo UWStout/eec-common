@@ -31,6 +31,11 @@ export const SelectedAffectState = atom({
   default: ''
 })
 
+export const NVCIdentifiedState = atom({
+  key: 'NVCIdentifiedState',
+  default: false
+})
+
 /** Basic info for current user */
 export const LoggedInUserState = atom({
   key: 'LoggedInUserState',
