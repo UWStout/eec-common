@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import { ConnectVisibilityState, BubbleVisibilityState } from './data/globalState.js'
@@ -12,6 +12,9 @@ import FeedbackDialog from './KarunaBubble/FeedbackDialog/FeedbackDialog.jsx'
 
 // The karuna dialog bubble
 export default function KarunaBubble (props) {
+  // Forward ref for the PersistentIcon
+  const persistentIconRef = useRef()
+
   // Full state and setter for visibility of main connect panel (GLOBAL STATE)
   const setMainConnectPanelOpen = useSetRecoilState(ConnectVisibilityState)
 
@@ -60,6 +63,7 @@ export default function KarunaBubble (props) {
       cancelHide={cancelHideFeedbackDialog}
     >
       <PersistentBubble
+        ref={persistentIconRef}
         isContextIndicated={contextIndicator}
         hidden={!FeedbackDialogOpen}
         setOpen={openCloseFeedbackDialog}

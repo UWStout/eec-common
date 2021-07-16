@@ -41,7 +41,7 @@ export default function FeedbackDialog (props) {
     <Tooltip
       interactive
       placement='top-end'
-      open={!hidden}
+      open={!hidden && children !== null}
       title={<FeedbackDialogContent {...restProps} />}
       PopperProps={newPopperProps}
       arrow

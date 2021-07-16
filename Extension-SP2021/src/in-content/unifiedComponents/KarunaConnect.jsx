@@ -65,14 +65,16 @@ export default function KarunaConnect (props) {
   // Main render
   return (
     <div className={(context === 'msTeams' ? rootTeams : rootDiscord)}>
-      <ConnectStatusDrawer
-        hidden={!userLoggedIn || mainPanelOpen}
-        onHide={openMainPanel}
-      />
-      <ConnectMainDrawer
-        hidden={!mainPanelOpen}
-        onHide={() => { setMainPanelOpen(false) }}
-      />
+      {userLoggedIn &&
+        <ConnectStatusDrawer
+          hidden={!userLoggedIn || mainPanelOpen}
+          onHide={openMainPanel}
+        />}
+      {userLoggedIn &&
+        <ConnectMainDrawer
+          hidden={!mainPanelOpen}
+          onHide={() => { setMainPanelOpen(false) }}
+        />}
     </div>
   )
 }

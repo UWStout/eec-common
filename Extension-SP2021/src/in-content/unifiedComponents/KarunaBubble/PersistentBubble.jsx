@@ -56,6 +56,7 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
       onMouseEnter={cancelHide}
       onMouseLeave={() => onHide(false)}
       className={classes.root}
+      disabled={!userLoggedIn}
       aria-label="open feedback Dialog"
     >
       <SvgIcon className={classes.iconStyle}>
