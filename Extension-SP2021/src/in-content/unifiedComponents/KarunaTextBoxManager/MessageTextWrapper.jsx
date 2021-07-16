@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
+import { useSetRecoilState } from 'recoil'
+import { NVCIdentifiedState } from '../data/globalState'
+
 import { makeStyles } from '@material-ui/core/styles'
 
 import Highlighter from './Highlighter.jsx'
@@ -12,6 +15,9 @@ const LOG = makeLogger('MESSAGE Wrapper', 'maroon', 'white')
 
 // DEBUG: Just for testing
 const highlightWordList = ['test', 'seth', 'the']
+
+// DEBUG: just for testing
+const highlightRangeList = [[0, 4], [6, 9]]
 
 const useStyles = makeStyles((theme) => ({
   outerWrapper: {
@@ -42,17 +48,27 @@ const useStyles = makeStyles((theme) => ({
 export default function MessageTextWrapper (props) {
   // Deconstruct the props and style class names
   const { textBox } = props
+  const setIsNVCIndicated = useSetRecoilState(NVCIdentifiedState)
   const { outerWrapper, middleDiv, innerDiv } = useStyles()
 
   // Track the text box as a jQuery element in component state
   const [textBoxJQElem, setTextBoxJQElem] = useState(null)
 
   // Track the highlighted words
-  const [highlightRects, setHighlightRects] = useState([])
+  const [highlightRects, setHighlightRects] = useState([]) // array of objects
   const updateUnderlinedWords = (JQTextBox) => {
     try {
-      const rects = computeWordRects(JQTextBox, highlightWordList)
+      // highlightObjectsList would be the result from analyzing the text for entities with Watson
+      // watson returns entities = response.output.entities
+      // entities.location is an array with start and end
+      // entities.value is the word
+      const rects = computeWordRects(JQTextBox, highlightRangeList)
+      // const rects = []
+
+      // const rects = computeWordRects(JQTextBox, highlightWordList)
       LOG('Computed rects:', rects)
+      if (rects.length > 0) setIsNVCIndicated(true) // puts 'NVC' on top of bubble
+      else setIsNVCIndicated(false)
       setHighlightRects(rects)
     } catch (err) {
       LOG.error('Error computing word rects', err)
