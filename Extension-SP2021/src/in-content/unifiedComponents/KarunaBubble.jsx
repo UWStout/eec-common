@@ -21,9 +21,6 @@ export default function KarunaBubble (props) {
   // Timeout for hiding the feedback dialog
   const [feedbackHideTimeout, setFeedbackHideTimeout] = useState(false)
 
-  // Data shared throughout the connect panel is managed here (ignoring setter)
-  const [contextIndicator] = useState(true)
-
   // Ensure the main connect panel is closed any time we open the feedback dialog
   const openCloseFeedbackDialog = (open) => {
     if (open) {
@@ -60,7 +57,6 @@ export default function KarunaBubble (props) {
       cancelHide={cancelHideFeedbackDialog}
     >
       <PersistentBubble
-        isContextIndicated={contextIndicator}
         hidden={!FeedbackDialogOpen}
         setOpen={openCloseFeedbackDialog}
         onHide={hideFeedbackDialog}

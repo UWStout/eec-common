@@ -70,6 +70,71 @@ function traverseAndSpanifyWords (sourceElement, destinationElement, searchWords
   }
 }
 
+function traverseAndSpanifyRanges (sourceElement, destinationElement, ranges) {
+  // Are there words to search for?
+  if (!Array.isArray(ranges) || ranges.length < 1) {
+    return
+  }
+
+  // Are there children to traverse?
+  if (!sourceElement.hasChildNodes()) {
+    return
+  }
+
+  // Loop over children
+  let sourceChild = sourceElement.firstChild
+  let destinationChild = destinationElement.firstChild
+  while (sourceChild) {
+    // Examine source child node type
+    switch (sourceChild.nodeType) {
+      // HTML Element node
+      case Node.ELEMENT_NODE:
+        traverseAndSpanifyRanges(sourceChild, destinationChild, ranges)
+        break
+
+        // Text node
+      case Node.TEXT_NODE:
+        console.log('total ranges are', ranges)
+        ranges.forEach(([startIdx, endIdx]) => {
+          console.log('sourceChild is', sourceChild.nodeValue)
+          console.log('sourceChild length is', sourceChild.nodeValue.length)
+          console.log('start index is ', startIdx, 'and end index is', endIdx)
+          if (sourceChild.nodeValue.length - 1 < startIdx || sourceChild.nodeValue.length - 1 < endIdx) {
+            console.log('not enough characters in textbox')
+          } else {
+            const text = sourceChild.nodeValue
+            // create the span with the highlight class
+            const content = text.substr(startIdx, endIdx)
+            const newNode = document.createElement('SPAN')
+            newNode.className = 'highlight-word-span'
+            newNode.innerHTML = content
+            // replace the text with the span
+
+            // const range = new Range()
+            // range.setStart(sourceChild, startIdx)
+            // range.setEnd(sourceChild, endIdx)
+            // console.log('range of', range)
+            // // clone content before deleting
+            // const content = range.cloneContents()
+            // console.log('content of range is', content)
+            // range.deleteContents()
+            // // create new DOM element
+            // const newNode = document.createElement('SPAN')
+            // newNode.className = 'highlight-word-span'
+            // newNode.append(content)
+            // // insert the node where the non-highlighted word used to be
+            // range.insertNode(newNode)
+          }
+        })
+        break
+    }
+
+    // Advance to next sibling
+    sourceChild = sourceChild.nextSibling
+    destinationChild = destinationChild.nextSibling
+  }
+}
+
 let ghostTextBox
 export function computeWordRects (textBox, searchWords) {
   // Clone the text box
@@ -81,6 +146,7 @@ export function computeWordRects (textBox, searchWords) {
 
   // Loop over words and surround matched ones with a span (force searchWords to be array)
   traverseAndSpanifyWords(textBox[0], ghostTextBox[0], (Array.isArray(searchWords) ? searchWords : []))
+  // traverseAndSpanifyRanges(textBox[0], ghostTextBox[0], (Array.isArray(searchWords) ? searchWords : []))
 
   // Append the cloned text box so we can measure it
   textBox.after(ghostTextBox)
