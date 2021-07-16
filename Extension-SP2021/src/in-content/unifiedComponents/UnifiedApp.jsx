@@ -1,6 +1,6 @@
 /* global EventEmitter3 */
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
@@ -12,11 +12,11 @@ import * as HELPER from './data/backgroundHelper.js'
 
 import KarunaConnect from './KarunaConnect.jsx'
 import KarunaBubble from './KarunaBubble.jsx'
-
-// Colorful logger
-import { makeLogger } from '../../util/Logger.js'
 import KarunaTextBoxManager from './KarunaTextBoxManager.jsx'
-const LOG = makeLogger('UNIFIED React App', 'lavender', 'black')
+
+// Colorful logger (enable if logging is needed)
+// import { makeLogger } from '../../util/Logger.js'
+// const LOG = makeLogger('UNIFIED React App', 'lavender', 'black')
 
 // The sidebar Karuna Connect object
 export default function UnifiedApp (props) {

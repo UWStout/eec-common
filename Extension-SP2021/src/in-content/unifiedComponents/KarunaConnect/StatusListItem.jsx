@@ -1,20 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { UserStatusState } from '../data/globalState.js'
+import { UserStatusState, AffectListState } from '../data/globalState.js'
 import { useRecoilValue } from 'recoil'
 
 import { Typography, Grid, Avatar } from '@material-ui/core'
 
 import CustomTooltip from './CustomTooltip.jsx'
 
-import { AffectObjectShape } from '../data/dataTypeShapes.js'
-
 export default function StatusListItem (props) {
-  const { userEmail, affect } = props
+  const { userEmail } = props
 
   // Subscribe to changes in current status (GLOBAL STATE)
   const currentStatus = useRecoilValue(UserStatusState)
+  const emojiList = useRecoilValue(AffectListState)
+
+  // Lookup current affect object from its ID
+  const currentAffect = emojiList.find((item) => {
+    return item._id === currentStatus?.currentAffectID
+  })
 
   return (
     <Grid container wrap='nowrap' spacing={1}>
@@ -27,8 +31,8 @@ export default function StatusListItem (props) {
         </Grid>
         <Grid container item spacing={1}>
           <Grid item>
-            <CustomTooltip placement='right' title={affect ? affect.name : 'none'}>
-              <Typography variant='body1'>{affect ? affect.characterCodes[0] : '?'}</Typography>
+            <CustomTooltip placement='right' title={currentAffect ? currentAffect.name : 'none'}>
+              <Typography variant='body1'>{currentAffect ? currentAffect.characterCodes[0] : '?'}</Typography>
             </CustomTooltip>
           </Grid>
           <Grid item>
@@ -48,11 +52,9 @@ export default function StatusListItem (props) {
 }
 
 StatusListItem.propTypes = {
-  affect: PropTypes.shape(AffectObjectShape),
   userEmail: PropTypes.string
 }
 
 StatusListItem.defaultProps = {
-  affect: null,
   userEmail: ''
 }

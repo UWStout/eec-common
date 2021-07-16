@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
-import { EmojiListState, SelectedAffectState, UserStatusState } from '../data/globalState.js'
+import { AffectListState, SelectedAffectSurveyState, UserStatusState } from '../data/globalState.js'
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
@@ -80,11 +80,11 @@ export default function ConnectMainContent (props) {
   const { root, heading } = useStyles()
 
   // Subscribe to the global emojiList state and current status (GLOBAL STATE)
-  const emojiList = useRecoilValue(EmojiListState)
+  const emojiList = useRecoilValue(AffectListState)
   const currentStatus = useRecoilValue(UserStatusState)
 
   const [expanded, setExpanded] = useState('userStatus')
-  const selectedAffectID = useRecoilValue(SelectedAffectState)
+  const selectedAffectID = useRecoilValue(SelectedAffectSurveyState)
   const [selectedAffect, setSelectedAffect] = useState(null)
 
   // open affect survey

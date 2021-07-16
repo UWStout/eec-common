@@ -62,10 +62,10 @@ export default function MessageTextWrapper (props) {
       // watson returns entities = response.output.entities
       // entities.location is an array with start and end
       // entities.value is the word
-      const rects = computeWordRects(JQTextBox, highlightRangeList)
+      // const rects = computeWordRects(JQTextBox, highlightRangeList)
       // const rects = []
 
-      // const rects = computeWordRects(JQTextBox, highlightWordList)
+      const rects = computeWordRects(JQTextBox, highlightWordList)
       LOG('Computed rects:', rects)
       if (rects.length > 0) setIsNVCIndicated(true) // puts 'NVC' on top of bubble
       else setIsNVCIndicated(false)

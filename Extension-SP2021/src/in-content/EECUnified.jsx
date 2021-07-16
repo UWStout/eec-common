@@ -15,9 +15,6 @@ import UnifiedApp from './unifiedComponents/UnifiedApp.jsx'
 // For global state initialization
 import { setMessagingContext } from './unifiedComponents/data/globalState.js'
 
-// Utility enums and functions for app context management
-import * as CONTEXT_UTIL from '../util/contexts.js'
-
 // Colorful logger
 import { makeLogger } from '../util/Logger.js'
 const LOG = makeLogger('EEC Unified', '#222', '#bada55')
