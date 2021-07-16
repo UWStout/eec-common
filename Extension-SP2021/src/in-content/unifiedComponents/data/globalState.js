@@ -25,9 +25,9 @@ export const BubbleVisibilityState = atom({
   default: false
 })
 
-/** Has the user selected a new mood */
-export const SelectedAffectState = atom({
-  key: 'SelectedAffectState',
+/** Has the user selected a new mood in the affect survey */
+export const SelectedAffectSurveyState = atom({
+  key: 'SelectedAffectSurveyState',
   default: ''
 })
 
@@ -108,18 +108,6 @@ export const AffectListState = atom({
       })
     }
   ]
-})
-
-/** Global state for the affect/emoji list */
-export const EmojiListState = selector({
-  key: 'EmojiListState',
-  get: ({ get }) => {
-    const affectList = get(AffectListState)
-    return affectList
-  },
-  set: ({ set }) => {
-    // TODO: Implement
-  }
 })
 
 /** List of user's recent emoji */

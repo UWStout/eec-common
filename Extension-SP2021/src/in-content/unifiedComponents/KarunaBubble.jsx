@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
 
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import { ConnectVisibilityState, BubbleVisibilityState } from './data/globalState.js'
@@ -7,15 +6,12 @@ import { ConnectVisibilityState, BubbleVisibilityState } from './data/globalStat
 import PersistentBubble from './KarunaBubble/PersistentBubble.jsx'
 import FeedbackDialog from './KarunaBubble/FeedbackDialog/FeedbackDialog.jsx'
 
-// Colorful logger
-import { makeLogger } from '../../util/Logger.js'
-const LOG = makeLogger('BUBBLE Component', 'lavender', 'black')
+// Colorful logger (Enable if logging is needed)
+// import { makeLogger } from '../../util/Logger.js'
+// const LOG = makeLogger('BUBBLE Component', 'lavender', 'black')
 
 // The karuna dialog bubble
 export default function KarunaBubble (props) {
-  // De-structure props
-  const { context } = props
-
   // Full state and setter for visibility of main connect panel (GLOBAL STATE)
   const setMainConnectPanelOpen = useSetRecoilState(ConnectVisibilityState)
 
@@ -25,8 +21,8 @@ export default function KarunaBubble (props) {
   // Timeout for hiding the feedback dialog
   const [feedbackHideTimeout, setFeedbackHideTimeout] = useState(false)
 
-  // Data shared throughout the connect panel is managed here
-  const [contextIndicator, setContextIndicator] = useState(true)
+  // Data shared throughout the connect panel is managed here (ignoring setter)
+  const [contextIndicator] = useState(true)
 
   // Ensure the main connect panel is closed any time we open the feedback dialog
   const openCloseFeedbackDialog = (open) => {
@@ -72,8 +68,4 @@ export default function KarunaBubble (props) {
       />
     </FeedbackDialog>
   )
-}
-
-KarunaBubble.propTypes = {
-  context: PropTypes.string.isRequired
 }

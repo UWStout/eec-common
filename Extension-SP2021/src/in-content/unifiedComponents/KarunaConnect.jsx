@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import ConnectStatusDrawer from './KarunaConnect/ConnectStatusDrawer.jsx'
 import ConnectMainDrawer from './KarunaConnect/ConnectMainDrawer.jsx'
 
-// Colorful logger
+// Colorful logger (enable if logging is needed)
 // import { makeLogger } from '../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Component', 'lavender', 'black')
 
