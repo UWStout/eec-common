@@ -17,7 +17,7 @@ const LOG = makeLogger('MESSAGE Wrapper', 'maroon', 'white')
 const highlightWordList = ['test', 'seth', 'the']
 
 // DEBUG: just for testing
-const highlightRangeList = [[0, 4], [6, 9]]
+const highlightRangeList = [[5, 8]]
 
 const useStyles = makeStyles((theme) => ({
   outerWrapper: {
@@ -56,16 +56,19 @@ export default function MessageTextWrapper (props) {
 
   // Track the highlighted words
   const [highlightRects, setHighlightRects] = useState([]) // array of objects
+  const [isCovered, setIsCovered] = useState(new Array(highlightRangeList.length).fill(false))
+
   const updateUnderlinedWords = (JQTextBox) => {
     try {
       // highlightObjectsList would be the result from analyzing the text for entities with Watson
       // watson returns entities = response.output.entities
       // entities.location is an array with start and end
       // entities.value is the word
-      // const rects = computeWordRects(JQTextBox, highlightRangeList)
+
+      const rects = computeWordRects(JQTextBox, highlightRangeList, isCovered, setIsCovered)
       // const rects = []
 
-      const rects = computeWordRects(JQTextBox, highlightWordList)
+      // const rects = computeWordRects(JQTextBox, highlightWordList)
       LOG('Computed rects:', rects)
       if (rects.length > 0) setIsNVCIndicated(true) // puts 'NVC' on top of bubble
       else setIsNVCIndicated(false)

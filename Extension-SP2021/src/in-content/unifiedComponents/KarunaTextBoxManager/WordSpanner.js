@@ -70,7 +70,7 @@ function traverseAndSpanifyWords (sourceElement, destinationElement, searchWords
   }
 }
 
-function traverseAndSpanifyRanges (sourceElement, destinationElement, ranges) {
+function traverseAndSpanifyRanges (sourceElement, destinationElement, ranges, isCovered, setIsCovered) {
   // Are there words to search for?
   if (!Array.isArray(ranges) || ranges.length < 1) {
     return
@@ -89,54 +89,54 @@ function traverseAndSpanifyRanges (sourceElement, destinationElement, ranges) {
     switch (sourceChild.nodeType) {
       // HTML Element node
       case Node.ELEMENT_NODE:
-        traverseAndSpanifyRanges(sourceChild, destinationChild, ranges)
+        traverseAndSpanifyRanges(sourceChild, destinationChild, ranges, isCovered, setIsCovered)
         break
 
         // Text node
       case Node.TEXT_NODE:
-        console.log('total ranges are', ranges)
-        ranges.forEach(([startIdx, endIdx]) => {
-          console.log('sourceChild is', sourceChild.nodeValue)
-          console.log('sourceChild length is', sourceChild.nodeValue.length)
-          console.log('start index is ', startIdx, 'and end index is', endIdx)
+        ranges.forEach(([startIdx, endIdx], index) => {
+          console.log('isCovered is', isCovered)
           if (sourceChild.nodeValue.length - 1 < startIdx || sourceChild.nodeValue.length - 1 < endIdx) {
             console.log('not enough characters in textbox')
-          } else {
-            const text = sourceChild.nodeValue
-            // create the span with the highlight class
-            const content = text.substr(startIdx, endIdx)
+          } else if (!isCovered[index]) {
+            // set is covered to true for index
+            const newCovered = [...isCovered]
+            newCovered[index] = true
+            console.log('newCovered is', newCovered)
+            setIsCovered(newCovered)
+            // start creating a range for surrounding range in span for highlighting
+            const range = new Range()
+            range.setStart(sourceChild, startIdx)
+            range.setEnd(sourceChild, endIdx)
+            // clone content before deleting
+            const content = range.cloneContents()
+            range.deleteContents()
+            // create new DOM element
             const newNode = document.createElement('SPAN')
             newNode.className = 'highlight-word-span'
-            newNode.innerHTML = content
-            // replace the text with the span
-
-            // const range = new Range()
-            // range.setStart(sourceChild, startIdx)
-            // range.setEnd(sourceChild, endIdx)
-            // console.log('range of', range)
-            // // clone content before deleting
-            // const content = range.cloneContents()
-            // console.log('content of range is', content)
-            // range.deleteContents()
-            // // create new DOM element
-            // const newNode = document.createElement('SPAN')
-            // newNode.className = 'highlight-word-span'
-            // newNode.append(content)
-            // // insert the node where the non-highlighted word used to be
-            // range.insertNode(newNode)
+            newNode.append(content)
+            // insert the node where the non-highlighted word used to be
+            range.insertNode(newNode)
+          } else {
+            console.log('ranges already covered')
           }
         })
         break
     }
 
     // Advance to next sibling
-    sourceChild = sourceChild.nextSibling
-    destinationChild = destinationChild.nextSibling
+    if (sourceChild && destinationChild) {
+      sourceChild = sourceChild.nextSibling
+      destinationChild = destinationChild.nextSibling
+    } else {
+      sourceChild = null
+      destinationChild = null
+    }
   }
 }
 
 let ghostTextBox
-export function computeWordRects (textBox, searchWords) {
+export function computeWordRects (textBox, searchWords, isCovered, setIsCovered) {
   // Clone the text box
   if (ghostTextBox) {
     ghostTextBox.remove()
@@ -145,8 +145,9 @@ export function computeWordRects (textBox, searchWords) {
   ghostTextBox.css('background-color', 'lightgreen')
 
   // Loop over words and surround matched ones with a span (force searchWords to be array)
-  traverseAndSpanifyWords(textBox[0], ghostTextBox[0], (Array.isArray(searchWords) ? searchWords : []))
-  // traverseAndSpanifyRanges(textBox[0], ghostTextBox[0], (Array.isArray(searchWords) ? searchWords : []))
+  // traverseAndSpanifyWords(textBox[0], ghostTextBox[0], (Array.isArray(searchWords) ? searchWords : []))
+
+  traverseAndSpanifyRanges(textBox[0], ghostTextBox[0], (Array.isArray(searchWords) ? searchWords : []), isCovered, setIsCovered)
 
   // Append the cloned text box so we can measure it
   textBox.after(ghostTextBox)
