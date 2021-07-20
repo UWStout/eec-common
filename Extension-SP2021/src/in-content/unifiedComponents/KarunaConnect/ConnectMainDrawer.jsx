@@ -1,31 +1,32 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { Paper } from '@material-ui/core'
+import { Paper, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 import PanelTitle from './PanelTitle.jsx'
-import ConnectMainContent from './ConnectMainContent.jsx'
+// AIW Commented out for styling work
+// import ConnectMainContent from './ConnectMainContent.jsx'
 
 // DEBUG: Enable this logger when needed
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Main Panel', 'lime', 'black')
 
 const useStyles = makeStyles((theme) => ({
-  // Styling of the root paper element
-  paperRoot: {
-    // Margins and sizing
-    padding: theme.spacing(2),
-    paddingRight: theme.spacing(4),
-    width: theme.spacing(39),
-
-    // TODO: Think critically about minHeight, make fit minimal plus some buffer
-    // minHeight: theme.spacing(50),
-    maxHeight: `calc(80vh - ${theme.spacing(8)}px)`,
-
-    // Position element in window
+  root: {
+    display: 'flex',
     position: 'absolute',
     top: '20vh',
+    width: '288px',
+    // AIW I've not calculated this dimension yet.
+    // height: '608px',
+    // AIW Placeholder styling for testing.
+    height: '78px',
+
+    paddingTop: theme.spacing(1),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
 
     // Animate changes in the 'right' property
     transition: theme.transitions.create(
@@ -35,30 +36,28 @@ const useStyles = makeStyles((theme) => ({
 
   // Style when the panel is retracted
   panelRetracted: {
-    right: -theme.spacing(16)
+    // AIW Comment in for testing styling
+    // right: '0%'
+    right: 'calc(0% - 109px)'
   },
 
   // Style when the panel is fully expanded
   panelExpanded: {
-    right: -theme.spacing(1)
+    // AIW Comment in for testing styling
+    // right: '0%'
+    right: 'calc(0% - 8px)'
   },
 
   // Style when the panel is hidden
   panelHidden: {
-    right: -theme.spacing(50)
+    // AIW Comment in for testing styling
+    // right: '0%'
+    right: 'calc(0% - 312px)'
   },
 
-  // Styling for the outer box
-  boxStyle: {
-    paddingTop: theme.spacing(5),
-    marginLeft: '-3px',
-    marginRight: '-10px'
-  },
-
-  // Styling for the primary content box
-  contentStyle: {
-    overflowY: 'auto',
-    overflowX: 'hidden'
+  // Styling of Grid container
+  gridContRoot: {
+    flexGrow: 1
   }
 }))
 
@@ -75,12 +74,10 @@ export default function ConnectMainDrawer (props) {
 
   // Deconstruct props and style class names
   const {
-    paperRoot,
+    root,
     panelHidden,
     panelRetracted,
-    panelExpanded,
-    contentStyle,
-    boxStyle
+    panelExpanded
   } = useStyles()
 
   // Hover state of mouse
@@ -139,16 +136,20 @@ export default function ConnectMainDrawer (props) {
     <Paper
       data-testid="connectMainPanel"
       elevation={5}
-      className={`${paperRoot} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : (isRetracted ? panelRetracted : panelExpanded))}`}
+      className={`${root} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : (isRetracted ? panelRetracted : panelExpanded))}`}
       onMouseEnter={() => { setMouseIsOver(true); cancelHide(); cancelRetract() }}
       onMouseLeave={() => { setMouseIsOver(false); hide(false); retract(false) }}
     >
-      <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
-      <div className={boxStyle}>
+      <Grid container>
+        <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
+      </Grid>
+      {/* AIW Commented out for styling work. */}
+      {/* <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} /> */}
+      {/* <div className={boxStyle}>
         <main className={contentStyle}>
           <ConnectMainContent hidden={hidden} retracted={!mouseIsOver} />
         </main>
-      </div>
+      </div> */}
     </Paper>
   )
 }
