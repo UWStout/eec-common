@@ -95,15 +95,13 @@ function traverseAndSpanifyRanges (sourceElement, destinationElement, ranges, is
         // Text node
       case Node.TEXT_NODE:
         ranges.forEach(([startIdx, endIdx], index) => {
-          console.log('isCovered is', isCovered)
+          console.log('isCovered is', isCovered[index])
           if (sourceChild.nodeValue.length - 1 < startIdx || sourceChild.nodeValue.length - 1 < endIdx) {
             console.log('not enough characters in textbox')
           } else if (!isCovered[index]) {
             // set is covered to true for index
-            const newCovered = [...isCovered]
-            newCovered[index] = true
-            console.log('newCovered is', newCovered)
-            setIsCovered(newCovered)
+            setIsCovered(index)
+
             // start creating a range for surrounding range in span for highlighting
             const range = new Range()
             range.setStart(sourceChild, startIdx)
@@ -136,7 +134,7 @@ function traverseAndSpanifyRanges (sourceElement, destinationElement, ranges, is
 }
 
 let ghostTextBox
-export function computeWordRects (textBox, searchWords, isCovered, setIsCovered) {
+export function computeWordRects (isWords, textBox, spanThese, isCovered, setIsCovered) {
   // Clone the text box
   if (ghostTextBox) {
     ghostTextBox.remove()
@@ -144,11 +142,12 @@ export function computeWordRects (textBox, searchWords, isCovered, setIsCovered)
   ghostTextBox = textBox.clone()
   ghostTextBox.css('background-color', 'lightgreen')
 
-  // Loop over words and surround matched ones with a span (force searchWords to be array)
-  // traverseAndSpanifyWords(textBox[0], ghostTextBox[0], (Array.isArray(searchWords) ? searchWords : []))
-
-  traverseAndSpanifyRanges(textBox[0], ghostTextBox[0], (Array.isArray(searchWords) ? searchWords : []), isCovered, setIsCovered)
-
+  if (isWords) {
+  // Loop over words and surround matched ones with a span (force spanThese to be array)
+    traverseAndSpanifyWords(textBox[0], ghostTextBox[0], (Array.isArray(spanThese) ? spanThese : []))
+  } else { // is Ranges
+    traverseAndSpanifyRanges(textBox[0], ghostTextBox[0], (Array.isArray(spanThese) ? spanThese : []), isCovered, setIsCovered)
+  }
   // Append the cloned text box so we can measure it
   textBox.after(ghostTextBox)
 
