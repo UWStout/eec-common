@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-import { useRecoilState, useSetRecoilState } from 'recoil'
-import { ConnectVisibilityState, BubbleVisibilityState } from './data/globalState.js'
+import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
+import { ConnectVisibilityState, BubbleVisibilityState, KarunaMessageState } from './data/globalState.js'
 
 import PersistentBubble from './KarunaBubble/PersistentBubble.jsx'
 import FeedbackDialog from './KarunaBubble/FeedbackDialog/FeedbackDialog.jsx'
@@ -17,6 +17,14 @@ export default function KarunaBubble (props) {
 
   // Hide/Show the feedback dialog
   const [FeedbackDialogOpen, setFeedbackDialogOpen] = useRecoilState(BubbleVisibilityState)
+
+  // Receive changes in the karuna message (GLOBAL STATE)
+  const karunaMessage = useRecoilValue(KarunaMessageState)
+  useEffect(() => {
+    if (karunaMessage?.content) {
+      setFeedbackDialogOpen(true)
+    }
+  }, [karunaMessage, setFeedbackDialogOpen])
 
   // Timeout for hiding the feedback dialog
   const [feedbackHideTimeout, setFeedbackHideTimeout] = useState(false)

@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
-import { LoggedInUserState } from './data/globalState.js'
+import { KarunaMessageState, LoggedInUserState } from './data/globalState.js'
 
 import { CssBaseline } from '@material-ui/core'
 
@@ -37,6 +37,14 @@ export default function UnifiedApp (props) {
       setLoggedInUserState({})
     })
   }, [emitter, setLoggedInUserState])
+
+  // Track karuna server messages globally
+  const setKarunaMessageState = useSetRecoilState(KarunaMessageState)
+  useEffect(() => {
+    emitter.on('karunaMessage', (newMessage) => {
+      setKarunaMessageState(newMessage)
+    })
+  }, [emitter, setKarunaMessageState])
 
   return (
     <React.Fragment>
