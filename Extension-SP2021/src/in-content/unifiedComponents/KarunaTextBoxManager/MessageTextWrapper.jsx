@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
@@ -15,9 +15,6 @@ const LOG = makeLogger('MESSAGE Wrapper', 'maroon', 'white')
 
 // DEBUG: Just for testing
 const highlightWordList = ['test', 'seth', 'the']
-
-// DEBUG: just for testing
-const highlightRangeList = [[0, 3], [5, 8]]
 
 const useStyles = makeStyles((theme) => ({
   outerWrapper: {
@@ -54,16 +51,15 @@ export default function MessageTextWrapper (props) {
   // Track the text box as a jQuery element in component state
   const [textBoxJQElem, setTextBoxJQElem] = useState(null)
 
+  const [highlightRangeList, setHighlightRangeList] = useState([[0, 3], [5, 8]])
+
   // Track the highlighted words
   const [highlightRects, setHighlightRects] = useState([]) // array of objects
-  // const [isCovered, setIsCovered] = useState(new Array(highlightRangeList.length).fill(false))
-  // const isCovered = useRef(new Array(highlightRangeList.length).fill(false))
-  let isCovered = new Array(highlightRangeList.length).fill(false)
+  const isCovered = useRef(new Array(highlightRangeList.length).fill(false))
   const setIsCovered = (index) => {
-    isCovered[index] = true
+    isCovered.current[index] = true
   }
-
-  const updateUnderlinedWords = (JQTextBox) => {
+  const updateUnderlinedWords = useCallback((JQTextBox) => {
     try {
       // highlightObjectsList would be the result from analyzing the text for entities with Watson
       // watson returns entities = response.output.entities
@@ -71,10 +67,10 @@ export default function MessageTextWrapper (props) {
       // entities.value is the word
       const spanWords = false // span words or span ranges
       const spanList = (spanWords ? highlightWordList : highlightRangeList)
-      let rects = computeWordRects(spanWords, JQTextBox, spanList, isCovered, setIsCovered)
+      let rects = computeWordRects(spanWords, JQTextBox, spanList, isCovered.current, setIsCovered)
       if (rects.length === 0) {
-        isCovered = new Array(highlightRangeList.length).fill(false)
-        rects = computeWordRects(spanWords, JQTextBox, spanList, isCovered, setIsCovered)
+        isCovered.current = new Array(highlightRangeList.length).fill(false)
+        rects = computeWordRects(spanWords, JQTextBox, spanList, isCovered.current, setIsCovered)
       }
 
       LOG('Computed rects:', rects)
@@ -84,7 +80,7 @@ export default function MessageTextWrapper (props) {
     } catch (err) {
       LOG.error('Error computing word rects', err)
     }
-  }
+  }, [highlightRangeList, setIsNVCIndicated])
 
   // Respond to change in textBox param
   useEffect(() => {
@@ -97,7 +93,7 @@ export default function MessageTextWrapper (props) {
 
     // Store jQuery element of textbox in state
     setTextBoxJQElem(newJQElem)
-  }, [textBox])
+  }, [textBox, updateUnderlinedWords])
 
   // Build the highlighted words elements
   const highlightedWords = highlightRects.map((rect, i) => (
