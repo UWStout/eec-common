@@ -33,23 +33,19 @@ let connectPromise = null
  * @throws If connection to mongodb instance fails.
  */
 export async function connect (dbName) {
-  // Attempt to establish a connection with the mongodb instance
-  if (!clientHandle.isConnected()) {
-    try {
-      debug('Connecting to mongo ...')
-      if (connectPromise !== null) {
-        await connectPromise
-      } else {
-        connectPromise = clientHandle.connect()
-        await connectPromise
-        connectPromise = null
-      }
-      debug('... success')
-    } catch (err) {
-      debug('Failed to connect to mongodb')
-      debug(err)
-      throw new Error('Failed to connect to mongodb')
+  // Make sure we're connected (does nothing if already connected)
+  try {
+    if (connectPromise !== null) {
+      await connectPromise
+    } else {
+      connectPromise = clientHandle.connect()
+      await connectPromise
+      connectPromise = null
     }
+  } catch (err) {
+    debug('Failed to connect to mongodb')
+    debug(err)
+    throw new Error('Failed to connect to mongodb')
   }
 
   // Return database handle
@@ -65,11 +61,9 @@ export async function connect (dbName) {
 export async function closeClient () {
   // Establish a connection (if not already)
   try {
-    if (clientHandle.isConnected()) {
-      debug('Disconnecting from mongo ...')
-      await clientHandle.close()
-      debug('... success')
-    }
+    debug('Disconnecting from mongo ...')
+    await clientHandle.close()
+    debug('... success')
   } catch (err) {
     debug('Error disconnecting from mongo', err)
     throw (new Error('Failed to disconnect from mongodb'))
