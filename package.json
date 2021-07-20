@@ -59,6 +59,6 @@
     "mongodb-client-encryption": "1.2.6",
     "morgan": "1.10.0",
     "saslprep": "^1.0.3",
-    "supports-color": "^9.0.1"
+    "supports-color": "^9.0.2"
   }
 }
