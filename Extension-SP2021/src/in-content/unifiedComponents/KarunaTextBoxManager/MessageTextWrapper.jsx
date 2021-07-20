@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
@@ -15,9 +15,6 @@ const LOG = makeLogger('MESSAGE Wrapper', 'maroon', 'white')
 
 // DEBUG: Just for testing
 const highlightWordList = ['test', 'seth', 'the']
-
-// DEBUG: just for testing
-const highlightRangeList = [[0, 4], [6, 9]]
 
 const useStyles = makeStyles((theme) => ({
   outerWrapper: {
@@ -54,18 +51,28 @@ export default function MessageTextWrapper (props) {
   // Track the text box as a jQuery element in component state
   const [textBoxJQElem, setTextBoxJQElem] = useState(null)
 
+  const [highlightRangeList, setHighlightRangeList] = useState([[0, 3], [5, 8]])
+
   // Track the highlighted words
   const [highlightRects, setHighlightRects] = useState([]) // array of objects
-  const updateUnderlinedWords = (JQTextBox) => {
+  const isCovered = useRef(new Array(highlightRangeList.length).fill(false))
+  const setIsCovered = (index) => {
+    isCovered.current[index] = true
+  }
+  const updateUnderlinedWords = useCallback((JQTextBox) => {
     try {
       // highlightObjectsList would be the result from analyzing the text for entities with Watson
       // watson returns entities = response.output.entities
       // entities.location is an array with start and end
       // entities.value is the word
-      // const rects = computeWordRects(JQTextBox, highlightRangeList)
-      // const rects = []
+      const spanWords = false // span words or span ranges
+      const spanList = (spanWords ? highlightWordList : highlightRangeList)
+      let rects = computeWordRects(spanWords, JQTextBox, spanList, isCovered.current, setIsCovered)
+      if (rects.length === 0) {
+        isCovered.current = new Array(highlightRangeList.length).fill(false)
+        rects = computeWordRects(spanWords, JQTextBox, spanList, isCovered.current, setIsCovered)
+      }
 
-      const rects = computeWordRects(JQTextBox, highlightWordList)
       LOG('Computed rects:', rects)
       if (rects.length > 0) setIsNVCIndicated(true) // puts 'NVC' on top of bubble
       else setIsNVCIndicated(false)
@@ -73,7 +80,7 @@ export default function MessageTextWrapper (props) {
     } catch (err) {
       LOG.error('Error computing word rects', err)
     }
-  }
+  }, [highlightRangeList, setIsNVCIndicated])
 
   // Respond to change in textBox param
   useEffect(() => {
@@ -86,7 +93,7 @@ export default function MessageTextWrapper (props) {
 
     // Store jQuery element of textbox in state
     setTextBoxJQElem(newJQElem)
-  }, [textBox])
+  }, [textBox, updateUnderlinedWords])
 
   // Build the highlighted words elements
   const highlightedWords = highlightRects.map((rect, i) => (
