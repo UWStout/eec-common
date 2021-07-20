@@ -176,6 +176,12 @@ class EECUnified extends HTMLElement {
         }
         // this.updateVisibility(false)
         break
+
+      case 'karunaMessage':
+        if (this.statusEmitter) {
+          this.statusEmitter.emit('karunaMessage', message)
+        }
+        break
     }
   }
 
