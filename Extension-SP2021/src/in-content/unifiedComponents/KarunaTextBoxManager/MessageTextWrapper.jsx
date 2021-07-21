@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 
-import { useSetRecoilState } from 'recoil'
-import { NVCIdentifiedState } from '../data/globalState'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
+import { NVCIdentifiedState, KarunaMessageState } from '../data/globalState'
 
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -46,30 +46,49 @@ export default function MessageTextWrapper (props) {
   // Deconstruct the props and style class names
   const { textBox } = props
   const setIsNVCIndicated = useSetRecoilState(NVCIdentifiedState)
+  const karunaMessage = useRecoilValue(KarunaMessageState)
   const { outerWrapper, middleDiv, innerDiv } = useStyles()
 
   // Track the text box as a jQuery element in component state
   const [textBoxJQElem, setTextBoxJQElem] = useState(null)
 
-  const [highlightRangeList, setHighlightRangeList] = useState([[0, 3], [5, 8]])
-
   // Track the highlighted words
   const [highlightRects, setHighlightRects] = useState([]) // array of objects
-  const isCovered = useRef(new Array(highlightRangeList.length).fill(false))
+
+  // For tracking what ranges have been highlighted already
+  const isCovered = useRef([])
   const setIsCovered = (index) => {
     isCovered.current[index] = true
   }
+  // should only happen when highlightRangeList is set
+  const resetIsCovered = () => {
+    if (highlightRangeList) isCovered.current = new Array(highlightRangeList.length).fill(false)
+  }
+
+  // Update highlightRangeList when karunaMessage changes
+  const highlightRangeList = useMemo(() => {
+    if (karunaMessage.entities) {
+      const rangeList = []
+      karunaMessage.entities.forEach(entity => {
+        rangeList.push(entity.location)
+      })
+      console.log('highlightRangeList is', rangeList)
+      return rangeList
+    }
+  }, [karunaMessage])
+
   const updateUnderlinedWords = useCallback((JQTextBox) => {
     try {
-      // highlightObjectsList would be the result from analyzing the text for entities with Watson
-      // watson returns entities = response.output.entities
-      // entities.location is an array with start and end
-      // entities.value is the word
+    // highlightObjectsList would be the result from analyzing the text for entities with Watson
+    // watson returns entities = response.output.entities
+    // entities.location is an array with start and end
+    // entities.value is the word
+
       const spanWords = false // span words or span ranges
       const spanList = (spanWords ? highlightWordList : highlightRangeList)
       let rects = computeWordRects(spanWords, JQTextBox, spanList, isCovered.current, setIsCovered)
       if (rects.length === 0) {
-        isCovered.current = new Array(highlightRangeList.length).fill(false)
+        resetIsCovered()
         rects = computeWordRects(spanWords, JQTextBox, spanList, isCovered.current, setIsCovered)
       }
 
@@ -80,7 +99,7 @@ export default function MessageTextWrapper (props) {
     } catch (err) {
       LOG.error('Error computing word rects', err)
     }
-  }, [highlightRangeList, setIsNVCIndicated])
+  }, [highlightRangeList, resetIsCovered, setIsNVCIndicated])
 
   // Respond to change in textBox param
   useEffect(() => {

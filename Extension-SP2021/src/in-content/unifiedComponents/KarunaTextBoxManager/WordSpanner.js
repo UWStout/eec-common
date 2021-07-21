@@ -1,9 +1,3 @@
-// import { analyzeMessage } from '../../../../../Server/src/analysisEngine.js'
-
-// function getRanges (text) {
-//   analyzeMessage (messageObj, userID, context)
-// }
-
 function traverseAndSpanifyWords (sourceElement, destinationElement, searchWords) {
   // Are there words to search for?
   if (!Array.isArray(searchWords) || searchWords.length < 1) {
