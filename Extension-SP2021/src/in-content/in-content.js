@@ -49,8 +49,14 @@ jQuery(document).ready(() => {
   // Setup global Unified Karuna element
   const karunaUnifiedElem = document.createElement('eec-unified')
   karunaUnifiedElem.setupElementReact(contextName, statusEmitter)
-  document.body.insertBefore(karunaUnifiedElem)
   karunaUnifiedElem.setBackgroundPort(extensionPort)
+
+  // Wrap the unified karuna element with an ARIA role
+  const karunaWrapper = document.createElement('div')
+  karunaWrapper.setAttribute('role', 'region')
+  karunaWrapper.setAttribute('aria-label', 'The Karuna browser extension')
+  karunaWrapper.appendChild(karunaUnifiedElem)
+  document.body.insertBefore(karunaWrapper)
 
   // Callback function to execute when mutations are observed
   const mutationCallback = (mutationsList, observer) => {
