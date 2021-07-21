@@ -19,7 +19,7 @@ export default function KarunaTextBoxManager (props) {
   return (
     <React.Fragment>
       {textBoxList.map((textBox, i) => (
-        <MessageTextWrapper key={i} textBox={textBox} />
+        <MessageTextWrapper key={i} textBox={textBox} emitter={emitter} />
       ))}
     </React.Fragment>
   )

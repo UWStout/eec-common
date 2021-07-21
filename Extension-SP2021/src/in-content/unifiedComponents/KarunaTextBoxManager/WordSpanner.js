@@ -100,32 +100,50 @@ function traverseAndSpanifyRanges (sourceElement, destinationElement, ranges, is
         break
 
         // Text node
-      case Node.TEXT_NODE:
+      case Node.TEXT_NODE: {
+        const text = sourceChild.nodeValue
+        let prevLength = 0
+
         ranges.forEach(([startIdx, endIdx], index) => {
-          if (sourceChild.nodeValue.length - 1 < startIdx || sourceChild.nodeValue.length - 1 < endIdx) {
-            console.log('not enough characters in textbox')
-          } else if (!isCovered[index]) {
-            // set is covered to true for index
+          console.log('ranges are', ranges)
+          console.log('isCovered is', isCovered)
+          if (!isCovered[index]) {
+            startIdx = startIdx - prevLength
+            endIdx = endIdx - prevLength
+            // // set is covered to true for index
             setIsCovered(index)
 
-            // start creating a range for surrounding range in span for highlighting
-            const range = new Range()
-            range.setStart(sourceChild, startIdx)
-            range.setEnd(sourceChild, endIdx)
-            // clone content before deleting
-            const content = range.cloneContents()
-            range.deleteContents()
-            // create new DOM element
-            const newNode = document.createElement('SPAN')
-            newNode.className = 'highlight-word-span'
-            newNode.append(content)
-            // insert the node where the non-highlighted word used to be
-            range.insertNode(newNode)
+            const entity = text.substring(startIdx, endIdx)
+
+            destinationChild.parentNode.insertBefore(
+              document.createTextNode(text.substring(0, startIdx)),
+              destinationChild
+            )
+            console.log('*====&&&====* Highlighting word', entity)
+            destinationChild.parentNode.insertBefore(
+              jQuery('<span>').addClass('highlight-word-span').text(entity)[0],
+              destinationChild
+            )
+            prevLength = endIdx
+
+            // // start creating a range for surrounding range in span for highlighting
+            // const range = new Range()
+            // range.setStart(sourceChild, startIdx)
+            // range.setEnd(sourceChild, endIdx)
+            // // clone content before deleting
+            // const content = range.cloneContents()
+            // range.deleteContents()
+            // // create new DOM element
+            // const newNode = document.createElement('SPAN')
+            // newNode.className = 'highlight-word-span'
+            // newNode.append(content)
+            // // insert the node where the non-highlighted word used to be
+            // range.insertNode(newNode)
           } else {
             console.log('ranges already covered')
           }
         })
-        break
+      } break
     }
 
     // Advance to next sibling
