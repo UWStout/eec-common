@@ -276,7 +276,21 @@ function socketMessageUpdate (message) {
   if (WATSON_ENABLED) {
     // Hook to intelligence core, expect a promise in return
     Analysis.analyzeMessage(message, userID, message.context, false)
-      .then((result) => {})
+      .then((result) => {
+        if (result) {
+          // TODO: Consider something more sophisticated here
+          const messageText = result.output.generic[0].text
+          sendWatsonResponse.bind(this)(
+            messageText,
+            message,
+            message.context,
+            result.output.entities,
+            result.output.intents
+          )
+        } else {
+          debug('Empty result during message analysis')
+        }
+      })
       .catch((err) => {
         debug('In-Progress Message analysis failed')
         debug(err)
@@ -323,7 +337,7 @@ async function socketMessageSend (message) {
         // TODO: Consider something more sophisticated here
         const messageText = result.output.generic[0].text
         sendWatsonResponse.bind(this)(
-          `**WATSON**: ${messageText}`,
+          messageText,
           message,
           message.context,
           result.output.entities,

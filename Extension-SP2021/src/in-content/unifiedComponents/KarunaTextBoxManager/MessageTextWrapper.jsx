@@ -1,3 +1,8 @@
+/* global EventEmitter3 */
+
+// To slow down events from 'input'
+import debounce from 'debounce'
+
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import PropTypes from 'prop-types'
 
@@ -11,6 +16,7 @@ import { computeWordRects } from './WordSpanner.js'
 
 // Colorful logger
 import { makeLogger } from '../../../util/Logger.js'
+import { updateMessageText } from './BackgroundMessager'
 const LOG = makeLogger('MESSAGE Wrapper', 'maroon', 'white')
 
 // DEBUG: Just for testing
@@ -44,13 +50,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MessageTextWrapper (props) {
   // Deconstruct the props and style class names
-  const { textBox } = props
-  const setIsNVCIndicated = useSetRecoilState(NVCIdentifiedState)
+  const { textBox, emitter } = props
   const { outerWrapper, middleDiv, innerDiv } = useStyles()
+
+  // Global state for identified NVC element
+  const setIsNVCIndicated = useSetRecoilState(NVCIdentifiedState)
 
   // Track the text box as a jQuery element in component state
   const [textBoxJQElem, setTextBoxJQElem] = useState(null)
-
   const [highlightRangeList, setHighlightRangeList] = useState([[0, 3], [5, 8]])
 
   // Track the highlighted words
@@ -86,14 +93,24 @@ export default function MessageTextWrapper (props) {
   useEffect(() => {
     // Setup event listeners for the text box
     const newJQElem = jQuery(textBox)
-    const wordUnderlineCallback = updateUnderlinedWords.bind(newJQElem)
-    newJQElem.on('focusin', () => { wordUnderlineCallback(newJQElem) })
-    newJQElem.on('focusout', () => { wordUnderlineCallback(newJQElem) })
-    newJQElem.on('input', () => { wordUnderlineCallback(newJQElem) })
+    newJQElem.on('focusin', () => { updateUnderlinedWords(newJQElem) })
+    newJQElem.on('focusout', () => { updateUnderlinedWords(newJQElem) })
+
+    newJQElem.on('input', debounce((event) => {
+      updateUnderlinedWords(newJQElem)
+
+      // Send a message text update to the root element, where it will be bounced
+      // to the background (and then to the server).
+      // TODO: Use the correct context name on updateMessageText()
+      if (emitter) {
+        const [content, mentions] = updateMessageText(event, newJQElem)
+        emitter.emit('textUpdate', { content, mentions })
+      }
+    }, 200))
 
     // Store jQuery element of textbox in state
     setTextBoxJQElem(newJQElem)
-  }, [textBox, updateUnderlinedWords])
+  }, [emitter, textBox, updateUnderlinedWords])
 
   // Build the highlighted words elements
   const highlightedWords = highlightRects.map((rect, i) => (
@@ -120,5 +137,10 @@ export default function MessageTextWrapper (props) {
 }
 
 MessageTextWrapper.propTypes = {
-  textBox: PropTypes.instanceOf(Element).isRequired
+  textBox: PropTypes.instanceOf(Element).isRequired,
+  emitter: PropTypes.instanceOf(EventEmitter3)
+}
+
+MessageTextWrapper.defaultProps = {
+  emitter: null
 }

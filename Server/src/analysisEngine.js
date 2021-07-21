@@ -12,8 +12,8 @@ const sessionMap = new Map()
 
 // Stub function for analyzing messages (both incomplete and complete)
 export async function analyzeMessage (messageObj, userID, context, isComplete = false) {
-  // Ignore incomplete messages for now
-  if (!isComplete) { return }
+  // CAREFUL! This might be a lot.
+  // if (!isComplete) { return }
 
   // Build customer id
   const customerID = `${userID}${context ? '-' + context : ''}`

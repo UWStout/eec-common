@@ -114,6 +114,19 @@ class EECUnified extends HTMLElement {
     // Setup event emitter
     this.statusEmitter = emitter
 
+    // Register to send text update messages back to the background context
+    this.statusEmitter.on('textUpdate', (messageObj) => {
+      LOG('Responding to text update event', messageObj.content)
+      if (this.backgroundPort) {
+        this.backgroundPort.postMessage({
+          type: 'textUpdate',
+          context: this.contextName,
+          content: messageObj.content,
+          mentions: messageObj.mentions
+        })
+      }
+    })
+
     // Give React control of the root element for the unified panel
     LOG('Mounting react unified component ...')
     ReactDOM.render(
