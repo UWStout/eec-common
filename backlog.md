@@ -1,27 +1,27 @@
 # Current Sprint
 - [ ] (?) Wireframing and IA for extension-popup/settings
 - [ ] (M) Team-status section of Karuna Connect Panel
-- [ ] (S) Avatar colors and letters
-- [ ] (M) 3rd Party Usernames/ID
 - [ ] (M) Favoriting affects and displaying in affect survey
-- [ ] (M) Add privacy indicators for back-end affect storage
+- [ ] (M) Add privacy boolean for back-end affect storage
+- [ ] (S) Privacy icon overlay on user status
 - [ ] (M) Test and fix problems with 'privacy prompting'
-- [ ] (M) Think about JWT & privacy prompt timeouts
-- [ ] (L) Audit & Integrate ARIA standards throughout
-- [ ] (L) Update Testing Framework
-- [ ] (M) NVC input section in the connect panel
+- [ ] (L) Audit & Integrate ARIA standards throughout X
+- [ ] (L) Update Testing Framework with latest additions X
+- [ ] (M) NVC info section in the connect panel X
+- [ ] (M) Connect Watson feedback to message text highlighting X
 
 # Product Backlog
 ### Summer Priority Tasks
+- [ ] (M) Think about JWT & privacy prompt timeouts
+- [ ] (M) Find alternative storage for JWTs that is secure
+- [ ] (M) Store all valid issued JWTs along with a browser fingerprint
+- [ ] (M) 3rd Party Usernames/ID
 - [ ] (L) User and Team settings implementation
-- [ ] (S) Privacy icon overlay on user status
-- [ ] (S) Privacy dialog as slide in instead of modal
-- [ ] (S) Storing and retrieving privacy options
 - [ ] (L) Simple timed triggers
+- [ ] (S) Avatar colors and letters
 
 ### Stretch Tasks
 - [ ] (M) Avatar Images
-- [ ] (L) Watson Integration for bubble
 - [ ] (L) Email validation (2FA) and integration (2ary message channel)
 - [ ] (M) 3rd Party authenticator app as alternative to email
 
@@ -36,3 +36,4 @@ Backlogs for completed sprints can be found here
 - [X] (?) Rework and modernize the extension-popup/settings
 - [X] (S) Three-Status Icons in the Status Panel
 - [X] (M) Explore importance of MUI Grid
+- [X] (S) Privacy dialog as slide in instead of modal

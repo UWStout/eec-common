@@ -62,6 +62,12 @@ export const ValidUserState = selector({
   }
 })
 
+/** Latest message from Karuna server */
+export const KarunaMessageState = atom({
+  key: 'KarunaMessageState',
+  default: { }
+})
+
 /** Privacy preferences data for sharing mood */
 export const PrivacyPrefsState = atom({
   key: 'PrivacyPrefsState',
