@@ -86,7 +86,7 @@ export default function ConnectStatusDrawer (props) {
   // Return the proper MUI elements
   return (
     <Paper
-      data-testid="connectStatusPanel"
+      data-testid="connectStatusDrawer"
       elevation={3}
       className={`${root} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : panelRetracted)}`}
       onMouseEnter={() => { setMouseIsOver(true) }}

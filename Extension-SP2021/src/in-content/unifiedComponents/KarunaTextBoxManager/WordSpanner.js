@@ -1,3 +1,9 @@
+// import { analyzeMessage } from '../../../../../Server/src/analysisEngine.js'
+
+// function getRanges (text) {
+//   analyzeMessage (messageObj, userID, context)
+// }
+
 function traverseAndSpanifyWords (sourceElement, destinationElement, searchWords) {
   // Are there words to search for?
   if (!Array.isArray(searchWords) || searchWords.length < 1) {
@@ -82,8 +88,15 @@ function traverseAndSpanifyRanges (sourceElement, destinationElement, ranges, is
   }
 
   // Loop over children
-  let sourceChild = sourceElement.firstChild
-  let destinationChild = destinationElement.firstChild
+  let sourceChild = sourceElement
+  let destinationChild = destinationElement
+  if (sourceChild && destinationChild) {
+    sourceChild = sourceElement.firstChild
+    destinationChild = destinationElement.firstChild
+  } else {
+    sourceChild = null
+    destinationChild = null
+  }
   while (sourceChild) {
     // Examine source child node type
     switch (sourceChild.nodeType) {
@@ -95,7 +108,6 @@ function traverseAndSpanifyRanges (sourceElement, destinationElement, ranges, is
         // Text node
       case Node.TEXT_NODE:
         ranges.forEach(([startIdx, endIdx], index) => {
-          console.log('isCovered is', isCovered[index])
           if (sourceChild.nodeValue.length - 1 < startIdx || sourceChild.nodeValue.length - 1 < endIdx) {
             console.log('not enough characters in textbox')
           } else if (!isCovered[index]) {

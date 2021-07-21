@@ -13,32 +13,32 @@ import {
 import '@testing-library/jest-dom/extend-expect'
 import { toBeVisible } from '@testing-library/jest-dom/matchers'
 
-import ConnectStatusPanel from '../in-content/unifiedComponents/ConnectStatusPanel.jsx'
-import ConnectMainPanel from '../in-content/unifiedComponents/ConnectMainPanel.jsx'
-import ConnectComponent from '../in-content/unifiedComponents/ConnectComponent.jsx'
+import ConnectStatusDrawer from '../in-content/unifiedComponents/KarunaConnect/ConnectStatusDrawer.jsx'
+import ConnectMainDrawer from '../in-content/unifiedComponents/KarunaConnect/ConnectMainDrawer.jsx'
+import KarunaConnect from '../in-content/unifiedComponents/KarunaConnect.jsx'
 
 expect.extend({ toBeVisible })
 
 describe('ConnectPanel', () => {
   afterEach(cleanup) // avoid memory leaks
 
-  describe('ConnectStatusPanel', () => {
+  describe('ConnectStatusDrawer', () => {
     it('shows up correctly', () => {
-      const { getByTestId, asFragment } = render(<ConnectStatusPanel />)
-      const connectStatusPanel = getByTestId('connectStatusPanel')
-      expect(connectStatusPanel).toBeInTheDocument()
-      expect(asFragment(<ConnectStatusPanel />)).toMatchSnapshot()
+      const { getByTestId, asFragment } = render(<ConnectStatusDrawer />)
+      const ConnectStatusDrawer = getByTestId('connectStatusDrawer')
+      expect(ConnectStatusDrawer).toBeInTheDocument()
+      expect(asFragment(<ConnectStatusDrawer />)).toMatchSnapshot()
     })
 
     it('shows a single arrow on load', () => {
-      const { getByTestId } = render(<ConnectStatusPanel />)
+      const { getByTestId } = render(<ConnectStatusDrawer />)
       // the panel has a single arrow
       const singleArrow = getByTestId('keyboardArrowRight')
       expect(singleArrow).toBeInTheDocument()
     })
 
     it('shows double arrow on hover of single arrow', () => {
-      const { getByTestId } = render(<ConnectStatusPanel />)
+      const { getByTestId } = render(<ConnectStatusDrawer />)
 
       // the panel has a single arrow
       const singleArrow = getByTestId('keyboardArrowRight')
@@ -51,58 +51,58 @@ describe('ConnectPanel', () => {
     })
 
     it('shows double arrow on hover of status panel', () => {
-      const { getByTestId } = render(<ConnectStatusPanel />)
-      const connectStatusPanel = getByTestId('connectStatusPanel')
+      const { getByTestId } = render(<ConnectStatusDrawer />)
+      const ConnectStatusDrawer = getByTestId('connectStatusDrawer')
       // on mouseOver, a double arrow is shown
-      fireEvent.mouseOver(connectStatusPanel)
+      fireEvent.mouseOver(ConnectStatusDrawer)
       const doubleArrow = getByTestId('doubleArrow')
       expect(doubleArrow).toBeInTheDocument()
     })
 
     it('expands on hover', () => {
-      const { asFragment, getByTestId } = render(<ConnectStatusPanel />)
-      const connectStatusPanel = getByTestId('connectStatusPanel')
+      const { asFragment, getByTestId } = render(<ConnectStatusDrawer />)
+      const ConnectStatusDrawer = getByTestId('connectStatusDrawer')
       // on mouseOver, panel expands
-      fireEvent.mouseOver(connectStatusPanel)
+      fireEvent.mouseOver(ConnectStatusDrawer)
 
       // compare with snapshot
       expect(asFragment()).toMatchSnapshot()
     })
 
     it('hides when mouse moves away', () => {
-      const { asFragment, getByTestId } = render(<ConnectStatusPanel />)
-      const connectStatusPanel = getByTestId('connectStatusPanel')
+      const { asFragment, getByTestId } = render(<ConnectStatusDrawer />)
+      const ConnectStatusDrawer = getByTestId('connectStatusDrawer')
 
       // on mouseOver, panel expands
-      fireEvent.mouseOver(connectStatusPanel)
+      fireEvent.mouseOver(ConnectStatusDrawer)
       // on mouseLeave, panel retracts
-      fireEvent.mouseLeave(connectStatusPanel)
+      fireEvent.mouseLeave(ConnectStatusDrawer)
 
       // compare with snapshot
       expect(asFragment()).toMatchSnapshot()
     })
   })
 
-  describe('ConnectMainPanel', () => {
+  describe('ConnectMainDrawer', () => {
     it('shows up', () => {
-      const { getByTestId } = render(<ConnectMainPanel hidden={false} />)
-      const mainPanel = getByTestId('connectMainPanel')
+      const { getByTestId } = render(<ConnectMainDrawer hidden={false} />)
+      const mainPanel = getByTestId('ConnectMainDrawer')
       expect(mainPanel).toBeInTheDocument()
     })
     it('shows title', () => {
-      render(<ConnectMainPanel hidden={false} />)
+      render(<ConnectMainDrawer hidden={false} />)
       const title = screen.getByRole('heading', { name: 'title' })
       expect(title).toBeInTheDocument()
     })
 
     it('shows main content', () => {
-      render(<ConnectMainPanel hidden={false} />)
+      render(<ConnectMainDrawer hidden={false} />)
       const paragraph = screen.getByRole('main')
       expect(paragraph).toBeInTheDocument()
     })
 
     it('shows back arrow', () => {
-      render(<ConnectMainPanel hidden={false} />)
+      render(<ConnectMainDrawer hidden={false} />)
       const closeButton = screen.getByRole('button', { name: 'close panel' })
       expect(closeButton).toBeInTheDocument()
     })
@@ -118,35 +118,35 @@ describe('ConnectPanel', () => {
     it.todo('When an affect is selected, the user\'s privacy settings must be checked and a PrivacyDialog might be shown')
   })
 
-  it('shows ConnectStatusPanel on load', () => {
-    const { getByTestId } = render(<ConnectComponent />)
+  it('shows ConnectStatusDrawer on load', () => {
+    const { getByTestId } = render(<KarunaConnect />)
 
     // the panel with the single arrow on middle right of the screen shows up
-    const connectStatusPanel = getByTestId('connectStatusPanel')
-    expect(connectStatusPanel).toBeInTheDocument()
+    const ConnectStatusDrawer = getByTestId('connectStatusDrawer')
+    expect(ConnectStatusDrawer).toBeInTheDocument()
   })
 
-  it('shows ConnectMainPanel on click', () => {
-    const { getByTestId } = render(<ConnectComponent />)
+  it('shows ConnectMainDrawer on click', () => {
+    const { getByTestId } = render(<KarunaConnect />)
 
     // Connect status panel shows up
-    const connectStatusPanel = getByTestId('connectStatusPanel')
+    const ConnectStatusDrawer = getByTestId('connectStatusDrawer')
 
     // clicking the status panel brings up the main panel
-    fireEvent.click(connectStatusPanel)
-    const mainPanel = getByTestId('connectMainPanel')
+    fireEvent.click(ConnectStatusDrawer)
+    const mainPanel = getByTestId('ConnectMainDrawer')
     expect(mainPanel).toBeInTheDocument()
   })
 
-  it('goes back to ConnectStatusPanel when ConnectMainPanel\'s back arrow is clicked', () => {
-    const { getByTestId } = render(<ConnectComponent />)
+  it('goes back to ConnectStatusDrawer when ConnectMainDrawer\'s back arrow is clicked', () => {
+    const { getByTestId } = render(<KarunaConnect />)
 
     // Connect status panel shows up
-    const statusPanel = getByTestId('connectStatusPanel')
+    const statusPanel = getByTestId('connectStatusDrawer')
 
     // clicking the status panel brings up the main panel
     fireEvent.click(statusPanel)
-    const mainPanel = getByTestId('connectMainPanel')
+    const mainPanel = getByTestId('ConnectMainDrawer')
 
     // clicking back arrow on the main panel leads back to status panel
     const closeMainPanel = screen.getByRole('button', { name: 'close panel' })
