@@ -12,13 +12,13 @@ import CustomTooltip from './CustomTooltip.jsx'
 
 const useStyles = makeStyles((theme) => ({
   userAvatarStyle: {
-    width: '56px',
-    height: '56px'
+    width: theme.spacing(7),
+    height: theme.spacing(7)
   },
 
   teamAvatarStyle: {
-    width: '40px',
-    height: '40px'
+    width: theme.spacing(5),
+    height: theme.spacing(5)
   }
 
 }))
@@ -49,17 +49,17 @@ export default function StatusListItem (props) {
         <Grid container item spacing={1}>
           <Grid item>
             <CustomTooltip placement='right' title={currentAffect ? currentAffect.name : 'none'}>
-              <Typography variant='body1'>{currentAffect ? currentAffect.characterCodes[0] : '?'}</Typography>
+              <Typography variant='body1' align='center'>{currentAffect ? currentAffect.characterCodes[0] : '?'}</Typography>
             </CustomTooltip>
           </Grid>
           <Grid item>
             <CustomTooltip placement='right' title={currentStatus ? (currentStatus.collaboration ? 'teamwork' : 'solo') : 'unknown'}>
-              <Typography variant='body1'>{currentStatus ? (currentStatus.collaboration ? '👫' : '🧍') : '?'}</Typography>
+              <Typography variant='body1' align='center'>{currentStatus ? (currentStatus.collaboration ? '👫' : '🧍') : '?'}</Typography>
             </CustomTooltip>
           </Grid>
           <Grid item>
             <CustomTooltip placement='right' title={currentStatus?.timeToRespond > 0 ? `${currentStatus.timeToRespond} mins` : '? mins'}>
-              <Typography variant='body1'>🕐</Typography>
+              <Typography variant='body1' align='center'>🕐</Typography>
             </CustomTooltip>
           </Grid>
         </Grid>

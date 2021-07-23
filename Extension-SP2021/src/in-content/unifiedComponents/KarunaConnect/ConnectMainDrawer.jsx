@@ -17,22 +17,22 @@ const useStyles = makeStyles((theme) => ({
   // Style when the panel is retracted
   panelRetracted: {
     // AIW Comment in for testing styling
-    right: '0%'
-    // right: 'calc(0% - 109px)'
+    // right: '0%'
+    right: `calc(0% - ${theme.spacing(14)}px)`
   },
 
   // Style when the panel is fully expanded
   panelExpanded: {
     // AIW Comment in for testing styling
-    right: '0%'
-    // right: 'calc(0% - 8px)'
+    // right: '0%'
+    right: `calc(0% - ${theme.spacing(1)}px)`
   },
 
   // Style when the panel is hidden
   panelHidden: {
     // AIW Comment in for testing styling
-    right: '0%'
-    // right: 'calc(0% - 312px)'
+    // right: '0%'
+    right: `calc(0% - ${theme.spacing(39)}px)`
   },
 
   // Styling of Grid container
@@ -162,5 +162,7 @@ ConnectMainDrawer.propTypes = {
 ConnectMainDrawer.defaultProps = {
   hidden: false,
   onHide: null,
-  waitToHide: 3000
+  // AIW Testing styles
+  // waitToHide: 3000
+  waitToHide: 100000
 }

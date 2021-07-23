@@ -32,6 +32,12 @@ const useStyles = makeStyles((theme) => ({
 
 const Accordion = withStyles((theme) => ({
   root: {
+    width: theme.spacing(36),
+    boxShadow: 'none',
+    borderTop: 'none',
+    '&:before': {
+      display: 'none'
+    }
     // AIW Testing styling
     // border: '1px solid rgba(0, 0, 0, .125)',
     // boxShadow: 'none',
@@ -52,8 +58,9 @@ const Accordion = withStyles((theme) => ({
 
 const AccordionSummary = withStyles((theme) => ({
   root: {
-    paddingLeft: '0px',
-    paddingRight: '0px'
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    borderBottom: '1px solid rgba(0, 0, 0, .125)'
     // AIW Testing styling
     // backgroundColor: 'rgba(0, 0, 0, .03)',
     // borderBottom: '1px solid rgba(0, 0, 0, .125)',
@@ -78,7 +85,8 @@ const AccordionSummary = withStyles((theme) => ({
 const AccordionDetails = withStyles((theme) => ({
   root: {
     paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1)
+    paddingRight: theme.spacing(1),
+    borderBottom: '1px solid rgba(0, 0, 0, .125)'
     // AIW Testing styling
     // padding: theme.spacing(2)
   }

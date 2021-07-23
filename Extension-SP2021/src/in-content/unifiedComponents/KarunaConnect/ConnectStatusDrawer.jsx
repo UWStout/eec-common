@@ -16,17 +16,17 @@ import OpenArrow from './PanelOpenArrow.jsx'
 const useStyles = makeStyles((theme) => ({
   // Style when the panel is fully retracted
   panelRetracted: {
-    right: 'calc(0% - 48px)'
+    right: `calc(0% - ${theme.spacing(6)}px)`
   },
 
   // Style when the panel is fully expanded
   panelExpanded: {
-    right: 'calc(0% - 8px)'
+    right: `calc(0% - ${theme.spacing(1)}px)`
   },
 
   // Style when the panel is hidden
   panelHidden: {
-    right: 'calc(0% - 88px)'
+    right: `calc(0% - ${theme.spacing(11)}px)`
   },
 
   // Styling of Grid container
