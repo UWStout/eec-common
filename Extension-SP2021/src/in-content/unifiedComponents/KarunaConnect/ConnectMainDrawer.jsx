@@ -134,7 +134,7 @@ export default function ConnectMainDrawer (props) {
   // Return the proper MUI elements
   return (
     <Paper
-      data-testid="connectMainPanel"
+      data-testid="connectMainDrawer"
       elevation={5}
       className={`${root} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : (isRetracted ? panelRetracted : panelExpanded))}`}
       onMouseEnter={() => { setMouseIsOver(true); cancelHide(); cancelRetract() }}
