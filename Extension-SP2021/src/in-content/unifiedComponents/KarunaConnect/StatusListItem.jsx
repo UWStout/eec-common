@@ -6,10 +6,27 @@ import { useRecoilValue } from 'recoil'
 
 import { Typography, Grid, Avatar } from '@material-ui/core'
 
+import { makeStyles } from '@material-ui/core/styles'
+
 import CustomTooltip from './CustomTooltip.jsx'
+
+const useStyles = makeStyles((theme) => ({
+  userAvatarStyle: {
+    width: '56px',
+    height: '56px'
+  },
+
+  teamAvatarStyle: {
+    width: '40px',
+    height: '40px'
+  }
+
+}))
 
 export default function StatusListItem (props) {
   const { userEmail } = props
+
+  const { userAvatarStyle, teamAvatarStyle } = useStyles()
 
   // Subscribe to changes in current status (GLOBAL STATE)
   const currentStatus = useRecoilValue(UserStatusState)
@@ -22,7 +39,7 @@ export default function StatusListItem (props) {
 
   return (
     <Grid container wrap='nowrap' spacing={1}>
-      <Grid item>
+      <Grid item className={userAvatarStyle}>
         <Avatar>U</Avatar>
       </Grid>
       <Grid container item direction="column">

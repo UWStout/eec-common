@@ -9,6 +9,7 @@ import { KeyboardArrowRight, KeyboardArrowLeft } from '@material-ui/icons'
 const useStyles = makeStyles((theme) => ({
   // AIW Normaly setting the height on a grid container is undesirable but we don't want the height of PanelTitle to change, so I set height here rather than creating another wrapper.
   setHeight: {
+    // AIW This value is the sum height of the header text, caret, and Divider.
     height: '33px'
   }
 }))

@@ -4,34 +4,16 @@ import PropTypes from 'prop-types'
 import { UserStatusState, AffectListState } from '../data/globalState.js'
 import { useRecoilValue } from 'recoil'
 
-import { Paper, Grid, Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import MuiPaper from '@material-ui/core/Paper'
+
+import { Grid, Typography } from '@material-ui/core'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 import CustomTooltip from './CustomTooltip.jsx'
 
 import OpenArrow from './PanelOpenArrow.jsx'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    position: 'absolute',
-    top: '20vh',
-    width: '88px',
-    height: '104px',
-    paddingTop: theme.spacing(1),
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(1),
-
-    // Animate changes in the 'right' property
-    transition: theme.transitions.create(
-      ['right'], { duration: theme.transitions.duration.standard }
-    ),
-
-    // Show a pointer hand cursor to encourage clicking
-    cursor: 'pointer'
-  },
-
   // Style when the panel is fully retracted
   panelRetracted: {
     right: 'calc(0% - 48px)'
@@ -53,6 +35,28 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+const Paper = withStyles((theme) => ({
+  root: {
+    display: 'flex',
+    position: 'absolute',
+    top: '20vh',
+    width: theme.spacing(11),
+    height: theme.spacing(13),
+    paddingTop: theme.spacing(1),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+
+    // Animate changes in the 'right' property
+    transition: theme.transitions.create(
+      ['right'], { duration: theme.transitions.duration.standard }
+    ),
+
+    // Show a pointer hand cursor to encourage clicking
+    cursor: 'pointer'
+  }
+}))(MuiPaper)
+
 /**
  * A small drawer/side-sheet with an arrow that expands when hovered to show the user's status.
  * Will transition to the main panel when clicked.
@@ -63,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ConnectStatusDrawer (props) {
   // Deconstruct props and style class names
   const { hidden, onHide } = props
-  const { root, gridContRoot, panelRetracted, panelExpanded, panelHidden } = useStyles()
+  const { gridContRoot, panelRetracted, panelExpanded, panelHidden } = useStyles()
 
   // Subscribe to changes in current status (GLOBAL STATE)
   const currentStatus = useRecoilValue(UserStatusState)
@@ -88,7 +92,7 @@ export default function ConnectStatusDrawer (props) {
     <Paper
       data-testid="connectStatusDrawer"
       elevation={3}
-      className={`${root} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : panelRetracted)}`}
+      className={`${hidden ? panelHidden : (mouseIsOver ? panelExpanded : panelRetracted)}`}
       onMouseEnter={() => { setMouseIsOver(true) }}
       onMouseLeave={() => { setMouseIsOver(false) }}
       onClick={clickCallback}
