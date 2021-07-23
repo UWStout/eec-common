@@ -5,8 +5,7 @@ import { Paper, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 import PanelTitle from './PanelTitle.jsx'
-// AIW Commented out for styling work
-// import ConnectMainContent from './ConnectMainContent.jsx'
+import ConnectMainContent from './ConnectMainContent.jsx'
 
 // DEBUG: Enable this logger when needed
 // import { makeLogger } from '../../../util/Logger.js'
@@ -18,10 +17,8 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: '20vh',
     width: '288px',
-    // AIW I've not calculated this dimension yet.
-    // height: '608px',
-    // AIW Placeholder styling for testing.
-    height: '78px',
+    // AIW Placeholder styling for testing - I've not calculated this dimension yet.
+    height: '608px',
 
     paddingTop: theme.spacing(1),
     paddingRight: theme.spacing(2),
@@ -142,14 +139,8 @@ export default function ConnectMainDrawer (props) {
     >
       <Grid container>
         <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
+        <ConnectMainContent hidden={hidden} retracted={!mouseIsOver} />
       </Grid>
-      {/* AIW Commented out for styling work. */}
-      {/* <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} /> */}
-      {/* <div className={boxStyle}>
-        <main className={contentStyle}>
-          <ConnectMainContent hidden={hidden} retracted={!mouseIsOver} />
-        </main>
-      </div> */}
     </Paper>
   )
 }

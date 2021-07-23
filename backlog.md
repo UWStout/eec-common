@@ -1,14 +1,14 @@
 # Current Sprint
 - [ ] (?) Wireframing and IA for extension-popup/settings
-- [ ] (M) Team-status section of Karuna Connect Panel
+- [ ] (M) Team-status section of Karuna Connect Panel 
 - [ ] (M) Favoriting affects and displaying in affect survey
 - [ ] (M) Add privacy boolean for back-end affect storage
 - [ ] (S) Privacy icon overlay on user status
 - [ ] (M) Test and fix problems with 'privacy prompting'
-- [ ] (L) Audit & Integrate ARIA/WCAG standards throughout X
-- [ ] (L) Update Testing Framework with latest additions X
-- [ ] (M) NVC info section in the connect panel X
-- [ ] (M) Connect Watson feedback to message text highlighting X
+- [ ] (L) Audit & Integrate ARIA/WCAG standards throughout
+- [ ] (L) Update Testing Framework with latest additions
+- [ ] (M) NVC info section in the connect panel
+- [ ] (M) Connect Watson feedback to message text highlighting
 - [ ] (M) Deployed build for testing, practice, bug hunting
 
 # Product Backlog

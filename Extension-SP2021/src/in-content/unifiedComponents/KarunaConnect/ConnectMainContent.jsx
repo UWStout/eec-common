@@ -21,57 +21,62 @@ import AffectSurveyList from '../AffectSurvey/AffectSurveyList.jsx'
 // const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%'
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15)
-  }
+  // AIW Testing styling
+  // root: {
+  //   width: '100%'
+  // },
+  // heading: {
+  //   fontSize: theme.typography.pxToRem(15)
+  // }
 }))
 
 const Accordion = withStyles((theme) => ({
   root: {
-    border: '1px solid rgba(0, 0, 0, .125)',
-    boxShadow: 'none',
-    paddingRight: theme.spacing(2),
-    width: `calc(100% - ${theme.spacing(2)}px)`,
-    '&:not(:last-child)': {
-      borderBottom: 0
-    },
-    '&:before': {
-      display: 'none'
-    },
-    '&$expanded': {
-      margin: 'auto'
-    }
+    // AIW Testing styling
+    // border: '1px solid rgba(0, 0, 0, .125)',
+    // boxShadow: 'none',
+    // paddingRight: theme.spacing(2),
+    // width: `calc(100% - ${theme.spacing(2)}px)`,
+    // '&:not(:last-child)': {
+    //   borderBottom: 0
+    // },
+    // '&:before': {
+    //   display: 'none'
+    // },
+    // '&$expanded': {
+    //   margin: 'auto'
+    // }
   },
   expanded: {}
 }))(MuiAccordion)
 
 const AccordionSummary = withStyles((theme) => ({
   root: {
-    backgroundColor: 'rgba(0, 0, 0, .03)',
-    borderBottom: '1px solid rgba(0, 0, 0, .125)',
-    marginBottom: -1,
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    width: `calc(100% - ${theme.spacing(2)}px)`,
-    minHeight: 56,
-    '&$expanded': {
-      minHeight: 56
-    }
+    // AIW Testing styling
+    // backgroundColor: 'rgba(0, 0, 0, .03)',
+    // borderBottom: '1px solid rgba(0, 0, 0, .125)',
+    // marginBottom: -1,
+    // paddingLeft: theme.spacing(2),
+    // paddingRight: theme.spacing(2),
+    // width: `calc(100% - ${theme.spacing(2)}px)`,
+    // minHeight: 56,
+    // '&$expanded': {
+    //   minHeight: 56
+    // }
   },
   content: {
-    '&$expanded': {
-      margin: '12px 0'
-    }
+    // AIW Testing styling
+    // '&$expanded': {
+    //   margin: '12px 0'
+    // }
   },
   expanded: {}
 }))(MuiAccordionSummary)
 
 const AccordionDetails = withStyles((theme) => ({
   root: {
-    padding: theme.spacing(2)
+    // AIW Testing styling
+    // padding: theme.spacing(2)
   }
 }))(MuiAccordionDetails)
 
@@ -107,7 +112,9 @@ export default function ConnectMainContent (props) {
   }, [currentStatus?.currentAffectID, emojiList, selectedAffectID])
 
   return (
-    <div className={root}>
+    // AIW Testing styling
+    // <div className={root}>
+    <Grid container item xs={12}>
       {/* First list item: user status */}
       <Accordion square expanded={expanded === 'userStatus'} onChange={handleChange('userStatus')}>
         <AccordionSummary
@@ -165,8 +172,9 @@ export default function ConnectMainContent (props) {
           <Typography className={heading}>Team Culture</Typography>
         </AccordionSummary>
       </Accordion>
-
-    </div>
+    </Grid>
+    // AIW Testing styling
+    // </div>
   )
 }
 
