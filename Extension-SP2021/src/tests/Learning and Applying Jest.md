@@ -20,6 +20,7 @@ Here are a couple of resources for learning Jest that I found:
 
 - [good for configuration](<https://blog.logrocket.com/comparing-react-testing-libraries/>)
 - [The official documentation from jestjs.io](<https://jestjs.io/docs/getting-started>)
+- [some good practices and patterns for Jest](<https://reactjs.org/docs/testing-recipes.html>)
 - [this blog includes some basic use cases with both Jest and Mocha](<https://www.merixstudio.com/blog/mocha-vs-jest/>)
 - free video tutorials:
   - [Introduction To Testing In JavaScript With Jest](<https://www.youtube.com/watch?v=FgnxcUQ5vho>)

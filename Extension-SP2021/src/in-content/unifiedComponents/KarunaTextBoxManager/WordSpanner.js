@@ -125,20 +125,6 @@ function traverseAndSpanifyRanges (sourceElement, destinationElement, ranges, is
               destinationChild
             )
             prevLength = endIdx
-
-            // // start creating a range for surrounding range in span for highlighting
-            // const range = new Range()
-            // range.setStart(sourceChild, startIdx)
-            // range.setEnd(sourceChild, endIdx)
-            // // clone content before deleting
-            // const content = range.cloneContents()
-            // range.deleteContents()
-            // // create new DOM element
-            // const newNode = document.createElement('SPAN')
-            // newNode.className = 'highlight-word-span'
-            // newNode.append(content)
-            // // insert the node where the non-highlighted word used to be
-            // range.insertNode(newNode)
           } else {
             console.log('ranges already covered')
           }

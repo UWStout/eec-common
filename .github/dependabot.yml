@@ -11,4 +11,3 @@ updates:
     directory: "/Extension-SP2021"
     schedule:
       interval: "daily"
-      
