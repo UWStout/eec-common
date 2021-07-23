@@ -6,10 +6,27 @@ import { useRecoilValue } from 'recoil'
 
 import { Typography, Grid, Avatar } from '@material-ui/core'
 
+import { makeStyles } from '@material-ui/core/styles'
+
 import CustomTooltip from './CustomTooltip.jsx'
+
+const useStyles = makeStyles((theme) => ({
+  userAvatarStyle: {
+    width: theme.spacing(7),
+    height: theme.spacing(7)
+  },
+
+  teamAvatarStyle: {
+    width: theme.spacing(5),
+    height: theme.spacing(5)
+  }
+
+}))
 
 export default function StatusListItem (props) {
   const { userEmail } = props
+
+  const { userAvatarStyle, teamAvatarStyle } = useStyles()
 
   // Subscribe to changes in current status (GLOBAL STATE)
   const currentStatus = useRecoilValue(UserStatusState)
@@ -22,7 +39,7 @@ export default function StatusListItem (props) {
 
   return (
     <Grid container wrap='nowrap' spacing={1}>
-      <Grid item>
+      <Grid item className={userAvatarStyle}>
         <Avatar>U</Avatar>
       </Grid>
       <Grid container item direction="column">
@@ -32,17 +49,17 @@ export default function StatusListItem (props) {
         <Grid container item spacing={1}>
           <Grid item>
             <CustomTooltip placement='right' title={currentAffect ? currentAffect.name : 'none'}>
-              <Typography variant='body1'>{currentAffect ? currentAffect.characterCodes[0] : '?'}</Typography>
+              <Typography variant='body1' align='center'>{currentAffect ? currentAffect.characterCodes[0] : '?'}</Typography>
             </CustomTooltip>
           </Grid>
           <Grid item>
             <CustomTooltip placement='right' title={currentStatus ? (currentStatus.collaboration ? 'teamwork' : 'solo') : 'unknown'}>
-              <Typography variant='body1'>{currentStatus ? (currentStatus.collaboration ? '👫' : '🧍') : '?'}</Typography>
+              <Typography variant='body1' align='center'>{currentStatus ? (currentStatus.collaboration ? '👫' : '🧍') : '?'}</Typography>
             </CustomTooltip>
           </Grid>
           <Grid item>
             <CustomTooltip placement='right' title={currentStatus?.timeToRespond > 0 ? `${currentStatus.timeToRespond} mins` : '? mins'}>
-              <Typography variant='body1'>🕐</Typography>
+              <Typography variant='body1' align='center'>🕐</Typography>
             </CustomTooltip>
           </Grid>
         </Grid>
