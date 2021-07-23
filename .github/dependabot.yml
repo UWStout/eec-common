@@ -7,8 +7,13 @@ updates:
     directory: "/Server"
     schedule:
       interval: "daily"
+    allowed_updates:
+      - match:
+          update_type: "security"
   - package-ecosystem: "npm"
     directory: "/Extension-SP2021"
     schedule:
       interval: "daily"
-      
+    allowed_updates:
+      - match:
+          update_type: "security"
