@@ -7,13 +7,9 @@ updates:
     directory: "/Server"
     schedule:
       interval: "daily"
-    allowed_updates:
-      - match:
-          update_type: "security"
+    open-pull-requests-limit: 0
   - package-ecosystem: "npm"
     directory: "/Extension-SP2021"
     schedule:
       interval: "daily"
-    allowed_updates:
-      - match:
-          update_type: "security"
+    open-pull-requests-limit: 0
