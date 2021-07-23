@@ -17,7 +17,6 @@ import ConnectStatusDrawer from '../in-content/unifiedComponents/KarunaConnect/C
 import ConnectMainDrawer from '../in-content/unifiedComponents/KarunaConnect/ConnectMainDrawer.jsx'
 import KarunaConnect from '../in-content/unifiedComponents/KarunaConnect.jsx'
 import { RecoilRoot } from 'recoil'
-import { act } from 'react-dom/test-utils'
 
 expect.extend({ toBeVisible })
 
@@ -27,14 +26,23 @@ describe('ConnectPanel', () => {
   describe('ConnectMainDrawer', () => {
     it('shows up', () => {
       const { getByTestId } = render(
-        <ConnectMainDrawer hidden={false} />
+        <RecoilRoot>
+          <React.Suspense fallback={<div />}>
+            <ConnectMainDrawer hidden={false} />
+          </React.Suspense>
+        </RecoilRoot>
       )
       const mainPanel = getByTestId('connectMainDrawer')
       expect(mainPanel).toBeInTheDocument()
     })
+
     it('shows title', () => {
       render(
-        <ConnectMainDrawer hidden={false} />
+        <RecoilRoot>
+          <React.Suspense fallback={<div />}>
+            <ConnectMainDrawer hidden={false} />
+          </React.Suspense>
+        </RecoilRoot>
       )
       const title = screen.getByRole('heading', { name: 'title' })
       expect(title).toBeInTheDocument()
@@ -42,7 +50,11 @@ describe('ConnectPanel', () => {
 
     it('shows main content', () => {
       render(
-        <ConnectMainDrawer hidden={false} />
+        <RecoilRoot>
+          <React.Suspense fallback={<div />}>
+            <ConnectMainDrawer hidden={false} />
+          </React.Suspense>
+        </RecoilRoot>
       )
       const paragraph = screen.getByRole('main')
       expect(paragraph).toBeInTheDocument()
@@ -50,7 +62,11 @@ describe('ConnectPanel', () => {
 
     it('shows back arrow', () => {
       render(
-        <ConnectMainDrawer hidden={false} />
+        <RecoilRoot>
+          <React.Suspense fallback={<div />}>
+            <ConnectMainDrawer hidden={false} />
+          </React.Suspense>
+        </RecoilRoot>
       )
       const closeButton = screen.getByRole('button', { name: 'close panel' })
       expect(closeButton).toBeInTheDocument()
