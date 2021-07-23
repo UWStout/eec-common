@@ -7,8 +7,7 @@ import React from 'react'
 import {
   render,
   fireEvent,
-  screen,
-  cleanup
+  screen
 } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import { toBeVisible } from '@testing-library/jest-dom/matchers'
@@ -21,8 +20,6 @@ import { RecoilRoot } from 'recoil'
 expect.extend({ toBeVisible })
 
 describe('ConnectPanel', () => {
-  afterEach(cleanup) // avoid memory leaks
-
   describe('ConnectMainDrawer', () => {
     it('shows up', () => {
       const { getByTestId } = render(

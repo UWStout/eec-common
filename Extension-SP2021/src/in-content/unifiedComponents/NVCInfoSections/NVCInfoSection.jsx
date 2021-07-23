@@ -23,14 +23,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function FeedbackDialogDetails (props) {
-  const { title, changeDisplayedFeedback } = props
+function NVCInfoSection (props) {
+  const { title, onReturn } = props
   const { rootStyle, itemStyle, clickable } = useStyles()
-
-  // Return back to observations feedback
-  function openObservations () {
-    changeDisplayedFeedback('observations')
-  }
 
   return (
     <Grid container spacing={1} >
@@ -46,15 +41,15 @@ function FeedbackDialogDetails (props) {
         {title === 'Feeling' && <Feeling />}
       </Grid>
       <Grid item xs={12} className={clickable}>
-        <p onClick={openObservations}>{'go back to NVC elements'}</p>
+        <p onClick={onReturn}>{'go back to NVC elements'}</p>
       </Grid>
     </Grid>
   )
 }
 
-FeedbackDialogDetails.propTypes = {
+NVCInfoSection.propTypes = {
   title: PropTypes.string.isRequired,
-  changeDisplayedFeedback: PropTypes.func.isRequired
+  onReturn: PropTypes.func.isRequired
 }
 
-export default FeedbackDialogDetails
+export default NVCInfoSection

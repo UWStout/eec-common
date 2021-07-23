@@ -16,6 +16,7 @@ import { ExpandMore } from '@material-ui/icons'
 
 import StatusListItem from './StatusListItem.jsx'
 import AffectSurveyList from '../AffectSurvey/AffectSurveyList.jsx'
+import ListNVCElements from '../NVCInfoSections/ListNVCElements.jsx'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
@@ -171,6 +172,18 @@ export default function ConnectMainContent (props) {
         >
           <Typography className={heading}>Team Culture</Typography>
         </AccordionSummary>
+      </Accordion>
+      <Accordion square>
+        <AccordionSummary
+          expandIcon={<ExpandMore />}
+          aria-controls="nvc-info-section"
+          id="nvc-info-section"
+        >
+          <Typography className={heading}>NVC</Typography>
+        </AccordionSummary>
+        <AccordionDetails aria-labelledby="team-status-header" id="team-status-content">
+          <ListNVCElements />
+        </AccordionDetails>
       </Accordion>
     </Grid>
     // AIW Testing styling
