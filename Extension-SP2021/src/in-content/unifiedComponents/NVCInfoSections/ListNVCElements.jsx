@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Grid } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
 
 import NVCInfoSection from './NVCInfoSection.jsx'
 
@@ -40,18 +40,26 @@ export default function ListNVCElements (props) {
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <React.Fragment>
       {isDetailsOpen
-        ? <NVCInfoSection title={title} onReturn={() => setIsDetailsOpen(false)} />
-        : <Grid item className={`${classes.observationItem} ${classes.clickable}`}>
-          <ul >
-            {observations.map((observation, i) => (
-              <li key={i} onClick={() => { openDetails(observation) }}>{observation}</li>
-            ))}
-          </ul>
-          <p>
-            {'What other elements could I use?'}
-            <br />
-            {'More about NVC'}
-          </p>
+        ? <NVCInfoSection title={title} onReturn={() => { setIsDetailsOpen(false); if (fromBubble) window.dispatchEvent(new CustomEvent('resize')) }} /> 
+        : <Grid container spacing={1} >
+          <Grid item className={classes.observation}>
+            {fromBubble &&
+              <Typography aria-label='title' variant='body2'>
+                {'I observe the following NVC elements:'}
+              </Typography>}
+          </Grid>
+          <Grid item className={`${classes.observationItem} ${classes.clickable}`}>
+            <ul >
+              {observations.map((observation, i) => (
+                <li key={i} onClick={() => { openDetails(observation) }}>{observation}</li>
+              ))}
+            </ul>
+            <p>
+              {'What other elements could I use?'}
+              <br />
+              {'More about NVC'}
+            </p>
+          </Grid>
           </Grid>}
     </React.Fragment>
   )

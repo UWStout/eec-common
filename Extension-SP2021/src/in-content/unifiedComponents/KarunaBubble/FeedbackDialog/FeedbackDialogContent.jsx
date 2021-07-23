@@ -15,20 +15,29 @@ export default function FeedbackDialogContent (props) {
   const { onHide, cancelHide } = props
 
   // Displayed state
-  const [displayedFeedback, setDisplayedFeedback] = useState('affectSurvey')
+  const [displayedFeedback, setDisplayedFeedback] = useState('observations')
   // Register to global state changes
   const karunaMessage = useRecoilValue(KarunaMessageState)
-  useEffect(() => {
-    if (karunaMessage?.content) {
-      setDisplayedFeedback('karunaMessage')
-    }
-  }, [karunaMessage, setDisplayedFeedback])
+  // useEffect(() => {
+  //   if (karunaMessage?.content) {
+  //     setDisplayedFeedback('karunaMessage')
+  //   }
+  // }, [karunaMessage, setDisplayedFeedback])
+
+  const observations = []
+  karunaMessage.entities.map((entity) => {
+    const name = entity.entity
+    if (name === 'observations') return observations.push('Observation')
+    else if (name === ('feelings_need_met' || 'feeling_needs_not_met')) return observations.push('Feeling')
+    else if (name === 'need') return observations.push('Need')
+    else if (name === 'request') return observations.push('Request')
+  })
 
   return (
     <Grid container spacing={1} >
       <Grid item onMouseEnter={cancelHide} onMouseLeave={() => onHide(false)}>
         {displayedFeedback === 'observations' &&
-          <ListNVCElements fromBubble />}
+          <ListNVCElements observations={observations} fromBubble />}
 
         {displayedFeedback === 'affectSurvey' &&
           <FeedbackDialogAffectSurvey />}
