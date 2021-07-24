@@ -27,10 +27,11 @@ export default function FeedbackDialogContent (props) {
   const observations = []
   karunaMessage.entities.map((entity) => {
     const name = entity.entity
-    if (name === 'observations') return observations.push('Observation')
-    else if (name === ('feelings_need_met' || 'feeling_needs_not_met')) return observations.push('Feeling')
-    else if (name === 'need') return observations.push('Need')
-    else if (name === 'request') return observations.push('Request')
+    if (name === 'observations' && !observations.includes('Observation')) return observations.push('Observation')
+    else if (name === ('feelings_need_met' || 'feeling_needs_not_met') && !observations.includes('Feeling')) return observations.push('Feeling')
+    else if (name === 'need' && !observations.includes('Need')) return observations.push('Need')
+    else if (name === 'request' && !observations.includes('Request')) return observations.push('Request')
+    else return null
   })
 
   return (
