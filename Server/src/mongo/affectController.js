@@ -155,12 +155,12 @@ export function listAffects (IDsOnly = true, perPage = 25, page = 1, sortBy = ''
  * @param {string} affectID from the affect table
  * @param {string} relatedID can be either a userID or a teamID, but we will never log both. ONE needs to be given.
  * @param {bool} isUser true if it is a userID, else false if it is a teamID
- * @param {bool} isPrivate can be null, if null, it is pushed as false, else it is pushed as its value (either true or false).
+ * @param {bool} isPrivate if null/undefined it is pushed as false, else it is pushed as its value (either true or false).
  * @return {Promise} returns an inserted object
  */
 export async function insertAffectHistoryEntry (affectID, relatedID, isUser, isPrivate) {
   // Ensure isPrivate has a default value
-  if (isPrivate === undefined) { isPrivate = true }
+  if (isPrivate === undefined || isPrivate === null) { isPrivate = true }
 
   // Build proper object to insert
   const insertThis = {
@@ -187,7 +187,12 @@ export async function insertAffectHistoryEntry (affectID, relatedID, isUser, isP
     promises.push(DBHandle.collection('Users')
       .findOneAndUpdate(
         { _id: new ObjectID(relatedID) },
-        { $set: { 'status.currentAffectID': new ObjectID(affectID) } }
+        {
+          $set: {
+            'status.currentAffectID': new ObjectID(affectID),
+            'status.currentAffectPrivacy': isPrivate
+          }
+        }
       )
     )
   }
@@ -208,7 +213,8 @@ export async function insertAffectHistoryEntry (affectID, relatedID, isUser, isP
  * @return {Promise} Resolves only if the query was successful, rejects otherwise
  */
 export function listAffectHistory (userID, affectLogID, dateStart, dateEnd) {
-  let findThis
+  // Setup an operator to filter by date range
+  let findThis = {}
   if (affectLogID) {
     findThis = { _id: new ObjectID(affectLogID) }
   } else if (dateStart && dateEnd) { // finds timestamps within (inclusive) two dates
@@ -218,28 +224,28 @@ export function listAffectHistory (userID, affectLogID, dateStart, dateEnd) {
   } else if (dateEnd) { // finds timestamps before a certain date (inclusive)
     findThis = { timestamp: { $lte: new Date(dateEnd) } }
   } else if (userID) {
-    findThis = 
-      {$where: function() {
-        var deepIterate = function  (obj, value) {
-            for (var field in obj) {
-                if (obj[field] == value){
-                    return true;
-                }
-                var found = false;
-                if ( typeof obj[field] === 'object') {
-                    found = deepIterate(obj[field], value)
-                    if (found) { return true; }
-                }
+    findThis = {
+      $where: function () {
+        const deepIterate = function (obj, value) {
+          for (const field in obj) {
+            if (obj[field] === value) {
+              return true
             }
-            return false;
-        };
+            let found = false
+            if (typeof obj[field] === 'object') {
+              found = deepIterate(obj[field], value)
+              if (found) { return true }
+            }
+          }
+          return false
+        }
         return deepIterate(this, userID)
-      }}
-  } else {
-    findThis = {}
+      }
+    }
   }
+
   // necessary for sorting by timestamp
-  const sort = {'_id': -1}
+  const sort = { _id: -1 }
 
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {

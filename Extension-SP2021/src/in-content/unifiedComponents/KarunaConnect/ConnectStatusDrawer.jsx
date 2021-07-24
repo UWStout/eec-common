@@ -7,6 +7,7 @@ import { useRecoilValue } from 'recoil'
 import { Paper, Grid, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
+import AffectIcon from './AffectIcon.jsx'
 import CustomTooltip from './CustomTooltip.jsx'
 
 import OpenArrow from './PanelOpenArrow.jsx'
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
   // Style when the panel is fully retracted
   panelRetracted: {
-    right: 'calc(0% - 48px)'
+    right: 'calc(0% - 8px)'// 48px)'
   },
 
   // Style when the panel is fully expanded
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
   // Style when the panel is hidden
   panelHidden: {
-    right: 'calc(0% - 88px)'
+    right: 'calc(0% - 8px)'// 88px)'
   },
 
   // Styling of Grid container
@@ -118,9 +119,7 @@ export default function ConnectStatusDrawer (props) {
           xs={6}
         >
           <Grid item xs={12}>
-            <CustomTooltip placement='left' title={currentAffect ? currentAffect.name : 'none'}>
-              <Typography variant='body1' align='center' gutterBottom>{currentAffect ? currentAffect.characterCodes[0] : '?'}</Typography>
-            </CustomTooltip>
+            <AffectIcon placement='left' affectObj={currentAffect} privacy={currentStatus.currentAffectPrivacy} />
           </Grid>
           <Grid item xs={12}>
             <CustomTooltip placement='left' title={currentStatus ? (currentStatus.collaboration ? 'teamwork' : 'solo') : 'unknown'}>
