@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { Paper, Grid } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import MuiPaper from '@material-ui/core/Paper'
+
+import { Grid } from '@material-ui/core'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 import PanelTitle from './PanelTitle.jsx'
 import ConnectMainContent from './ConnectMainContent.jsx'
@@ -12,13 +14,41 @@ import ConnectMainContent from './ConnectMainContent.jsx'
 // const LOG = makeLogger('CONNECT Main Panel', 'lime', 'black')
 
 const useStyles = makeStyles((theme) => ({
+  // Style when the panel is retracted
+  panelRetracted: {
+    // AIW Comment in for testing styling
+    // right: '0%'
+    right: `calc(0% - ${theme.spacing(14)}px)`
+  },
+
+  // Style when the panel is fully expanded
+  panelExpanded: {
+    // AIW Comment in for testing styling
+    // right: '0%'
+    right: `calc(0% - ${theme.spacing(1)}px)`
+  },
+
+  // Style when the panel is hidden
+  panelHidden: {
+    // AIW Comment in for testing styling
+    // right: '0%'
+    right: `calc(0% - ${theme.spacing(39)}px)`
+  },
+
+  // Styling of Grid container
+  gridContRoot: {
+    flexGrow: 1
+  }
+}))
+
+const Paper = withStyles((theme) => ({
   root: {
     display: 'flex',
     position: 'absolute',
     top: '20vh',
-    width: '288px',
+    width: theme.spacing(36),
     // AIW Placeholder styling for testing - I've not calculated this dimension yet.
-    height: '608px',
+    height: theme.spacing(76),
 
     paddingTop: theme.spacing(1),
     paddingRight: theme.spacing(2),
@@ -29,34 +59,8 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create(
       ['right'], { duration: theme.transitions.duration.standard }
     )
-  },
-
-  // Style when the panel is retracted
-  panelRetracted: {
-    // AIW Comment in for testing styling
-    // right: '0%'
-    right: 'calc(0% - 109px)'
-  },
-
-  // Style when the panel is fully expanded
-  panelExpanded: {
-    // AIW Comment in for testing styling
-    // right: '0%'
-    right: 'calc(0% - 8px)'
-  },
-
-  // Style when the panel is hidden
-  panelHidden: {
-    // AIW Comment in for testing styling
-    // right: '0%'
-    right: 'calc(0% - 312px)'
-  },
-
-  // Styling of Grid container
-  gridContRoot: {
-    flexGrow: 1
   }
-}))
+}))(MuiPaper)
 
 /**
  * The main drawer/side-sheet for the connect panel showing info about
@@ -71,7 +75,6 @@ export default function ConnectMainDrawer (props) {
 
   // Deconstruct props and style class names
   const {
-    root,
     panelHidden,
     panelRetracted,
     panelExpanded
@@ -133,11 +136,11 @@ export default function ConnectMainDrawer (props) {
     <Paper
       data-testid="connectMainDrawer"
       elevation={5}
-      className={`${root} ${hidden ? panelHidden : (mouseIsOver ? panelExpanded : (isRetracted ? panelRetracted : panelExpanded))}`}
+      className={`${hidden ? panelHidden : (mouseIsOver ? panelExpanded : (isRetracted ? panelRetracted : panelExpanded))}`}
       onMouseEnter={() => { setMouseIsOver(true); cancelHide(); cancelRetract() }}
       onMouseLeave={() => { setMouseIsOver(false); hide(false); retract(false) }}
     >
-      <Grid container>
+      <Grid container spacing={2}>
         <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
         <ConnectMainContent hidden={hidden} retracted={!mouseIsOver} />
       </Grid>
@@ -159,5 +162,7 @@ ConnectMainDrawer.propTypes = {
 ConnectMainDrawer.defaultProps = {
   hidden: false,
   onHide: null,
-  waitToHide: 3000
+  // AIW Testing styles
+  // waitToHide: 3000
+  waitToHide: 100000
 }
