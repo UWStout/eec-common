@@ -1,5 +1,8 @@
 example.js
 
+# Jest test output
+coverage
+
 # Secret info that should not be in the repo
 .env
 

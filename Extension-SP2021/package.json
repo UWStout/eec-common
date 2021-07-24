@@ -6,19 +6,23 @@
   "scripts": {
     "dev": "nodemon --exec npm run devbuild",
     "clean": "rimraf dist",
+
     "devbuild": "run-s clean devbuild-background devbuild-in-content devbuild-popup devbuild-manifest",
     "devbuild-background": "esbuild --bundle --sourcemap --define:_DEV_=true --outfile=dist/js/background.js src/background/background.js",
     "devbuild-in-content": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outfile=dist/js/in-content.js src/in-content/in-content.js",
     "devbuild-popup": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outfile=dist/js/popup.js src/popup/popup.jsx",
     "devbuild-manifest": "node manifestGen.js dev",
     "postdevbuild": "node postBuild.js dev",
+
     "build": "run-s clean build-background build-in-content build-popup build-manifest",
     "build-background": "esbuild --bundle --minify --define:_DEV_=false --outfile=dist/js/background.js src/background/background.js",
     "build-in-content": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outfile=dist/js/in-content.js src/in-content/in-content.js",
     "build-popup": "esbuild --bundle --minify --loader:.css=css --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outfile=dist/js/popup.js src/popup/popup.jsx",
     "build-manifest": "node manifestGen.js",
     "postbuild": "node postBuild.js",
-    "test": "jest --coverage",
+
+    "test": "jest",
+    "testCoverage": "jest --coverage",
     "testWatch": "jest --watchAll"
   },
   "author": "Seth Berrier, Larissa Ford, Bret Parsons, Aram Wahler",

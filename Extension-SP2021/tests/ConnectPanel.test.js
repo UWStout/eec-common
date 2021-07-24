@@ -12,9 +12,9 @@ import {
 import '@testing-library/jest-dom/extend-expect'
 import { toBeVisible } from '@testing-library/jest-dom/matchers'
 
-import ConnectStatusDrawer from '../in-content/unifiedComponents/KarunaConnect/ConnectStatusDrawer.jsx'
-import ConnectMainDrawer from '../in-content/unifiedComponents/KarunaConnect/ConnectMainDrawer.jsx'
-import KarunaConnect from '../in-content/unifiedComponents/KarunaConnect.jsx'
+import ConnectStatusDrawer from '../src/in-content/unifiedComponents/KarunaConnect/ConnectStatusDrawer.jsx'
+import ConnectMainDrawer from '../src/in-content/unifiedComponents/KarunaConnect/ConnectMainDrawer.jsx'
+import KarunaConnect from '../src/in-content/unifiedComponents/KarunaConnect.jsx'
 import { RecoilRoot } from 'recoil'
 
 expect.extend({ toBeVisible })
