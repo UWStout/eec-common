@@ -91,7 +91,8 @@ export default function ConnectStatusDrawer (props) {
   // Return the proper MUI elements
   return (
     <Paper
-      data-testid="connectStatusDrawer"
+      role={'complementary'}
+      aria-label={'Status Drawer'}
       elevation={3}
       className={`${hidden ? panelHidden : (mouseIsOver ? panelExpanded : panelRetracted)}`}
       onMouseEnter={() => { setMouseIsOver(true) }}

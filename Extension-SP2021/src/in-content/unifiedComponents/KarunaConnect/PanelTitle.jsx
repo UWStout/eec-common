@@ -34,7 +34,7 @@ export default function PanelTitle (props) {
           // AIW MUI documentation says justify is deprecated and to use justifyContent, however this doesn't work for our project. https://material-ui.com/api/grid/
           <Grid item container alignItems='center' justify='flex-end' xs={2}>
             <Grid item>
-              <IconButton aria-label='close panel' size='small' onClick={closeCallback}>
+              <IconButton aria-label='Close Panel' size='small' onClick={closeCallback}>
                 <KeyboardArrowLeft />
               </IconButton>
             </Grid>
@@ -49,7 +49,7 @@ export default function PanelTitle (props) {
           // AIW MUI documentation says justify is deprecated and to use justifyContent, however this doesn't work for our project. https://material-ui.com/api/grid/
           <Grid item container alignItems='center' justify='flex-end' xs={2} onClick={closeCallback}>
             <Grid item>
-              <IconButton aria-label='close panel' size='small'>
+              <IconButton aria-label='Close Panel' size='small'>
                 <KeyboardArrowRight />
               </IconButton>
             </Grid>
