@@ -68,3 +68,16 @@ export * from '@testing-library/react'
 
 // override render method
 export { customRender as render }
+
+// Other utility functions
+export function presentVisibleAndContained (expect, parent, child) {
+  // Ensure they are in the document and visible
+  expect(parent).toBeInTheDocument()
+  expect(child).toBeInTheDocument()
+
+  expect(parent).toBeVisible()
+  expect(child).toBeVisible()
+
+  // Ensure the child is a descendent of the parent
+  expect(parent).toContainElement(child)
+}
