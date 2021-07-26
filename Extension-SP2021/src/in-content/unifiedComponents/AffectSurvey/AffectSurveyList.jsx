@@ -7,7 +7,7 @@ import { useRecoilValue, useRecoilState } from 'recoil'
 import * as STATE from '../data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse } from '@material-ui/core'
+import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse, Grid } from '@material-ui/core'
 import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/icons'
 
 import SearchBar from 'material-ui-search-bar'
@@ -192,9 +192,16 @@ export default function AffectSurveyList (props) {
 
   // Otherwise, show full affect survey
   return (
-    <div className={root}>
+    <Grid
+      role={'region'}
+      aria-label={'Affect Survey'}
+      // className={root}
+      container
+      spacing={1}
+    >
+
       {/* For searching through the possible moods */}
-      <div className={searchBar}>
+      <Grid item>
         <SearchBar
           value={searchText}
           onClick={() => setExpanded('all')}
@@ -202,11 +209,12 @@ export default function AffectSurveyList (props) {
           placeholder={'search emojis'}
           disabled={noInteraction}
         />
-      </div>
+      </Grid>
+      <Grid item>
 
-      <List dense className={listRoot}>
-        {/* Recent sub-list */}
-        {recentEmojiElements?.length > 0 && searchText === '' &&
+        <List dense className={listRoot}>
+          {/* Recent sub-list */}
+          {recentEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
             <ListItem button onClick={() => toggleExpanded('recent')}>
               <ListItemIcon><History /></ListItemIcon>
@@ -223,8 +231,8 @@ export default function AffectSurveyList (props) {
             <Divider />
           </React.Fragment>}
 
-        { /* Favorites sub-list */}
-        {favEmojiElements?.length > 0 && searchText === '' &&
+          { /* Favorites sub-list */}
+          {favEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
             <ListItem button onClick={() => toggleExpanded('favorites')}>
               <ListItemIcon><Favorite /></ListItemIcon>
@@ -241,23 +249,25 @@ export default function AffectSurveyList (props) {
             <Divider />
           </React.Fragment>}
 
-        {/* List of all emojis */}
-        <React.Fragment>
-          <ListItem button onClick={() => toggleExpanded('all')}>
-            <ListItemIcon><Mood /></ListItemIcon>
-            <ListItemText primary="All Moods" />
-            {expanded === 'all' ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={expanded === 'all'} timeout="auto" unmountOnExit>
-            <div className={innerList}>
-              <List component="div" disablePadding>
-                {allEmojiElements}
-              </List>
-            </div>
-          </Collapse>
-        </React.Fragment>
-      </List>
-    </div>
+          {/* List of all emojis */}
+          <React.Fragment>
+            <ListItem button onClick={() => toggleExpanded('all')}>
+              <ListItemIcon><Mood /></ListItemIcon>
+              <ListItemText primary="All Moods" />
+              {expanded === 'all' ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={expanded === 'all'} timeout="auto" unmountOnExit>
+              <div className={innerList}>
+                <List component="div" disablePadding>
+                  {allEmojiElements}
+                </List>
+              </div>
+            </Collapse>
+          </React.Fragment>
+        </List>
+      </Grid>
+
+    </Grid>
   )
 }
 

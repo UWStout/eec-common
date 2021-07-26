@@ -128,7 +128,8 @@ export default function ConnectMainContent (props) {
     // AIW Testing styling
     // <div className={root}>
     <Grid container item xs={12} role={'region'} aria-label={'Main Content'}>
-      {/* First list item: user status */}
+
+      {/* user status list item */}
       <Accordion square className={rootAccordionStyle} expanded={expanded === 'userStatus'} onChange={handleChange('userStatus')}>
         <AccordionSummary
           aria-label={'Current User Status'}
@@ -136,14 +137,18 @@ export default function ConnectMainContent (props) {
           aria-controls="user-status-content"
           id="user-status-header"
         >
-          <StatusListItem affect={currentAffect} userEmail="Seth.berrier@gmail.com" />
+          <StatusListItem isUserStatus />
         </AccordionSummary>
         <AccordionDetails>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="body1">
                 {'I\'m feeling: '}
-                <Link href='#' onClick={() => setAffectSurveyOpen(!affectSurveyOpen)}>
+                <Link
+                  aria-label={'Open Affect Survey'}
+                  href='#'
+                  onClick={() => setAffectSurveyOpen(!affectSurveyOpen)}
+                >
                   {`${selectedAffect ? selectedAffect.characterCodes[0] : (currentAffect ? currentAffect.characterCodes[0] : '?')} ${selectedAffect ? selectedAffect.name : (currentAffect ? currentAffect.name : '[none]')}`}
                 </Link>
               </Typography>
@@ -166,6 +171,7 @@ export default function ConnectMainContent (props) {
         </AccordionDetails>
       </Accordion>
 
+      {/* Team Status list item */}
       <Accordion square expanded={expanded === 'teamStatus'} onChange={handleChange('teamStatus')}>
         <AccordionSummary
           aria-label={'Team Status'}
@@ -176,9 +182,11 @@ export default function ConnectMainContent (props) {
           <Typography className={heading}>Team Status</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <StatusListItem emojiList={emojiList} userEmail="berriers@uwstout.edu" />
+          <StatusListItem />
         </AccordionDetails>
       </Accordion>
+
+      {/* Team Culture list item */}
       <Accordion square>
         <AccordionSummary
           aria-label={'Team Culture'}
@@ -191,6 +199,8 @@ export default function ConnectMainContent (props) {
           <Typography variant={'body2'}>WIP</Typography>
         </AccordionDetails>
       </Accordion>
+
+      {/* NVC Information list item */}
       <Accordion square>
         <AccordionSummary
           aria-label={'NVC Information'}
