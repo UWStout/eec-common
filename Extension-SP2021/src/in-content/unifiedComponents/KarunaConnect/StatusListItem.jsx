@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function StatusListItem (props) {
-  const { userEmail } = props
+  const { userEmail, isUserStatus } = props
 
   const { userAvatarStyle, teamAvatarStyle } = useStyles()
 
@@ -38,7 +38,13 @@ export default function StatusListItem (props) {
   })
 
   return (
-    <Grid container wrap='nowrap' spacing={1}>
+    <Grid
+      role={'region'}
+      aria-label={isUserStatus ? 'Current Status of User' : 'Current Status of Team'}
+      container
+      wrap='nowrap'
+      spacing={1}
+    >
       <Grid item className={userAvatarStyle}>
         <Avatar>U</Avatar>
       </Grid>
@@ -69,9 +75,11 @@ export default function StatusListItem (props) {
 }
 
 StatusListItem.propTypes = {
-  userEmail: PropTypes.string
+  userEmail: PropTypes.string,
+  isUserStatus: PropTypes.bool
 }
 
 StatusListItem.defaultProps = {
-  userEmail: ''
+  userEmail: 'berriers@uwstout.edu',
+  isUserStatus: false
 }

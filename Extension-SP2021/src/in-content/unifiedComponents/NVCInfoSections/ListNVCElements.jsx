@@ -41,7 +41,12 @@ export default function ListNVCElements (props) {
     <React.Fragment>
       {isDetailsOpen
         ? <NVCInfoSection title={title} onReturn={() => { setIsDetailsOpen(false); if (fromBubble) window.dispatchEvent(new CustomEvent('resize')) }} /> 
-        : <Grid container spacing={1} >
+        : <Grid
+            role={'region'}
+            aria-label={'List of NVC Elements'}
+            container
+            spacing={1}
+          >
           <Grid item className={classes.observation}>
             {fromBubble &&
               <Typography aria-label='title' variant='body2'>

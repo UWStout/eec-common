@@ -10,7 +10,7 @@ import '@testing-library/jest-dom/extend-expect'
 import { toBeVisible, toContainElement, toHaveClass, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 import ConnectMainDrawer from '../../src/in-content/unifiedComponents/KarunaConnect/ConnectMainDrawer.jsx'
-import { act, fireEvent, waitFor } from '@testing-library/react'
+import { fireEvent, waitFor } from '@testing-library/react'
 
 expect.extend({ toBeVisible, toContainElement, toHaveAttribute, toHaveClass })
 
@@ -62,19 +62,17 @@ function checkClickingHeader (headerName) {
       expect(otherButton).toHaveAttribute('aria-expanded', 'false')
     })
 
-    await act(async () => {
-      // Click the proper heading
-      fireEvent.click(headingButton)
+    // Click the proper heading
+    fireEvent.click(headingButton)
 
-      // Wait for region to become visible
-      const region = await findByRole('region', { name: headerName })
-      await waitFor(() => (expect(region).toBeVisible()))
+    // Wait for region to become visible
+    const region = await findByRole('region', { name: headerName })
+    await waitFor(() => (expect(region).toBeVisible()))
 
-      // Ensure their collapsed attributes now match
-      expect(headingButton).toHaveAttribute('aria-expanded', 'true')
-      otherButtons.forEach((otherButton) => {
-        expect(otherButton).toHaveAttribute('aria-expanded', 'false')
-      })
+    // Ensure their collapsed attributes now match
+    expect(headingButton).toHaveAttribute('aria-expanded', 'true')
+    otherButtons.forEach((otherButton) => {
+      expect(otherButton).toHaveAttribute('aria-expanded', 'false')
     })
   }
 }
@@ -121,6 +119,97 @@ describe('Karuna Connect Panel', () => {
       presentVisibleAndContained(expect, mainDrawer, mainContent)
     })
 
+    it('contains current status', () => {
+      // Render with recoil state
+      const { getByRole } = render(
+        <ConnectMainDrawer />
+      )
+
+      // Access the document and find the main drawer and the panel title
+      const mainDrawer = getByRole('complementary', { name: 'Main Drawer' })
+      const currentStatus = getByRole('region', { name: 'Current Status of User' })
+
+      // Ensure they are in the document, visible, and title is contained by main drawer
+      presentVisibleAndContained(expect, mainDrawer, currentStatus)
+    })
+
+    it('contains team status', async () => {
+      // Render with recoil state
+      const { getByRole, findByRole } = render(
+        <ConnectMainDrawer />
+      )
+
+      // Access the document and find the main drawer and the panel title
+      const mainDrawer = getByRole('complementary', { name: 'Main Drawer' })
+      const teamStatusButton = getByRole('button', { name: 'Team Status' })
+
+      // Ensure they are in the document, visible, and title is contained by main drawer
+      presentVisibleAndContained(expect, mainDrawer, teamStatusButton)
+
+      fireEvent.click(teamStatusButton)
+      const teamStatus = await findByRole('region', { name: 'Current Status of Team' })
+
+      // Ensure they are in the document, visible, and title is contained by main drawer
+      presentVisibleAndContained(expect, mainDrawer, teamStatus)
+    })
+
+    it('contains team culture', () => {
+      // Render with recoil state
+      const { getByRole } = render(
+        <ConnectMainDrawer />
+      )
+
+      // Access the document and find the main drawer and the panel title
+      const mainDrawer = getByRole('complementary', { name: 'Main Drawer' })
+      const teamCultureButton = getByRole('button', { name: 'Team Culture' })
+
+      // Ensure they are in the document, visible, and title is contained by main drawer
+      presentVisibleAndContained(expect, mainDrawer, teamCultureButton)
+    })
+
+    it('contains NVC information', async () => {
+      // Render with recoil state
+      const { getByRole, findByRole } = render(
+        <ConnectMainDrawer />
+      )
+
+      // Access the document and find the main drawer and the panel title
+      const mainDrawer = getByRole('complementary', { name: 'Main Drawer' })
+      const nvcInfoButton = getByRole('button', { name: 'NVC Information' })
+
+      // Ensure they are in the document, visible, and title is contained by main drawer
+      presentVisibleAndContained(expect, mainDrawer, nvcInfoButton)
+
+      fireEvent.click(nvcInfoButton)
+      const nvcInfo = await findByRole('region', { name: 'List of NVC Elements' })
+
+      // Ensure they are in the document, visible, and title is contained by main drawer
+      presentVisibleAndContained(expect, mainDrawer, nvcInfo)
+    })
+
+    it('contains affect survey', async () => {
+      // Render with recoil state
+      const { getByRole, findByRole } = render(
+        <ConnectMainDrawer />
+      )
+
+      // Access the document and find the main drawer and the panel title
+      const mainDrawer = getByRole('complementary', { name: 'Main Drawer' })
+      const currentStatusButton = getByRole('button', { name: 'Current User Status' })
+
+      // Ensure they are in the document, visible, and title is contained by main drawer
+      presentVisibleAndContained(expect, mainDrawer, currentStatusButton)
+
+      fireEvent.click(currentStatusButton)
+      const affectSurveyLink = await findByRole('link', { name: 'Open Affect Survey' })
+
+      fireEvent.click(affectSurveyLink)
+      const affectSurvey = await findByRole('region', { name: 'Affect Survey' })
+
+      // Ensure they are in the document, visible, and title is contained by main drawer
+      presentVisibleAndContained(expect, mainDrawer, affectSurvey)
+    })
+
     it('contains back arrow', () => {
       // Render with recoil state
       const { getByRole } = render(
@@ -133,31 +222,6 @@ describe('Karuna Connect Panel', () => {
 
       // Ensure they are in the document, visible, and button is contained by main drawer
       presentVisibleAndContained(expect, mainDrawer, closePanelButton)
-    })
-
-    it('closes when back arrow is clicked', async () => {
-      // Render with recoil state
-      const { getByRole } = render(
-        <ConnectMainDrawer />
-      )
-
-      // Access the document and find the main drawer and the back arrow
-      const mainDrawer = getByRole('complementary', { name: 'Main Drawer' })
-      const closePanelButton = getByRole('button', { name: 'Close Panel' })
-
-      // Ensure they are in the document, visible, and button is contained by main drawer
-      presentVisibleAndContained(expect, mainDrawer, closePanelButton)
-
-      await act(async () => {
-        // Check that main drawer is initially expanded
-        expect(mainDrawer).toHaveClass('makeStyles-panelExpanded-78')
-
-        // Click the back arrow
-        fireEvent.click(closePanelButton)
-
-        // Wait for main drawer to be hidden
-        await waitFor(() => (expect(mainDrawer).toHaveClass('makeStyles-panelHidden-76')))
-      })
     })
 
     // Tests for all the accordion section headings

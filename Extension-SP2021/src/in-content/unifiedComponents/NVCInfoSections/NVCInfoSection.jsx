@@ -28,7 +28,12 @@ function NVCInfoSection (props) {
   const { rootStyle, itemStyle, clickable } = useStyles()
 
   return (
-    <Grid container spacing={1} >
+    <Grid
+      role={'region'}
+      aria-label={'NVC Element Information'}
+      container
+      spacing={1}
+    >
       <Grid item xs={12} className={rootStyle}>
         <Typography aria-label='title' variant='h6'>
           {title}
