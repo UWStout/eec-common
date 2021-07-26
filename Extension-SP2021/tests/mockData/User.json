@@ -1,0 +1,45 @@
+{
+  "_id": "5ff742f09bb9905f98eb348f",
+  "email": "anywhere@email.com",
+  "passwordHash": "$2b$10$U9/hGWcYCzZgpcqCY7arx.vujYruvu9Yuw6DmxhLuj23L9iIO8tYm",
+  "firstName": "Joe",
+  "lastName": "Anybody",
+  "userType": "admin",
+  "meta": {},
+  "teams": [],
+  "lastLogin": {
+    "timestamp": {
+      "$date": "2021-07-23T20:59:44.760Z"
+    },
+    "remoteAddress": "127.0.0.1"
+  },
+  "lastContextLogin": {
+    "discord": {
+      "timestamp": {
+        "$date": "2021-07-23T20:52:47.347Z"
+      },
+      "remoteAddress": "127.0.0.1"
+    },
+    "msTeams": {
+      "timestamp": {
+        "$date": "2021-07-21T14:26:13.616Z"
+      },
+      "remoteAddress": "127.0.0.1"
+    }
+  },
+  "lastWizardLogin": {
+    "timestamp": {
+      "$date": "2021-03-06T17:24:05.169Z"
+    },
+    "remoteAddress": "127.0.0.1"
+  },
+  "contextAlias": {
+    "msTeams": "berriers@uwstout.edu",
+    "discord": "SethB#1799"
+  },
+  "status": {
+    "currentAffectID": "6008928508baff43187a74f2",
+    "collaboration": true,
+    "currentAffectPrivacy": false
+  }
+}

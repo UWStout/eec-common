@@ -23,15 +23,26 @@ export default function OpenArrow (props) {
   const { showDouble, flipped } = props
   const classes = useStyles()
 
+  let ariaLabel = ''
+  if (showDouble && flipped) {
+    ariaLabel = 'Left Double Arrow'
+  } else if (showDouble) {
+    ariaLabel = 'Right Double Arrow'
+  } else if (flipped) {
+    ariaLabel = 'Left Arrow'
+  } else {
+    ariaLabel = 'Right Arrow'
+  }
+
   return (
-    <React.Fragment>
+    <div role={'button'} aria-label={ariaLabel}>
       <Fade in={showDouble}>
-        <DoubleArrow data-testid="doubleArrow" className={flipped ? classes.flipped : classes.standard} />
+        <DoubleArrow className={flipped ? classes.flipped : classes.standard} />
       </Fade>
       <Fade in={!showDouble}>
-        <KeyboardArrowRight data-testid="keyboardArrowRight" className={flipped ? classes.flipped : classes.standard} />
+        <KeyboardArrowRight className={flipped ? classes.flipped : classes.standard} />
       </Fade>
-    </React.Fragment>
+    </div>
   )
 }
 

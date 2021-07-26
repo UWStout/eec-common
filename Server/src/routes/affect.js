@@ -13,7 +13,7 @@ import { authenticateToken } from './auth.js'
 // for testing the database
 import MongoDB from 'mongodb'
 
-import { analyzeAffect } from '../analysisEngine.js'
+// import { analyzeAffect } from '../analysisEngine.js'
 
 // Create debug output object
 import Debug from 'debug'
@@ -169,7 +169,7 @@ router.get('/list', authenticateToken, async (req, res) => {
 // 30. test affectController's function insertAffectHistoryEntry (affectID, relatedID, isUser)
 router.post('/insertHistory', authenticateToken, async (req, res) => {
   // Extract and check required fields
-  const { affectID, userID, teamID, isPrivate, context } = req.body
+  const { affectID, userID, teamID, isPrivate } = req.body
   if (!affectID || (!userID && !teamID)) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
@@ -177,8 +177,6 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
     res.status(400).json({ invalid: true, message: 'Cannot submit both userID and teamID' })
     return
   }
-
-  debug('context is ' + context)
 
   // set relatedID
   let relatedID, isUser
@@ -200,25 +198,6 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
     res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
   }
 
-  // TODO: Consider hook to Analysis.analyzeAffect()
-  // Hook to intelligence core, expect a promise in return
-  try {
-    const affect = await DBAffect.getAffectDetails(affectID)
-    // return res.json(affect)
-
-    analyzeAffect(affect, userID, context)
-      .then((result) => {
-        debug('analyze affect success')
-      })
-      .catch((err) => {
-        debug('In-Progress Message analysis failed')
-        debug(err)
-      })
-  } catch (error) {
-    debug(`Failed to get affect details ${affectID}`)
-    debug(error)
-    return res.status(500).json({ error: true, message: 'Error while getting affect details' })
-  }
   // Attempt to insert affect history log
   debug('attempting to insert affect history log')
   try {

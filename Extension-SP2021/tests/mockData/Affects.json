@@ -1,0 +1,320 @@
+[{
+  "_id": "6008928508baff43187a74f0",
+  "name": "Admiration",
+  "description": "Feeling impressed, pride, amazement",
+  "characterCodes": [
+    "🤩"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74f1",
+  "name": "Adoration",
+  "description": "Love, happiness",
+  "characterCodes": [
+    "😍",
+    "❤️"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74f2",
+  "name": "Aesthetic Appreciation",
+  "description": "Awe, calmness, wonder",
+  "characterCodes": [
+    "😃"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74f3",
+  "name": "Amusement",
+  "description": "Laughter, humor",
+  "characterCodes": [
+    "😄"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74f4",
+  "name": "Anger",
+  "description": "Angry, disgust, boiling",
+  "characterCodes": [
+    "😠"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74f5",
+  "name": "Anxiety",
+  "description": "Fear, nervousness",
+  "characterCodes": [
+    "😰"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74f6",
+  "name": "Awe",
+  "description": "Amazement, impressed",
+  "characterCodes": [
+    "😲"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74f7",
+  "name": "Awkwardness",
+  "description": "Amused embarrassment, embarrassment",
+  "characterCodes": [
+    "🙁",
+    "😏",
+    "😬"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74f8",
+  "name": "Boredom",
+  "description": "Annoyance, interest",
+  "characterCodes": [
+    "🥱",
+    "😑"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74f9",
+  "name": "Calmness",
+  "description": "Peacefulness, serenity",
+  "characterCodes": [
+    "🙂",
+    "😇"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74fa",
+  "name": "Confusion",
+  "description": "Curiosity, interested confusion",
+  "characterCodes": [
+    "😕"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74fb",
+  "name": "Contempt",
+  "description": "Contempt",
+  "characterCodes": [
+    "😒"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74fc",
+  "name": "Craving",
+  "description": "Hunger, desire, satiation of hunger",
+  "characterCodes": [
+    "🤤"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74fd",
+  "name": "Disappointment",
+  "description": "Disappointment",
+  "characterCodes": [
+    "😞",
+    "😦"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74fe",
+  "name": "Disgust",
+  "description": "Grossed out, extreme disgust",
+  "characterCodes": [
+    "😒"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a74ff",
+  "name": "Empathetic Pain",
+  "description": "Pain, shock",
+  "characterCodes": [
+    "🤕"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7500",
+  "name": "Entrancement",
+  "description": "Interest, amazement, intrigued",
+  "characterCodes": [
+    "😵"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7501",
+  "name": "Envy",
+  "description": "Envy",
+  "characterCodes": [
+    "🙄",
+    "🤨",
+    "🤑"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7502",
+  "name": "Excitement",
+  "description": "Adrenaline rush, awe",
+  "characterCodes": [
+    "😆"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7503",
+  "name": "Fear",
+  "description": "Scared",
+  "characterCodes": [
+    "😨"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7504",
+  "name": "Guilt",
+  "description": "Guilt",
+  "characterCodes": [
+    "😓",
+    "🤥"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7505",
+  "name": "Horror",
+  "description": "Shock, feeling extremely scared",
+  "characterCodes": [
+    "😱"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7506",
+  "name": "Interest",
+  "description": "Amazement, intrigued",
+  "characterCodes": [
+    "🤔",
+    "🧐"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7507",
+  "name": "Joy",
+  "description": "Extreme happiness, love",
+  "characterCodes": [
+    "😂"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7508",
+  "name": "Nostalgia",
+  "description": "Boredom, reminiscence",
+  "characterCodes": [
+    "💾"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7509",
+  "name": "Pride",
+  "description": "Pride",
+  "characterCodes": [
+    "😁"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a750a",
+  "name": "Relief",
+  "description": "Sense of narrow escape",
+  "characterCodes": [
+    "😳",
+    "😌"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a750b",
+  "name": "Romance",
+  "description": "Love",
+  "characterCodes": [
+    "🥰",
+    "😘"
+  ],
+  "related": [],
+  "active": false
+},{
+  "_id": "6008928508baff43187a750c",
+  "name": "Sadness",
+  "description": "Sympathy",
+  "characterCodes": [
+    "😢"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a750d",
+  "name": "Satisfaction",
+  "description": "Awestruck surprise, impressed",
+  "characterCodes": [
+    "🥳",
+    "🙂"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a750e",
+  "name": "Sexual Desire",
+  "description": "Arousal",
+  "characterCodes": [],
+  "related": [],
+  "active": false
+},{
+  "_id": "6008928508baff43187a750f",
+  "name": "Surprise ",
+  "description": "Shock, amazement",
+  "characterCodes": [
+    "🙃",
+    "😲"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7510",
+  "name": "Sympathy",
+  "description": "Sympathy",
+  "characterCodes": [
+    "🤗"
+  ],
+  "related": [],
+  "active": true
+},{
+  "_id": "6008928508baff43187a7511",
+  "name": "Triumph",
+  "description": "Triumph",
+  "characterCodes": [
+    "🎉",
+    "🎊"
+  ],
+  "related": [],
+  "active": true
+}]

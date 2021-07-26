@@ -28,13 +28,14 @@ export default function PanelTitle (props) {
 
   // Return the proper MUI elements
   return (
-    <Grid item container className={setHeight} xs={12}>
+    <Grid role={'heading'} aria-label={'Panel Title'} item container className={setHeight} xs={12}>
       <Grid item container xs={12}>
         {arrow === 'left' && (
-          // AIW MUI documentation says justify is deprecated and to use justifyContent, however this doesn't work for our project. https://material-ui.com/api/grid/
+          // AIW MUI documentation says justify is deprecated and to use justifyContent, however this doesn't work for our project.
+          // https://material-ui.com/api/grid/
           <Grid item container alignItems='center' justify='flex-end' xs={2}>
             <Grid item>
-              <IconButton aria-label='close panel' size='small' onClick={closeCallback}>
+              <IconButton aria-label='Close Panel' size='small' onClick={closeCallback}>
                 <KeyboardArrowLeft />
               </IconButton>
             </Grid>
@@ -46,10 +47,11 @@ export default function PanelTitle (props) {
           </Typography>
         </Grid>
         {arrow === 'right' && (
-          // AIW MUI documentation says justify is deprecated and to use justifyContent, however this doesn't work for our project. https://material-ui.com/api/grid/
+          // AIW MUI documentation says justify is deprecated and to use justifyContent, however this doesn't work for our project.
+          // https://material-ui.com/api/grid/
           <Grid item container alignItems='center' justify='flex-end' xs={2} onClick={closeCallback}>
             <Grid item>
-              <IconButton aria-label='close panel' size='small'>
+              <IconButton aria-label='Close Panel' size='small'>
                 <KeyboardArrowRight />
               </IconButton>
             </Grid>

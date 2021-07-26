@@ -16,6 +16,7 @@ import { ExpandMore } from '@material-ui/icons'
 
 import StatusListItem from './StatusListItem.jsx'
 import AffectSurveyList from '../AffectSurvey/AffectSurveyList.jsx'
+import ListNVCElements from '../NVCInfoSections/ListNVCElements.jsx'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
@@ -94,13 +95,13 @@ const AccordionDetails = withStyles((theme) => ({
 
 export default function ConnectMainContent (props) {
   const { hidden, retracted } = props
-  const { rootAccordianStyle, heading } = useStyles()
+  const { rootAccordionStyle, heading } = useStyles()
 
   // Subscribe to the global emojiList state and current status (GLOBAL STATE)
   const emojiList = useRecoilValue(AffectListState)
   const currentStatus = useRecoilValue(UserStatusState)
 
-  const [expanded, setExpanded] = useState('userStatus')
+  const [expanded, setExpanded] = useState('')
   const selectedAffectID = useRecoilValue(SelectedAffectSurveyState)
   const [selectedAffect, setSelectedAffect] = useState(null)
 
@@ -126,17 +127,18 @@ export default function ConnectMainContent (props) {
   return (
     // AIW Testing styling
     // <div className={root}>
-    <Grid container item xs={12}>
+    <Grid container item xs={12} role={'region'} aria-label={'Main Content'}>
       {/* First list item: user status */}
-      <Accordion square className={rootAccordianStyle} expanded={expanded === 'userStatus'} onChange={handleChange('userStatus')}>
+      <Accordion square className={rootAccordionStyle} expanded={expanded === 'userStatus'} onChange={handleChange('userStatus')}>
         <AccordionSummary
+          aria-label={'Current User Status'}
           expandIcon={<ExpandMore />}
           aria-controls="user-status-content"
           id="user-status-header"
         >
           <StatusListItem affect={currentAffect} userEmail="Seth.berrier@gmail.com" />
         </AccordionSummary>
-        <AccordionDetails id="user-status-content" aria-labelledby="users-status-header">
+        <AccordionDetails>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="body1">
@@ -166,23 +168,41 @@ export default function ConnectMainContent (props) {
 
       <Accordion square expanded={expanded === 'teamStatus'} onChange={handleChange('teamStatus')}>
         <AccordionSummary
+          aria-label={'Team Status'}
           expandIcon={<ExpandMore />}
           aria-controls="team-status-content"
           id="team-status-header"
         >
           <Typography className={heading}>Team Status</Typography>
         </AccordionSummary>
-        <AccordionDetails aria-labelledby="team-status-header" id="team-status-content">
+        <AccordionDetails>
           <StatusListItem emojiList={emojiList} userEmail="berriers@uwstout.edu" />
         </AccordionDetails>
       </Accordion>
       <Accordion square>
         <AccordionSummary
-          aria-controls="team-culture"
-          id="team-culture"
+          aria-label={'Team Culture'}
+          aria-controls="team-culture-content"
+          id="team-culture-header"
         >
           <Typography className={heading}>Team Culture</Typography>
         </AccordionSummary>
+        <AccordionDetails>
+          <Typography variant={'body2'}>WIP</Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion square>
+        <AccordionSummary
+          aria-label={'NVC Information'}
+          expandIcon={<ExpandMore />}
+          aria-controls="nvc-info-content"
+          id="nvc-info-header"
+        >
+          <Typography className={heading}>NVC</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <ListNVCElements />
+        </AccordionDetails>
       </Accordion>
     </Grid>
     // AIW Testing styling

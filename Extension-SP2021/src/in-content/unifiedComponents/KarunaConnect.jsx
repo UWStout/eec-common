@@ -37,7 +37,7 @@ export default function KarunaConnect (props) {
 
   // Main render
   return (
-    <Container disableGutters>
+    <Container disableGutters aria-label={'Karuna Connect Panel'}>
       {userLoggedIn &&
         <ConnectStatusDrawer
           hidden={!userLoggedIn || mainPanelOpen}

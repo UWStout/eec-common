@@ -9,6 +9,7 @@ import MuiPaper from '@material-ui/core/Paper'
 import { Grid, Typography } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
+import AffectIcon from './AffectIcon.jsx'
 import CustomTooltip from './CustomTooltip.jsx'
 
 import OpenArrow from './PanelOpenArrow.jsx'
@@ -90,7 +91,8 @@ export default function ConnectStatusDrawer (props) {
   // Return the proper MUI elements
   return (
     <Paper
-      data-testid="connectStatusDrawer"
+      role={'complementary'}
+      aria-label={'Status Drawer'}
       elevation={3}
       className={`${hidden ? panelHidden : (mouseIsOver ? panelExpanded : panelRetracted)}`}
       onMouseEnter={() => { setMouseIsOver(true) }}
@@ -122,9 +124,7 @@ export default function ConnectStatusDrawer (props) {
           xs={6}
         >
           <Grid item xs={12}>
-            <CustomTooltip placement='left' title={currentAffect ? currentAffect.name : 'none'}>
-              <Typography variant='body1' align='center' gutterBottom>{currentAffect ? currentAffect.characterCodes[0] : '?'}</Typography>
-            </CustomTooltip>
+            <AffectIcon placement='left' affectObj={currentAffect} privacy={currentStatus.currentAffectPrivacy} />
           </Grid>
           <Grid item xs={12}>
             <CustomTooltip placement='left' title={currentStatus ? (currentStatus.collaboration ? 'teamwork' : 'solo') : 'unknown'}>
