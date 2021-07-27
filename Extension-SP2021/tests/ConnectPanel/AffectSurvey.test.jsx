@@ -2,19 +2,30 @@
  * @jest-environment jsdom
  */
 
-// import React from 'react'
+import React from 'react'
 
-// import { render } from '../testRecoilUtils.jsx'
+import { render } from '../testRecoilUtils.jsx'
 
 import '@testing-library/jest-dom/extend-expect'
 import { toBeVisible, toHaveClass } from '@testing-library/jest-dom/matchers'
 
-// import AffectSurveyList from '../../src/in-content/unifiedComponents/AffectSurvey/AffectSurveyList.jsx'
+import AffectSurveyList from '../../src/in-content/unifiedComponents/AffectSurvey/AffectSurveyList.jsx'
 
 expect.extend({ toBeVisible, toHaveClass })
 
 describe('ConnectPanel', () => {
   describe('Affect Survey', () => {
+    it('shows up', () => {
+      // Render with recoil state
+      const { getByRole } = render(
+        <AffectSurveyList />
+      )
+
+      // Access the document and find the drawer
+      const affectSurvey = getByRole('region', { name: 'Affect Survey' })
+      expect(affectSurvey).toBeInTheDocument()
+      expect(affectSurvey).toBeVisible()
+    })
     it.todo('shows all the affects available')
     it.todo('shows affects approved of by team')
     it.todo('shows up when mood selector button is pressed')

@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { useRecoilValue, useRecoilState } from 'recoil'
+import * as STATE from '../data/globalState.js'
+
 import { Typography } from '@material-ui/core'
 import { Visibility } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
@@ -22,8 +25,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function AffectIcon (props) {
-  const { affectObj, privacy, ...restProps } = props
+  const { ...restProps } = props
   const { iconRoot, privacyIcon } = useStyles()
+
+  // Values and mutator functions for global state (GLOBAL STATE)
+  const privacy = useRecoilValue(STATE.PrivacyPrefsState)
+  const affectObj = useRecoilValue(STATE.UserAffectIDState)
 
   const tooltip = `${affectObj?.name ? affectObj.name : 'none'}\n${privacy ? '(hidden)' : '(visible)'}`
 
@@ -35,9 +42,4 @@ export default function AffectIcon (props) {
       </Typography>
     </CustomTooltip>
   )
-}
-
-AffectIcon.propTypes = {
-  affectObj: PropTypes.shape(AffectObjectShape).isRequired,
-  privacy: PropTypes.bool.isRequired
 }
