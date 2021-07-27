@@ -11,7 +11,7 @@ import { create as JSSCreate } from 'jss'
 import { StylesProvider, jssPreset } from '@material-ui/core/styles'
 
 // Import state to set
-import { LoggedInUserState, UserStatusState, AffectListState } from '../src/in-content/unifiedComponents/data/globalState.js'
+import { LoggedInUserState, UserStatusState, AffectListState, AffectHistoryListState, PrivacyPrefsState, UserAffectIDState, SelectedAffectSurveyState } from '../src/in-content/unifiedComponents/data/globalState.js'
 
 /** Function to set initial recoil state for testing */
 function initializeState (snapshot) {
@@ -22,6 +22,18 @@ function initializeState (snapshot) {
   const rawAffectList = fs.readFileSync('./tests/mockData/Affects.json', { encoding: 'utf8' })
   const AffectList = JSON.parse(rawAffectList)
   snapshot.set(AffectListState, AffectList)
+
+  const MoodList =
+  ['6008928508baff43187a74f9',
+    '6008928508baff43187a7502',
+    '6008928508baff43187a7509']
+  snapshot.set(AffectHistoryListState, MoodList)
+
+  snapshot.set(PrivacyPrefsState)
+
+  snapshot.set(UserAffectIDState)
+
+  snapshot.set(SelectedAffectSurveyState)
 
   snapshot.set(LoggedInUserState, {
     id: UserData._id,

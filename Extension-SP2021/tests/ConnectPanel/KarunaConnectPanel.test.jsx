@@ -42,8 +42,8 @@ describe('Karuna Connect Panel', () => {
 
     // Check that status is hidden and main panel is expanded
     await waitFor(() => (
-      expect(statusDrawer).toHaveClass('makeStyles-panelHidden-31') &&
-        expect(mainDrawer).toHaveClass('makeStyles-panelExpanded-40')
+      expect(statusDrawer).toHaveClass('makeStyles-panelHidden-30') &&
+        expect(mainDrawer).toHaveClass('makeStyles-panelExpanded-39')
     ))
   })
 
@@ -63,8 +63,8 @@ describe('Karuna Connect Panel', () => {
     expect(mainDrawer).toBeInTheDocument()
 
     // Check that status is hidden and main panel is expanded
-    await waitFor(() => expect(statusDrawer).toHaveClass('makeStyles-panelHidden-59'))
-    await waitFor(() => expect(mainDrawer).toHaveClass('makeStyles-panelExpanded-68'))
+    await waitFor(() => expect(statusDrawer).toHaveClass('makeStyles-panelHidden-57'))
+    await waitFor(() => expect(mainDrawer).toHaveClass('makeStyles-panelExpanded-66'))
 
     // Click main drawer back arrow
     const closePanelButton = await findByRole('button', { name: 'Close Panel' })
@@ -73,8 +73,8 @@ describe('Karuna Connect Panel', () => {
 
     // Check that status is visible but retracted and main panel is hidden
     await waitFor(() => (
-      expect(statusDrawer).toHaveClass('makeStyles-panelRetracted-57') &&
-        expect(mainDrawer).toHaveClass('makeStyles-panelHidden-69')
+      expect(statusDrawer).toHaveClass('makeStyles-panelRetracted-55') &&
+        expect(mainDrawer).toHaveClass('makeStyles-panelHidden-67')
     ))
   })
 })
