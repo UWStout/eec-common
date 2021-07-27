@@ -12,10 +12,12 @@ import CustomTooltip from './CustomTooltip.jsx'
 
 const useStyles = makeStyles((theme) => ({
   userAvatarStyle: {
+    // AIW A large Avatar size for the user
     width: theme.spacing(7),
     height: theme.spacing(7)
   },
 
+  // AIW A smaller Avatar size for the team status list
   teamAvatarStyle: {
     width: theme.spacing(5),
     height: theme.spacing(5)
@@ -42,13 +44,13 @@ export default function StatusListItem (props) {
       role={'region'}
       aria-label={isUserStatus ? 'Current Status of User' : 'Current Status of Team'}
       container
-      wrap='nowrap'
-      spacing={1}
+      direction="column"
+      wrap='wrap'
     >
-      <Grid item className={userAvatarStyle}>
+      <Grid item className={userAvatarStyle} xs={12}>
         <Avatar>U</Avatar>
       </Grid>
-      <Grid container item direction="column">
+      <Grid container item>
         <Grid item>
           <Typography noWrap variant='body1'>{userEmail === '' ? 'My Statuses' : userEmail}</Typography>
         </Grid>

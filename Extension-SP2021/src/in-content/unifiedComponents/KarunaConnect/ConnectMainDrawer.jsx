@@ -48,11 +48,11 @@ const Paper = withStyles((theme) => ({
     top: '20vh',
     width: theme.spacing(36),
     // AIW Placeholder styling for testing - I've not calculated this dimension yet.
-    height: theme.spacing(76),
+    maxHeight: theme.spacing(78),
 
     paddingTop: theme.spacing(1),
     paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(1),
+    paddingBottom: theme.spacing(4),
     paddingLeft: theme.spacing(1),
 
     // Animate changes in the 'right' property
@@ -141,7 +141,7 @@ export default function ConnectMainDrawer (props) {
       onMouseEnter={() => { setMouseIsOver(true); cancelHide(); cancelRetract() }}
       onMouseLeave={() => { setMouseIsOver(false); hide(false); retract(false) }}
     >
-      <Grid container spacing={2}>
+      <Grid container spacing={2} alignContent='flex-start'>
         <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
         <ConnectMainContent hidden={hidden} retracted={!mouseIsOver} />
       </Grid>
@@ -163,7 +163,7 @@ ConnectMainDrawer.propTypes = {
 ConnectMainDrawer.defaultProps = {
   hidden: false,
   onHide: null,
-  // AIW Testing styles
   // waitToHide: 3000
+  // AIW Testing styles
   waitToHide: 100000
 }

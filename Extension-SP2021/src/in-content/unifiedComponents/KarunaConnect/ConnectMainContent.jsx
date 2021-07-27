@@ -21,81 +21,42 @@ import ListNVCElements from '../NVCInfoSections/ListNVCElements.jsx'
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
 
-const useStyles = makeStyles((theme) => ({
-  // AIW Testing styling
-  // root: {
-  //   width: '100%'
-  // },
-  // heading: {
-  //   fontSize: theme.typography.pxToRem(15)
-  // }
-}))
-
 const Accordion = withStyles((theme) => ({
   root: {
-    width: theme.spacing(36),
+    width: '100%',
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
     boxShadow: 'none',
     borderTop: 'none',
     '&:before': {
       display: 'none'
+    },
+    '&:not(:last-child)': {
+      borderBottom: 0
     }
-    // AIW Testing styling
-    // border: '1px solid rgba(0, 0, 0, .125)',
-    // boxShadow: 'none',
-    // paddingRight: theme.spacing(2),
-    // width: `calc(100% - ${theme.spacing(2)}px)`,
-    // '&:not(:last-child)': {
-    //   borderBottom: 0
-    // },
-    // '&:before': {
-    //   display: 'none'
-    // },
-    // '&$expanded': {
-    //   margin: 'auto'
-    // }
   },
   expanded: {}
 }))(MuiAccordion)
 
 const AccordionSummary = withStyles((theme) => ({
   root: {
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
+    paddingLeft: 0,
+    paddingRight: 0,
     borderBottom: '1px solid rgba(0, 0, 0, .125)'
-    // AIW Testing styling
-    // backgroundColor: 'rgba(0, 0, 0, .03)',
-    // borderBottom: '1px solid rgba(0, 0, 0, .125)',
-    // marginBottom: -1,
-    // paddingLeft: theme.spacing(2),
-    // paddingRight: theme.spacing(2),
-    // width: `calc(100% - ${theme.spacing(2)}px)`,
-    // minHeight: 56,
-    // '&$expanded': {
-    //   minHeight: 56
-    // }
-  },
-  content: {
-    // AIW Testing styling
-    // '&$expanded': {
-    //   margin: '12px 0'
-    // }
   },
   expanded: {}
 }))(MuiAccordionSummary)
 
 const AccordionDetails = withStyles((theme) => ({
   root: {
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
     borderBottom: '1px solid rgba(0, 0, 0, .125)'
-    // AIW Testing styling
-    // padding: theme.spacing(2)
   }
 }))(MuiAccordionDetails)
 
 export default function ConnectMainContent (props) {
   const { hidden, retracted } = props
-  const { rootAccordionStyle, heading } = useStyles()
 
   // Subscribe to the global emojiList state and current status (GLOBAL STATE)
   const emojiList = useRecoilValue(AffectListState)
@@ -125,12 +86,9 @@ export default function ConnectMainContent (props) {
   }, [currentStatus?.currentAffectID, emojiList, selectedAffectID])
 
   return (
-    // AIW Testing styling
-    // <div className={root}>
     <Grid container item xs={12} role={'region'} aria-label={'Main Content'}>
-
       {/* user status list item */}
-      <Accordion square className={rootAccordionStyle} expanded={expanded === 'userStatus'} aria-controls={'karunaStatusDrawer'} onChange={handleChange('userStatus')}>
+      <Accordion square expanded={expanded === 'userStatus'} aria-controls={'karunaStatusDrawer'} onChange={handleChange('userStatus')}>
         <AccordionSummary
           aria-label={'Current User Status'}
           expandIcon={<ExpandMore />}
@@ -179,7 +137,7 @@ export default function ConnectMainContent (props) {
           aria-controls="team-status-content"
           id="team-status-header"
         >
-          <Typography className={heading}>Team Status</Typography>
+          <Typography>Team Status</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <StatusListItem />
@@ -193,7 +151,7 @@ export default function ConnectMainContent (props) {
           aria-controls="team-culture-content"
           id="team-culture-header"
         >
-          <Typography className={heading}>Team Culture</Typography>
+          <Typography>Team Culture</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography variant={'body2'}>WIP</Typography>
@@ -208,15 +166,13 @@ export default function ConnectMainContent (props) {
           aria-controls="nvc-info-content"
           id="nvc-info-header"
         >
-          <Typography className={heading}>NVC</Typography>
+          <Typography>NVC</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <ListNVCElements />
         </AccordionDetails>
       </Accordion>
     </Grid>
-    // AIW Testing styling
-    // </div>
   )
 }
 
