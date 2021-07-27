@@ -130,7 +130,7 @@ export default function ConnectMainContent (props) {
     <Grid container item xs={12} role={'region'} aria-label={'Main Content'}>
 
       {/* user status list item */}
-      <Accordion square className={rootAccordionStyle} expanded={expanded === 'userStatus'} onChange={handleChange('userStatus')}>
+      <Accordion square className={rootAccordionStyle} expanded={expanded === 'userStatus'} aria-controls={'karunaStatusDrawer'} onChange={handleChange('userStatus')}>
         <AccordionSummary
           aria-label={'Current User Status'}
           expandIcon={<ExpandMore />}

@@ -3,8 +3,8 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-import { useSetRecoilState } from 'recoil'
-import { KarunaMessageState, LoggedInUserState } from './data/globalState.js'
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { KarunaMessageState, LoggedInUserState, TextBoxListState } from './data/globalState.js'
 
 import { CssBaseline } from '@material-ui/core'
 
@@ -45,6 +45,12 @@ export default function UnifiedApp (props) {
       setKarunaMessageState(newMessage)
     })
   }, [emitter, setKarunaMessageState])
+
+  // Track logged in state globally
+  const setTextBoxList = useSetRecoilState(TextBoxListState)
+  useEffect(() => {
+    emitter.on('updateTextBoxes', setTextBoxList)
+  }, [emitter, setTextBoxList])
 
   return (
     <React.Fragment>

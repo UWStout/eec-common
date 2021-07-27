@@ -16,7 +16,7 @@
   "private": true,
   "nodemonConfig": {
     "env": {
-      "DEBUG": "karuna:*",
+      "DEBUG": "karuna:server:socket,karuna:server:watson",
       "DEBUG_HIDE_DATE": "true",
       "DEBUG_COLORS": "true"
     }

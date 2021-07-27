@@ -1,34 +1,32 @@
 /* global EventEmitter3 */
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+
+import { useRecoilValue } from 'recoil'
+import { TextBoxMapState } from './data/globalState.js'
+
 import MessageTextWrapper from './KarunaTextBoxManager/MessageTextWrapper.jsx'
 
+// import { makeLogger } from '../../util/Logger.js'
+// const LOG = makeLogger('MESSAGE Manager', 'yellow', 'black')
+
 export default function KarunaTextBoxManager (props) {
-  // De-construct the props
   const { emitter } = props
+  const textBoxMap = useRecoilValue(TextBoxMapState)
 
-  // Track the list of text boxes in component state
-  const [textBoxList, setTextBoxList] = useState([])
-  useEffect(() => {
-    emitter.on('updateTextBoxes', (incomingTextBoxes) => {
-      setTextBoxList([...incomingTextBoxes])
-    })
-  }, [emitter, setTextBoxList])
+  const wrappers = []
+  textBoxMap.forEach((textBox, textBoxId) => {
+    wrappers.push(<MessageTextWrapper key={textBoxId} textBox={textBox} emitter={emitter} />)
+  })
 
-  return (
-    <React.Fragment>
-      {textBoxList.map((textBox, i) => (
-        <MessageTextWrapper key={i} textBox={textBox} emitter={emitter} />
-      ))}
-    </React.Fragment>
-  )
+  return (wrappers)
 }
 
-KarunaTextBoxManager.propTypes = {
+MessageTextWrapper.propTypes = {
   emitter: PropTypes.instanceOf(EventEmitter3)
 }
 
-KarunaTextBoxManager.defaultProps = {
+MessageTextWrapper.defaultProps = {
   emitter: null
 }

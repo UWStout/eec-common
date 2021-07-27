@@ -105,6 +105,8 @@ export default function ConnectStatusDrawer (props) {
         direction='column'
         justify='center'
         spacing={2}
+        role={'status'}
+        id={'karunaStatusDrawer'}
       >
         <Grid
           item

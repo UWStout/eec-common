@@ -104,12 +104,15 @@ export default function MessageTextWrapper (props) {
 
   // Respond to change in textBox param
   useEffect(() => {
+    LOG('Installing text-box listeners')
+
     // Setup event listeners for the text box
     const newJQElem = jQuery(textBox)
-    newJQElem.on('focusin', () => { updateUnderlinedWords(newJQElem) })
-    newJQElem.on('focusout', () => { updateUnderlinedWords(newJQElem) })
+    newJQElem.on('focusin', () => { LOG('FOCUS'); updateUnderlinedWords(newJQElem) })
+    newJQElem.on('focusout', () => { LOG('BLUR'); updateUnderlinedWords(newJQElem) })
 
     newJQElem.on('input', debounce((event) => {
+      LOG('INPUT')
       updateUnderlinedWords(newJQElem)
 
       // Send a message text update to the root element, where it will be bounced
@@ -123,6 +126,14 @@ export default function MessageTextWrapper (props) {
 
     // Store jQuery element of textbox in state
     setTextBoxJQElem(newJQElem)
+
+    // Create cleanup function
+    return () => {
+      LOG('Removing text-box listeners')
+      newJQElem.off('focusin')
+      newJQElem.off('focusout')
+      newJQElem.off('input')
+    }
   }, [emitter, textBox, updateUnderlinedWords])
 
   // Build the highlighted words elements

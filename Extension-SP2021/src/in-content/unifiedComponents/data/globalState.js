@@ -62,6 +62,86 @@ export const ValidUserState = selector({
   }
 })
 
+// Assigning IDs to text boxes
+let idCounter = 0
+function generateTextBoxID () {
+  idCounter++
+  return idCounter
+}
+
+/** Text boxes we are monitoring */
+export const TextBoxMapState = atom({
+  key: 'TextBoxMapState',
+  default: new Map()
+})
+
+export const TextBoxListState = selector({
+  key: 'TextBoxListState',
+  get: ({ get }) => {
+    const textBoxMap = get(TextBoxMapState)
+    return Array.from(textBoxMap.values())
+  },
+  set: ({ get, set }, newTextBoxList) => {
+    // Compare with old map of text boxes
+    const textBoxMap = get(TextBoxMapState)
+
+    // Examine the text boxes
+    const newTextBoxMap = new Map()
+    let textBoxesChanged = false
+    newTextBoxList.forEach((textBox) => {
+      // Ensure each textbox has a unique ID
+      if (textBox.id === undefined || textBox.id === '') {
+        textBox.id = `karunaTextBox-${generateTextBoxID()}`
+        LOG(`New Text Box: ${textBox.id}`)
+      }
+
+      // Check if ID is new
+      if (!textBoxMap.has(textBox.id)) {
+        LOG('Foreign Text Box: ', textBox.id)
+        textBoxesChanged = true
+      }
+      newTextBoxMap.set(textBox.id, textBox)
+    })
+
+    // If something is different, update the atom
+    if (textBoxesChanged || newTextBoxMap.size !== textBoxMap.size) {
+      LOG('Text Boxes Changed', newTextBoxMap.keys())
+      LOG(`>   ${newTextBoxMap.size} !== ${textBoxMap.size}`)
+      LOG(`Lists are ${textBoxMap === newTextBoxMap ? 'equal' : 'NOT equal'}`)
+      set(TextBoxMapState, newTextBoxMap)
+    }
+  }
+})
+
+/*
+(incomingTextBoxes) => {
+  // Examine the text boxes
+  const newTextBoxList = new Map()
+  let textBoxesChanged = false
+  incomingTextBoxes.forEach((textBox) => {
+    // Ensure each textbox has a unique ID
+    if (textBox.id === undefined || textBox.id === '') {
+      textBox.id = `karunaTextBox-${generateID()}`
+      LOG(`New Text Box: ${textBox.id}`)
+    }
+
+    // Check if ID is new
+    if (!textBoxList.has(textBox.id)) {
+      LOG('Foreign Text Box: ', textBox.id)
+      textBoxesChanged = true
+    }
+    newTextBoxList.set(textBox.id, textBox)
+  })
+
+  if (textBoxesChanged || newTextBoxList.size !== textBoxList.size) {
+    LOG('Text Boxes Changed', newTextBoxList.keys())
+    LOG(`>   ${newTextBoxList.size} !== ${textBoxList.size}`)
+    LOG(`Lists are ${textBoxList === newTextBoxList ? 'equal' : 'NOT equal'}`)
+    setTextBoxList(newTextBoxList)
+  }
+})
+*/
+
 /** Latest message from Karuna server */
 export const KarunaMessageState = atom({
   key: 'KarunaMessageState',
