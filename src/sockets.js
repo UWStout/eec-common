@@ -24,7 +24,7 @@ dotenv.config()
 
 // Option to enable the Watson analysis engine
 // TODO: Consider disabling wizard when this is true
-const WATSON_ENABLED = process.env.WATSON_ENABLED || false
+const WATSON_ENABLED = process.env?.WATSON_ENABLED === 'true'
 
 // Useful global info
 const clientSessions = {}
@@ -273,7 +273,9 @@ function socketMessageUpdate (message) {
       debug(err)
     })
 
+  debug(`[WS:${this.id}] draft message sent to watson from ${message.context}${WATSON_ENABLED ? '' : ' (DISABLED)'}`)
   if (WATSON_ENABLED) {
+    debug('Inside line 278')
     // Hook to intelligence core, expect a promise in return
     Analysis.analyzeMessage(message, userID, message.context, false)
       .then((result) => {
@@ -330,8 +332,9 @@ async function socketMessageSend (message) {
     })
 
   // Hook to intelligence core, expect a promise in return
+  debug(`[WS:${this.id}] message sent to watson from ${message.context}${WATSON_ENABLED ? '' : ' (DISABLED)'}`)
   if (WATSON_ENABLED) {
-    debug(`[WS:${this.id}] message sent to watson from ${message.context}`)
+    debug('Inside line 337')
     Analysis.analyzeMessage(message, userID, message.context, true)
       .then((result) => {
         // TODO: Consider something more sophisticated here
