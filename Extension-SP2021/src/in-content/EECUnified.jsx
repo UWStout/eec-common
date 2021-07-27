@@ -101,6 +101,12 @@ class EECUnified extends HTMLElement {
     portalParent.append(this.portalContainer)
     this.shadowRoot.appendChild(portalParent[0])
     const theme = createMuiTheme({
+      typography: {
+        fontFamily: [
+          '"Roboto"', '"Helvetica"', '"Arial"', 'sans-serif'
+        ].join(','),
+        htmlFontSize: (contextName === 'msTeams' ? 10 : 16)
+      },
       props: {
         MuiPopover: {
           container: () => { return this.portalContainer[0] }
