@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 import { KarunaMessageState, LoggedInUserState, TextBoxListState } from './data/globalState.js'
 
 import { CssBaseline } from '@material-ui/core'
