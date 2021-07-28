@@ -126,7 +126,7 @@ export default function ConnectStatusDrawer (props) {
           xs={6}
         >
           <Grid item xs={12}>
-            <AffectIcon placement='left' />
+            <AffectIcon placement='left' affectObj={currentAffect} privacy={currentStatus.currentAffectPrivacy} />
           </Grid>
           <Grid item xs={12}>
             <CustomTooltip placement='left' title={currentStatus ? (currentStatus.collaboration ? 'teamwork' : 'solo') : 'unknown'}>
