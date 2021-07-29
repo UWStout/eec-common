@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function AffectIcon (props) {
+  // affect object and privacy are intentionally being passed as props and SHOULD NOT be made to use globals instead. Doing so breaks things.
   const { affectObj, privacy, ...restProps } = props
   const { iconRoot, privacyIcon } = useStyles()
 
@@ -38,6 +39,10 @@ export default function AffectIcon (props) {
 }
 
 AffectIcon.propTypes = {
-  affectObj: PropTypes.shape(AffectObjectShape).isRequired,
+  affectObj: PropTypes.shape(AffectObjectShape),
   privacy: PropTypes.bool.isRequired
+}
+
+AffectIcon.defaultProps = {
+  affectObj: undefined
 }
