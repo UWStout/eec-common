@@ -35,7 +35,8 @@ export default function PanelTitle (props) {
             {arrow === 'left' && (
               // AIW MUI documentation says justify is deprecated and to use justifyContent, however this doesn't work for our project.
               // https://material-ui.com/api/grid/
-              <Grid item container alignItems='center' justify='flex-end' xs={2}>
+              // SFB: Looks like it's cause we weren't on the latest MUI 4 version. Fixed with MUI update
+              <Grid item container alignItems='center' justifyContent='flex-end' xs={2}>
                 <Grid item>
                   <IconButton aria-label='Close Panel' size='small' onClick={closeCallback}>
                     <KeyboardArrowLeft />
@@ -51,7 +52,7 @@ export default function PanelTitle (props) {
             {arrow === 'right' && (
               // AIW MUI documentation says justify is deprecated and to use justifyContent, however this doesn't work for our project.
               // https://material-ui.com/api/grid/
-              <Grid item container alignItems='center' justify='flex-end' xs={2} onClick={closeCallback}>
+              <Grid item container alignItems='center' justifyContent='flex-end' xs={2} onClick={closeCallback}>
                 <Grid item>
                   <IconButton aria-label='Close Panel' size='small'>
                     <KeyboardArrowRight />

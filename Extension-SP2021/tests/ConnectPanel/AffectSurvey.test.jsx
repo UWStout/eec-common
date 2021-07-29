@@ -7,11 +7,11 @@ import React from 'react'
 import { render } from '../testRecoilUtils.jsx'
 
 import '@testing-library/jest-dom/extend-expect'
-import { toBeVisible, toHaveClass } from '@testing-library/jest-dom/matchers'
+import { toBeVisible } from '@testing-library/jest-dom/matchers'
 
 import AffectSurveyList from '../../src/in-content/unifiedComponents/AffectSurvey/AffectSurveyList.jsx'
 
-expect.extend({ toBeVisible, toHaveClass })
+expect.extend({ toBeVisible })
 
 describe('ConnectPanel', () => {
   describe('Affect Survey', () => {

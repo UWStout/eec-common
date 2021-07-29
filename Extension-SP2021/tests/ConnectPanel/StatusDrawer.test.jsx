@@ -7,11 +7,11 @@ import React from 'react'
 import { render, fireEvent, waitFor } from '../testRecoilUtils.jsx'
 
 import '@testing-library/jest-dom/extend-expect'
-import { toHaveClass } from '@testing-library/jest-dom/matchers'
+import { toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 import ConnectStatusDrawer from '../../src/in-content/unifiedComponents/KarunaConnect/ConnectStatusDrawer.jsx'
 
-expect.extend({ toHaveClass })
+expect.extend({ toHaveAttribute })
 
 describe('Karuna Connect Panel', () => {
   describe('Connect Status Drawer', () => {
@@ -72,7 +72,7 @@ describe('Karuna Connect Panel', () => {
       fireEvent.mouseOver(statusDrawer)
 
       // Look for expanded class
-      await waitFor(() => expect(statusDrawer).toHaveClass('makeStyles-panelExpanded-42'))
+      await waitFor(() => expect(statusDrawer).toHaveAttribute('class', expect.stringContaining('makeStyles-panelExpanded')))
     })
 
     it('hides when mouse moves away', async () => {
@@ -83,11 +83,11 @@ describe('Karuna Connect Panel', () => {
 
       // Expand drawer first
       fireEvent.mouseOver(statusDrawer)
-      await waitFor(() => expect(statusDrawer).toHaveClass('makeStyles-panelExpanded-52'))
+      await waitFor(() => expect(statusDrawer).toHaveAttribute('class', expect.stringContaining('makeStyles-panelExpanded')))
 
       // Retract drawer
       fireEvent.mouseLeave(statusDrawer)
-      await waitFor(() => expect(statusDrawer).toHaveClass('makeStyles-panelRetracted-51'))
+      await waitFor(() => expect(statusDrawer).toHaveAttribute('class', expect.stringContaining('makeStyles-panelRetracted')))
     })
   })
 })

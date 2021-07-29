@@ -1,18 +1,20 @@
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { UserStatusState, AffectListState } from '../data/globalState.js'
 import { useRecoilValue } from 'recoil'
 
 import MuiPaper from '@material-ui/core/Paper'
+import Skeleton from '@material-ui/lab/Skeleton'
 
 import { Grid, Typography } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
-import AffectIcon from './AffectIcon.jsx'
 import CustomTooltip from './CustomTooltip.jsx'
-
 import OpenArrow from './PanelOpenArrow.jsx'
+
+// Lazy load affect icon
+const AffectIcon = React.lazy(() => import('./AffectIcon.jsx'))
 
 const useStyles = makeStyles((theme) => ({
   // Style when the panel is fully retracted
@@ -103,7 +105,7 @@ export default function ConnectStatusDrawer (props) {
         container
         className={gridContRoot}
         direction='column'
-        justify='center'
+        justifyContent='center'
         spacing={2}
         role={'status'}
         id={'karunaStatusDrawer'}
@@ -112,7 +114,7 @@ export default function ConnectStatusDrawer (props) {
           item
           container
           xs={6}
-          justify='center'
+          justifyContent='center'
         >
           <Grid item xs={12}>
             <OpenArrow showDouble={mouseIsOver} flipped />
@@ -126,7 +128,13 @@ export default function ConnectStatusDrawer (props) {
           xs={6}
         >
           <Grid item xs={12}>
-            <AffectIcon placement='left' affectObj={currentAffect} privacy={currentStatus.currentAffectPrivacy} />
+            <Suspense fallback={
+              <Skeleton variant="circle"><Typography variant="body1">?</Typography></Skeleton>
+            }
+            >
+              {currentAffect &&
+                <AffectIcon placement='left' affectObj={currentAffect} privacy={currentStatus.currentAffectPrivacy} />}
+            </Suspense>
           </Grid>
           <Grid item xs={12}>
             <CustomTooltip placement='left' title={currentStatus ? (currentStatus.collaboration ? 'teamwork' : 'solo') : 'unknown'}>

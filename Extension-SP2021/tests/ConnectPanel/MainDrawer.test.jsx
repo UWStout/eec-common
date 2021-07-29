@@ -7,12 +7,12 @@ import React from 'react'
 import { render, presentVisibleAndContained } from '../testRecoilUtils.jsx'
 
 import '@testing-library/jest-dom/extend-expect'
-import { toBeVisible, toContainElement, toHaveClass, toHaveAttribute } from '@testing-library/jest-dom/matchers'
+import { toBeVisible, toContainElement, toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 import ConnectMainDrawer from '../../src/in-content/unifiedComponents/KarunaConnect/ConnectMainDrawer.jsx'
 import { fireEvent, waitFor } from '@testing-library/react'
 
-expect.extend({ toBeVisible, toContainElement, toHaveAttribute, toHaveClass })
+expect.extend({ toBeVisible, toContainElement, toHaveAttribute })
 
 // List of heading names
 const HEADINGS = {
