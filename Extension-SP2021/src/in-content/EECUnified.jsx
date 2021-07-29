@@ -7,7 +7,7 @@ import { RecoilRoot } from 'recoil'
 
 // Material-UI Setup
 import { create as JSSCreate } from 'jss'
-import { MuiThemeProvider, createMuiTheme, StylesProvider, jssPreset } from '@material-ui/core/styles'
+import { MuiThemeProvider, createTheme, StylesProvider, jssPreset } from '@material-ui/core/styles'
 
 // Custom React Component
 import UnifiedApp from './unifiedComponents/UnifiedApp.jsx'
@@ -38,9 +38,8 @@ class EECUnified extends HTMLElement {
 
     // Initialize the focus manager
     this.lastAction = ''
-    this.setupFocusManager()
 
-    // Record when we lose focus
+    // Record when we lose focus (and why)
     this.addEventListener('blur', (e) => {
       LOG('blur event')
       if (this.lastAction === 'type') {
@@ -53,7 +52,7 @@ class EECUnified extends HTMLElement {
     })
   }
 
-  setupFocusManager () {
+  enableFocusManager () {
     // if not in input box, prevent typing?
     jQuery(document).on('keydown mousedown', (e) => {
       if (e.type === 'mousedown') {
@@ -71,6 +70,10 @@ class EECUnified extends HTMLElement {
         }
       }
     })
+  }
+
+  disableFocusManager () {
+    jQuery(document).off('keydown mousedown')
   }
 
   // MUST be called manually now (with an event emitter)
@@ -100,7 +103,7 @@ class EECUnified extends HTMLElement {
     this.portalContainer = jQuery('<div>').attr('id', 'muiPortal')
     portalParent.append(this.portalContainer)
     this.shadowRoot.appendChild(portalParent[0])
-    const theme = createMuiTheme({
+    const theme = createTheme({
       typography: {
         fontFamily: [
           '"Roboto"', '"Helvetica"', '"Arial"', 'sans-serif'
@@ -119,19 +122,7 @@ class EECUnified extends HTMLElement {
 
     // Setup event emitter
     this.statusEmitter = emitter
-
-    // Register to send text update messages back to the background context
-    this.statusEmitter.on('textUpdate', (messageObj) => {
-      LOG('Responding to text update event', messageObj.content)
-      if (this.backgroundPort) {
-        this.backgroundPort.postMessage({
-          type: 'textUpdate',
-          context: this.contextName,
-          content: messageObj.content,
-          mentions: messageObj.mentions
-        })
-      }
-    })
+    this.registerListeners()
 
     // Give React control of the root element for the unified panel
     LOG('Mounting react unified component ...')
@@ -157,6 +148,32 @@ class EECUnified extends HTMLElement {
 
     // Setup to update the styling after deferring some time
     setTimeout(() => { this.setContextName.bind(this)(contextName) }, 200)
+  }
+
+  registerListeners () {
+    // Register to enable/disable focus manager
+    this.statusEmitter.on('captureFocus', () => {
+      LOG('Capture focus received')
+      this.enableFocusManager()
+    })
+
+    this.statusEmitter.on('releaseFocus', () => {
+      LOG('Release focus received')
+      this.disableFocusManager()
+    })
+
+    // Register to send text update messages back to the background context
+    this.statusEmitter.on('textUpdate', (messageObj) => {
+      LOG('Responding to text update event', messageObj.content)
+      if (this.backgroundPort) {
+        this.backgroundPort.postMessage({
+          type: 'textUpdate',
+          context: this.contextName,
+          content: messageObj.content,
+          mentions: messageObj.mentions
+        })
+      }
+    })
   }
 
   // Update background communication port

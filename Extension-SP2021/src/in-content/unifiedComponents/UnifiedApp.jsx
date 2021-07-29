@@ -55,8 +55,8 @@ export default function UnifiedApp (props) {
   return (
     <React.Fragment>
       <CssBaseline />
-      <KarunaConnect context={context} />
-      <KarunaBubble context={context} />
+      <KarunaConnect context={context} emitter={emitter} />
+      <KarunaBubble context={context} emitter={emitter} />
       <KarunaTextBoxManager context={context} emitter={emitter} />
     </React.Fragment>
   )

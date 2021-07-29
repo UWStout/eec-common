@@ -12,17 +12,13 @@ import ListNVCElements from '../../NVCInfoSections/ListNVCElements.jsx'
 
 export default function FeedbackDialogContent (props) {
   // Deconstruct the props
-  const { onHide, cancelHide } = props
+  const { onHide, cancelHide, ...restProps } = props
 
   // Displayed state
   const [displayedFeedback, setDisplayedFeedback] = useState('observations')
+
   // Register to global state changes
   const karunaMessage = useRecoilValue(KarunaMessageState)
-  // useEffect(() => {
-  //   if (karunaMessage?.content) {
-  //     setDisplayedFeedback('karunaMessage')
-  //   }
-  // }, [karunaMessage, setDisplayedFeedback])
 
   const observations = []
   karunaMessage.entities?.map((entity) => {
@@ -41,7 +37,7 @@ export default function FeedbackDialogContent (props) {
           <ListNVCElements observations={observations} fromBubble />}
 
         {displayedFeedback === 'affectSurvey' &&
-          <FeedbackDialogAffectSurvey />}
+          <FeedbackDialogAffectSurvey {...restProps} />}
 
         {displayedFeedback === 'karunaMessage' &&
           <FeedbackDialogMessage karunaMessage={karunaMessage} />}

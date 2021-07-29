@@ -71,7 +71,7 @@ const Paper = withStyles((theme) => ({
  * @returns {React.Element} The element to render for this component
  */
 export default function ConnectMainDrawer (props) {
-  const { hidden, onHide, waitToHide } = props
+  const { hidden, onHide, waitToHide, ...restProps } = props
 
   // Deconstruct props and style class names
   const {
@@ -143,7 +143,7 @@ export default function ConnectMainDrawer (props) {
     >
       <Grid container spacing={2} alignContent='flex-start'>
         <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
-        <ConnectMainContent hidden={hidden} retracted={!mouseIsOver} />
+        <ConnectMainContent hidden={hidden} retracted={!mouseIsOver} {...restProps} />
       </Grid>
     </Paper>
   )

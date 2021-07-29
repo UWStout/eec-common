@@ -1,4 +1,5 @@
-import React from 'react'
+/* global EventEmitter3 */
+import React, { Suspense } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
@@ -6,9 +7,8 @@ import { ConnectVisibilityState, BubbleVisibilityState, ValidUserState } from '.
 
 import { Container } from '@material-ui/core'
 
-import { makeStyles } from '@material-ui/core/styles'
-
 import ConnectStatusDrawer from './KarunaConnect/ConnectStatusDrawer.jsx'
+import StatusDrawerSkeleton from './KarunaConnect/StatusDrawerSkeleton.jsx'
 import ConnectMainDrawer from './KarunaConnect/ConnectMainDrawer.jsx'
 
 // Colorful logger (enable if logging is needed)
@@ -18,7 +18,7 @@ import ConnectMainDrawer from './KarunaConnect/ConnectMainDrawer.jsx'
 // The sidebar Karuna Connect object
 export default function KarunaConnect (props) {
   // Deconstruct props
-  const { context } = props
+  const { emitter } = props
 
   // State of user login (GLOBAL STATE)
   const userLoggedIn = useRecoilValue(ValidUserState)
@@ -38,20 +38,23 @@ export default function KarunaConnect (props) {
   // Main render
   return (
     <Container disableGutters aria-label={'Karuna Connect Panel'}>
-      {userLoggedIn &&
-        <ConnectStatusDrawer
-          hidden={!userLoggedIn || mainPanelOpen}
-          onHide={openMainPanel}
-        />}
-      {userLoggedIn &&
-        <ConnectMainDrawer
-          hidden={!mainPanelOpen}
-          onHide={() => { setMainPanelOpen(false) }}
-        />}
+      <Suspense fallback={<StatusDrawerSkeleton />}>
+        {userLoggedIn &&
+          <ConnectStatusDrawer
+            hidden={!userLoggedIn || mainPanelOpen}
+            onHide={openMainPanel}
+          />}
+        {userLoggedIn &&
+          <ConnectMainDrawer
+            hidden={!mainPanelOpen}
+            onHide={() => { setMainPanelOpen(false) }}
+            emitter={emitter}
+          />}
+      </Suspense>
     </Container>
   )
 }
 
 KarunaConnect.propTypes = {
-  context: PropTypes.string.isRequired
+  emitter: PropTypes.instanceOf(EventEmitter3).isRequired
 }

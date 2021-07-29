@@ -56,7 +56,7 @@ const AccordionDetails = withStyles((theme) => ({
 }))(MuiAccordionDetails)
 
 export default function ConnectMainContent (props) {
-  const { hidden, retracted } = props
+  const { hidden, retracted, ...restProps } = props
 
   // Subscribe to the global emojiList state and current status (GLOBAL STATE)
   const emojiList = useRecoilValue(AffectListState)
@@ -111,7 +111,7 @@ export default function ConnectMainContent (props) {
                 </Link>
               </Typography>
               <Collapse in={!hidden && affectSurveyOpen} timeout="auto" unmountOnExit>
-                <AffectSurveyList noInteraction={hidden || retracted} onDismissSurvey={() => { setAffectSurveyOpen(false) }} />
+                <AffectSurveyList noInteraction={hidden || retracted} onDismissSurvey={() => { setAffectSurveyOpen(false) }} {...restProps} />
               </Collapse>
             </Grid>
             <Grid item xs={12}>
