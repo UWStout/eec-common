@@ -1,6 +1,4 @@
-/* global EventEmitter3 */
 import React, { Suspense } from 'react'
-import PropTypes from 'prop-types'
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { ConnectVisibilityState, BubbleVisibilityState, ValidUserState } from './data/globalState.js'
@@ -17,9 +15,6 @@ import ConnectMainDrawer from './KarunaConnect/ConnectMainDrawer.jsx'
 
 // The sidebar Karuna Connect object
 export default function KarunaConnect (props) {
-  // Deconstruct props
-  const { emitter } = props
-
   // State of user login (GLOBAL STATE)
   const userLoggedIn = useRecoilValue(ValidUserState)
 
@@ -48,13 +43,8 @@ export default function KarunaConnect (props) {
           <ConnectMainDrawer
             hidden={!mainPanelOpen}
             onHide={() => { setMainPanelOpen(false) }}
-            emitter={emitter}
           />}
       </Suspense>
     </Container>
   )
-}
-
-KarunaConnect.propTypes = {
-  emitter: PropTypes.instanceOf(EventEmitter3).isRequired
 }

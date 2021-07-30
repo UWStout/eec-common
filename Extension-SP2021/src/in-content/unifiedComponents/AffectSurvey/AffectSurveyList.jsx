@@ -1,5 +1,4 @@
-/* global EventEmitter3 */
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import Debounce from 'debounce'
@@ -70,8 +69,8 @@ function searchFilter (fullList, searchText) {
  **/
 export default function AffectSurveyList (props) {
   // Make/Deconstruct the props and style class names
-  const { onBubbleOpenSurvey, noInteraction, emitter } = props
-  const { root, searchBar, listRoot, innerList, listItem } = useStyles()
+  const { onBubbleOpenSurvey, noInteraction } = props
+  const { listRoot, innerList, listItem } = useStyles()
 
   // Subscribe to changes in global states (GLOBAL STATE)
   const emojiList = useRecoilValue(STATE.AffectListState)
@@ -126,15 +125,6 @@ export default function AffectSurveyList (props) {
       update(affectPrivacy)
     }
   }
-
-  // Grab focus when mounted and release it when unmounted
-  useEffect(() => {
-    if (emitter) { emitter.emit('captureFocus') }
-    else { LOG('No emitter to grab focus with') }
-    return () => {
-      if (emitter) { emitter.emit('releaseFocus') }
-    }
-  }, [emitter])
 
   // Build list of Emoji elements filtered by search text
   const filteredEmojis = (searchText === '' ? emojiList : searchFilter(emojiList, searchText))
@@ -218,6 +208,7 @@ export default function AffectSurveyList (props) {
           onChange={onSearchTextChanged}
           placeholder={'search emojis'}
           disabled={noInteraction}
+          aria-label={'Affect Search Box'}
         />
       </Grid>
       <Grid item>
@@ -283,12 +274,10 @@ export default function AffectSurveyList (props) {
 
 AffectSurveyList.propTypes = {
   onBubbleOpenSurvey: PropTypes.func,
-  noInteraction: PropTypes.bool,
-  emitter: PropTypes.instanceOf(EventEmitter3)
+  noInteraction: PropTypes.bool
 }
 
 AffectSurveyList.defaultProps = {
   onBubbleOpenSurvey: null,
-  noInteraction: false,
-  emitter: null
+  noInteraction: false
 }

@@ -1,6 +1,4 @@
-/* global EventEmitter3 */
 import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
 import { ConnectVisibilityState, BubbleVisibilityState, KarunaMessageState } from './data/globalState.js'
@@ -14,8 +12,6 @@ import FeedbackDialog from './KarunaBubble/FeedbackDialog/FeedbackDialog.jsx'
 
 // The karuna dialog bubble
 export default function KarunaBubble (props) {
-  const { emitter } = props
-
   // Full state and setter for visibility of main connect panel (GLOBAL STATE)
   const setMainConnectPanelOpen = useSetRecoilState(ConnectVisibilityState)
 
@@ -67,7 +63,6 @@ export default function KarunaBubble (props) {
       hidden={!FeedbackDialogOpen}
       onHide={hideFeedbackDialog}
       cancelHide={cancelHideFeedbackDialog}
-      emitter={emitter}
     >
       <PersistentBubble
         hidden={!FeedbackDialogOpen}
@@ -77,8 +72,4 @@ export default function KarunaBubble (props) {
       />
     </FeedbackDialog>
   )
-}
-
-KarunaBubble.propTypes = {
-  emitter: PropTypes.instanceOf(EventEmitter3).isRequired
 }

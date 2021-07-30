@@ -57,7 +57,6 @@ function FeedbackDialogAffectSurvey (props) {
         <AffectSurveyList
           onBubbleOpenSurvey={() => setPrivacyDialogOpen(true)}
           onDismissSurvey={() => { setPrivacyDialogOpen(false) }}
-          {...props}
         />
       </Grid>
     </Grid>

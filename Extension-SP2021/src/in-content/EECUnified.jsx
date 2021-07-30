@@ -35,45 +35,6 @@ class EECUnified extends HTMLElement {
       LOG(response)
       this.JWT = response.value
     })
-
-    // Initialize the focus manager
-    this.lastAction = ''
-
-    // Record when we lose focus (and why)
-    this.addEventListener('blur', (e) => {
-      LOG('blur event')
-      if (this.lastAction === 'type') {
-        LOG('- Type-Blur Focus')
-        this.lastFocusedElement.focus()
-      } else {
-        this.lastFocusedElement = e.path[0]
-        this.wasBlurred = true
-      }
-    })
-  }
-
-  enableFocusManager () {
-    // if not in input box, prevent typing?
-    jQuery(document).on('keydown mousedown', (e) => {
-      if (e.type === 'mousedown') {
-        this.lastAction = 'click'
-      } else if (e.keyCode === 9) {
-        this.lastAction = 'tab'
-      } else if (e.type === 'keydown') {
-        if (this.wasBlurred) {
-          this.wasBlurred = false
-          LOG('- Blur-Type Focus')
-          this.lastFocusedElement.focus()
-        } else {
-          this.lastFocusedElement = this.shadowRoot.activeElement
-          this.lastAction = 'type'
-        }
-      }
-    })
-  }
-
-  disableFocusManager () {
-    jQuery(document).off('keydown mousedown')
   }
 
   // MUST be called manually now (with an event emitter)
@@ -163,17 +124,6 @@ class EECUnified extends HTMLElement {
   }
 
   registerListeners () {
-    // Register to enable/disable focus manager
-    this.statusEmitter.on('captureFocus', () => {
-      LOG('Capture focus received')
-      this.enableFocusManager()
-    })
-
-    this.statusEmitter.on('releaseFocus', () => {
-      LOG('Release focus received')
-      this.disableFocusManager()
-    })
-
     // Register to send text update messages back to the background context
     this.statusEmitter.on('textUpdate', (messageObj) => {
       LOG('Responding to text update event', messageObj.content)
