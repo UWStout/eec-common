@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { useRecoilValue } from 'recoil'
 import { AffectListState, SelectedAffectSurveyState, UserStatusState } from '../data/globalState.js'
 
-import { makeStyles, withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 import MuiAccordion from '@material-ui/core/Accordion'
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails'

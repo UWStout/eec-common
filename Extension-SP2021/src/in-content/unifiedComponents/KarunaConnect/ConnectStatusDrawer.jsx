@@ -49,6 +49,7 @@ const Paper = withStyles((theme) => ({
     paddingRight: theme.spacing(2),
     paddingBottom: theme.spacing(1),
     paddingLeft: theme.spacing(1),
+    zIndex: 200,
 
     // Animate changes in the 'right' property
     transition: theme.transitions.create(

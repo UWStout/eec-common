@@ -17,11 +17,6 @@ const useStyles = makeStyles((theme) => ({
     right: `calc(0% - ${theme.spacing(1)}px)`
   },
 
-  // Style when the panel is hidden
-  panelHidden: {
-    right: `calc(0% - ${theme.spacing(11)}px)`
-  },
-
   // Styling of Grid container
   gridContRoot: {
     flexGrow: 1
@@ -45,6 +40,7 @@ const Paper = withStyles((theme) => ({
     paddingRight: theme.spacing(2),
     paddingBottom: theme.spacing(1),
     paddingLeft: theme.spacing(1),
+    zIndex: 200,
 
     // Animate changes in the 'right' property
     transition: theme.transitions.create(
@@ -61,7 +57,7 @@ const Paper = withStyles((theme) => ({
  */
 export default function ConnectStatusDrawer () {
   // Deconstruct props and style class names
-  const { gridContRoot, panelRetracted, panelExpanded, panelHidden, spinner } = useStyles()
+  const { gridContRoot, panelRetracted, panelExpanded, spinner } = useStyles()
 
   // Is the mouse over this component
   const [mouseIsOver, setMouseIsOver] = useState(false)
