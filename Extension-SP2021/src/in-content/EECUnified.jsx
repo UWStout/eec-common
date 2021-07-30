@@ -108,7 +108,19 @@ class EECUnified extends HTMLElement {
         fontFamily: [
           '"Roboto"', '"Helvetica"', '"Arial"', 'sans-serif'
         ].join(','),
-        htmlFontSize: (contextName === 'msTeams' ? 10 : 16)
+        htmlFontSize: (contextName === 'msTeams' ? 10 : 16),
+        h1: {
+          // AIW This is 24px
+          fontSize: (contextName === 'msTeams' ? '2.4rem' : '1.5rem')
+        },
+        h2: {
+          // AIW This is 20px
+          fontSize: (contextName === 'msTeams' ? '2rem' : '1.25rem')
+        },
+        h3: {
+          // AIW This is 16px bold
+          fontWeight: 'bold'
+        }
       },
       props: {
         MuiPopover: {
