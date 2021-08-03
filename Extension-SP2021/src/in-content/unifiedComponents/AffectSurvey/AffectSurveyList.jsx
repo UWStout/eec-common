@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-import Debounce from 'debounce'
+import { debounce } from 'debounce'
 
 import { useRecoilValue, useRecoilState } from 'recoil'
 import * as STATE from '../data/globalState.js'
@@ -86,10 +86,17 @@ export default function AffectSurveyList (props) {
 
   // Current search text (if any)
   const [searchText, setSearchText] = useState('')
-  const onSearchTextChanged = Debounce((newText) => {
+
+  const onSearchTextChanged = debounce((newText) => {
     LOG('Search text changed:', newText)
     setSearchText(newText)
   }, 200)
+
+  useEffect(() => {
+    return () => {
+      onSearchTextChanged.clear()
+    }
+  }, [onSearchTextChanged])
 
   // Which list option (favorites, recent, all) is expanded
   const [expanded, setExpanded] = useState('all')
@@ -203,6 +210,8 @@ export default function AffectSurveyList (props) {
       {/* For searching through the possible moods */}
       <Grid item>
         <SearchBar
+          role={'search'}
+          aria-label={'Search Available Moods'}
           value={searchText}
           onClick={() => setExpanded('all')}
           onChange={onSearchTextChanged}
@@ -216,14 +225,28 @@ export default function AffectSurveyList (props) {
           {/* Recent sub-list */}
           {recentEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
-            <ListItem button onClick={() => toggleExpanded('recent')}>
+            <ListItem
+              aria-expanded={(expanded === 'recent') ? 'true' : 'false'}
+              aria-label={'Expand Recent Emojis'}
+              button
+              onClick={() => toggleExpanded('recent')}
+            >
               <ListItemIcon><History /></ListItemIcon>
               <ListItemText primary="Recent" />
               {expanded === 'recent' ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
-            <Collapse in={expanded === 'recent'} timeout="auto" unmountOnExit>
+            <Collapse
+              in={expanded === 'recent'}
+              timeout="auto"
+              unmountOnExit
+            >
               <div className={innerList}>
-                <List component="div" disablePadding>
+                <List
+                  role={'list'}
+                  component="div"
+                  disablePadding
+                  aria-label={'Recent Emojis'}
+                >
                   {recentEmojiElements}
                 </List>
               </div>
@@ -234,14 +257,19 @@ export default function AffectSurveyList (props) {
           { /* Favorites sub-list */}
           {favEmojiElements?.length > 0 && searchText === '' &&
           <React.Fragment>
-            <ListItem button onClick={() => toggleExpanded('favorites')}>
+            <ListItem
+              aria-expanded={(expanded === 'favorites') ? 'true' : 'false'}
+              aria-label={'Expand Favorite Emojis'}
+              button
+              onClick={() => toggleExpanded('favorites')}
+            >
               <ListItemIcon><Favorite /></ListItemIcon>
               <ListItemText primary="Favorites" />
               {expanded === 'favorites' ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={expanded === 'favorites'} timeout="auto" unmountOnExit>
               <div className={innerList}>
-                <List component="div" disablePadding>
+                <List aria-label={'Favorite Emojis'} role={'list'} component="div" disablePadding>
                   {favEmojiElements}
                 </List>
               </div>
@@ -251,14 +279,22 @@ export default function AffectSurveyList (props) {
 
           {/* List of all emojis */}
           <React.Fragment>
-            <ListItem button onClick={() => toggleExpanded('all')}>
+            <ListItem
+              aria-label={'Expand All Emojis'}
+              aria-expanded={(expanded === 'all') ? 'true' : 'false'}
+              button onClick={() => toggleExpanded('all')}
+            >
               <ListItemIcon><Mood /></ListItemIcon>
               <ListItemText primary="All Moods" />
               {expanded === 'all' ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
-            <Collapse in={expanded === 'all'} timeout="auto" unmountOnExit>
+            <Collapse
+              in={expanded === 'all'}
+              timeout="auto"
+              unmountOnExit
+            >
               <div className={innerList}>
-                <List component="div" disablePadding>
+                <List aria-label={'All Emojis'} role={'list'} component="div" disablePadding>
                   {allEmojiElements}
                 </List>
               </div>

@@ -22,6 +22,7 @@ const HEADINGS = {
   nvcInfo: 'NVC Information'
 }
 
+// Testing accordians
 function retrieveAndCheckHeader (headerName) {
   return () => {
     // Render with recoil state
@@ -225,12 +226,14 @@ describe('Karuna Connect Panel', () => {
     })
 
     // Tests for all the accordion section headings
+    // retrieveAndCheckHeader (headerName, componentWithAccordian)
     it('shows user status section heading', retrieveAndCheckHeader(HEADINGS.userStatus))
     it('shows team status section heading', retrieveAndCheckHeader(HEADINGS.teamStatus))
     it('shows team culture section heading', retrieveAndCheckHeader(HEADINGS.teamCulture))
     it('shows NVC section heading', retrieveAndCheckHeader(HEADINGS.nvcInfo))
 
     // Tests for all the accordion section's visibility
+    // - use checkClickingHeader (headerName, componentWithAccordian, headings) from testRecoilUtils.jsx
     it('expands user status section only when clicked', checkClickingHeader(HEADINGS.userStatus))
     it('expands team status section only when clicked', checkClickingHeader(HEADINGS.teamStatus))
     it('expands team culture section only when clicked', checkClickingHeader(HEADINGS.teamCulture))

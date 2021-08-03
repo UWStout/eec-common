@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { RecoilRoot } from 'recoil'
-import { render } from '@testing-library/react'
+import { render, fireEvent, waitFor } from '@testing-library/react'
 
 // Material-UI provider utilities
 import { create as JSSCreate } from 'jss'
@@ -29,11 +29,17 @@ function initializeState (snapshot) {
     '6008928508baff43187a7509']
   snapshot.set(AffectHistoryListState, MoodList)
 
-  snapshot.set(PrivacyPrefsState)
+  const privacyPrefs = {
+    private: true,
+    prompt: true
+  }
+  snapshot.set(PrivacyPrefsState, privacyPrefs)
 
-  snapshot.set(UserAffectIDState)
+  const currentAffect = '6008928508baff43187a74f9'
+  snapshot.set(UserAffectIDState, currentAffect)
 
-  snapshot.set(SelectedAffectSurveyState)
+  const selectedAffect = '6008928508baff43187a74f9'
+  snapshot.set(SelectedAffectSurveyState, selectedAffect)
 
   snapshot.set(LoggedInUserState, {
     id: UserData._id,
@@ -81,7 +87,8 @@ export * from '@testing-library/react'
 // override render method
 export { customRender as render }
 
-// Other utility functions
+/* Other utility functions */
+
 export function presentVisibleAndContained (expect, parent, child) {
   // Ensure they are in the document and visible
   expect(parent).toBeInTheDocument()
