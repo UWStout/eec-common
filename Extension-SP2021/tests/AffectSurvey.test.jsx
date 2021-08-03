@@ -108,7 +108,7 @@ describe('Affect Survey', () => {
     )
 
     // Access the document and find the drawer
-    const searchBar = getByRole('search', { name: 'Search Available Moods' })
+    const searchBar = getByRole('search', { name: 'Affect Search Box' })
     expect(searchBar).toBeInTheDocument()
     expect(searchBar).toBeVisible()
   })
@@ -129,14 +129,18 @@ describe('Affect Survey', () => {
     expect(joyEmoji).toBeVisible()
   })
 
-  // Tests for all the accordion section headings
+  // Tests for all the list section headings
   it('shows recent emojis section heading', retrieveAndCheckHeader('Expand ' + HEADINGS.recent))
   it('shows favorite emojis section heading', retrieveAndCheckHeader('Expand ' + HEADINGS.favorites))
   it('shows all emojis section heading', retrieveAndCheckHeader('Expand ' + HEADINGS.all))
 
-  // Tests for all the accordion section's visibility
+  // Tests for all the list section's visibility
   it('expands recent emojis section only when clicked', checkExpandHeader(HEADINGS.recent))
   it('expands favorite emojis section only when clicked', checkExpandHeader(HEADINGS.favorites))
   it('retracts all emojis section only when clicked', checkExpandHeader(HEADINGS.all))
-  it.todo('When an affect is selected, the user\'s privacy settings must be checked and a PrivacyDialog might be shown')
+
+  // Check that privacy questionnaire comes up
+  it('When an affect is selected, the user\'s privacy settings must be checked and a PrivacyDialog might be shown', () => {
+
+  })
 })

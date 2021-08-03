@@ -211,7 +211,6 @@ export default function AffectSurveyList (props) {
       <Grid item>
         <SearchBar
           role={'search'}
-          aria-label={'Search Available Moods'}
           value={searchText}
           onClick={() => { setExpanded('all') }}
           onChange={onSearchTextChanged}
