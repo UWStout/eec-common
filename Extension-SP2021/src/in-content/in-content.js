@@ -66,7 +66,9 @@ jQuery(document).ready(() => {
     }
   }, true)
   window.addEventListener('keydown', (e) => {
-    if (IS_DISCORD) { e.stopImmediatePropagation() }
+    if (IS_DISCORD && !e.key === 'Enter') {
+      e.stopImmediatePropagation()
+    }
   }, true)
 
   // DEBUG: Does not work
