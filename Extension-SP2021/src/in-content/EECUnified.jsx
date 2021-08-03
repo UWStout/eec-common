@@ -7,7 +7,7 @@ import { RecoilRoot } from 'recoil'
 
 // Material-UI Setup
 import { create as JSSCreate } from 'jss'
-import { MuiThemeProvider, createMuiTheme, StylesProvider, jssPreset } from '@material-ui/core/styles'
+import { MuiThemeProvider, createTheme, StylesProvider, jssPreset } from '@material-ui/core/styles'
 
 // Custom React Component
 import UnifiedApp from './unifiedComponents/UnifiedApp.jsx'
@@ -34,42 +34,6 @@ class EECUnified extends HTMLElement {
       LOG('EECUnified Received token')
       LOG(response)
       this.JWT = response.value
-    })
-
-    // Initialize the focus manager
-    this.lastAction = ''
-    this.setupFocusManager()
-
-    // Record when we lose focus
-    this.addEventListener('blur', (e) => {
-      LOG('blur event')
-      if (this.lastAction === 'type') {
-        LOG('- Type-Blur Focus')
-        this.lastFocusedElement.focus()
-      } else {
-        this.lastFocusedElement = e.path[0]
-        this.wasBlurred = true
-      }
-    })
-  }
-
-  setupFocusManager () {
-    // if not in input box, prevent typing?
-    jQuery(document).on('keydown mousedown', (e) => {
-      if (e.type === 'mousedown') {
-        this.lastAction = 'click'
-      } else if (e.keyCode === 9) {
-        this.lastAction = 'tab'
-      } else if (e.type === 'keydown') {
-        if (this.wasBlurred) {
-          this.wasBlurred = false
-          LOG('- Blur-Type Focus')
-          this.lastFocusedElement.focus()
-        } else {
-          this.lastFocusedElement = this.shadowRoot.activeElement
-          this.lastAction = 'type'
-        }
-      }
     })
   }
 
@@ -100,12 +64,24 @@ class EECUnified extends HTMLElement {
     this.portalContainer = jQuery('<div>').attr('id', 'muiPortal')
     portalParent.append(this.portalContainer)
     this.shadowRoot.appendChild(portalParent[0])
-    const theme = createMuiTheme({
+    const theme = createTheme({
       typography: {
         fontFamily: [
           '"Roboto"', '"Helvetica"', '"Arial"', 'sans-serif'
         ].join(','),
-        htmlFontSize: (contextName === 'msTeams' ? 10 : 16)
+        htmlFontSize: (contextName === 'msTeams' ? 10 : 16),
+        h1: {
+          // AIW This is 24px
+          fontSize: (contextName === 'msTeams' ? '2.4rem' : '1.5rem')
+        },
+        h2: {
+          // AIW This is 20px
+          fontSize: (contextName === 'msTeams' ? '2rem' : '1.25rem')
+        },
+        h3: {
+          // AIW This is 16px bold
+          fontWeight: 'bold'
+        }
       },
       props: {
         MuiPopover: {
@@ -119,19 +95,7 @@ class EECUnified extends HTMLElement {
 
     // Setup event emitter
     this.statusEmitter = emitter
-
-    // Register to send text update messages back to the background context
-    this.statusEmitter.on('textUpdate', (messageObj) => {
-      LOG('Responding to text update event', messageObj.content)
-      if (this.backgroundPort) {
-        this.backgroundPort.postMessage({
-          type: 'textUpdate',
-          context: this.contextName,
-          content: messageObj.content,
-          mentions: messageObj.mentions
-        })
-      }
-    })
+    this.registerListeners()
 
     // Give React control of the root element for the unified panel
     LOG('Mounting react unified component ...')
@@ -157,6 +121,21 @@ class EECUnified extends HTMLElement {
 
     // Setup to update the styling after deferring some time
     setTimeout(() => { this.setContextName.bind(this)(contextName) }, 200)
+  }
+
+  registerListeners () {
+    // Register to send text update messages back to the background context
+    this.statusEmitter.on('textUpdate', (messageObj) => {
+      LOG('Responding to text update event', messageObj.content)
+      if (this.backgroundPort) {
+        this.backgroundPort.postMessage({
+          type: 'textUpdate',
+          context: this.contextName,
+          content: messageObj.content,
+          mentions: messageObj.mentions
+        })
+      }
+    })
   }
 
   // Update background communication port

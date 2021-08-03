@@ -7,11 +7,11 @@ import React from 'react'
 import { render, fireEvent, waitFor } from '../testRecoilUtils.jsx'
 
 import '@testing-library/jest-dom/extend-expect'
-import { toHaveClass } from '@testing-library/jest-dom/matchers'
+import { toHaveAttribute } from '@testing-library/jest-dom/matchers'
 
 import KarunaConnect from '../../src/in-content/unifiedComponents/KarunaConnect.jsx'
 
-expect.extend({ toHaveClass })
+expect.extend({ toHaveAttribute })
 
 describe('Karuna Connect Panel', () => {
   it('shows ConnectStatusDrawer on load', () => {
@@ -42,8 +42,8 @@ describe('Karuna Connect Panel', () => {
 
     // Check that status is hidden and main panel is expanded
     await waitFor(() => (
-      expect(statusDrawer).toHaveClass('makeStyles-panelHidden-30') &&
-        expect(mainDrawer).toHaveClass('makeStyles-panelExpanded-39')
+      expect(statusDrawer).toHaveAttribute('class', expect.stringContaining('makeStyles-panelHidden')) &&
+      expect(mainDrawer).toHaveAttribute('class', expect.stringContaining('makeStyles-panelExpanded'))
     ))
   })
 
@@ -63,8 +63,8 @@ describe('Karuna Connect Panel', () => {
     expect(mainDrawer).toBeInTheDocument()
 
     // Check that status is hidden and main panel is expanded
-    await waitFor(() => expect(statusDrawer).toHaveClass('makeStyles-panelHidden-57'))
-    await waitFor(() => expect(mainDrawer).toHaveClass('makeStyles-panelExpanded-66'))
+    await waitFor(() => expect(statusDrawer).toHaveAttribute('class', expect.stringContaining('makeStyles-panelHidden')))
+    await waitFor(() => expect(mainDrawer).toHaveAttribute('class', expect.stringContaining('makeStyles-panelExpanded')))
 
     // Click main drawer back arrow
     const closePanelButton = await findByRole('button', { name: 'Close Panel' })
@@ -73,8 +73,8 @@ describe('Karuna Connect Panel', () => {
 
     // Check that status is visible but retracted and main panel is hidden
     await waitFor(() => (
-      expect(statusDrawer).toHaveClass('makeStyles-panelRetracted-55') &&
-        expect(mainDrawer).toHaveClass('makeStyles-panelHidden-67')
+      expect(statusDrawer).toHaveAttribute('class', expect.stringContaining('makeStyles-panelRetracted')) &&
+      expect(mainDrawer).toHaveAttribute('class', expect.stringContaining('makeStyles-panelHidden'))
     ))
   })
 })

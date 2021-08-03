@@ -70,7 +70,7 @@ function searchFilter (fullList, searchText) {
 export default function AffectSurveyList (props) {
   // Make/Deconstruct the props and style class names
   const { onBubbleOpenSurvey, noInteraction } = props
-  const { root, searchBar, listRoot, innerList, listItem } = useStyles()
+  const { listRoot, innerList, listItem } = useStyles()
 
   // Subscribe to changes in global states (GLOBAL STATE)
   const emojiList = useRecoilValue(STATE.AffectListState)
@@ -213,10 +213,11 @@ export default function AffectSurveyList (props) {
           role={'search'}
           aria-label={'Search Available Moods'}
           value={searchText}
-          onClick={() => setExpanded('all')}
+          onClick={() => { setExpanded('all') }}
           onChange={onSearchTextChanged}
           placeholder={'search emojis'}
           disabled={noInteraction}
+          aria-label={'Affect Search Box'}
         />
       </Grid>
       <Grid item>

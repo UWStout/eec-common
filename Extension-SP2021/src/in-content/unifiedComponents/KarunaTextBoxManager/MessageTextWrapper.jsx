@@ -12,9 +12,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import Highlighter from './Highlighter.jsx'
 import { computeWordRects } from './WordSpanner.js'
 
+import { updateMessageText } from './BackgroundMessager.js'
+
 // Colorful logger
 import { makeLogger } from '../../../util/Logger.js'
-import { updateMessageText } from './BackgroundMessager'
 const LOG = makeLogger('MESSAGE Wrapper', 'maroon', 'white')
 
 // DEBUG: Just for testing
@@ -93,26 +94,26 @@ export default function MessageTextWrapper (props) {
         rects = computeWordRects(spanWords, JQTextBox, spanList, isCovered.current, setIsCovered)
       }
 
-      LOG('Computed rects:', rects)
+      // LOG('Computed rects:', rects)
       if (rects.length > 0) setIsNVCIndicated(true) // puts 'NVC' on top of bubble
       else setIsNVCIndicated(false)
       setHighlightRects(rects)
     } catch (err) {
-      LOG.error('Error computing word rects', err)
+      // LOG.error('Error computing word rects', err)
     }
   }, [highlightRangeList, setIsNVCIndicated])
 
   // Respond to change in textBox param
   useEffect(() => {
-    LOG('Installing text-box listeners')
+    // LOG('Installing text-box listeners')
 
     // Setup event listeners for the text box
     const newJQElem = jQuery(textBox)
-    newJQElem.on('focusin', () => { LOG('FOCUS'); updateUnderlinedWords(newJQElem) })
-    newJQElem.on('focusout', () => { LOG('BLUR'); updateUnderlinedWords(newJQElem) })
+    newJQElem.on('focusin', () => { updateUnderlinedWords(newJQElem) })
+    newJQElem.on('focusout', () => { updateUnderlinedWords(newJQElem) })
 
     newJQElem.on('input', debounce((event) => {
-      LOG('INPUT')
+      // LOG('INPUT')
       updateUnderlinedWords(newJQElem)
 
       // Send a message text update to the root element, where it will be bounced
@@ -129,7 +130,7 @@ export default function MessageTextWrapper (props) {
 
     // Create cleanup function
     return () => {
-      LOG('Removing text-box listeners')
+      // LOG('Removing text-box listeners')
       newJQElem.off('focusin')
       newJQElem.off('focusout')
       newJQElem.off('input')

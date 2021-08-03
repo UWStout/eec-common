@@ -89,7 +89,7 @@ export const TextBoxListState = selector({
     const newTextBoxMap = new Map()
     let textBoxesChanged = false
     newTextBoxList.forEach((textBox) => {
-      // Ensure each textbox has a unique ID
+      // Ensure each text box has a unique ID
       if (textBox.id === undefined || textBox.id === '') {
         textBox.id = `karunaTextBox-${generateTextBoxID()}`
         LOG(`New Text Box: ${textBox.id}`)
@@ -112,35 +112,6 @@ export const TextBoxListState = selector({
     }
   }
 })
-
-/*
-(incomingTextBoxes) => {
-  // Examine the text boxes
-  const newTextBoxList = new Map()
-  let textBoxesChanged = false
-  incomingTextBoxes.forEach((textBox) => {
-    // Ensure each textbox has a unique ID
-    if (textBox.id === undefined || textBox.id === '') {
-      textBox.id = `karunaTextBox-${generateID()}`
-      LOG(`New Text Box: ${textBox.id}`)
-    }
-
-    // Check if ID is new
-    if (!textBoxList.has(textBox.id)) {
-      LOG('Foreign Text Box: ', textBox.id)
-      textBoxesChanged = true
-    }
-    newTextBoxList.set(textBox.id, textBox)
-  })
-
-  if (textBoxesChanged || newTextBoxList.size !== textBoxList.size) {
-    LOG('Text Boxes Changed', newTextBoxList.keys())
-    LOG(`>   ${newTextBoxList.size} !== ${textBoxList.size}`)
-    LOG(`Lists are ${textBoxList === newTextBoxList ? 'equal' : 'NOT equal'}`)
-    setTextBoxList(newTextBoxList)
-  }
-})
-*/
 
 /** Latest message from Karuna server */
 export const KarunaMessageState = atom({

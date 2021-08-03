@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
@@ -15,14 +15,10 @@ export default function FeedbackDialogContent (props) {
   const { onHide, cancelHide } = props
 
   // Displayed state
-  const [displayedFeedback, setDisplayedFeedback] = useState('observations')
+  const [displayedFeedback/*, setDisplayedFeedback */] = useState('observations')
+
   // Register to global state changes
   const karunaMessage = useRecoilValue(KarunaMessageState)
-  // useEffect(() => {
-  //   if (karunaMessage?.content) {
-  //     setDisplayedFeedback('karunaMessage')
-  //   }
-  // }, [karunaMessage, setDisplayedFeedback])
 
   const observations = []
   karunaMessage.entities?.map((entity) => {

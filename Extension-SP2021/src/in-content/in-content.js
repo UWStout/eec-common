@@ -58,6 +58,36 @@ jQuery(document).ready(() => {
   karunaWrapper.appendChild(karunaUnifiedElem)
   document.body.insertBefore(karunaWrapper)
 
+  // Prevent focus stealing and keyboard input stealing
+  document.addEventListener('focusin', (e) => {
+    if (IS_DISCORD && e.target.hasAttribute('data-slate-editor')) {
+      LOG('PREVENTING FOCUS STEALING', e)
+      e.stopPropagation()
+    }
+  }, true)
+  window.addEventListener('keydown', (e) => {
+    if (IS_DISCORD && !e.key === 'Enter') {
+      e.stopImmediatePropagation()
+    }
+  }, true)
+
+  // DEBUG: Does not work
+  // Pre-capture 'r' and 'c' key presses (teams deletes these events)
+  // const tunnelKey = (e) => {
+  //   if (IS_TEAMS && (e.key === 'r' || e.key === 'c')) {
+  //     LOG(`"${e.key}" key press detected`, e)
+  //     const EECElem = document.querySelector('eec-unified')
+  //     const searchBox = EECElem.shadowRoot.querySelector('[aria-label="Affect Search Box"]')
+  //     if (searchBox) {
+  //       LOG('Found search box')
+  //       const eventClone = new KeyboardEvent(e.type, { key: e.key })
+  //       searchBox.dispatchEvent(eventClone)
+  //     }
+  //   }
+  // }
+  // window.addEventListener('keydown', tunnelKey, true)
+  // window.addEventListener('keyup', tunnelKey, true)
+
   // Callback function to execute when mutations are observed
   const mutationCallback = (mutationsList, observer) => {
     // Attempt to update EEC text-boxes (if needed)

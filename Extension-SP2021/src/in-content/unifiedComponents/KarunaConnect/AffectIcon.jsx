@@ -26,7 +26,7 @@ export default function AffectIcon (props) {
   const { affectObj, privacy, ...restProps } = props
   const { iconRoot, privacyIcon } = useStyles()
 
-  const tooltip = `${affectObj?.name ? affectObj.name : 'none'}\n${privacy ? '(hidden)' : '(visible)'}`
+  const tooltip = `${affectObj?.name ? affectObj.name : 'none'}\n${privacy ? '(private)' : ''}`
 
   return (
     <CustomTooltip {...restProps} title={tooltip}>

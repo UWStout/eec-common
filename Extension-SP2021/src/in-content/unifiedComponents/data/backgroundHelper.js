@@ -2,6 +2,9 @@
 import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('BACKGROUND Helper', '#27213C', '#EEF4ED')
 
+// A delay to test lazy loading
+const FAKE_DELAY = 0
+
 /**
  * Generic chrome.runtime.sendMessage function to simplify interacting with the background part of the
  * extension.  Background messages are processed as follows:
@@ -152,7 +155,9 @@ export function retrieveUserStatus (context = 'none') {
       { type: 'ajax-getUserStatus' },
       context,
       'Retrieving current user status failed: ',
-      (currentUserStatus) => { return resolve(currentUserStatus) },
+      (currentUserStatus) => {
+        setTimeout(() => { return resolve(currentUserStatus) }, FAKE_DELAY)
+      },
       (message) => { return reject(new Error(message)) }
     )
   })
