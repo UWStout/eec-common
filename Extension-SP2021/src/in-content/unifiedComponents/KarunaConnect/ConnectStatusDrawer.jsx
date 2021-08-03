@@ -6,6 +6,7 @@ import { useRecoilValue } from 'recoil'
 
 import MuiPaper from '@material-ui/core/Paper'
 import Skeleton from '@material-ui/lab/Skeleton'
+import { MoreVert } from '@material-ui/icons'
 
 import { Grid, Typography } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
@@ -118,7 +119,7 @@ export default function ConnectStatusDrawer (props) {
           justifyContent='center'
         >
           <Grid item xs={12}>
-            <OpenArrow showDouble={mouseIsOver} flipped />
+            <OpenArrow showDouble={mouseIsOver} flipped OpenIcon={MoreVert} />
           </Grid>
         </Grid>
         <Grid

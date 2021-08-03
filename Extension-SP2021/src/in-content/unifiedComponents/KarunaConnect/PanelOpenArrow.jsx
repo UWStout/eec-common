@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function OpenArrow (props) {
-  const { showDouble, flipped } = props
+  const { ExpandIcon, OpenIcon, showDouble, flipped } = props
   const classes = useStyles()
 
   let ariaLabel = ''
@@ -37,10 +37,10 @@ export default function OpenArrow (props) {
   return (
     <div role={'button'} aria-label={ariaLabel}>
       <Fade in={showDouble}>
-        <DoubleArrow className={flipped ? classes.flipped : classes.standard} />
+        <OpenIcon className={flipped ? classes.flipped : classes.standard} />
       </Fade>
       <Fade in={!showDouble}>
-        <KeyboardArrowRight className={flipped ? classes.flipped : classes.standard} />
+        <ExpandIcon className={flipped ? classes.flipped : classes.standard} />
       </Fade>
     </div>
   )
@@ -48,10 +48,14 @@ export default function OpenArrow (props) {
 
 OpenArrow.propTypes = {
   showDouble: PropTypes.bool,
-  flipped: PropTypes.bool
+  flipped: PropTypes.bool,
+  ExpandIcon: PropTypes.element,
+  OpenIcon: PropTypes.element
 }
 
 OpenArrow.defaultProps = {
   showDouble: false,
-  flipped: false
+  flipped: false,
+  ExpandIcon: KeyboardArrowRight,
+  OpenIcon: DoubleArrow
 }
