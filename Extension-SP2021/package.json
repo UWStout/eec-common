@@ -6,18 +6,17 @@
   "scripts": {
     "dev": "nodemon --exec npm run devbuild",
     "clean": "rimraf dist",
-    "devbuild": "run-s clean devbuild-background devbuild-in-content devbuild-popup devbuild-manifest",
-    "devbuild-background": "esbuild --bundle --sourcemap --define:_DEV_=true --outfile=dist/js/background.js src/background/background.js",
-    "devbuild-in-content": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outfile=dist/js/in-content.js src/in-content/in-content.js",
-    "devbuild-popup": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outfile=dist/js/popup.js src/popup/popup.jsx",
+
+    "devbuild": "run-s clean devbuild-bundle devbuild-manifest",
+    "devbuild-bundle": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outdir=dist/js --entry-names=/[name] src/background/background.js src/in-content/in-content.js src/popup/popup.jsx",
     "devbuild-manifest": "node manifestGen.js dev",
     "postdevbuild": "node postBuild.js dev",
-    "build": "run-s clean build-background build-in-content build-popup build-manifest",
-    "build-background": "esbuild --bundle --minify --define:_DEV_=false --outfile=dist/js/background.js src/background/background.js",
-    "build-in-content": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outfile=dist/js/in-content.js src/in-content/in-content.js",
-    "build-popup": "esbuild --bundle --minify --loader:.css=css --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outfile=dist/js/popup.js src/popup/popup.jsx",
+
+    "build": "run-s clean build-bundle build-manifest",
+    "build-bundle": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outdir=dist/js --entry-names=/[name] src/background/background.js src/in-content/in-content.js src/popup/popup.jsx",
     "build-manifest": "node manifestGen.js",
     "postbuild": "node postBuild.js",
+
     "test": "jest",
     "testCoverage": "jest --coverage",
     "testWatch": "jest --watchAll"
@@ -34,7 +33,7 @@
       "src"
     ],
     "ext": "js,json,jsx",
-    "delay": 2500
+    "delay": 1000
   },
   "devDependencies": {
     "@babel/core": "7.14.6",
