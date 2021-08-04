@@ -49,8 +49,8 @@ export default function OpenArrow (props) {
 OpenArrow.propTypes = {
   showDouble: PropTypes.bool,
   flipped: PropTypes.bool,
-  ExpandIcon: PropTypes.element,
-  OpenIcon: PropTypes.element
+  ExpandIcon: PropTypes.elementType,
+  OpenIcon: PropTypes.elementType
 }
 
 OpenArrow.defaultProps = {

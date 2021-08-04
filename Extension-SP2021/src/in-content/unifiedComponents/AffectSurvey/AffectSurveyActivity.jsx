@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { debounce } from 'debounce'
 
-import { useRecoilValue, useRecoilState } from 'recoil'
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil'
 import * as STATE from '../data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -13,16 +13,13 @@ import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/ic
 import SearchBar from 'material-ui-search-bar'
 
 import Emoji from './Emoji.jsx'
-import PrivacyDialog from './PrivacyDialog.jsx'
+
+import { ACTIVITIES } from '../KarunaConnect/Activities.js'
 
 import { makeLogger } from '../../../util/Logger.js'
-const LOG = makeLogger('CONNECT Affect Survey', 'pink', 'black')
+const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    paddingTop: theme.spacing(2),
-    width: '100%'
-  },
   searchBar: {
     paddingBottom: theme.spacing(2)
   },
@@ -36,17 +33,12 @@ const useStyles = makeStyles((theme) => ({
   },
   innerList: {
     overflowY: 'auto',
-
-    // DEBUG: Can this be dynamic / responsive?
     maxHeight: '280px'
   }
 }))
 
 // DEBUG: Test data for favorite emojis
 const favList = [
-  '6008928508baff43187a74f9',
-  '6008928508baff43187a7502',
-  '6008928508baff43187a7509'
 ]
 
 // Function to filter a list of affects by given text
@@ -67,9 +59,9 @@ function searchFilter (fullList, searchText) {
 /**
  * affect survey pops up in the panel and in the bubble.
  **/
-export default function AffectSurveyList (props) {
+const AffectSurveyActivity = React.forwardRef((props, ref) => {
   // Make/Deconstruct the props and style class names
-  const { onBubbleOpenSurvey, noInteraction } = props
+  const { noInteraction } = props
   const { listRoot, innerList, listItem } = useStyles()
 
   // Subscribe to changes in global states (GLOBAL STATE)
@@ -77,21 +69,22 @@ export default function AffectSurveyList (props) {
   const moodHistoryList = useRecoilValue(STATE.AffectHistoryListState)
 
   // Values and mutator functions for global state (GLOBAL STATE)
-  const [affectPrivacy, setPrivacy] = useRecoilState(STATE.PrivacyPrefsStateSetter)
   const [userAffectID, setUserAffectID] = useRecoilState(STATE.UserAffectIDState)
-  const [selectedAffectID, setSelectedAffectID] = useRecoilState(STATE.LastSelectedAffectIDState)
+  const setLastSelectedAffectID = useSetRecoilState(STATE.LastSelectedAffectIDState)
+  const affectPrivacy = useRecoilValue(STATE.PrivacyPrefsState)
 
-  // Visibility of the privacy dialog
-  const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
+  // Global activity management
+  const pushActivity = useSetRecoilState(STATE.PushActivityState)
+  const popActivity = useSetRecoilState(STATE.PopActivityState)
 
   // Current search text (if any)
   const [searchText, setSearchText] = useState('')
-
   const onSearchTextChanged = debounce((newText) => {
     LOG('Search text changed:', newText)
     setSearchText(newText)
   }, 200)
 
+  // Clear any pending event before un-mounting
   useEffect(() => {
     return () => {
       onSearchTextChanged.clear()
@@ -108,28 +101,16 @@ export default function AffectSurveyList (props) {
     }
   }
 
-  // Used to commit the final selection to global state / database
-  const update = (newPrivacy) => {
-    setUserAffectID(selectedAffectID)
-    setPrivacy(newPrivacy)
-  }
-
-  // Used to chancel the selection and revert back
-  const cancel = () => {
-    setSelectedAffectID(userAffectID)
-  }
-
   // Called when the user clicks on an affect. May:
   // - Show the privacy preferences prompt
   // - Fully commit and update mood
   const onSelection = (affect) => {
-    console.log(`[[AFFECT SURVEY]]: ${affect?._id} emoji selected`)
-    setSelectedAffectID(affect?._id)
+    setLastSelectedAffectID(affect?._id)
     if (affectPrivacy.prompt) {
-      if (onBubbleOpenSurvey) onBubbleOpenSurvey()
-      else setPrivacyDialogOpen(true)
+      pushActivity(ACTIVITIES.PRIVACY_PROMPT)
     } else {
-      update(affectPrivacy)
+      setUserAffectID(affect?._id)
+      popActivity(ACTIVITIES.AFFECT_SURVEY)
     }
   }
 
@@ -185,21 +166,10 @@ export default function AffectSurveyList (props) {
     return moodHistoryList.indexOf(a.key) - moodHistoryList.indexOf(b.key)
   })
 
-  // If the privacy dialog is visible, show it and return
-  if (privacyDialogOpen && !onBubbleOpenSurvey) {
-    return (
-      <PrivacyDialog
-        onCancel={cancel}
-        onUpdate={update}
-        onClose={() => { setPrivacyDialogOpen(false) }}
-        privacy={affectPrivacy}
-      />
-    )
-  }
-
-  // Otherwise, show full affect survey
+  // Show affect survey
   return (
     <Grid
+      ref={ref}
       role={'region'}
       aria-label={'Affect Survey'}
       // className={root}
@@ -305,14 +275,16 @@ export default function AffectSurveyList (props) {
 
     </Grid>
   )
-}
+})
 
-AffectSurveyList.propTypes = {
-  onBubbleOpenSurvey: PropTypes.func,
+AffectSurveyActivity.displayName = 'AffectSurveyActivity'
+
+AffectSurveyActivity.propTypes = {
   noInteraction: PropTypes.bool
 }
 
-AffectSurveyList.defaultProps = {
-  onBubbleOpenSurvey: null,
+AffectSurveyActivity.defaultProps = {
   noInteraction: false
 }
+
+export default AffectSurveyActivity

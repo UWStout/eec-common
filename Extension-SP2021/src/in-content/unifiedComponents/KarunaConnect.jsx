@@ -1,13 +1,14 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { ConnectVisibilityState, BubbleVisibilityState, ValidUserState } from './data/globalState.js'
+import { ConnectVisibilityState, BubbleVisibilityState, ValidUserState, ActivityStackState } from './data/globalState.js'
 
 import { Container } from '@material-ui/core'
 
 import ConnectStatusDrawer from './KarunaConnect/ConnectStatusDrawer.jsx'
 import StatusDrawerSkeleton from './KarunaConnect/StatusDrawerSkeleton.jsx'
 import ConnectMainDrawer from './KarunaConnect/ConnectMainDrawer.jsx'
+import { ACTIVITIES } from './KarunaConnect/Activities.js'
 
 // Colorful logger (enable if logging is needed)
 // import { makeLogger } from '../../util/Logger.js'
@@ -24,11 +25,23 @@ export default function KarunaConnect (props) {
   // Setter for visibility of bubble feedback (GLOBAL STATE)
   const setBubbleFeedbackOpen = useSetRecoilState(BubbleVisibilityState)
 
+  // Setter for the activity stack
+  const setActivityStack = useSetRecoilState(ActivityStackState)
+
   // Ensure bubble feedback closes whenever we open the main panel
   const openMainPanel = () => {
     setBubbleFeedbackOpen(false)
     setMainPanelOpen(true)
   }
+
+  // Whenever logged-in state changes, re-write activity stack
+  useEffect(() => {
+    if (userLoggedIn) {
+      setActivityStack([ACTIVITIES.MAIN])
+    } else {
+      setActivityStack([ACTIVITIES.LOGIN])
+    }
+  }, [userLoggedIn, setActivityStack, setMainPanelOpen])
 
   // Main render
   return (
@@ -39,11 +52,10 @@ export default function KarunaConnect (props) {
             hidden={!userLoggedIn || mainPanelOpen}
             onHide={openMainPanel}
           />}
-        {userLoggedIn &&
-          <ConnectMainDrawer
-            hidden={!mainPanelOpen}
-            onHide={() => { setMainPanelOpen(false) }}
-          />}
+        <ConnectMainDrawer
+          hidden={!mainPanelOpen}
+          onHide={() => { setMainPanelOpen(false) }}
+        />
       </Suspense>
     </Container>
   )

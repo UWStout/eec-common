@@ -6,17 +6,14 @@
   "scripts": {
     "dev": "nodemon --exec npm run devbuild",
     "clean": "rimraf dist",
-
     "devbuild": "run-s clean devbuild-bundle devbuild-manifest",
     "devbuild-bundle": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outdir=dist/js --entry-names=/[name] src/background/background.js src/in-content/in-content.js src/popup/popup.jsx",
     "devbuild-manifest": "node manifestGen.js dev",
     "postdevbuild": "node postBuild.js dev",
-
     "build": "run-s clean build-bundle build-manifest",
     "build-bundle": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outdir=dist/js --entry-names=/[name] src/background/background.js src/in-content/in-content.js src/popup/popup.jsx",
     "build-manifest": "node manifestGen.js",
     "postbuild": "node postBuild.js",
-
     "test": "jest",
     "testCoverage": "jest --coverage",
     "testWatch": "jest --watchAll"
@@ -39,6 +36,10 @@
     "@babel/core": "7.14.6",
     "@babel/preset-env": "7.14.7",
     "@babel/preset-react": "7.14.5",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-brands-svg-icons": "^5.15.3",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.15",
     "@testing-library/jest-dom": "5.14.0",
     "@testing-library/react": "11.2.7",
     "@testing-library/user-event": "13.2.0",
@@ -62,7 +63,6 @@
   },
   "dependencies": {
     "@date-io/moment": "^2.11.0",
-    "@fortawesome/fontawesome-free": "^5.15.3",
     "@juggle/resize-observer": "^3.3.1",
     "@material-ui/core": "^4.12.0",
     "@material-ui/icons": "^4.11.2",

@@ -1,17 +1,27 @@
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 import PropTypes from 'prop-types'
+
+import { ActivityStackState } from '../data/globalState'
+import { useRecoilValue } from 'recoil'
 
 import MuiPaper from '@material-ui/core/Paper'
 
-import { Grid } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
-import PanelTitle from './PanelTitle.jsx'
-import ConnectMainContent from './ConnectMainContent.jsx'
+import PanelBreadcrumbs from './PanelBreadcrumb.jsx'
+
+import { ACTIVITIES } from './Activities'
+import ActivityBase from './ActivityBase.jsx'
+import ConnectMainActivity from './ConnectMainActivity.jsx'
+import ConnectLoginActivity from './ConnectLoginActivity.jsx'
+import AffectSurveyActivity from '../AffectSurvey/AffectSurveyActivity.jsx'
+import AffectSurveyActivitySkeleton from '../AffectSurvey/AffectSurveyActivitySkeleton.jsx'
+import PrivacyPromptActivity from '../AffectSurvey/PrivacyPromptActivity.jsx'
 
 // DEBUG: Enable this logger when needed
-// import { makeLogger } from '../../../util/Logger.js'
-// const LOG = makeLogger('CONNECT Main Panel', 'lime', 'black')
+import { makeLogger } from '../../../util/Logger.js'
+const LOG = makeLogger('CONNECT Main Panel', 'lime', 'black')
 
 const useStyles = makeStyles((theme) => ({
   // Style when the panel is retracted
@@ -35,9 +45,9 @@ const useStyles = makeStyles((theme) => ({
     right: `calc(0% - ${theme.spacing(39)}px)`
   },
 
-  // Styling of Grid container
-  gridContRoot: {
-    flexGrow: 1
+  // Activities need to be relatively positioned to overlap with siblings
+  activityStyle: {
+    position: 'relative'
   }
 }))
 
@@ -78,8 +88,12 @@ export default function ConnectMainDrawer (props) {
   const {
     panelHidden,
     panelRetracted,
-    panelExpanded
+    panelExpanded,
+    activityStyle
   } = useStyles()
+
+  // Global activity state
+  const activityStack = useRecoilValue(ActivityStackState)
 
   // Hover state of mouse
   const [mouseIsOver, setMouseIsOver] = useState(false)
@@ -132,6 +146,31 @@ export default function ConnectMainDrawer (props) {
     }
   }
 
+  // Build array of activities
+  const activityElements = []
+  if (activityStack.includes(ACTIVITIES.LOGIN)) {
+    activityElements.push(<ConnectLoginActivity key="login" className={activityStyle} />)
+  }
+
+  if (activityStack.includes(ACTIVITIES.MAIN)) {
+    activityElements.push(<ConnectMainActivity key="main" hidden={hidden} retracted={!mouseIsOver} className={activityStyle} />)
+  }
+
+  activityElements.push(
+    <ActivityBase key="affect" direction="left" in={activityStack.includes(ACTIVITIES.AFFECT_SURVEY)} mountOnEnter unmountOnExit>
+      <Typography variant="body1">{'How are you feeling about the project?'}</Typography>
+      <Suspense fallback={<AffectSurveyActivitySkeleton />}>
+        <AffectSurveyActivity />
+      </Suspense>
+    </ActivityBase>
+  )
+
+  activityElements.push(
+    <ActivityBase key="privacy" direction="left" in={activityStack.includes(ACTIVITIES.PRIVACY_PROMPT)} mountOnEnter unmountOnExit>
+      <PrivacyPromptActivity className={activityStyle} />
+    </ActivityBase>
+  )
+
   // Return the proper MUI elements
   return (
     <Paper
@@ -142,9 +181,12 @@ export default function ConnectMainDrawer (props) {
       onMouseEnter={() => { setMouseIsOver(true); cancelHide(); cancelRetract() }}
       onMouseLeave={() => { setMouseIsOver(false); hide(false); retract(false) }}
     >
-      <Grid container spacing={2} alignContent='flex-start'>
-        <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} />
-        <ConnectMainContent hidden={hidden} retracted={!mouseIsOver} />
+      <Grid container>
+        {/* <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} /> */}
+        <PanelBreadcrumbs />
+
+        {/* Render the loaded activities */}
+        {activityElements}
       </Grid>
     </Paper>
   )

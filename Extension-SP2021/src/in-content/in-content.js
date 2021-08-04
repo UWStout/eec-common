@@ -66,7 +66,7 @@ jQuery(document).ready(() => {
     }
   }, true)
   window.addEventListener('keydown', (e) => {
-    if (IS_DISCORD && !e.key === 'Enter') {
+    if (IS_DISCORD && e.key !== 'Enter') {
       e.stopImmediatePropagation()
     }
   }, true)
