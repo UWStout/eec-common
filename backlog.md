@@ -1,15 +1,17 @@
 # Current Sprint
 - [ ] (?) Wireframing for extension-popup/settings
-- [ ] (L) Update Testing Framework with latest additions
+- [ ] (L) User and Team settings implementation
+- [ ] (S) Simplify popup with directions to go to connect panel
 - [ ] (M) Test and fix problems with 'privacy prompting'
 - [ ] (M) Team-status section of Karuna Connect Panel 
-- [ ] (M) Favoriting affects and displaying in affect survey
 - [ ] (M) Deployed build for testing, practice, bug hunting
 - [ ] (M) Use Proper 3rd Party Usernames/ID
-- [ ] (L) User and Team settings implementation
 - [ ] (S) Avatar colors and letters
-- [ ] (S) Simplify popup with directions to go to connect panel
+
+# On Hold (in priority order)
 - [ ] (L) Simple timed triggers
+- [ ] (M) Favoriting affects and displaying in affect survey
+- [ ] (L) Update Testing Framework with latest additions
 
 # Product Backlog
 ## Summer Priority Tasks
