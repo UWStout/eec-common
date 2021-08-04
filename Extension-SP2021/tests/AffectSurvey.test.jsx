@@ -100,7 +100,15 @@ describe('Affect Survey', () => {
     expect(affectSurvey).toBeInTheDocument()
     expect(affectSurvey).toBeVisible()
   })
-  it.todo('shows affects approved of by team')
+  it('does not show affects disapproved by the team', () => {
+    render(
+      <AffectSurveyList />
+    )
+    // expect affects not related to happiness to not come up
+    const affect = screen.queryByText('Sexual Desire')
+    expect(affect).toBeNull()
+  })
+
   it('has a search bar at the top', () => {
     // Render with recoil state
     const { getByRole } = render(
@@ -127,6 +135,10 @@ describe('Affect Survey', () => {
     const joyEmoji = getByText('Joy')
     expect(joyEmoji).toBeInTheDocument()
     expect(joyEmoji).toBeVisible()
+
+    // expect affects not related to happiness to not come up
+    const angryEmoji = screen.queryByText('Anger')
+    expect(angryEmoji).toBeNull()
   })
 
   // Tests for all the list section headings
@@ -140,7 +152,20 @@ describe('Affect Survey', () => {
   it('retracts all emojis section only when clicked', checkExpandHeader(HEADINGS.all))
 
   // Check that privacy questionnaire comes up
-  it('When an affect is selected, the user\'s privacy settings must be checked and a PrivacyDialog might be shown', () => {
+  it('When an affect is selected, the user\'s privacy settings must be checked and a PrivacyDialog might be shown', async () => {
+    const { getByText, findByRole } = render(
+      <AffectSurveyList />
+    )
 
+    // clicking one of the affects makes the privacy dialog show up
+    const affect = getByText('Joy')
+
+    // Click the proper heading
+    fireEvent.click(affect)
+
+    // Wait for region to become visible
+    const privacyDialog = await findByRole('form', { name: 'Privacy Dialog' })
+    expect(privacyDialog).toBeInTheDocument()
+    expect(privacyDialog).toBeVisible()
   })
 })

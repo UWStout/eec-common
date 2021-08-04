@@ -72,7 +72,7 @@ function PrivacyDialog (props) {
   }
 
   return (
-    <Grid container spacing={1}>
+    <Grid aria-label={'Privacy Dialog'} role={'form'} container spacing={1}>
       <Grid item className={classes.title}>
         <Typography>
           {'Do you want to share your response with your team?'}
