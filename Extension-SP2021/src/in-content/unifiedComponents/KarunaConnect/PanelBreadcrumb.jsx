@@ -5,7 +5,7 @@ import { ActivityStackState, PopActivityState } from '../data/globalState'
 import { useRecoilValue, useRecoilState } from 'recoil'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Grid, Breadcrumbs, Typography, IconButton, Fade } from '@material-ui/core'
+import { Grid, Breadcrumbs, Typography, IconButton } from '@material-ui/core'
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
@@ -14,12 +14,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '6px',
     width: '100%',
     alignItems: 'flex-end'
-  },
-  buttonStyle: {
-    transform: 'translateY(-50%)',
-    right: '0px',
-    position: 'absolute',
-    top: '50%'
   }
 }))
 
@@ -44,7 +38,7 @@ export default function PanelBreadcrumbs (props) {
   const { onClose } = props
 
   // Create styling class names
-  const { rootStyle, buttonStyle } = useStyles()
+  const { rootStyle } = useStyles()
 
   // Get global activity stack and convert to 'typography' elements
   const activityStack = useRecoilValue(ActivityStackState)
