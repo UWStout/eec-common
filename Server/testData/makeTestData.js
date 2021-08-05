@@ -10,6 +10,21 @@ import bcrypt from 'bcrypt'
 // Our own database helper functions
 import * as DBHelp from './dbHelper.js'
 
+// Just some common pronoun lists (not by any means comprehensive)
+const PRONOUNS = [
+  '', // For those that might leave this blank
+  '(he/him)',
+  '(he/him/his)',
+  '(she/her)',
+  '(she/her/hers)',
+  '(they/them)',
+  '(they/them/theirs)',
+  '(he/them)',
+  '(she/them)',
+  '(they/him)',
+  '(they/her)'
+]
+
 const { ObjectID } = MongoDB.ObjectID
 
 // Helper function for hashing a password
@@ -59,6 +74,10 @@ function hashPassword (password) {
     await DBHelp.clearCollection(DBHandle, 'Teams')
     const teamIDs = await DBHelp.insertAllInCollection(DBHandle, 'Teams', rawTeams)
 
+    // Read and parse affects for setting random statuses
+    const rawAffectsStr = fs.readFileSync('./rawAffects/affects.json', { encoding: 'utf8' })
+    const rawAffects = JSON.parse(rawAffectsStr)
+
     // Parse and re-structure users
     const rawUsers = []
     process.stdout.write('\nProcessing users ')
@@ -88,11 +107,47 @@ function hashPassword (password) {
 
         // Return proper user
         rawUsers.push({
+          /* User provided data */
           email: user.email,
           passwordHash,
-          firstName: user.name.first,
-          lastName: user.name.last,
+          preferredPronouns: '',
+          name: `${user.name.first} ${user.name.last}`,
+          preferredName: user.name.first,
+
+          /* Usage/Derived data */
           userType: 'standard',
+
+          contextAlias: {
+            msTeams: 'uuid',
+            discord: user.login.username + '#9999',
+            slack: user.email
+          },
+
+          lastLogin: {
+            timestamp: '',
+            remoteAddress: '',
+            discord: {
+              timestamp: '',
+              remoteAddress: ''
+            },
+            msTeams: {
+              timestamp: '',
+              remoteAddress: ''
+            },
+            slack: {
+              timestamp: '',
+              remoteAddress: ''
+            }
+          },
+
+          status: {
+            currentAffectID: '',
+            privateAffectID: '',
+            currentAffectPrivacy: '',
+            collaboration: true,
+            timeToRespond: ''
+          },
+
           meta: {},
           teams
         })
