@@ -139,5 +139,31 @@ router.get('/details/:unitID', authenticateToken, async (req, res) => {
   }
 })
 
+// 9. test teamController's removeOrgUnit function
+router.delete('/remove', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { unitID } = req.body
+  if (!unitID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if unitID is a reasonable parameter for ObjectID (hexadecimal)
+  if (unitID && !ObjectID.isValid(unitID)) {
+    res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to remove org unit
+  debug(`Removing Organizational Unit ${unitID}`)
+  try {
+    await DBUnit.removeOrgUnit(unitID)
+    return res.json({ success: true })
+  } catch (error) {
+    console.error(`Failed to remove Org Unit ${unitID}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while removing Org Unit' })
+  }
+})
+
 // Expose the router for use in other files
 export default router

@@ -163,6 +163,18 @@ export function retrieveUserStatus (context = 'none') {
   })
 }
 
+export function retrieveTeamUserInfoAndStatus (teamID) {
+  return new Promise((resolve, reject) => {
+    sendMessageToBackground(
+      { type: 'ajax-teamInfoAndStatus', teamID },
+      'N/A', // Context does not matter
+      'Retrieving teammates info and status failed: ',
+      (userInfo) => { return resolve(userInfo) },
+      (message) => { return reject(new Error(message)) }
+    )
+  })
+}
+
 export function retrieveBasicUserInfo () {
   return new Promise((resolve, reject) => {
     sendMessageToBackground(

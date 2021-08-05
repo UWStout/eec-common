@@ -38,7 +38,7 @@ export default function UserStatusDetails (props) {
   }
 
   return (
-    <Grid container spacing={2}>
+    <Grid item container xs={12} spacing={2}>
 
       {/* Affect / Mood */}
       <Grid item xs={12}>

@@ -329,3 +329,33 @@ export const TimeToRespondState = selector({
     HELPER.setTimeToRespond(newTimeToRespond, MSG_CONTEXT)
   }
 })
+
+/** Currently Active Team (TODO: Make this an array of ALL active teams) */
+export const ActiveTeamIDState = atom({
+  key: 'ActiveTeamIDState',
+  default: '',
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Active Team ID Updated', newVal)
+      })
+    }
+  ]
+})
+
+/** Most recent teammates basic user info */
+export const TeammatesUserInfoState = selector({
+  key: 'TeammatesUserInfoState',
+  get: async ({ get }) => {
+    const activeTeamID = get(ActiveTeamIDState)
+    try {
+      const teammatesInfo = await HELPER.retrieveTeamUserInfoAndStatus(activeTeamID, MSG_CONTEXT)
+      return teammatesInfo
+    } catch (err) {
+      LOG.error(`Failed to retrieve teammates info with status for team "${activeTeamID}"`)
+      LOG.error(err)
+      return []
+    }
+  }
+})

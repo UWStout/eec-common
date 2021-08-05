@@ -9,19 +9,21 @@ import MuiPaper from '@material-ui/core/Paper'
 import { Grid, Typography } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
+// The header for the panel (with activity breadcrumbs)
 import PanelBreadcrumbs from './PanelBreadcrumb.jsx'
 
+// All the activities that might be used
 import { ACTIVITIES } from '../Activities/Activities.js'
 import ActivityBase from '../Activities/ActivityBase.jsx'
-import ConnectMainActivity from '../Activities/ConnectMainActivity.jsx'
-import ConnectLoginActivity from '../Activities/ConnectLoginActivity.jsx'
+import ConnectMainActivity from './ConnectMainActivity.jsx'
+import ConnectLoginActivity from './ConnectLoginActivity.jsx'
 import AffectSurveyActivity from '../Activities/AffectSurvey/AffectSurveyActivity.jsx'
 import AffectSurveyActivitySkeleton from '../Activities/AffectSurvey/AffectSurveyActivitySkeleton.jsx'
 import PrivacyPromptActivity from '../Activities/AffectSurvey/PrivacyPromptActivity.jsx'
 
 // DEBUG: Enable this logger when needed
-import { makeLogger } from '../../../util/Logger.js'
-const LOG = makeLogger('CONNECT Main Panel', 'lime', 'black')
+// import { makeLogger } from '../../../util/Logger.js'
+// const LOG = makeLogger('CONNECT Main Panel', 'lime', 'black')
 
 const useStyles = makeStyles((theme) => ({
   // Style when the panel is retracted
@@ -58,7 +60,12 @@ const Paper = withStyles((theme) => ({
     top: '20vh',
     width: theme.spacing(36),
     // AIW Placeholder styling for testing - I've not calculated this dimension yet.
-    maxHeight: theme.spacing(78),
+    // maxHeight: theme.spacing(78),
+
+    // SFB Trying out an alternative to maxHeight
+    maxHeight: '65vh',
+    overflowY: 'auto',
+    overflowX: 'hidden',
 
     paddingTop: theme.spacing(1),
     paddingRight: theme.spacing(2),
@@ -182,7 +189,7 @@ export default function ConnectMainDrawer (props) {
       onMouseLeave={() => { setMouseIsOver(false); hide(false); retract(false) }}
     >
       <Grid container>
-        {/* <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} /> */}
+        {/* Heading with title and breadcrumbs for activities */}
         <PanelBreadcrumbs onClose={() => { hide(true) }} />
 
         {/* Render the loaded activities */}

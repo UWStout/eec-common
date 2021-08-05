@@ -2,6 +2,8 @@
 import React, { useState, Suspense } from 'react'
 import PropTypes from 'prop-types'
 
+import { LoggedInUserState, UserStatusState } from '../data/globalState.js'
+
 import { withStyles } from '@material-ui/core/styles'
 
 import MuiAccordion from '@material-ui/core/Accordion'
@@ -9,11 +11,13 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 
 import { Grid, Typography } from '@material-ui/core'
-import { ExpandMore } from '@material-ui/icons'
+import { ExpandMore, Settings as SettingsIcon } from '@material-ui/icons'
 
-import StatusListItem from '../KarunaConnect/StatusListItem.jsx'
-import UserStatusDetails from '../KarunaConnect/UserStatusDetails.jsx'
+import StatusListItem from '../StatusComponents/StatusListItem.jsx'
+import UserStatusDetails from '../StatusComponents/UserStatusDetails.jsx'
 import ListNVCElements from '../NVCInfoSections/ListNVCElements.jsx'
+import { useRecoilValue } from 'recoil'
+import TeamStatusDetails from '../StatusComponents/TeamStatusDetails.jsx'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
@@ -47,7 +51,7 @@ const AccordionSummary = withStyles((theme) => ({
 const AccordionDetails = withStyles((theme) => ({
   root: {
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
+    paddingRight: 0,
     borderBottom: '1px solid rgba(0, 0, 0, .125)'
   }
 }))(MuiAccordionDetails)
@@ -55,8 +59,10 @@ const AccordionDetails = withStyles((theme) => ({
 export default function ConnectMainActivity (props) {
   const { hidden, retracted } = props
 
-  const [expanded, setExpanded] = useState('')
+  const currentUserInfo = useRecoilValue(LoggedInUserState)
+  const currentUserStatus = useRecoilValue(UserStatusState)
 
+  const [expanded, setExpanded] = useState('')
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
   }
@@ -66,12 +72,12 @@ export default function ConnectMainActivity (props) {
       {/* user status list item */}
       <Accordion square expanded={expanded === 'userStatus'} aria-controls={'karunaStatusDrawer'} onChange={handleChange('userStatus')}>
         <AccordionSummary
+          expandIcon={<SettingsIcon />}
           aria-label={'Current User Status'}
-          expandIcon={<ExpandMore />}
           aria-controls="user-status-content"
           id="user-status-header"
         >
-          <StatusListItem isUserStatus />
+          <StatusListItem userStatus={currentUserStatus} userInfo={currentUserInfo} />
         </AccordionSummary>
         <AccordionDetails>
           <Suspense fallback={<div />}>
@@ -83,21 +89,24 @@ export default function ConnectMainActivity (props) {
       {/* Team Status list item */}
       <Accordion square expanded={expanded === 'teamStatus'} onChange={handleChange('teamStatus')}>
         <AccordionSummary
-          aria-label={'Team Status'}
           expandIcon={<ExpandMore />}
+          aria-label={'Team Status'}
           aria-controls="team-status-content"
           id="team-status-header"
         >
           <Typography>Team Status</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <StatusListItem />
+          <Suspense fallback={<div />}>
+            <TeamStatusDetails />
+          </Suspense>
         </AccordionDetails>
       </Accordion>
 
       {/* Team Culture list item */}
-      <Accordion square>
+      <Accordion square expanded={expanded === 'teamCulture'} onChange={handleChange('teamCulture')}>
         <AccordionSummary
+          expandIcon={<ExpandMore />}
           aria-label={'Team Culture'}
           aria-controls="team-culture-content"
           id="team-culture-header"
@@ -110,10 +119,10 @@ export default function ConnectMainActivity (props) {
       </Accordion>
 
       {/* NVC Information list item */}
-      <Accordion square>
+      <Accordion square expanded={expanded === 'nvcInfo'} onChange={handleChange('nvcInfo')}>
         <AccordionSummary
-          aria-label={'NVC Information'}
           expandIcon={<ExpandMore />}
+          aria-label={'NVC Information'}
           aria-controls="nvc-info-content"
           id="nvc-info-header"
         >
