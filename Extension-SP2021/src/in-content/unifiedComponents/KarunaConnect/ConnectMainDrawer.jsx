@@ -11,13 +11,13 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 import PanelBreadcrumbs from './PanelBreadcrumb.jsx'
 
-import { ACTIVITIES } from './Activities'
-import ActivityBase from './ActivityBase.jsx'
-import ConnectMainActivity from './ConnectMainActivity.jsx'
-import ConnectLoginActivity from './ConnectLoginActivity.jsx'
-import AffectSurveyActivity from '../AffectSurvey/AffectSurveyActivity.jsx'
-import AffectSurveyActivitySkeleton from '../AffectSurvey/AffectSurveyActivitySkeleton.jsx'
-import PrivacyPromptActivity from '../AffectSurvey/PrivacyPromptActivity.jsx'
+import { ACTIVITIES } from '../Activities/Activities.js'
+import ActivityBase from '../Activities/ActivityBase.jsx'
+import ConnectMainActivity from '../Activities/ConnectMainActivity.jsx'
+import ConnectLoginActivity from '../Activities/ConnectLoginActivity.jsx'
+import AffectSurveyActivity from '../Activities/AffectSurvey/AffectSurveyActivity.jsx'
+import AffectSurveyActivitySkeleton from '../Activities/AffectSurvey/AffectSurveyActivitySkeleton.jsx'
+import PrivacyPromptActivity from '../Activities/AffectSurvey/PrivacyPromptActivity.jsx'
 
 // DEBUG: Enable this logger when needed
 import { makeLogger } from '../../../util/Logger.js'

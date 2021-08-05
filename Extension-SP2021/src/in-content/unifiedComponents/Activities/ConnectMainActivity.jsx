@@ -11,8 +11,8 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 import { Grid, Typography } from '@material-ui/core'
 import { ExpandMore } from '@material-ui/icons'
 
-import StatusListItem from './StatusListItem.jsx'
-import UserStatusDetails from './UserStatusDetails.jsx'
+import StatusListItem from '../KarunaConnect/StatusListItem.jsx'
+import UserStatusDetails from '../KarunaConnect/UserStatusDetails.jsx'
 import ListNVCElements from '../NVCInfoSections/ListNVCElements.jsx'
 
 // import { makeLogger } from '../../../util/Logger.js'

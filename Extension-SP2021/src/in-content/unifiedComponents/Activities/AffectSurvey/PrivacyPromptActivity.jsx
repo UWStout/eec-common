@@ -9,13 +9,13 @@ import {
   UserAffectIDState,
   LastSelectedAffectIDState,
   PopActivityState
-} from '../data/globalState.js'
+} from '../../data/globalState.js'
 
-import ExternalLink from '../Shared/ExternalLink.jsx'
+import ExternalLink from '../../Shared/ExternalLink.jsx'
 
-import { ACTIVITIES } from '../KarunaConnect/Activities.js'
+import { ACTIVITIES } from '../Activities.js'
 
-import { makeLogger } from '../../../util/Logger.js'
+import { makeLogger } from '../../../../util/Logger.js'
 const LOG = makeLogger('Privacy Activity', 'yellow', 'black')
 
 const useStyles = makeStyles((theme) => ({

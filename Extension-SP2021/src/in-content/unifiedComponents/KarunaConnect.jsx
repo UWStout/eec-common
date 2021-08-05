@@ -8,7 +8,7 @@ import { Container } from '@material-ui/core'
 import ConnectStatusDrawer from './KarunaConnect/ConnectStatusDrawer.jsx'
 import StatusDrawerSkeleton from './KarunaConnect/StatusDrawerSkeleton.jsx'
 import ConnectMainDrawer from './KarunaConnect/ConnectMainDrawer.jsx'
-import { ACTIVITIES } from './KarunaConnect/Activities.js'
+import { ACTIVITIES } from './Activities/Activities.js'
 
 // Colorful logger (enable if logging is needed)
 // import { makeLogger } from '../../util/Logger.js'

@@ -5,7 +5,7 @@ import { AffectListState, LastSelectedAffectIDState, UserStatusState, PushActivi
 
 import { Grid, Typography, Link } from '@material-ui/core'
 
-import { ACTIVITIES } from './Activities.js'
+import { ACTIVITIES } from '../Activities/Activities.js'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Status Activity', 'pink', 'black')

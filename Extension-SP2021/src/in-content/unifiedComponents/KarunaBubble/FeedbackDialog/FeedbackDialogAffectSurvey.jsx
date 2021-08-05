@@ -6,8 +6,8 @@ import { AffectListState, UserStatusState, PrivacyPrefsState } from '../../data/
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
 
-import AffectSurveyList from '../../AffectSurvey/AffectSurveyList.jsx'
-import PrivacyDialog from '../../AffectSurvey/PrivacyDialog.jsx'
+import AffectSurveyList from '../../Activities/AffectSurvey/AffectSurveyList.jsx'
+import PrivacyDialog from '../../Activities/AffectSurvey/PrivacyDialog.jsx'
 
 const useStyles = makeStyles((theme) => ({
   title: {
