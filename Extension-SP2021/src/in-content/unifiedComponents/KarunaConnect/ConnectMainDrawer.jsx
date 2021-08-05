@@ -183,7 +183,7 @@ export default function ConnectMainDrawer (props) {
     >
       <Grid container>
         {/* <PanelTitle title='Karuna Connect' arrow='right' onClose={() => { hide(true) }} /> */}
-        <PanelBreadcrumbs />
+        <PanelBreadcrumbs onClose={() => { hide(true) }} />
 
         {/* Render the loaded activities */}
         {activityElements}
