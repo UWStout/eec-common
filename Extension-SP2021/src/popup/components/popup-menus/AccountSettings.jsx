@@ -21,14 +21,15 @@ export default function AccountSettings () {
   const [password, updatePassword] = useState('')
   const [loggedIn, updateLoggedIn] = useState(false)
   const [failedLogin, updateFailed] = useState(false)
+  const [JWT, updateJWT] = useState('')
 
   // Read the JWT for later use
   chrome.runtime.sendMessage(
     { type: 'read', key: 'JWT' },
     (response) => {
       if (response?.value) {
-        this.JWT = response.value
         updateLoggedIn(true)
+        updateJWT(response.value)
       }
     }
   )
@@ -43,7 +44,7 @@ export default function AccountSettings () {
     return JSON.parse(atob(token.split('.')[1]))
   }
 
-  const payload = decodeTokenPayload(this.JWT)
+  const payload = decodeTokenPayload(JWT)
 
   // Login validation callback
   const validateLogin = () => {
@@ -105,7 +106,7 @@ export default function AccountSettings () {
 
   const loggedInWelcome = (
     <div>
-      <h1>Welcome {payload.firstName}</h1>
+      <h1>Welcome {payload.name}</h1>
       <Button onClick={logout}>Logout</Button>
     </div>
   )

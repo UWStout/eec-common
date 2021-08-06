@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Grid, Button, TextField, FormControlLabel, Checkbox, Typography } from '@material-ui/core'
+import { Grid, Button, TextField, FormControlLabel, Checkbox } from '@material-ui/core'
 import ExternalLink from '../Shared/ExternalLink.jsx'
+
+import * as BACKGROUND from '../data/backgroundHelper.js'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
@@ -16,8 +18,16 @@ const useStyles = makeStyles((theme) => ({
 export default function ConnectLoginActivity (props) {
   const { fullWidth } = useStyles()
   const [rememberMe, setRememberMe] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [hasError, setHasError] = useState(false)
+
   const handleCheckboxChange = (e) => {
     setRememberMe(e.target.checked)
+  }
+
+  const validateLogin = () => {
+    BACKGROUND.login(email, password, () => { setHasError(true) })
   }
 
   return (
@@ -29,6 +39,9 @@ export default function ConnectLoginActivity (props) {
           label="Email"
           helperText="Please enter your email"
           className={fullWidth}
+          value={email}
+          onChange={(e) => { setEmail(e.target.value); setHasError(false) }}
+          error={hasError}
         />
         <ExternalLink href="https://localhost:3000/register.html">
           {'I need an account'}
@@ -41,7 +54,11 @@ export default function ConnectLoginActivity (props) {
           id="login-password"
           label="Password"
           helperText="Please enter you password"
+          type="password"
           className={fullWidth}
+          value={password}
+          onChange={(e) => { setPassword(e.target.value); setHasError(false) }}
+          error={hasError}
         />
         <ExternalLink href="https://localhost:3000/">
           {'Forgot password?'}
@@ -64,7 +81,7 @@ export default function ConnectLoginActivity (props) {
 
       {/* Trigger the Login */}
       <Grid item>
-        <Button variant="contained" color="primary" className={fullWidth}>
+        <Button variant="contained" color="primary" className={fullWidth} onClick={validateLogin}>
           {'Login'}
         </Button>
       </Grid>
