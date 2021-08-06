@@ -4,11 +4,19 @@
   },
   "email": "anywhere@email.com",
   "passwordHash": "$2b$10$U9/hGWcYCzZgpcqCY7arx.vujYruvu9Yuw6DmxhLuj23L9iIO8tYm",
-  "firstName": "Joe",
-  "lastName": "Anybody",
+  "preferredPronouns": "(He/They)",
+  "name": "Joe Anybody",
+  "preferredName": "Brosef",
   "userType": "admin",
   "meta": {},
-  "teams": [],
+  "teams": [
+    {
+      "$oid": "610d4ab77608ade9e0d94ed0"
+    },
+    {
+      "$oid": "610d4ab77608ade9e0d94ed2"
+    }   
+  ],
   "lastLogin": {
     "timestamp": {
       "$date": "2021-06-03T14:47:32.860Z"
@@ -43,6 +51,11 @@
     "currentAffectID": {
       "$oid": "6008928508baff43187a7501"
     },
-    "collaboration": true
+    "privateAffectID": {
+      "$oid": "6008928508baff43187a74f3"
+    },
+    "currentAffectPrivacy": false,
+    "collaboration": true,
+    "timeToRespond": 12
   }
 }
