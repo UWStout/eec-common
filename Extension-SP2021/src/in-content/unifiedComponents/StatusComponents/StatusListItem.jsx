@@ -45,7 +45,7 @@ export default function StatusListItem (props) {
       <Grid container item>
         <Grid item xs={12}>
           <Typography noWrap variant={'body1'} className={nameStyle}>
-            {isTeammate ? userInfo.email : 'My Statuses'}
+            {isTeammate ? userInfo.preferredName : 'My Statuses'}
           </Typography>
         </Grid>
         <Grid item xs={12}>
