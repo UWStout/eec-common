@@ -12,10 +12,10 @@ import ListNVCElements from '../../NVCInfoSections/ListNVCElements.jsx'
 
 export default function FeedbackDialogContent (props) {
   // Deconstruct the props
-  const { onHide, cancelHide } = props
+  const { onHide, cancelHide, displayed } = props
 
   // Displayed state
-  const [displayedFeedback/*, setDisplayedFeedback */] = useState('observations')
+  const [displayedFeedback/*, setDisplayedFeedback */] = useState(displayed)
 
   // Register to global state changes
   const karunaMessage = useRecoilValue(KarunaMessageState)
@@ -48,5 +48,10 @@ export default function FeedbackDialogContent (props) {
 
 FeedbackDialogContent.propTypes = {
   onHide: PropTypes.func.isRequired,
-  cancelHide: PropTypes.func.isRequired
+  cancelHide: PropTypes.func.isRequired,
+  displayed: PropTypes.string
+}
+
+FeedbackDialogContent.defaultProps = {
+  displayed: 'observations'
 }

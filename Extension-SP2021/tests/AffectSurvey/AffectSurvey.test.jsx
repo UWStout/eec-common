@@ -4,13 +4,13 @@
 
 import React from 'react'
 
-import { render, screen, presentVisibleAndContained } from './testRecoilUtils.jsx'
+import { render, screen, presentVisibleAndContained } from '../testRecoilUtils.jsx'
 import { fireEvent, waitFor } from '@testing-library/react'
 
 import '@testing-library/jest-dom/extend-expect'
 import { toBeVisible, toHaveClass } from '@testing-library/jest-dom/matchers'
 
-import AffectSurveyList from '../src/in-content/unifiedComponents/AffectSurvey/AffectSurveyList.jsx'
+import AffectSurveyList from '../../src/in-content/unifiedComponents/AffectSurvey/AffectSurveyList.jsx'
 
 // Testing accordians
 function retrieveAndCheckHeader (headerName) {
@@ -79,6 +79,25 @@ function checkExpandHeader (headerName) {
   }
 }
 
+async function getPrivacyDialog () {
+  const { getByText, findByRole } = render(
+    <AffectSurveyList />
+  )
+
+  // clicking one of the affects makes the privacy dialog show up
+  const affect = getByText('Joy')
+
+  // Click the proper heading
+  fireEvent.click(affect)
+
+  // Wait for region to become visible
+  const privacyDialog = await findByRole('form', { name: 'Privacy Dialog' })
+  expect(privacyDialog).toBeInTheDocument()
+  expect(privacyDialog).toBeVisible()
+
+  return privacyDialog
+}
+
 expect.extend({ toBeVisible, toHaveClass })
 
 // List of heading names
@@ -100,7 +119,15 @@ describe('Affect Survey', () => {
     expect(affectSurvey).toBeInTheDocument()
     expect(affectSurvey).toBeVisible()
   })
-  it.todo('shows affects approved of by team')
+  it('does not show affects disapproved by the team', () => {
+    render(
+      <AffectSurveyList />
+    )
+    // expect affects not related to happiness to not come up
+    const affect = screen.queryByText('Sexual Desire')
+    expect(affect).toBeNull()
+  })
+
   it('has a search bar at the top', () => {
     // Render with recoil state
     const { getByRole } = render(
@@ -127,6 +154,10 @@ describe('Affect Survey', () => {
     const joyEmoji = getByText('Joy')
     expect(joyEmoji).toBeInTheDocument()
     expect(joyEmoji).toBeVisible()
+
+    // expect affects not related to happiness to not come up
+    const angryEmoji = screen.queryByText('Anger')
+    expect(angryEmoji).toBeNull()
   })
 
   // Tests for all the list section headings
@@ -138,9 +169,18 @@ describe('Affect Survey', () => {
   it('expands recent emojis section only when clicked', checkExpandHeader(HEADINGS.recent))
   it('expands favorite emojis section only when clicked', checkExpandHeader(HEADINGS.favorites))
   it('retracts all emojis section only when clicked', checkExpandHeader(HEADINGS.all))
+})
 
+describe('Privacy Dialog', () => {
   // Check that privacy questionnaire comes up
-  it('When an affect is selected, the user\'s privacy settings must be checked and a PrivacyDialog might be shown', () => {
-
+  it('shows up', async () => {
+    await getPrivacyDialog()
   })
+
+  it.todo('Keeping the affect private does not change your team status affect icon but does change your current mood icon')
+  it.todo('Sharing your affect changes your team status icon and your mood icon')
+  it.todo('Canceling your affect update means none of your status\' or icons update')
+  it.todo('Clicking the "Why Share?" button leads you to another page')
+  it.todo('Clicking the "Is This Secure?" button leads you to another page')
+  it.todo('Checking the "Save my response" will affect if the privacy dialog comes up again')
 })
