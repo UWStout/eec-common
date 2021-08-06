@@ -11,7 +11,7 @@ import { create as JSSCreate } from 'jss'
 import { StylesProvider, jssPreset } from '@material-ui/core/styles'
 
 // Import state to set
-import { LoggedInUserState, UserStatusState, AffectListState, AffectHistoryListState, PrivacyPrefsState, UserAffectIDState, SelectedAffectSurveyState } from '../src/in-content/unifiedComponents/data/globalState.js'
+import { LoggedInUserState, UserStatusState, AffectListState, AffectHistoryListState, PrivacyPrefsState, UserAffectIDState, LastSelectedAffectIDState } from '../src/in-content/unifiedComponents/data/globalState.js'
 
 /** Function to set initial recoil state for testing */
 function initializeState (snapshot) {
@@ -39,7 +39,7 @@ function initializeState (snapshot) {
   snapshot.set(UserAffectIDState, currentAffect)
 
   const selectedAffect = '6008928508baff43187a74f9'
-  snapshot.set(SelectedAffectSurveyState, selectedAffect)
+  snapshot.set(LastSelectedAffectIDState, selectedAffect)
 
   snapshot.set(LoggedInUserState, {
     id: UserData._id,

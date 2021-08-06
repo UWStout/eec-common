@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useRef } from 'react'
+import React, { Suspense, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { ActivityStackState } from '../data/globalState'
@@ -112,10 +112,6 @@ export default function ConnectMainDrawer (props) {
   const [retractTimeout, setRetractTimeout] = useState(false)
   const [isRetracted, setIsRetracted] = useState(false)
 
-  const drawerRef = useRef()
-
-  // console.log(document.activeElement)
-
   // Function for queueing a hide request
   const hide = (immediate) => {
     if (onHide && !hidden) {
@@ -185,7 +181,6 @@ export default function ConnectMainDrawer (props) {
   // Return the proper MUI elements
   return (
     <Paper
-      ref={drawerRef}
       role={'complementary'}
       aria-label={'Main Drawer'}
       elevation={5}
