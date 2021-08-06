@@ -15,13 +15,20 @@ const useStyles = makeStyles((theme) => ({
   gridRoot: (props) => ({
     maxHeight: (props.isTeammate ? theme.spacing(6) : theme.spacing(6)),
     marginBottom: theme.spacing(1)
+  }),
+  nameStyle: (props) => ({
+    fontSize: (props.isTeammate ? '10px' : '12px')
+  }),
+  pronounStyle: (props) => ({
+    fontSize: (props.isTeammate ? '8px' : '10px'),
+    fontStyle: 'italic'
   })
 }))
 
 export default function StatusListItem (props) {
   // Deconstruct the props
   const { userInfo, userStatus, isTeammate } = props
-  const { gridRoot } = useStyles(props)
+  const { gridRoot, nameStyle, pronounStyle } = useStyles(props)
 
   // Subscribe to the emoji list (for looking up affect objects)
   const emojiList = useRecoilValue(AffectListState)
@@ -36,12 +43,17 @@ export default function StatusListItem (props) {
     <Grid container direction="column" className={gridRoot} role={'region'} aria-label={label}>
       <AvatarIcon userInfo={userInfo} team={isTeammate} />
       <Grid container item>
-        <Grid item>
-          <Typography noWrap variant={(isTeammate ? 'caption' : 'body1')}>
+        <Grid item xs={12}>
+          <Typography noWrap variant={'body1'} className={nameStyle}>
             {isTeammate ? userInfo.email : 'My Statuses'}
           </Typography>
         </Grid>
-        <Grid container item spacing={1}>
+        <Grid item xs={12}>
+          <Typography noWrap variant={'body1'} className={pronounStyle}>
+            {userInfo.preferredPronouns ? userInfo.preferredPronouns : '(not provided)'}
+          </Typography>
+        </Grid>
+        <Grid container item xs={12} spacing={1}>
           <Grid item>
             <CustomTooltip placement='right' title={currentAffect ? currentAffect.name : 'unknown'}>
               <Typography variant={(isTeammate ? 'caption' : 'body1')} align='center'>

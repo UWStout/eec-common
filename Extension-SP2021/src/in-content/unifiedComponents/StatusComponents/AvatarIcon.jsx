@@ -9,12 +9,12 @@ import { stringToColor } from '../../../util/colorHelper'
 const useStyles = makeStyles((theme) => ({
   avatarStyle: (props) => ({
     // AIW A large Avatar size for the user
-    width: theme.spacing(props.team ? 4 : 5),
-    height: theme.spacing(props.team ? 4 : 5),
+    width: theme.spacing(props.team ? 4.5 : 6),
+    height: theme.spacing(props.team ? 4.5 : 6),
 
     fontSize: (props.team ? '12px' : undefined),
     marginRight: theme.spacing(1),
-    marginTop: '4px',
+    marginTop: (props.team ? '6px' : '4px'),
 
     // Colors as a hash of user id
     color: theme.palette.getContrastText(props.bgColor),
