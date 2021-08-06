@@ -54,8 +54,9 @@ export function validateUser (email, password) {
             return resolve({
               id: result._id,
               email: result.email,
-              firstName: result.firstName,
-              lastName: result.lastName,
+              name: result.name,
+              preferredName: result.preferredName,
+              preferredPronouns: result.preferredPronouns,
               userType: result.userType
             })
           })

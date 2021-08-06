@@ -33,7 +33,9 @@ function AvatarIcon (props) {
   const { avatarStyle } = useStyles({ team, bgColor })
 
   // Build initials
-  const initials = userInfo.firstName?.toUpperCase()[0] + userInfo.lastName?.toUpperCase()[0]
+  const names = userInfo.name.split(' ')
+  const lastIdx = (names.length > 1 ? names.length - 1 : -1)
+  const initials = (names[0] ? names[0].toUpperCase()[0] : '') + (names[lastIdx] ? names[lastIdx].toUpperCase()[0] : '')
 
   return (
     <Grid item xs={12}>

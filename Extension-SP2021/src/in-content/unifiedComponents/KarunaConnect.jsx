@@ -49,7 +49,7 @@ export default function KarunaConnect (props) {
   // DEBUG: Default to a known team for now
   useEffect(() => {
     if (userLoggedIn) {
-      setActiveTeamID('60b8f366bc6cbf7808ee6a7e')
+      setActiveTeamID('610d4ab77608ade9e0d94ed0')
     }
   }, [setActiveTeamID, userLoggedIn])
 

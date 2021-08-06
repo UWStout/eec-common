@@ -101,8 +101,9 @@ export function retrieveUser () {
     return {
       id: jsonObj.id,
       email: jsonObj.email,
-      firstName: jsonObj.firstName,
-      lastName: jsonObj.lastName,
+      name: jsonObj.name,
+      preferredName: jsonObj.preferredName,
+      preferredPronouns: jsonObj.preferredPronouns,
       userType: jsonObj.userType
     }
   }
