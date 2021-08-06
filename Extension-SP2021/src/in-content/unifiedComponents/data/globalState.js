@@ -25,9 +25,70 @@ export const BubbleVisibilityState = atom({
   default: false
 })
 
+/** The trail of activities clicked through in the connect panel */
+export const ActivityStackState = atom({
+  key: 'ActivityStackState',
+  default: [],
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Activity stack updated', newVal)
+      })
+    }
+  ]
+})
+
+/** Add an activity to the stack */
+export const PushActivityState = selector({
+  key: 'PushActivityState',
+  get: ({ get }) => {
+    const activityStack = get(ActivityStackState)
+    if (activityStack.length < 1) {
+      LOG.error('Empty activity stack')
+      return ''
+    }
+    return activityStack[activityStack.length - 1]
+  },
+  set: ({ get, set }, newActivity) => {
+    const activityStack = get(ActivityStackState)
+    if (activityStack.includes(newActivity)) {
+      LOG.error(`Activity "${newActivity}" already in stack`)
+    } else {
+      set(ActivityStackState, [...activityStack, newActivity])
+    }
+  }
+})
+
+/** Remove activity from top of stack */
+export const PopActivityState = selector({
+  key: 'PopActivityState',
+  get: ({ get }) => {
+    const activityStack = get(ActivityStackState)
+    if (activityStack.length < 1) {
+      LOG.error('Empty activity stack')
+      return ''
+    }
+    return activityStack[activityStack.length - 1]
+  },
+  set: ({ get, set }, activityToPop) => {
+    const activityStack = get(ActivityStackState)
+    if (activityStack.length > 1) {
+      const currentActivity = activityStack[activityStack.length - 1]
+      if (currentActivity !== activityToPop) {
+        LOG.error(`Current activity (${currentActivity}) does not match pop request (${activityToPop})`)
+      } else {
+        set(ActivityStackState, activityStack.slice(0, -1))
+      }
+    } else {
+      LOG.error('Refusing to remove the last activity (prevented stack underflow)')
+    }
+  }
+})
+
 /** Has the user selected a new mood in the affect survey */
-export const SelectedAffectSurveyState = atom({
-  key: 'SelectedAffectSurveyState',
+export const LastSelectedAffectIDState = atom({
+  key: 'LastSelectedAffectIDState',
   default: ''
 })
 
@@ -133,7 +194,7 @@ export const PrivacyPrefsState = atom({
 
       // Log any value changes for debugging
       onSet((newVal) => {
-        LOG('Logged in user updated', newVal)
+        LOG('Privacy preferences updated', newVal)
       })
     }
   ]
@@ -266,5 +327,35 @@ export const TimeToRespondState = selector({
 
     // Send to the database
     HELPER.setTimeToRespond(newTimeToRespond, MSG_CONTEXT)
+  }
+})
+
+/** Currently Active Team (TODO: Make this an array of ALL active teams) */
+export const ActiveTeamIDState = atom({
+  key: 'ActiveTeamIDState',
+  default: '',
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Active Team ID Updated', newVal)
+      })
+    }
+  ]
+})
+
+/** Most recent teammates basic user info */
+export const TeammatesUserInfoState = selector({
+  key: 'TeammatesUserInfoState',
+  get: async ({ get }) => {
+    const activeTeamID = get(ActiveTeamIDState)
+    try {
+      const teammatesInfo = await HELPER.retrieveTeamUserInfoAndStatus(activeTeamID, MSG_CONTEXT)
+      return teammatesInfo
+    } catch (err) {
+      LOG.error(`Failed to retrieve teammates info with status for team "${activeTeamID}"`)
+      LOG.error(err)
+      return []
+    }
   }
 })

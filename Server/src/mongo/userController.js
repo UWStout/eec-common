@@ -137,10 +137,21 @@ export function listUsersInTeam (teamID) {
             orgId: result.orgId
           }
 
-          // Retrieve filtered list of users with unit info joined
+          // Retrieve filtered list of users (w/o sensitive info) with team info joined
           DBHandle.collection('Users').aggregate([
             { $match: { teams: new ObjectID(teamID) } },
-            { $project: { passwordHash: 0, teams: 0 } },
+            {
+              $project: {
+                passwordHash: 0,
+                lastLogin: 0,
+                lastContextLogin: 0,
+                lastWizardLogin: 0,
+                teams: 0,
+                meta: 0,
+                'status.privateAffectID': 0,
+                'status.currentAffectPrivacy': 0
+              }
+            },
             { $addFields: teamData }
           ], (err, cursor) => {
             // Check for and handle error
@@ -315,13 +326,29 @@ export function removeUser (userID) {
  *
  * tested in test 33
  *
- * @param {ObjectID} userID
+ * @param {ObjectID} userID Database ID of the user to retrieve
+ * @param {boolean} privileged Include private info (should only be true when retrieving one's own status)
  * @returns {Promise} resolves with status object from user field, else rejects with an error
  */
-export async function getUserStatus (userID) {
+export async function getUserStatus (userID, privileged = false) {
+  const projection = {
+    _id: 0,
+    'status.currentAffectID': 1,
+    'status.collaboration': 1,
+    'status.timeToRespond': 1
+  }
+
+  if (privileged) {
+    projection['status.currentAffectPrivacy'] = 1
+    projection['status.privateAffectID'] = 1
+  }
+
   const DBHandle = await retrieveDBHandle('karunaData')
   return DBHandle.collection('Users')
-    .findOne({ _id: new ObjectID(userID) }, { projection: { status: 1, _id: 0 } })
+    .findOne(
+      { _id: new ObjectID(userID) },
+      { projection }
+    )
 }
 
 /**

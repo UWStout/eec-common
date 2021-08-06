@@ -10,10 +10,10 @@ import {
   PrivacyPrefsState,
   PrivacyPrefsStateSetter,
   UserAffectIDState,
-  SelectedAffectSurveyState
-} from '../data/globalState.js'
+  LastSelectedAffectIDState
+} from '../../data/globalState.js'
 
-import { makeLogger } from '../../../util/Logger.js'
+import { makeLogger } from '../../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Privacy Dialog', 'yellow', 'black')
 
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +34,7 @@ function PrivacyDialog (props) {
   // GLOBAL STATES
   const setPrivacy = useSetRecoilState(PrivacyPrefsStateSetter)
   const setCurrentAffect = useSetRecoilState(UserAffectIDState)
-  const selectedAffectID = useRecoilValue(SelectedAffectSurveyState)
+  const selectedAffectID = useRecoilValue(LastSelectedAffectIDState)
   const privacy = useRecoilValue(PrivacyPrefsState)
 
   // should probably be a global state from the database since the user probably wants this to be remembered

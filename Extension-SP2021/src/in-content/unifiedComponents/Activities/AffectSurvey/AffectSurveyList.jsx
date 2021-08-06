@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { debounce } from 'debounce'
 
 import { useRecoilValue, useRecoilState } from 'recoil'
-import * as STATE from '../data/globalState.js'
+import * as STATE from '../../data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse, Grid } from '@material-ui/core'
@@ -12,10 +12,10 @@ import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/ic
 
 import SearchBar from 'material-ui-search-bar'
 
-import Emoji from './Emoji.jsx'
+import Emoji from '../../Shared/Emoji.jsx'
 import PrivacyDialog from './PrivacyDialog.jsx'
 
-import { makeLogger } from '../../../util/Logger.js'
+import { makeLogger } from '../../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Affect Survey', 'pink', 'black')
 
 const useStyles = makeStyles((theme) => ({
@@ -79,7 +79,7 @@ export default function AffectSurveyList (props) {
   // Values and mutator functions for global state (GLOBAL STATE)
   const [affectPrivacy, setPrivacy] = useRecoilState(STATE.PrivacyPrefsStateSetter)
   const [userAffectID, setUserAffectID] = useRecoilState(STATE.UserAffectIDState)
-  const [selectedAffectID, setSelectedAffectID] = useRecoilState(STATE.SelectedAffectSurveyState)
+  const [selectedAffectID, setSelectedAffectID] = useRecoilState(STATE.LastSelectedAffectIDState)
 
   // Visibility of the privacy dialog
   const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)

@@ -1,6 +1,9 @@
 // File IO
 import fs from 'fs'
 
+// UUID Generator
+import { v4 as UUIDv4 } from 'uuid'
+
 // MongoDB library
 import MongoDB from 'mongodb'
 
@@ -9,6 +12,21 @@ import bcrypt from 'bcrypt'
 
 // Our own database helper functions
 import * as DBHelp from './dbHelper.js'
+
+// Just some common pronoun lists (not by any means comprehensive)
+const PRONOUNS = [
+  '', // For those that might leave this blank
+  '(he/him)',
+  '(he/him/his)',
+  '(she/her)',
+  '(she/her/hers)',
+  '(they/them)',
+  '(they/them/theirs)',
+  '(he/them)',
+  '(she/them)',
+  '(they/him)',
+  '(they/her)'
+]
 
 const { ObjectID } = MongoDB.ObjectID
 
@@ -59,6 +77,10 @@ function hashPassword (password) {
     await DBHelp.clearCollection(DBHandle, 'Teams')
     const teamIDs = await DBHelp.insertAllInCollection(DBHandle, 'Teams', rawTeams)
 
+    // Read and parse affects for setting random statuses
+    const rawAffectsStr = fs.readFileSync('./rawAffects/affects.json', { encoding: 'utf8' })
+    const rawAffects = JSON.parse(rawAffectsStr)
+
     // Parse and re-structure users
     const rawUsers = []
     process.stdout.write('\nProcessing users ')
@@ -86,13 +108,56 @@ function hashPassword (password) {
         // Hash password
         const passwordHash = await hashPassword(user.login.password)
 
+        // Pick some random affects
+        const affectIndex = [-1, -1]
+        do {
+          affectIndex[0] = getRandIndex(rawAffects)
+          affectIndex[1] = getRandIndex(rawAffects)
+        } while (!rawAffects[affectIndex[0]].active || !rawAffects[affectIndex[1]].active)
+        const privateAffect = (Math.random() >= 0.5)
+
         // Return proper user
         rawUsers.push({
+          /* User provided data */
           email: user.email,
           passwordHash,
-          firstName: user.name.first,
-          lastName: user.name.last,
-          userType: 'standard',
+          preferredPronouns: PRONOUNS[getRandIndex(PRONOUNS)],
+          name: `${user.name.first} ${user.name.last}`,
+          preferredName: user.name.first,
+          userType: (Math.random() > 0.75 ? 'admin' : 'standard'),
+
+          /* Usage/Derived data */
+          contextAlias: {
+            msTeams: UUIDv4(),
+            discord: user.login.username + '#' + getRandomSuffix(),
+            slack: user.email
+          },
+
+          lastLogin: {
+            timestamp: randomTimestamp(),
+            remoteAddress: getRandomLocalIP(),
+            discord: {
+              timestamp: randomTimestamp(),
+              remoteAddress: getRandomLocalIP()
+            },
+            msTeams: {
+              timestamp: randomTimestamp(),
+              remoteAddress: getRandomLocalIP()
+            },
+            slack: {
+              timestamp: randomTimestamp(),
+              remoteAddress: getRandomLocalIP()
+            }
+          },
+
+          status: {
+            currentAffectID: rawAffects[affectIndex[0]]._id,
+            privateAffectID: rawAffects[affectIndex[1]]._id,
+            currentAffectPrivacy: privateAffect,
+            collaboration: (Math.random() >= 0.5),
+            timeToRespond: getRandomInt(1, 72)
+          },
+
           meta: {},
           teams
         })
@@ -113,3 +178,57 @@ function hashPassword (password) {
     console.error(err)
   }
 })()
+
+/**
+* Returns a random integer between min (inclusive) and max (inclusive).
+* The value is no lower than min (or the next integer greater than min
+* if min isn't an integer) and no greater than max (or the next integer
+* lower than max if max isn't an integer).
+* Using Math.round() will give you a non-uniform distribution!
+*/
+function getRandomInt (low, high) {
+  low = Math.ceil(low)
+  high = Math.floor(high)
+  return Math.floor(Math.random() * (high - low + 1)) + low
+}
+
+function getRandIndex (array) {
+  return getRandomInt(0, array.length - 1)
+}
+
+function getRandomLocalIP () {
+  return `192.168.${getRandomInt(0, 255)}.${getRandomInt(1, 255)}`
+}
+
+function randomDate (start, end, startHour, endHour) {
+  var date = new Date(+start + Math.random() * (end - start))
+  var hour = startHour + Math.random() * (endHour - startHour) | 0
+  date.setHours(hour)
+  return date
+}
+
+function randomTimestamp () {
+  let startDate = new Date(
+    getRandomInt(2010, 2020),
+    getRandomInt(0, 11),
+    getRandomInt(0, 27)
+  )
+
+  let endDate = new Date(
+    getRandomInt(2010, 2020),
+    getRandomInt(0, 11),
+    getRandomInt(0, 27)
+  )
+
+  if (endDate < startDate) {
+    const temp = endDate
+    endDate = startDate
+    startDate = temp
+  }
+
+  return randomDate(startDate, endDate, 5, 20)
+}
+
+function getRandomSuffix () {
+  return `${getRandomInt(0, 9)}${getRandomInt(0, 9)}${getRandomInt(0, 9)}${getRandomInt(0, 9)}`
+}

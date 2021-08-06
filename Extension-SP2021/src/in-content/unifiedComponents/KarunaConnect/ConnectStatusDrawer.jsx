@@ -15,7 +15,7 @@ import CustomTooltip from './CustomTooltip.jsx'
 import OpenArrow from './PanelOpenArrow.jsx'
 
 // Lazy load affect icon
-const AffectIcon = React.lazy(() => import('./AffectIcon.jsx'))
+const AffectIcon = React.lazy(() => import('../Shared/AffectIcon.jsx'))
 
 const useStyles = makeStyles((theme) => ({
   // Style when the panel is fully retracted

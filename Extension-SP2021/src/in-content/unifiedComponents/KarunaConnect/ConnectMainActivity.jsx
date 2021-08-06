@@ -1,9 +1,8 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-import React, { useState, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
 import PropTypes from 'prop-types'
 
-import { useRecoilValue } from 'recoil'
-import { AffectListState, SelectedAffectSurveyState, UserStatusState } from '../data/globalState.js'
+import { LoggedInUserState, UserStatusState } from '../data/globalState.js'
 
 import { withStyles } from '@material-ui/core/styles'
 
@@ -11,12 +10,14 @@ import MuiAccordion from '@material-ui/core/Accordion'
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 
-import { Grid, Typography, Link, Collapse } from '@material-ui/core'
-import { ExpandMore } from '@material-ui/icons'
+import { Grid, Typography } from '@material-ui/core'
+import { ExpandMore, Settings as SettingsIcon } from '@material-ui/icons'
 
-import StatusListItem from './StatusListItem.jsx'
-import AffectSurveyList from '../AffectSurvey/AffectSurveyList.jsx'
+import StatusListItem from '../StatusComponents/StatusListItem.jsx'
+import UserStatusDetails from '../StatusComponents/UserStatusDetails.jsx'
 import ListNVCElements from '../NVCInfoSections/ListNVCElements.jsx'
+import { useRecoilValue } from 'recoil'
+import TeamStatusDetails from '../StatusComponents/TeamStatusDetails.jsx'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
@@ -50,103 +51,62 @@ const AccordionSummary = withStyles((theme) => ({
 const AccordionDetails = withStyles((theme) => ({
   root: {
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
+    paddingRight: 0,
     borderBottom: '1px solid rgba(0, 0, 0, .125)'
   }
 }))(MuiAccordionDetails)
 
-export default function ConnectMainContent (props) {
+export default function ConnectMainActivity (props) {
   const { hidden, retracted } = props
 
-  // Subscribe to the global emojiList state and current status (GLOBAL STATE)
-  const emojiList = useRecoilValue(AffectListState)
-  const currentStatus = useRecoilValue(UserStatusState)
+  const currentUserInfo = useRecoilValue(LoggedInUserState)
+  const currentUserStatus = useRecoilValue(UserStatusState)
 
   const [expanded, setExpanded] = useState('')
-  const selectedAffectID = useRecoilValue(SelectedAffectSurveyState)
-  const [selectedAffect, setSelectedAffect] = useState(null)
-
-  // open affect survey
-  const [affectSurveyOpen, setAffectSurveyOpen] = useState(false)
-
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
   }
-
-  const currentAffect = emojiList.find((item) => {
-    return item._id === currentStatus?.currentAffectID
-  })
-
-  useEffect(() => {
-    const affect = emojiList.find((item) => {
-      if (selectedAffectID) return item._id === selectedAffectID
-      else return item._id === currentStatus?.currentAffectID
-    })
-    setSelectedAffect(affect)
-  }, [currentStatus?.currentAffectID, emojiList, selectedAffectID])
 
   return (
     <Grid container item xs={12} role={'region'} aria-label={'Main Content'}>
       {/* user status list item */}
       <Accordion square expanded={expanded === 'userStatus'} aria-controls={'karunaStatusDrawer'} onChange={handleChange('userStatus')}>
         <AccordionSummary
+          expandIcon={<SettingsIcon />}
           aria-label={'Current User Status'}
-          expandIcon={<ExpandMore />}
           aria-controls="user-status-content"
           id="user-status-header"
         >
-          <StatusListItem isUserStatus />
+          <StatusListItem userStatus={currentUserStatus} userInfo={currentUserInfo} />
         </AccordionSummary>
         <AccordionDetails>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="body1">
-                {'I\'m feeling: '}
-                <Link
-                  aria-label={'Open Affect Survey'}
-                  href='#'
-                  onClick={() => setAffectSurveyOpen(!affectSurveyOpen)}
-                >
-                  {`${selectedAffect ? selectedAffect.characterCodes[0] : (currentAffect ? currentAffect.characterCodes[0] : '?')} ${selectedAffect ? selectedAffect.name : (currentAffect ? currentAffect.name : '[none]')}`}
-                </Link>
-              </Typography>
-              <Collapse in={!hidden && affectSurveyOpen} timeout="auto" unmountOnExit>
-                <AffectSurveyList noInteraction={hidden || retracted} onDismissSurvey={() => { setAffectSurveyOpen(false) }} />
-              </Collapse>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1">
-                {'My collaboration status is: '}
-                {currentStatus ? (currentStatus.collaboration ? '🧑‍🤝‍🧑' : '🧍') : '?'}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1">
-                {`I generally take ${currentStatus?.timeToRespond > 0 ? (currentStatus.timeToRespond / 60).toFixed(1) : '?'}h to respond`}
-              </Typography>
-            </Grid>
-          </Grid>
+          <Suspense fallback={<div />}>
+            <UserStatusDetails hidden={hidden} retracted={retracted} />
+          </Suspense>
         </AccordionDetails>
       </Accordion>
 
       {/* Team Status list item */}
       <Accordion square expanded={expanded === 'teamStatus'} onChange={handleChange('teamStatus')}>
         <AccordionSummary
-          aria-label={'Team Status'}
           expandIcon={<ExpandMore />}
+          aria-label={'Team Status'}
           aria-controls="team-status-content"
           id="team-status-header"
         >
           <Typography>Team Status</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <StatusListItem />
+          <Suspense fallback={<div />}>
+            <TeamStatusDetails />
+          </Suspense>
         </AccordionDetails>
       </Accordion>
 
       {/* Team Culture list item */}
-      <Accordion square>
+      <Accordion square expanded={expanded === 'teamCulture'} onChange={handleChange('teamCulture')}>
         <AccordionSummary
+          expandIcon={<ExpandMore />}
           aria-label={'Team Culture'}
           aria-controls="team-culture-content"
           id="team-culture-header"
@@ -159,10 +119,10 @@ export default function ConnectMainContent (props) {
       </Accordion>
 
       {/* NVC Information list item */}
-      <Accordion square>
+      <Accordion square expanded={expanded === 'nvcInfo'} onChange={handleChange('nvcInfo')}>
         <AccordionSummary
-          aria-label={'NVC Information'}
           expandIcon={<ExpandMore />}
+          aria-label={'NVC Information'}
           aria-controls="nvc-info-content"
           id="nvc-info-header"
         >
@@ -176,7 +136,7 @@ export default function ConnectMainContent (props) {
   )
 }
 
-ConnectMainContent.propTypes = {
+ConnectMainActivity.propTypes = {
   hidden: PropTypes.bool.isRequired,
   retracted: PropTypes.bool.isRequired
 }

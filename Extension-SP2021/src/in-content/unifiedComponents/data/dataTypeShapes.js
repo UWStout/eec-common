@@ -17,6 +17,18 @@ export const StatusObjectShape = {
   timeToRespond: PropTypes.number
 }
 
+// Basic user info shape (from token with 'id' or DB with '_id' and 'status')
+export const BasicUserInfoShape = {
+  id: PropTypes.string,
+  email: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  preferredName: PropTypes.string.isRequired,
+  preferredPronouns: PropTypes.string.isRequired,
+  userType: PropTypes.string.isRequired,
+  _id: PropTypes.string,
+  status: PropTypes.shape(StatusObjectShape)
+}
+
 export const PrivacyObjectShape = {
   private: PropTypes.bool,
   prompt: PropTypes.bool

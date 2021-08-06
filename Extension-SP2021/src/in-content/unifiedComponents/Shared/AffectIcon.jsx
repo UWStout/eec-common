@@ -5,7 +5,7 @@ import { Typography } from '@material-ui/core'
 import { Visibility } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 
-import CustomTooltip from './CustomTooltip.jsx'
+import CustomTooltip from '../KarunaConnect/CustomTooltip.jsx'
 
 import { AffectObjectShape } from '../data/dataTypeShapes.js'
 

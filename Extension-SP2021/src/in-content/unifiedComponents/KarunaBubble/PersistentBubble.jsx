@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { useRecoilValue } from 'recoil'
-import { ValidUserState, NVCIdentifiedState } from '../data/globalState'
+import { useRecoilValue, useRecoilState } from 'recoil'
+import { ValidUserState, NVCIdentifiedState, ConnectVisibilityState } from '../data/globalState'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { SvgIcon, IconButton, Typography } from '@material-ui/core'
@@ -40,14 +40,20 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
 
   // State of user login (GLOBAL STATE)
   const userLoggedIn = useRecoilValue(ValidUserState)
+  const [mainPanelOpen, setMainPanelOpen] = useRecoilState(ConnectVisibilityState)
 
   const clickCallback = () => {
-    if (setOpen) {
-      cancelHide()
-      setOpen(hidden)
-    }
-    if (!hidden) {
-      onHide(false)
+    if (!userLoggedIn) {
+      // Toggle main panel open or closed (shows login form)
+      setMainPanelOpen(!mainPanelOpen)
+    } else {
+      if (setOpen) {
+        cancelHide()
+        setOpen(hidden)
+      }
+      if (!hidden) {
+        onHide(false)
+      }
     }
   }
 
@@ -59,7 +65,7 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
       onMouseLeave={() => onHide(false)}
       className={classes.root}
       disabled={!userLoggedIn}
-      aria-label="Open Feedback Dialog"
+      aria-label={userLoggedIn ? 'Open Feedback Dialog' : 'Open Login Dialog'}
     >
       <SvgIcon className={classes.iconStyle}>
         <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">

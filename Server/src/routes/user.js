@@ -130,10 +130,15 @@ router.post('/promote', authenticateToken, async (req, res) => {
 })
 
 router.get('/details/:id', authenticateToken, async (req, res) => {
-  // Attempt to retrieve user ID
+  // Read userID from URL params
   const userID = req.params.id
-  if (!userID) {
+  if (!userID || !ObjectID.isValid(userID)) {
     return res.status(400).send({ error: true, message: 'Invalid ID', id: userID })
+  }
+
+  // Is this user authorized to see these details
+  if (req.user.id !== userID && req.user.type !== 'admin') {
+    return res.status(403).send({ error: true, message: 'Not authorized' })
   }
 
   // Attempt to retrieve user details
@@ -169,8 +174,9 @@ router.get('/listInTeam/:teamID', authenticateToken, async (req, res) => {
   }
 
   // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
-  if (teamID && !ObjectID.isValid(teamID)) {
-    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
+  if (!ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters', teamID })
+    return
   }
 
   // attempt to list users in the given team
@@ -180,6 +186,11 @@ router.get('/listInTeam/:teamID', authenticateToken, async (req, res) => {
     if (users.error) {
       return res.status(400).json(users)
     }
+
+    if (!users.find((curUser) => (req.user.id === curUser._id.toString()))) {
+      return res.status(403).json({ error: true, message: 'You are not a member of that team' })
+    }
+
     return res.json(users)
   } catch (error) {
     console.error(`Failed to list users in team ${teamID}`)
@@ -221,8 +232,8 @@ router.delete('/remove', authenticateToken, async (req, res) => {
  */
 // userControllers function getUserStatus (userID)
 router.get('/status/:userID?', authenticateToken, async (req, res) => {
-  // Extract and check required fields
-  const userID = req.params.userID
+  // Extract and check required fields (fallback to the authorization id if no param)
+  const userID = req.params.userID || req.user.id
 
   // check if userID is a reasonable parameter for ObjectID
   if (userID && !ObjectID.isValid(userID)) {
@@ -232,7 +243,7 @@ router.get('/status/:userID?', authenticateToken, async (req, res) => {
   // attempt to get user status
   debug('attempting to get user status')
   try {
-    const userStatus = await DBUser.getUserStatus(userID)
+    const userStatus = await DBUser.getUserStatus(userID, userID === req.user.id)
     return res.json({ ...userStatus.status })
   } catch (error) {
     debug('Failed to get user status')

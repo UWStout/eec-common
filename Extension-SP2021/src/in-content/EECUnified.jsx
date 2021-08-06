@@ -2,6 +2,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+// Font-awesome library (for bundling)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+
 // Recoil state management
 import { RecoilRoot } from 'recoil'
 
@@ -19,9 +23,18 @@ import { setMessagingContext } from './unifiedComponents/data/globalState.js'
 import { makeLogger } from '../util/Logger.js'
 const LOG = makeLogger('EEC Unified', '#222', '#bada55')
 
+// Has font awesome been initialized
+let FA_INITIALIZED = false
+
 class EECUnified extends HTMLElement {
   constructor () {
     super()
+
+    // Initialize font-awesome once
+    if (!FA_INITIALIZED) {
+      library.add(fas)
+      FA_INITIALIZED = true
+    }
 
     // Initialize internal data
     this.otherStatuses = {}
