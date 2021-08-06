@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   scrollingList: {
     overflowX: 'hidden',
     overflowY: 'auto',
-    maxHeight: '200px'
+    maxHeight: '184px'
   }
 }))
 
