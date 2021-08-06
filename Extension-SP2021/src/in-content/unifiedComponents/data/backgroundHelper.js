@@ -34,6 +34,19 @@ export function sendMessageToBackground (messageObject, context = 'none',
   })
 }
 
+export function login (email, password, onFailed, context) {
+  sendMessageToBackground(
+    { type: 'ajax-validateAccount', email, password },
+    context,
+    'Invalid username or password',
+    (data) => {
+      chrome.runtime.sendMessage({ type: 'write', key: 'JWT', data })
+      chrome.runtime.sendMessage({ type: 'login', key: 'JWT', data })
+    },
+    onFailed
+  )
+}
+
 export function retrieveAffectList (context = 'none') {
   return new Promise((resolve, reject) => {
     // Retrieve the current list of emojis
