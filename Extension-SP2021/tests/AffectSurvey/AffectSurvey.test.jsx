@@ -4,13 +4,13 @@
 
 import React from 'react'
 
-import { render, screen, presentVisibleAndContained } from './testRecoilUtils.jsx'
+import { render, screen, presentVisibleAndContained } from '../testRecoilUtils.jsx'
 import { fireEvent, waitFor } from '@testing-library/react'
 
 import '@testing-library/jest-dom/extend-expect'
 import { toBeVisible, toHaveClass } from '@testing-library/jest-dom/matchers'
 
-import AffectSurveyList from '../src/in-content/unifiedComponents/AffectSurvey/AffectSurveyList.jsx'
+import AffectSurveyList from '../../src/in-content/unifiedComponents/AffectSurvey/AffectSurveyList.jsx'
 
 // Testing accordians
 function retrieveAndCheckHeader (headerName) {
@@ -77,6 +77,25 @@ function checkExpandHeader (headerName) {
       expect(otherButton).toHaveAttribute('aria-expanded', 'false') // stays unexpanded
     }
   }
+}
+
+async function getPrivacyDialog () {
+  const { getByText, findByRole } = render(
+    <AffectSurveyList />
+  )
+
+  // clicking one of the affects makes the privacy dialog show up
+  const affect = getByText('Joy')
+
+  // Click the proper heading
+  fireEvent.click(affect)
+
+  // Wait for region to become visible
+  const privacyDialog = await findByRole('form', { name: 'Privacy Dialog' })
+  expect(privacyDialog).toBeInTheDocument()
+  expect(privacyDialog).toBeVisible()
+
+  return privacyDialog
 }
 
 expect.extend({ toBeVisible, toHaveClass })
@@ -150,22 +169,18 @@ describe('Affect Survey', () => {
   it('expands recent emojis section only when clicked', checkExpandHeader(HEADINGS.recent))
   it('expands favorite emojis section only when clicked', checkExpandHeader(HEADINGS.favorites))
   it('retracts all emojis section only when clicked', checkExpandHeader(HEADINGS.all))
+})
 
+describe('Privacy Dialog', () => {
   // Check that privacy questionnaire comes up
-  it('When an affect is selected, the user\'s privacy settings must be checked and a PrivacyDialog might be shown', async () => {
-    const { getByText, findByRole } = render(
-      <AffectSurveyList />
-    )
-
-    // clicking one of the affects makes the privacy dialog show up
-    const affect = getByText('Joy')
-
-    // Click the proper heading
-    fireEvent.click(affect)
-
-    // Wait for region to become visible
-    const privacyDialog = await findByRole('form', { name: 'Privacy Dialog' })
-    expect(privacyDialog).toBeInTheDocument()
-    expect(privacyDialog).toBeVisible()
+  it('shows up', async () => {
+    await getPrivacyDialog()
   })
+
+  it.todo('Keeping the affect private does not change your team status affect icon but does change your current mood icon')
+  it.todo('Sharing your affect changes your team status icon and your mood icon')
+  it.todo('Canceling your affect update means none of your status\' or icons update')
+  it.todo('Clicking the "Why Share?" button leads you to another page')
+  it.todo('Clicking the "Is This Secure?" button leads you to another page')
+  it.todo('Checking the "Save my response" will affect if the privacy dialog comes up again')
 })
