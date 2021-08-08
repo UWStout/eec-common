@@ -72,7 +72,7 @@ const Paper = withStyles((theme) => ({
 export default function ConnectStatusDrawer (props) {
   // Deconstruct props and style class names
   const { hidden, onHide } = props
-  const { gridContRoot, panelRetracted, panelExpanded, panelHidden, iconTweakStyle } = useStyles()
+  const { gridContRoot, panelRetracted, panelExpanded, panelHidden } = useStyles()
 
   // Subscribe to changes in current status (GLOBAL STATE)
   const currentStatus = useRecoilValue(UserStatusState)
