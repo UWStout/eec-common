@@ -40,16 +40,16 @@ export default function KarunaConnect (props) {
   // Whenever logged-in state changes, re-write activity stack
   useEffect(() => {
     if (userLoggedIn) {
-      setActivityStack([ACTIVITIES.MAIN])
+      setActivityStack([ACTIVITIES.MAIN.key])
     } else {
-      setActivityStack([ACTIVITIES.LOGIN])
+      setActivityStack([ACTIVITIES.LOGIN.key])
     }
   }, [userLoggedIn, setActivityStack, setMainPanelOpen])
 
   // DEBUG: Default to a known team for now
   useEffect(() => {
     if (userLoggedIn) {
-      setActiveTeamID('610d4ab77608ade9e0d94ed0')
+      setActiveTeamID('610f02d6345079e794032eb8')
     }
   }, [setActiveTeamID, userLoggedIn])
 

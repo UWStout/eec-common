@@ -383,18 +383,22 @@ export async function updateUserCollaboration (userID, collaborationStatus) {
  * tested in test 34
  *
  * @param {ObjectID} userID the user whose status is being updated
- * @param {number} timeToRespond the user's time to respond to queries in minutes (or NaN if undefined)
+ * @param {number} time the user's time to respond to queries in minutes (or NaN if undefined)
+ * @param {string} units 'm', 'h', or 'd' for units
+ * @param {boolean} automatic Whether or not we should automatically compute TTR
  */
-export async function updateUserTimeToRespond (userID, timeToRespond) {
-  // Set to default value
-  if (typeof timeToRespond !== 'number') { timeToRespond = NaN }
+export async function updateUserTimeToRespond (userID, time, units, automatic) {
+  // Set to default values
+  if (typeof time !== 'number') { time = -1 }
+  if (typeof units !== 'string') { units = 'm' }
+  if (typeof automatic !== 'boolean') { time = false }
 
   const DBHandle = await retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     return DBHandle.collection('Users')
       .findOneAndUpdate(
         { _id: new ObjectID(userID) },
-        { $set: { 'status.timeToRespond': timeToRespond } },
+        { $set: { 'status.timeToRespond': { time, units, automatic } } },
         (err, result) => {
           if (err) {
             debug('Failed to update user time to respond')

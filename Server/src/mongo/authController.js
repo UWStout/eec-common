@@ -57,7 +57,8 @@ export function validateUser (email, password) {
               name: result.name,
               preferredName: result.preferredName,
               preferredPronouns: result.preferredPronouns,
-              userType: result.userType
+              userType: result.userType,
+              contextAlias: result.contextAlias
             })
           })
         })

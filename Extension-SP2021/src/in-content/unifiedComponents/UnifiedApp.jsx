@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
-import { KarunaMessageState, LoggedInUserState, TextBoxListState } from './data/globalState.js'
+import { KarunaMessageState, LoggedInUserState, MessagingContextState, TextBoxListState } from './data/globalState.js'
 
 import { CssBaseline } from '@material-ui/core'
 
@@ -22,6 +22,12 @@ import KarunaTextBoxManager from './KarunaTextBoxManager.jsx'
 export default function UnifiedApp (props) {
   // De-construct props
   const { emitter, context } = props
+
+  // Track messaging context globally
+  const setMessagingContext = useSetRecoilState(MessagingContextState)
+  useEffect(() => {
+    setMessagingContext(context)
+  }, [setMessagingContext, context])
 
   // Track logged in state globally
   const setLoggedInUserState = useSetRecoilState(LoggedInUserState)
@@ -55,9 +61,9 @@ export default function UnifiedApp (props) {
   return (
     <React.Fragment>
       <CssBaseline />
-      <KarunaConnect context={context} />
-      <KarunaBubble context={context} />
-      <KarunaTextBoxManager context={context} emitter={emitter} />
+      <KarunaConnect />
+      <KarunaBubble />
+      <KarunaTextBoxManager emitter={emitter} />
     </React.Fragment>
   )
 }

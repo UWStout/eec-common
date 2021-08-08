@@ -74,7 +74,7 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
           error: 'No user id available (not logged in?)'
         })
       } else {
-        promise = setCollaboration(userData.id, message.context, message.collaboration)
+        promise = setCollaboration(userData.id, message.collaboration, message.context)
       }
       break
 
@@ -84,7 +84,7 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
           error: 'No user id available (not logged in?)'
         })
       } else {
-        promise = setTimeToRespond(userData.id, message.context, message.timeToRespond)
+        promise = setTimeToRespond(userData.id, message.timeToRespond, message.context)
       }
       break
 

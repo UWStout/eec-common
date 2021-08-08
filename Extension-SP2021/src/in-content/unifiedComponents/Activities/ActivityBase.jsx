@@ -9,7 +9,8 @@ const Paper = withStyles((theme) => ({
     display: 'flex',
     position: 'absolute',
     top: theme.spacing(6),
-    height: `calc(100% - ${theme.spacing(7)}px)`,
+    height: 'calc(100%)',
+    width: theme.spacing(33),
     paddingRight: theme.spacing(2),
     overflow: 'hidden',
     flexDirection: 'column'

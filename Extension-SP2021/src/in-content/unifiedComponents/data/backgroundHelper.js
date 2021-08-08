@@ -35,11 +35,13 @@ export function sendMessageToBackground (messageObject, context = 'none',
 }
 
 export function login (email, password, onFailed, context) {
+  LOG(`Attempting to login with "${email}" and "${password}"`)
   sendMessageToBackground(
     { type: 'ajax-validateAccount', email, password },
     context,
     'Invalid username or password',
     (data) => {
+      LOG('Login succeeded')
       chrome.runtime.sendMessage({ type: 'write', key: 'JWT', data })
       chrome.runtime.sendMessage({ type: 'login', key: 'JWT', data })
     },

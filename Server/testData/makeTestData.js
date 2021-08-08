@@ -28,6 +28,23 @@ const PRONOUNS = [
   '(they/her)'
 ]
 
+// URLs for random portrait images
+const AVATAR_URL = [
+  ...[...Array(95).keys()].map(val => (`https://randomuser.me/api/portraits/thumb/women/${val}.jpg`)),
+  ...[...Array(95).keys()].map(val => (`https://randomuser.me/api/portraits/thumb/men/${val}.jpg`)),
+  ...[...Array(10).keys()].map(val => (`https://randomuser.me/api/portraits/thumb/lego/${val}.jpg`))
+]
+
+// Time to respond units
+const TIME_UNITS = ['d', 'h', 'm']
+
+// Possible values for collaboration status
+const COLLABORATION = [
+  'Open to collaboration',
+  'Focused',
+  'Currently collaborating'
+]
+
 const { ObjectID } = MongoDB.ObjectID
 
 // Helper function for hashing a password
@@ -116,6 +133,9 @@ function hashPassword (password) {
         } while (!rawAffects[affectIndex[0]].active || !rawAffects[affectIndex[1]].active)
         const privateAffect = (Math.random() >= 0.5)
 
+        // Pick a random avatar
+        const avatar = AVATAR_URL[getRandIndex(AVATAR_URL)]
+
         // Return proper user
         rawUsers.push({
           /* User provided data */
@@ -130,7 +150,12 @@ function hashPassword (password) {
           contextAlias: {
             msTeams: UUIDv4(),
             discord: user.login.username + '#' + getRandomSuffix(),
-            slack: user.email
+            slack: user.email,
+            avatar: {
+              msTeams: (Math.random() < 0.125 ? '' : avatar),
+              discord: (Math.random() < 0.125 ? '' : avatar),
+              slack: (Math.random() < 0.125 ? '' : avatar)
+            }
           },
 
           lastLogin: {
@@ -154,8 +179,12 @@ function hashPassword (password) {
             currentAffectID: rawAffects[affectIndex[0]]._id,
             privateAffectID: rawAffects[affectIndex[1]]._id,
             currentAffectPrivacy: privateAffect,
-            collaboration: (Math.random() >= 0.5),
-            timeToRespond: getRandomInt(1, 72)
+            collaboration: COLLABORATION[getRandIndex(COLLABORATION)],
+            timeToRespond: {
+              time: getRandomInt(1, 24),
+              units: TIME_UNITS[getRandIndex(TIME_UNITS)],
+              automatic: Math.random() >= 0.5
+            }
           },
 
           meta: {},

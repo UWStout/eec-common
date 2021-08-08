@@ -1,18 +1,18 @@
-import React, { Suspense, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { UserStatusState, AffectListState } from '../data/globalState.js'
 import { useRecoilValue } from 'recoil'
 
 import MuiPaper from '@material-ui/core/Paper'
-import Skeleton from '@material-ui/lab/Skeleton'
 import { MoreVert } from '@material-ui/icons'
 
 import { Grid, Typography } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
-import CustomTooltip from './CustomTooltip.jsx'
+import CollaborationIcon from '../Shared/CollaborationIcon.jsx'
 import OpenArrow from './PanelOpenArrow.jsx'
+import TimeToRespondIcon from '../Shared/TimeToRespondIcon.jsx'
 
 // Lazy load affect icon
 const AffectIcon = React.lazy(() => import('../Shared/AffectIcon.jsx'))
@@ -20,17 +20,17 @@ const AffectIcon = React.lazy(() => import('../Shared/AffectIcon.jsx'))
 const useStyles = makeStyles((theme) => ({
   // Style when the panel is fully retracted
   panelRetracted: {
-    right: `calc(0% - ${theme.spacing(6)}px)`
+    right: `calc(0% - ${theme.spacing(6)}px)` // default is 6
   },
 
   // Style when the panel is fully expanded
   panelExpanded: {
-    right: `calc(0% - ${theme.spacing(1)}px)`
+    right: `calc(0% - ${theme.spacing(1)}px)` // default is 1
   },
 
   // Style when the panel is hidden
   panelHidden: {
-    right: `calc(0% - ${theme.spacing(11)}px)`
+    right: `calc(0% - ${theme.spacing(1)}px)` // default is 11
   },
 
   // Styling of Grid container
@@ -72,7 +72,7 @@ const Paper = withStyles((theme) => ({
 export default function ConnectStatusDrawer (props) {
   // Deconstruct props and style class names
   const { hidden, onHide } = props
-  const { gridContRoot, panelRetracted, panelExpanded, panelHidden } = useStyles()
+  const { gridContRoot, panelRetracted, panelExpanded, panelHidden, iconTweakStyle } = useStyles()
 
   // Subscribe to changes in current status (GLOBAL STATE)
   const currentStatus = useRecoilValue(UserStatusState)
@@ -130,23 +130,16 @@ export default function ConnectStatusDrawer (props) {
           xs={6}
         >
           <Grid item xs={12}>
-            <Suspense fallback={
-              <Skeleton variant="circle"><Typography variant="body1">?</Typography></Skeleton>
-            }
-            >
-              {currentAffect &&
-                <AffectIcon placement='left' affectObj={currentAffect} privacy={currentStatus.currentAffectPrivacy} />}
-            </Suspense>
+            {currentAffect &&
+              <AffectIcon placement='left' affectObj={currentAffect} privacy={currentStatus.currentAffectPrivacy} />}
+            {!currentAffect &&
+              <Typography variant="body1">{'?'}</Typography>}
           </Grid>
           <Grid item xs={12}>
-            <CustomTooltip placement='left' title={currentStatus ? (currentStatus.collaboration ? 'teamwork' : 'solo') : 'unknown'}>
-              <Typography variant='body1' align='center' gutterBottom>{currentStatus ? (currentStatus.collaboration ? '👫' : '🧍') : '?'}</Typography>
-            </CustomTooltip>
+            <CollaborationIcon collaboration={currentStatus?.collaboration} placement='left' />
           </Grid>
           <Grid item xs={12}>
-            <CustomTooltip placement='left' title={currentStatus?.timeToRespond > 0 ? `${currentStatus.timeToRespond} mins` : '? mins'}>
-              <Typography variant='body1' align='center'>🕐</Typography>
-            </CustomTooltip>
+            <TimeToRespondIcon timeToRespond={currentStatus?.timeToRespond} placement='left' />
           </Grid>
         </Grid>
       </Grid>

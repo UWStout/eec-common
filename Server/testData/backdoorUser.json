@@ -1,4 +1,4 @@
-{
+[{
   "_id": {
     "$oid": "5ff742f09bb9905f98eb348f"
   },
@@ -15,18 +15,18 @@
     },
     {
       "$oid": "610d4ab77608ade9e0d94ed2"
-    }   
+    }
   ],
   "lastLogin": {
     "timestamp": {
-      "$date": "2021-06-03T14:47:32.860Z"
+      "$date": "2021-08-07T17:25:43.205Z"
     },
     "remoteAddress": "127.0.0.1"
   },
   "lastContextLogin": {
     "discord": {
       "timestamp": {
-        "$date": "2021-06-03T14:47:34.007Z"
+        "$date": "2021-08-07T19:02:05.515Z"
       },
       "remoteAddress": "127.0.0.1"
     },
@@ -49,13 +49,13 @@
   },
   "status": {
     "currentAffectID": {
-      "$oid": "6008928508baff43187a7501"
+      "$oid": "6008928508baff43187a74f2"
     },
     "privateAffectID": {
       "$oid": "6008928508baff43187a74f3"
     },
     "currentAffectPrivacy": false,
-    "collaboration": true,
+    "collaboration": "Open to Collaboration",
     "timeToRespond": 12
   }
-}
+}]

@@ -10,11 +10,29 @@ export const AffectObjectShape = {
   active: PropTypes.bool
 }
 
+export const TimeToRespondShape = {
+  time: PropTypes.number,
+  units: PropTypes.string,
+  automatic: PropTypes.bool
+}
+
 // User status structure from the DB
 export const StatusObjectShape = {
   currentAffectID: PropTypes.string,
-  collaboration: PropTypes.bool,
-  timeToRespond: PropTypes.number
+  collaboration: PropTypes.string,
+  timeToRespond: PropTypes.shape(TimeToRespondShape)
+}
+
+// Messaging context alias and avatar info
+export const ContextAliasShape = {
+  msTeams: PropTypes.string,
+  discord: PropTypes.string,
+  slack: PropTypes.string,
+  avatar: PropTypes.shape({
+    msTeams: PropTypes.string,
+    discord: PropTypes.string,
+    slack: PropTypes.string
+  })
 }
 
 // Basic user info shape (from token with 'id' or DB with '_id' and 'status')
@@ -25,6 +43,7 @@ export const BasicUserInfoShape = {
   preferredName: PropTypes.string.isRequired,
   preferredPronouns: PropTypes.string.isRequired,
   userType: PropTypes.string.isRequired,
+  contextAlias: PropTypes.shape(ContextAliasShape),
   _id: PropTypes.string,
   status: PropTypes.shape(StatusObjectShape)
 }
@@ -45,10 +64,20 @@ export const DEFAULT = {
     active: false
   },
 
+  TimeToRespondShape: {
+    time: -1,
+    units: 'm',
+    automatic: false
+  },
+
   StatusObjectShape: {
     currentAffectID: '',
-    collaboration: false,
-    timeToRespond: -1
+    collaboration: '',
+    timeToRespond: {
+      time: -1,
+      units: 'm',
+      automatic: false
+    }
   },
 
   PrivacyObjectShape: {

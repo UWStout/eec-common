@@ -15,11 +15,15 @@ import PanelBreadcrumbs from './PanelBreadcrumb.jsx'
 // All the activities that might be used
 import { ACTIVITIES } from '../Activities/Activities.js'
 import ActivityBase from '../Activities/ActivityBase.jsx'
+
 import ConnectMainActivity from './ConnectMainActivity.jsx'
 import ConnectLoginActivity from './ConnectLoginActivity.jsx'
 import AffectSurveyActivity from '../Activities/AffectSurvey/AffectSurveyActivity.jsx'
 import AffectSurveyActivitySkeleton from '../Activities/AffectSurvey/AffectSurveyActivitySkeleton.jsx'
 import PrivacyPromptActivity from '../Activities/AffectSurvey/PrivacyPromptActivity.jsx'
+import CollaborationActivity from '../Activities/CollaborationActivity.jsx'
+import TimeToRespondActivity from '../Activities/TimeToRespondActivity.jsx'
+import MoreUserSettingsActivity from '../Activities/MoreUserSettingsActivity.jsx'
 
 // DEBUG: Enable this logger when needed
 // import { makeLogger } from '../../../util/Logger.js'
@@ -155,16 +159,20 @@ export default function ConnectMainDrawer (props) {
 
   // Build array of activities
   const activityElements = []
-  if (activityStack.includes(ACTIVITIES.LOGIN)) {
-    activityElements.push(<ConnectLoginActivity key="login" className={activityStyle} />)
+  if (activityStack.includes(ACTIVITIES.LOGIN.key)) {
+    activityElements.push(
+      <ConnectLoginActivity key={ACTIVITIES.LOGIN.key} className={activityStyle} />
+    )
   }
 
-  if (activityStack.includes(ACTIVITIES.MAIN)) {
-    activityElements.push(<ConnectMainActivity key="main" hidden={hidden} retracted={!mouseIsOver} className={activityStyle} />)
+  if (activityStack.includes(ACTIVITIES.MAIN.key)) {
+    activityElements.push(
+      <ConnectMainActivity key={ACTIVITIES.MAIN.key} hidden={hidden} retracted={!mouseIsOver} className={activityStyle} />
+    )
   }
 
   activityElements.push(
-    <ActivityBase key="affect" direction="left" in={activityStack.includes(ACTIVITIES.AFFECT_SURVEY)} mountOnEnter unmountOnExit>
+    <ActivityBase key={ACTIVITIES.AFFECT_SURVEY.key} direction="left" in={activityStack.includes(ACTIVITIES.AFFECT_SURVEY.key)} mountOnEnter unmountOnExit>
       <Typography variant="body1">{'How are you feeling about the project?'}</Typography>
       <Suspense fallback={<AffectSurveyActivitySkeleton />}>
         <AffectSurveyActivity />
@@ -173,8 +181,26 @@ export default function ConnectMainDrawer (props) {
   )
 
   activityElements.push(
-    <ActivityBase key="privacy" direction="left" in={activityStack.includes(ACTIVITIES.PRIVACY_PROMPT)} mountOnEnter unmountOnExit>
+    <ActivityBase key={ACTIVITIES.PRIVACY_PROMPT.key} direction="left" in={activityStack.includes(ACTIVITIES.PRIVACY_PROMPT.key)} mountOnEnter unmountOnExit>
       <PrivacyPromptActivity className={activityStyle} />
+    </ActivityBase>
+  )
+
+  activityElements.push(
+    <ActivityBase key={ACTIVITIES.COLLABORATION_SURVEY.key} direction="left" in={activityStack.includes(ACTIVITIES.COLLABORATION_SURVEY.key)} mountOnEnter unmountOnExit>
+      <CollaborationActivity />
+    </ActivityBase>
+  )
+
+  activityElements.push(
+    <ActivityBase key={ACTIVITIES.TIME_TO_RESPOND_SURVEY.key} direction="left" in={activityStack.includes(ACTIVITIES.TIME_TO_RESPOND_SURVEY.key)} mountOnEnter unmountOnExit>
+      <TimeToRespondActivity />
+    </ActivityBase>
+  )
+
+  activityElements.push(
+    <ActivityBase key={ACTIVITIES.MORE_USER_SETTINGS.key} direction="left" in={activityStack.includes(ACTIVITIES.MORE_USER_SETTINGS.key)} mountOnEnter unmountOnExit>
+      <MoreUserSettingsActivity />
     </ActivityBase>
   )
 

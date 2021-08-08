@@ -5,8 +5,10 @@ import { ActivityStackState, PopActivityState } from '../data/globalState'
 import { useRecoilValue, useRecoilState } from 'recoil'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Grid, Breadcrumbs, Typography, IconButton } from '@material-ui/core'
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons'
+import { Grid, Typography, IconButton } from '@material-ui/core'
+import { KeyboardArrowRight, Cancel } from '@material-ui/icons'
+
+import { ACTIVITIES } from '../Activities/Activities'
 
 const useStyles = makeStyles((theme) => ({
   rootStyle: {
@@ -20,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 function BackButton (props) {
   return (
     <IconButton aria-label='Backup' size='small' {...props}>
-      <KeyboardArrowLeft fontSize="inherit" />
+      <Cancel fontSize="inherit" />
     </IconButton>
   )
 }
@@ -40,25 +42,12 @@ export default function PanelBreadcrumbs (props) {
   // Create styling class names
   const { rootStyle } = useStyles()
 
-  // Get global activity stack and convert to 'typography' elements
+  // Get global activity stack info
   const activityStack = useRecoilValue(ActivityStackState)
-  const [currentActivity, popActivity] = useRecoilState(PopActivityState)
-
-  let crumbs = []
-  if (activityStack.length <= 1) {
-    crumbs = activityStack.map((activity) => (
-      <Typography key={activity}>{activity}</Typography>
-    ))
-  } else {
-    const currentActivity = activityStack[activityStack.length - 1]
-    crumbs = [
-      <Typography key={'ellipses'} color="inherit">{'...'}</Typography>,
-      <Typography key={currentActivity}>{currentActivity}</Typography>
-    ]
-  }
+  const [currentActivityKey, popActivity] = useRecoilState(PopActivityState)
 
   const backCallback = () => {
-    popActivity(currentActivity)
+    popActivity(currentActivityKey)
   }
 
   const closeCallback = () => {
@@ -68,13 +57,11 @@ export default function PanelBreadcrumbs (props) {
   // Render
   return (
     <Grid container item xs={12} className={rootStyle} spacing={1}>
-      <Grid item xs={3}>
-        <Typography variant="button">Karuna</Typography>
-      </Grid>
-      <Grid item xs={8}>
-        <Breadcrumbs aria-label="Karuna Breadcrumbs">
-          {crumbs}
-        </Breadcrumbs>
+      <Grid item xs={11}>
+        <Typography variant="subtitle2">
+          {'KARUNA'}
+          {activityStack.length > 0 ? ` / ${ACTIVITIES[currentActivityKey].title}` : ''}
+        </Typography>
       </Grid>
       <Grid item xs={1}>
         {activityStack.length <= 1 &&

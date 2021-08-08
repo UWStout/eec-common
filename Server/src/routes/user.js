@@ -291,9 +291,14 @@ router.post('/timeToRespond', authenticateToken, async (req, res) => {
     res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
   }
 
+  // Check individual parts of TTR
+  const time = timeToRespond.time || -1
+  const units = timeToRespond.units || 'm'
+  const automatic = timeToRespond.automatic || false
+
   // Attempt to update user time to respond
   try {
-    await DBUser.updateUserTimeToRespond(userID, timeToRespond)
+    await DBUser.updateUserTimeToRespond(userID, time, units, automatic)
     res.json({ success: true })
   } catch (error) {
     console.error('Failed to update user time to respond')

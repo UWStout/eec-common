@@ -50,7 +50,7 @@ export default function PrivacyPromptActivity (props) {
   // Respond to the dialog closing
   const onDialogClose = (canceled, newPrivacy) => {
     // Dismiss the privacy activity
-    popActivity(ACTIVITIES.PRIVACY_PROMPT)
+    popActivity(ACTIVITIES.PRIVACY_PROMPT.key)
 
     if (!canceled) {
       LOG('Closing Privacy Dialog', newPrivacy)
@@ -60,7 +60,7 @@ export default function PrivacyPromptActivity (props) {
       setPrivacy(newPrivacy)
 
       // Dismiss affect survey too
-      popActivity(ACTIVITIES.AFFECT_SURVEY)
+      popActivity(ACTIVITIES.AFFECT_SURVEY.key)
     } else {
       LOG('CANCELING Privacy Dialog')
     }

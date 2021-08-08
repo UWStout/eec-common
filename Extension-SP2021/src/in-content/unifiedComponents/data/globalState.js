@@ -13,6 +13,20 @@ export const setMessagingContext = (context) => {
   MSG_CONTEXT = context
 }
 
+/** The Messaging context (e.g. the communication tool in use) */
+export const MessagingContextState = atom({
+  key: 'MessagingContextState',
+  default: 'unknown',
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Messaging context updated', newVal)
+      })
+    }
+  ]
+})
+
 /** Is the connect panel open and visible */
 export const ConnectVisibilityState = atom({
   key: 'ConnectVisibilityState',

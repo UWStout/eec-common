@@ -9,6 +9,9 @@ import { Typography, Grid } from '@material-ui/core'
 
 import AvatarIcon from './AvatarIcon.jsx'
 import CustomTooltip from '../KarunaConnect/CustomTooltip.jsx'
+import CollaborationIcon from '../Shared/CollaborationIcon.jsx'
+import TimeToRespondIcon from '../Shared/TimeToRespondIcon.jsx'
+
 import { BasicUserInfoShape, StatusObjectShape } from '../data/dataTypeShapes.js'
 
 const useStyles = makeStyles((theme) => ({
@@ -62,18 +65,18 @@ export default function StatusListItem (props) {
             </CustomTooltip>
           </Grid>
           <Grid item>
-            <CustomTooltip placement='right' title={(userStatus ? (userStatus.collaboration ? 'teamwork' : 'solo') : 'unknown')}>
-              <Typography variant={(isTeammate ? 'caption' : 'body1')} align='center'>
-                {(userStatus ? (userStatus.collaboration ? '👫' : '🧍') : '?')}
-              </Typography>
-            </CustomTooltip>
+            <CollaborationIcon
+              collaboration={userStatus?.collaboration}
+              fontSize={(isTeammate ? 'small' : 'medium')}
+              placement='right'
+            />
           </Grid>
           <Grid item>
-            <CustomTooltip placement='right' title={(userStatus ? (userStatus?.timeToRespond > 0 ? `${userStatus.timeToRespond} mins` : '? mins') : 'N/A')}>
-              <Typography variant={(isTeammate ? 'caption' : 'body1')} align='center'>
-                🕐
-              </Typography>
-            </CustomTooltip>
+            <TimeToRespondIcon
+              timeToRespond={userStatus?.timeToRespond}
+              fontSize={(isTeammate ? 'small' : 'medium')}
+              placement='right'
+            />
           </Grid>
         </Grid>
       </Grid>

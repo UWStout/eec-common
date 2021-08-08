@@ -107,10 +107,10 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   const onSelection = (affect) => {
     setLastSelectedAffectID(affect?._id)
     if (affectPrivacy.prompt) {
-      pushActivity(ACTIVITIES.PRIVACY_PROMPT)
+      pushActivity(ACTIVITIES.PRIVACY_PROMPT.key)
     } else {
       setUserAffectID(affect?._id)
-      popActivity(ACTIVITIES.AFFECT_SURVEY)
+      popActivity(ACTIVITIES.AFFECT_SURVEY.key)
     }
   }
 

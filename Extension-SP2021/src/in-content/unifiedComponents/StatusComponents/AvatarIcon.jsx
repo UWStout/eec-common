@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { MessagingContextState } from '../data/globalState'
+import { useRecoilValue } from 'recoil'
+
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Avatar } from '@material-ui/core'
 import { BasicUserInfoShape } from '../data/dataTypeShapes'
@@ -26,6 +29,9 @@ function AvatarIcon (props) {
   // Deconstruct props
   const { userInfo, team } = props
 
+  // Subscribe to changes in messaging context
+  const messagingContext = useRecoilValue(MessagingContextState)
+
   // Derive color info
   const bgColor = stringToColor(userInfo.id || userInfo._id)
 
@@ -37,9 +43,12 @@ function AvatarIcon (props) {
   const lastIdx = (names.length > 1 ? names.length - 1 : -1)
   const initials = (names[0] ? names[0].toUpperCase()[0] : '') + (names[lastIdx] ? names[lastIdx].toUpperCase()[0] : '')
 
+  // Get avatar URL (might be undefined)
+  const imgURL = userInfo?.contextAlias?.avatar?.[messagingContext]
+
   return (
     <Grid item xs={12}>
-      <Avatar className={avatarStyle}>{initials}</Avatar>
+      <Avatar className={avatarStyle} src={imgURL}>{imgURL ? '' : initials}</Avatar>
     </Grid>
   )
 }
