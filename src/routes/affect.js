@@ -281,4 +281,57 @@ router.delete('/removeHistory', authenticateToken, async (req, res) => {
   }
 })
 
+router.post('/setFavoriteAffect', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { affectID, userID } = req.body
+  if (!affectID || !userID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if userID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
+  }
+
+  // check if affectID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(affectID)) {
+    res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
+  }
+
+  // Attempt to insert affect history log
+  debug('attempting to update user\'s favorite affects')
+  try {
+    // updates history and user status
+    await DBAffect.setFavoriteAffect(affectID, userID)
+    debug('user favorite affects updated')
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Failed to add affect to user\'s favorites')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Failed to add affect to user\'s favorites' })
+  }
+})
+
+router.get('/listFavoriteAffects/:userID?', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const userID = req.params.userID
+
+  // check if userID is a reasonable parameter for ObjectID
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to get affect details
+  debug('attempting to list favorite affects')
+  try {
+    const favoriteAffects = await DBAffect.listFavoriteAffects(userID)
+    return res.json(favoriteAffects)
+  } catch (error) {
+    debug('Failed to list favorite affects')
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while listing favorite affects' })
+  }
+})
+
 export default router

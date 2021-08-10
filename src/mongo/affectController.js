@@ -144,6 +144,50 @@ export function listAffects (IDsOnly = true, perPage = 25, page = 1, sortBy = ''
   return listCollection('Affects', null, project, perPage, page, sortBy, sortOrder, filterBy, filter)
 }
 
+/**
+ * @param {*} affectID  the mongo ID string that needs to be wrapped in an ObjectID before being pushed to the database
+ * @param {*} userID the mongo ID string that needs to be wrapped in an ObjectID before being pushed to the database
+ * @returns {Promise} Resolves with no data if successful, rejects on error
+ */
+export function setFavoriteAffect (affectID, userID) {
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users')
+        .findOneAndUpdate(
+          { _id: new ObjectID(userID) },
+          {
+            $addToSet: { favoriteAffects: affectID }
+          },
+          (err, result) => {
+            if (err) {
+              debug('Failed to add affect to user favorites')
+              debug(err)
+              return reject(err)
+            }
+            return resolve()
+          }
+        )
+    })
+  })
+}
+
+export function listFavoriteAffects (userID) {
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users')
+        .find({ _id: new ObjectID(userID) }, { favoriteAffects: 1 })
+        .toArray(function (err, result) {
+          if (err) {
+            debug('Failed to list favorite affects')
+            debug(err)
+            return reject(err)
+          }
+          resolve(result[0].favoriteAffects)
+        })
+    })
+  })
+}
+
 /* Affect History functions */
 
 /**
