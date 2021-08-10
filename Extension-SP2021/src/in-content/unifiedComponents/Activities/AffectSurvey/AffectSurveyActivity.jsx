@@ -61,12 +61,15 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   const { listRoot, innerList, listItem } = useStyles()
 
   // Subscribe to changes in global states (GLOBAL STATE)
-  const emojiList = useRecoilValue(STATE.AffectListState)
+  let emojiList = useRecoilValue(STATE.AffectListState)
   const moodHistoryList = useRecoilValue(STATE.AffectHistoryListState)
   const favoriteAffectsList = useRecoilValue(STATE.FavoriteAffectsListState)
 
+  const unacceptableEmojis = ['6008928508baff43187a750e'] // TO-DO: replace with global state
+
   LOG('favorite affects list is', favoriteAffectsList)
   LOG('recent affects list is', moodHistoryList)
+  LOG('emoji list is', emojiList)
 
   // Values and mutator functions for global state (GLOBAL STATE)
   const [userAffectID, setUserAffectID] = useRecoilState(STATE.UserAffectIDState)
@@ -114,6 +117,11 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
     }
   }
 
+  // filter out the unacceptable emojis from the emoji list
+  emojiList = emojiList.filter((emoji) => (
+    unacceptableEmojis.some((badEmojis) => (badEmojis !== emoji._id))
+  ))
+
   // Build list of Emoji elements filtered by search text
   const filteredEmojis = (searchText === '' ? emojiList : searchFilter(emojiList, searchText))
   const allEmojiElements = filteredEmojis.map((emoji) => (
@@ -146,7 +154,7 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   // Build the Emoji elements for the recent moods only
   const recentEmojiElements = filteredEmojis
     .filter((curEmoji) => (
-      moodHistoryList.some((recentID) => (recentID === curEmoji._id))
+      moodHistoryList.some((recent) => (recent._id === curEmoji._id))
     ))
     .map((recentEmoji) => (
       <Emoji
