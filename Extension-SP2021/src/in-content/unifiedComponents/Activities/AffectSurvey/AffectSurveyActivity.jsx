@@ -154,7 +154,7 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   // Build the Emoji elements for the recent moods only
   const recentEmojiElements = filteredEmojis
     .filter((curEmoji) => (
-      moodHistoryList.some((recent) => (recent._id === curEmoji._id))
+      moodHistoryList.some((recent) => (recent.affectID === curEmoji._id))
     ))
     .map((recentEmoji) => (
       <Emoji
@@ -166,13 +166,6 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
         selected={(userAffectID === recentEmoji._id)}
       />
     ))
-
-  // Sort the recentEmojiElements so that it is ordered by date
-  // - moodHistoryList was already ordered, this sorts recentEmojiElements
-  //   by its key so that it matches moodHistoryList
-  recentEmojiElements.sort(function (a, b) {
-    return moodHistoryList.indexOf(a.key) - moodHistoryList.indexOf(b.key)
-  })
 
   // Show affect survey
   return (
