@@ -37,10 +37,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-// DEBUG: Test data for favorite emojis
-const favList = [
-]
-
 // Function to filter a list of affects by given text
 function searchFilter (fullList, searchText) {
   if (!searchText || searchText === '') {
@@ -67,6 +63,10 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   // Subscribe to changes in global states (GLOBAL STATE)
   const emojiList = useRecoilValue(STATE.AffectListState)
   const moodHistoryList = useRecoilValue(STATE.AffectHistoryListState)
+  const favoriteAffectsList = useRecoilValue(STATE.FavoriteAffectsListState)
+
+  LOG('favorite affects list is', favoriteAffectsList)
+  LOG('recent affects list is', moodHistoryList)
 
   // Values and mutator functions for global state (GLOBAL STATE)
   const [userAffectID, setUserAffectID] = useRecoilState(STATE.UserAffectIDState)
@@ -130,7 +130,7 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   // Build the Emoji elements for the favorites only
   const favEmojiElements = filteredEmojis
     .filter((curEmoji) => (
-      favList.some((favID) => (favID === curEmoji._id))
+      favoriteAffectsList.some((favID) => (favID === curEmoji._id))
     ))
     .map((favEmoji) => (
       <Emoji

@@ -17,4 +17,5 @@ describe('NVC Element Descriptions', () => {
   it.todo('Request definition shows up')
   it.todo('Feeling definition shows up')
   it.todo('NVC definition shows up')
+  it.todo('They all contain a link to more information')
 })

@@ -88,6 +88,26 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       }
       break
 
+    case 'ajax-setFavoriteAffect':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = setFavoriteAffect(userData.id, message.affectID)
+      }
+      break
+
+    case 'ajax-getFavoriteAffects':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = listFavoriteAffects(userData.id)
+      }
+      break
+
     default: {
       console.log('Unknown ajax message:')
       console.log(message)
@@ -229,6 +249,36 @@ function setTimeToRespond (userID, timeToRespond, context) {
 
     // Listen for server response or error
     requestPromise.then(() => { resolve() })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
+function setFavoriteAffect (userID, affectID) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/setFavoriteAffect`,
+      { userID, affectID },
+      config
+    )
+
+    // Listen for server response or error
+    requestPromise.then(() => { resolve() })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
+function listFavoriteAffects (userID) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/listFavoriteAffects/${userID}`, config)
+    // Listen for server response or error
+    requestPromise.then((response) => {
+      const favoriteAffectsList = response?.data
+      if (favoriteAffectsList) resolve(favoriteAffectsList)
+      else resolve([])
+    })
     requestPromise.catch((error) => { reject(error) })
   })
 }

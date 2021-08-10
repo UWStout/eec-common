@@ -4,6 +4,7 @@ import * as HELPER from './backgroundHelper.js'
 
 // Colorful logger
 import { makeLogger } from '../../../util/Logger.js'
+import { get } from 'store2'
 const LOG = makeLogger('RECOIL Global State', '#27213C', '#EEF4ED')
 
 // CAUTION: This must be set once early in the lifecycle of the
@@ -262,6 +263,39 @@ export const AffectHistoryListState = atom({
       })
     }
   ]
+})
+
+/** List of  user's favorite emojis */
+export const FavoriteAffectsListState = atom({
+  key: 'FavoriteAffects',
+  default: [],
+  effects_UNSTABLE: [
+    ({ setSelf, onSet }) => {
+      // Initialize
+      setSelf(HELPER.retrieveFavoriteAffectsList())
+
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Favorite affects updated', newVal)
+      })
+    }
+  ]
+})
+
+/** Selector to set Favorite affects (with side-effects) */
+export const FavoriteAffectsListStateSetter = selector({
+  key: 'PrivacyPrefsStateSetter',
+  get: ({ get }) => {
+    return get(FavoriteAffectsListState)
+  },
+
+  set: ({ set }, newFavorite) => {
+    // Update local cached state
+    set(FavoriteAffectsListState, [newFavorite, ...get(FavoriteAffectsListState)])
+
+    // Send to the database
+    HELPER.setFavoriteAffect(newFavorite, MSG_CONTEXT)
+  }
 })
 
 /** Most recent user status */

@@ -81,6 +81,38 @@ export function retrieveAffectHistoryList (context = 'none') {
   })
 }
 
+export function retrieveFavoriteAffectsList (context = 'none') {
+  return new Promise((resolve, reject) => {
+    // Retrieve the full affect History list
+    sendMessageToBackground(
+      // Read from the back-end server using AJAX
+      { type: 'ajax-getFavoriteAffects' }, // <- only the message type is needed
+      context,
+      'Favorite affects retrieval failed: ',
+
+      // Success and failure callbacks
+      (data) => { return resolve(data) },
+      (message) => { return reject(new Error(message)) }
+    )
+  })
+}
+
+export function setFavoriteAffect (favoriteAffectID, context = 'none') {
+  return new Promise((resolve, reject) => {
+    // Retrieve the full affect History list
+    sendMessageToBackground(
+      // Read from the back-end server using AJAX
+      { type: 'ajax-setFavoriteAffect', favoriteAffectID }, // <- only the message type is needed
+      context,
+      'updating Favorite affects failed: ',
+
+      // Success and failure callbacks
+      () => { return resolve() },
+      (message) => { return reject(new Error(message)) }
+    )
+  })
+}
+
 export function retrieveMoodPrivacy (context = 'none') {
   return new Promise((resolve, reject) => {
     // Read the privacy settings from the background context
