@@ -64,12 +64,7 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   let emojiList = useRecoilValue(STATE.AffectListState)
   const moodHistoryList = useRecoilValue(STATE.AffectHistoryListState)
   const favoriteAffectsList = useRecoilValue(STATE.FavoriteAffectsListState)
-
-  const unacceptableEmojis = ['6008928508baff43187a750e'] // TO-DO: replace with global state
-
-  LOG('favorite affects list is', favoriteAffectsList)
-  LOG('recent affects list is', moodHistoryList)
-  LOG('emoji list is', emojiList)
+  const disabledAffects = useRecoilValue(STATE.DisabledAffectsListState)
 
   // Values and mutator functions for global state (GLOBAL STATE)
   const [userAffectID, setUserAffectID] = useRecoilState(STATE.UserAffectIDState)
@@ -117,9 +112,9 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
     }
   }
 
-  // filter out the unacceptable emojis from the emoji list
+  // filter out the disabled emojis from the emoji list
   emojiList = emojiList.filter((emoji) => (
-    unacceptableEmojis.some((badEmojis) => (badEmojis !== emoji._id))
+    disabledAffects.some((badEmojis) => (badEmojis !== emoji._id))
   ))
 
   // Build list of Emoji elements filtered by search text

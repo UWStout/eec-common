@@ -108,6 +108,26 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       }
       break
 
+    case 'ajax-setTeamDisabledAffect':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No team id available (not logged in?)'
+        })
+      } else {
+        promise = setDisabledAffect(message.teamID, message.affectID)
+      }
+      break
+
+    case 'ajax-getTeamDisabledAffects':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No team id available (not logged in?)'
+        })
+      } else {
+        promise = listDisabledAffects(message.teamID)
+      }
+      break
+
     default: {
       console.log('Unknown ajax message:')
       console.log(message)
@@ -277,6 +297,36 @@ function listFavoriteAffects (userID) {
     requestPromise.then((response) => {
       const favoriteAffectsList = response?.data
       if (favoriteAffectsList) resolve(favoriteAffectsList)
+      else resolve([])
+    })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
+function setDisabledAffect (teamID, affectID) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/setDisabledAffect`,
+      { teamID, affectID },
+      config
+    )
+
+    // Listen for server response or error
+    requestPromise.then(() => { resolve() })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
+function listDisabledAffects (teamID) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/listDisabledAffects/${teamID}`, config)
+    // Listen for server response or error
+    requestPromise.then((response) => {
+      const disabledAffectsList = response?.data
+      if (disabledAffectsList) resolve(disabledAffectsList)
       else resolve([])
     })
     requestPromise.catch((error) => { reject(error) })

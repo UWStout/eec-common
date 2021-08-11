@@ -334,4 +334,57 @@ router.get('/listFavoriteAffects/:userID?', authenticateToken, async (req, res) 
   }
 })
 
+router.post('/setDisabledAffect', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { affectID, teamID } = req.body
+  if (!affectID || !teamID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if teamID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, id: teamID, message: 'teamID must be a 12 byte number or a string of 24 hex characters' })
+  }
+
+  // check if affectID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(affectID)) {
+    res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
+  }
+
+  // Attempt to insert affect history log
+  debug('attempting to update team\'s disabled affects')
+  try {
+    // updates history and user status
+    await DBAffect.setDisabledAffect(affectID, teamID)
+    debug('team\'s disabled affects updated')
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Failed to add affect to teams\'s disabled list')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Failed to add affect to team\'s disabled affects' })
+  }
+})
+
+router.get('/listDisabledAffects/:teamID?', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const teamID = req.params.teamID
+
+  // check if teamID is a reasonable parameter for ObjectID
+  if (teamID && !ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // attempt to get affect details
+  debug('attempting to list disabled affects')
+  try {
+    const disabledAffects = await DBAffect.listDisabledAffects(teamID)
+    return res.json(disabledAffects)
+  } catch (error) {
+    debug('Failed to list disabled affects')
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while listing disabled affects' })
+  }
+})
+
 export default router

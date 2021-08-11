@@ -267,7 +267,7 @@ export const AffectHistoryListState = atom({
 
 /** List of  user's favorite emojis */
 export const FavoriteAffectsListState = atom({
-  key: 'FavoriteAffects',
+  key: 'FavoriteAffectsListState',
   default: [],
   effects_UNSTABLE: [
     ({ setSelf, onSet }) => {
@@ -284,7 +284,7 @@ export const FavoriteAffectsListState = atom({
 
 /** Selector to set Favorite affects (with side-effects) */
 export const FavoriteAffectsListStateSetter = selector({
-  key: 'PrivacyPrefsStateSetter',
+  key: 'FavoriteAffectsListStateSetter',
   get: ({ get }) => {
     return get(FavoriteAffectsListState)
   },
@@ -295,6 +295,22 @@ export const FavoriteAffectsListStateSetter = selector({
 
     // Send to the database
     HELPER.setFavoriteAffect(newFavorite, MSG_CONTEXT)
+  }
+})
+
+/** List of  user's Disabled emojis */
+export const DisabledAffectsListState = selector({
+  key: 'DisabledAffectsListState',
+  get: async ({ get }) => {
+    const activeTeamID = get(ActiveTeamIDState)
+    try {
+      const teammatesInfo = await HELPER.retrieveDisabledAffectsList(activeTeamID, MSG_CONTEXT)
+      return teammatesInfo
+    } catch (err) {
+      LOG.error(`Failed to retrieve teammates info with status for team "${activeTeamID}"`)
+      LOG.error(err)
+      return []
+    }
   }
 })
 

@@ -182,7 +182,51 @@ export function listFavoriteAffects (userID) {
             debug(err)
             return reject(err)
           }
-          resolve(result[0].favoriteAffects)
+          resolve(result[0]?.favoriteAffects)
+        })
+    })
+  })
+}
+
+/**
+ * @param {*} affectID  the mongo ID string that needs to be wrapped in an ObjectID before being pushed to the database
+ * @param {*} teamID the mongo ID string that needs to be wrapped in an ObjectID before being pushed to the database
+ * @returns {Promise} Resolves with no data if successful, rejects on error
+ */
+export function setDisabledAffect (affectID, teamID) {
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Teams')
+        .findOneAndUpdate(
+          { _id: new ObjectID(teamID) },
+          {
+            $addToSet: { disabledAffects: affectID }
+          },
+          (err, result) => {
+            if (err) {
+              debug('Failed to add affect to team\'s disabled list')
+              debug(err)
+              return reject(err)
+            }
+            return resolve()
+          }
+        )
+    })
+  })
+}
+
+export function listDisabledAffects (teamID) {
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Teams')
+        .find({ _id: new ObjectID(teamID) }, { disabledAffects: 1 })
+        .toArray(function (err, result) {
+          if (err) {
+            debug('Failed to list disabled affects')
+            debug(err)
+            return reject(err)
+          }
+          resolve(result[0].disabledAffects)
         })
     })
   })
