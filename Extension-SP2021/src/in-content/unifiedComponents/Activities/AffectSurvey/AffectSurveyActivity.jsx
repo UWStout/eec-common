@@ -144,6 +144,7 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
         handleClick={onSelection}
         button
         selected={(userAffectID === favEmoji._id)}
+        favoriteList={favoriteAffectsList}
       />
     ))
 
@@ -160,6 +161,7 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
         handleClick={onSelection}
         button
         selected={(userAffectID === recentEmoji._id)}
+        favoriteList={favoriteAffectsList}
       />
     ))
 
