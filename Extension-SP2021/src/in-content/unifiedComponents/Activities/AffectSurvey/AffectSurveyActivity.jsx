@@ -127,13 +127,14 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
       handleClick={onSelection}
       button
       selected={(userAffectID === emoji._id)}
+      favoriteList={favoriteAffectsList}
     />
   ))
 
   // Build the Emoji elements for the favorites only
   const favEmojiElements = filteredEmojis
     .filter((curEmoji) => (
-      favoriteAffectsList.some((favID) => (favID === curEmoji._id))
+      favoriteAffectsList?.some((favID) => (favID === curEmoji._id))
     ))
     .map((favEmoji) => (
       <Emoji

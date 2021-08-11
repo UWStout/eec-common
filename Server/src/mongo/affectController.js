@@ -188,12 +188,24 @@ export function listFavoriteAffects (userID) {
   })
 }
 
+export function removeFavoriteAffect (userID, affectID) {
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users')
+        .findOneAndUpdate({ _id: new ObjectID(userID) },
+          { $pull: { favoriteAffects: affectID } })
+        .then(result => { return resolve() })
+        .catch((err) => { return reject(err) })
+    })
+  })
+}
+
 /**
  * @param {*} affectID  the mongo ID string that needs to be wrapped in an ObjectID before being pushed to the database
  * @param {*} teamID the mongo ID string that needs to be wrapped in an ObjectID before being pushed to the database
  * @returns {Promise} Resolves with no data if successful, rejects on error
  */
-export function setDisabledAffect (affectID, teamID) {
+export function setTeamDisabledAffect (affectID, teamID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Teams')
@@ -215,7 +227,20 @@ export function setDisabledAffect (affectID, teamID) {
   })
 }
 
-export function listDisabledAffects (teamID) {
+export function removeTeamDisabledAffect (teamID, affectID) {
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Teams')
+        .findOneAndUpdate({ _id: new ObjectID(teamID) },
+          { $pull: { disabledAffects: affectID } })
+        .then(result => { return resolve() })
+        .catch((err) => { return reject(err) })
+    })
+  })
+}
+
+
+export function listTeamDisabledAffects (teamID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Teams')

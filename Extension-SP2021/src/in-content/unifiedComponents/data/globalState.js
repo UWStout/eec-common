@@ -282,6 +282,8 @@ export const FavoriteAffectsListState = atom({
   ]
 })
 
+export const toggleDeleteState = atom({ key: 'Toggle', default: false })
+
 /** Selector to set Favorite affects (with side-effects) */
 export const FavoriteAffectsListStateSetter = selector({
   key: 'FavoriteAffectsListStateSetter',
@@ -289,12 +291,23 @@ export const FavoriteAffectsListStateSetter = selector({
     return get(FavoriteAffectsListState)
   },
 
-  set: ({ set }, newFavorite) => {
+  set: ({ set, get }, favorite) => {
     // Update local cached state
-    set(FavoriteAffectsListState, [newFavorite, ...get(FavoriteAffectsListState)])
+    const isDelete = get(toggleDeleteState)
+    let favoriteList = get(FavoriteAffectsListState)
+    if (isDelete) {
+      favoriteList = favoriteList.filter((emoji) => (
+        emoji !== favorite
+      ))
+      set(FavoriteAffectsListState, favoriteList)
+      // Send to the database
+      HELPER.removeFavoriteAffect(favorite, MSG_CONTEXT)
+    } else {
+      set(FavoriteAffectsListState, [favorite, ...favoriteList])
 
-    // Send to the database
-    HELPER.setFavoriteAffect(newFavorite, MSG_CONTEXT)
+      // Send to the database
+      HELPER.setFavoriteAffect(favorite, MSG_CONTEXT)
+    }
   }
 })
 
@@ -304,8 +317,8 @@ export const DisabledAffectsListState = selector({
   get: async ({ get }) => {
     const activeTeamID = get(ActiveTeamIDState)
     try {
-      const teammatesInfo = await HELPER.retrieveDisabledAffectsList(activeTeamID, MSG_CONTEXT)
-      return teammatesInfo
+      const disabledAffects = await HELPER.retrieveTeamDisabledAffectsList(activeTeamID, MSG_CONTEXT)
+      return disabledAffects
     } catch (err) {
       LOG.error(`Failed to retrieve teammates info with status for team "${activeTeamID}"`)
       LOG.error(err)

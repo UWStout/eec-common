@@ -313,6 +313,38 @@ router.post('/setFavoriteAffect', authenticateToken, async (req, res) => {
   }
 })
 
+router.post('/removeFavoriteAffect', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { affectID, userID } = req.body
+  if (!affectID || !userID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if userID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
+  }
+
+  // check if affectID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(affectID)) {
+    res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
+  }
+
+  // Attempt to insert affect history log
+  debug('attempting to delete user\'s favorite affects')
+  try {
+    // updates history and user status
+    await DBAffect.removeFavoriteAffect(userID, affectID)
+    debug('attempting to delete user favorite affects')
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Failed to remove affect to user\'s favorites')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Failed to remove affect to user\'s favorites' })
+  }
+})
+
 router.get('/listFavoriteAffects/:userID?', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const userID = req.params.userID
@@ -334,7 +366,7 @@ router.get('/listFavoriteAffects/:userID?', authenticateToken, async (req, res) 
   }
 })
 
-router.post('/setDisabledAffect', authenticateToken, async (req, res) => {
+router.post('/setTeamDisabledAffect', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const { affectID, teamID } = req.body
   if (!affectID || !teamID) {
@@ -356,7 +388,7 @@ router.post('/setDisabledAffect', authenticateToken, async (req, res) => {
   debug('attempting to update team\'s disabled affects')
   try {
     // updates history and user status
-    await DBAffect.setDisabledAffect(affectID, teamID)
+    await DBAffect.setTeamDisabledAffect(affectID, teamID)
     debug('team\'s disabled affects updated')
     res.json({ success: true })
   } catch (error) {
@@ -366,7 +398,39 @@ router.post('/setDisabledAffect', authenticateToken, async (req, res) => {
   }
 })
 
-router.get('/listDisabledAffects/:teamID?', authenticateToken, async (req, res) => {
+router.post('/removeTeamDisabledAffect', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const { affectID, teamID } = req.body
+  if (!affectID || !teamID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if teamID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, id: teamID, message: 'teamID must be a 12 byte number or a string of 24 hex characters' })
+  }
+
+  // check if affectID is a reasonable parameter for ObjectID
+  if (!ObjectID.isValid(affectID)) {
+    res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
+  }
+
+  // Attempt to insert affect history log
+  debug('attempting to delete team\'s disabled affects')
+  try {
+    // updates history and user status
+    await DBAffect.removeTeamDisabledAffect(teamID, affectID)
+    debug('attempting to delete team\'s disabled affects')
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Failed to remove affect from team\'s disabled affects')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Failed to remove affect to team\'s disabled affects' })
+  }
+})
+
+router.get('/listTeamDisabledAffects/:teamID?', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const teamID = req.params.teamID
 
@@ -378,7 +442,7 @@ router.get('/listDisabledAffects/:teamID?', authenticateToken, async (req, res) 
   // attempt to get affect details
   debug('attempting to list disabled affects')
   try {
-    const disabledAffects = await DBAffect.listDisabledAffects(teamID)
+    const disabledAffects = await DBAffect.listTeamDisabledAffects(teamID)
     return res.json(disabledAffects)
   } catch (error) {
     debug('Failed to list disabled affects')

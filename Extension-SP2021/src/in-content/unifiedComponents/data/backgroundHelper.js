@@ -97,12 +97,12 @@ export function retrieveFavoriteAffectsList (context = 'none') {
   })
 }
 
-export function setFavoriteAffect (favoriteAffectID, context = 'none') {
+export function setFavoriteAffect (affectID, context = 'none') {
   return new Promise((resolve, reject) => {
     // Retrieve the full affect History list
     sendMessageToBackground(
       // Read from the back-end server using AJAX
-      { type: 'ajax-setFavoriteAffect', favoriteAffectID }, // <- only the message type is needed
+      { type: 'ajax-setFavoriteAffect', affectID }, // <- only the message type is needed
       context,
       'updating Favorite affects failed: ',
 
@@ -113,7 +113,23 @@ export function setFavoriteAffect (favoriteAffectID, context = 'none') {
   })
 }
 
-export function retrieveDisabledAffectsList (teamID, context = 'none') {
+export function removeFavoriteAffect (affectID, context = 'none') {
+  return new Promise((resolve, reject) => {
+    // Retrieve the full affect History list
+    sendMessageToBackground(
+      // Read from the back-end server using AJAX
+      { type: 'ajax-removeFavoriteAffect', affectID }, // <- only the message type is needed
+      context,
+      'updating Favorite affects failed: ',
+
+      // Success and failure callbacks
+      () => { return resolve() },
+      (message) => { return reject(new Error(message)) }
+    )
+  })
+}
+
+export function retrieveTeamDisabledAffectsList (teamID, context = 'none') {
   return new Promise((resolve, reject) => {
     // Retrieve the full affect History list
     sendMessageToBackground(
@@ -129,12 +145,28 @@ export function retrieveDisabledAffectsList (teamID, context = 'none') {
   })
 }
 
-export function setDisabledAffect (teamID, affectID, context = 'none') {
+export function setTeamDisabledAffect (teamID, affectID, context = 'none') {
   return new Promise((resolve, reject) => {
     // Retrieve the full affect History list
     sendMessageToBackground(
       // Read from the back-end server using AJAX
       { type: 'ajax-setTeamDisabledAffect', teamID, affectID }, // <- only the message type is needed
+      context,
+      'updating Disabled affects failed: ',
+
+      // Success and failure callbacks
+      () => { return resolve() },
+      (message) => { return reject(new Error(message)) }
+    )
+  })
+}
+
+export function removeTeamDisabledAffect (teamID, affectID, context = 'none') {
+  return new Promise((resolve, reject) => {
+    // Retrieve the full affect History list
+    sendMessageToBackground(
+      // Read from the back-end server using AJAX
+      { type: 'ajax-removeTeamDisabledAffect', teamID, affectID }, // <- only the message type is needed
       context,
       'updating Disabled affects failed: ',
 

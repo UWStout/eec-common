@@ -98,6 +98,16 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       }
       break
 
+    case 'ajax-removeFavoriteAffect':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = removeFavoriteAffect(userData.id, message.affectID)
+      }
+      break
+
     case 'ajax-getFavoriteAffects':
       if (!userData.id) {
         promise = Promise.resolve({
@@ -114,7 +124,17 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
           error: 'No team id available (not logged in?)'
         })
       } else {
-        promise = setDisabledAffect(message.teamID, message.affectID)
+        promise = setTeamDisabledAffect(message.teamID, message.affectID)
+      }
+      break
+
+    case 'ajax-removeTeamDisabledAffect':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No team id available (not logged in?)'
+        })
+      } else {
+        promise = removeTeamDisabledAffect(message.teamID, message.affectID)
       }
       break
 
@@ -124,7 +144,7 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
           error: 'No team id available (not logged in?)'
         })
       } else {
-        promise = listDisabledAffects(message.teamID)
+        promise = listTeamDisabledAffects(message.teamID)
       }
       break
 
@@ -288,6 +308,21 @@ function setFavoriteAffect (userID, affectID) {
   })
 }
 
+function removeFavoriteAffect (userID, affectID) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/removeFavoriteAffect`,
+      { userID, affectID },
+      config
+    )
+
+    // Listen for server response or error
+    requestPromise.then(() => { resolve() })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
 function listFavoriteAffects (userID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
@@ -303,11 +338,11 @@ function listFavoriteAffects (userID) {
   })
 }
 
-function setDisabledAffect (teamID, affectID) {
+function setTeamDisabledAffect (teamID, affectID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader() }
-    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/setDisabledAffect`,
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/setTeamDisabledAffect`,
       { teamID, affectID },
       config
     )
@@ -318,11 +353,26 @@ function setDisabledAffect (teamID, affectID) {
   })
 }
 
-function listDisabledAffects (teamID) {
+function removeTeamDisabledAffect (teamID, affectID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader() }
-    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/listDisabledAffects/${teamID}`, config)
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/removeTeamDisabledAffect`,
+      { teamID, affectID },
+      config
+    )
+
+    // Listen for server response or error
+    requestPromise.then(() => { resolve() })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
+function listTeamDisabledAffects (teamID) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/listTeamDisabledAffects/${teamID}`, config)
     // Listen for server response or error
     requestPromise.then((response) => {
       const disabledAffectsList = response?.data
