@@ -324,6 +324,25 @@ export const DisabledAffectsListState = selector({
       LOG.error(err)
       return []
     }
+  },
+
+  set: ({ set, get }, disabled) => {
+    // Update local cached state
+    const isDelete = get(toggleDeleteState)
+    let disabledList = get(DisabledAffectsListState)
+    if (isDelete) {
+      disabledList = disabledList.filter((emoji) => (
+        emoji !== disabled
+      ))
+      set(DisabledAffectsListState, disabledList)
+      // Send to the database
+      HELPER.removeTeamDisabledAffect(disabled, MSG_CONTEXT)
+    } else {
+      set(DisabledAffectsListState, [disabled, ...disabledList])
+
+      // Send to the database
+      HELPER.setTeamDisabledAffect(disabled, MSG_CONTEXT)
+    }
   }
 })
 

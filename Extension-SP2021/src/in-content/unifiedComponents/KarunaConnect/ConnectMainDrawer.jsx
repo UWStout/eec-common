@@ -48,7 +48,8 @@ const useStyles = makeStyles((theme) => ({
   panelHidden: {
     // AIW Comment in for testing styling
     // right: '0%'
-    right: `calc(0% - ${theme.spacing(39)}px)`
+    right: `calc(0% - ${theme.spacing(39)}px)`,
+    display: 'none' // panel not accessible by tab when hidden
   },
 
   // Activities need to be relatively positioned to overlap with siblings
@@ -59,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Paper = withStyles((theme) => ({
   root: {
-    display: 'flex',
+    // display: 'flex',
     position: 'absolute',
     top: '20vh',
     width: theme.spacing(36),
