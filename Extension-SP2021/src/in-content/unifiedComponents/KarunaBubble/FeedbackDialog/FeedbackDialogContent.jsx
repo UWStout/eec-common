@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
-import { KarunaMessageState } from '../../data/globalState.js'
+import { KarunaMessageState, BubbleDisplayedFeedbackState } from '../../data/globalState.js'
 
 import { Grid } from '@material-ui/core'
 
@@ -12,10 +12,11 @@ import ListNVCElements from '../../NVCInfoSections/ListNVCElements.jsx'
 
 export default function FeedbackDialogContent (props) {
   // Deconstruct the props
-  const { onHide, cancelHide, displayed } = props
+  const { onHide, cancelHide } = props
 
   // Displayed state
-  const [displayedFeedback/*, setDisplayedFeedback */] = useState(displayed)
+  // const [displayedFeedback/*, setDisplayedFeedback */] = useState(displayed)
+  const displayedFeedback = useRecoilValue(BubbleDisplayedFeedbackState)
 
   // Register to global state changes
   const karunaMessage = useRecoilValue(KarunaMessageState)
@@ -48,10 +49,5 @@ export default function FeedbackDialogContent (props) {
 
 FeedbackDialogContent.propTypes = {
   onHide: PropTypes.func.isRequired,
-  cancelHide: PropTypes.func.isRequired,
-  displayed: PropTypes.string
-}
-
-FeedbackDialogContent.defaultProps = {
-  displayed: 'observations'
+  cancelHide: PropTypes.func.isRequired
 }

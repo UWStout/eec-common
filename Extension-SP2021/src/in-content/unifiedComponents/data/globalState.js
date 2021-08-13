@@ -195,6 +195,12 @@ export const KarunaMessageState = atom({
   default: { }
 })
 
+/** What activity is displayed on the karuna bubble feedback dialog */
+export const BubbleDisplayedFeedbackState = atom({
+  key: 'BubbleDisplayedFeedbackState',
+  default: 'observations'
+})
+
 /** Privacy preferences data for sharing mood */
 export const PrivacyPrefsState = atom({
   key: 'PrivacyPrefsState',
