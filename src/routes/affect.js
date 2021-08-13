@@ -358,7 +358,7 @@ router.get('/listFavoriteAffects/:userID?', authenticateToken, async (req, res) 
   debug('attempting to list favorite affects')
   try {
     const favoriteAffects = await DBAffect.listFavoriteAffects(userID)
-    return res.json(favoriteAffects)
+    return res.json(favoriteAffects || [])
   } catch (error) {
     debug('Failed to list favorite affects')
     debug(error)
@@ -443,7 +443,7 @@ router.get('/listTeamDisabledAffects/:teamID?', authenticateToken, async (req, r
   debug('attempting to list disabled affects')
   try {
     const disabledAffects = await DBAffect.listTeamDisabledAffects(teamID)
-    return res.json(disabledAffects)
+    return res.json(disabledAffects || [])
   } catch (error) {
     debug('Failed to list disabled affects')
     debug(error)

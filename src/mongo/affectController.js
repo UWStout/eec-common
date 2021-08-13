@@ -182,7 +182,11 @@ export function listFavoriteAffects (userID) {
             debug(err)
             return reject(err)
           }
-          resolve(result[0]?.favoriteAffects)
+          if (Array.isArray(result) && result.length > 0) {
+            return resolve(result[0].favoriteAffects)
+          }
+          debug('Failed to list favorite affects: matching user not found.')
+          return reject(new Error('No matching user found'))
         })
     })
   })
@@ -239,7 +243,6 @@ export function removeTeamDisabledAffect (teamID, affectID) {
   })
 }
 
-
 export function listTeamDisabledAffects (teamID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
@@ -251,7 +254,11 @@ export function listTeamDisabledAffects (teamID) {
             debug(err)
             return reject(err)
           }
-          resolve(result[0].disabledAffects)
+          if (Array.isArray(result) && result.length > 0) {
+            return resolve(result[0].disabledAffects)
+          }
+          debug('Failed to list disabled affects: no matching teams returned')
+          return reject(new Error('No matching teams'))
         })
     })
   })
