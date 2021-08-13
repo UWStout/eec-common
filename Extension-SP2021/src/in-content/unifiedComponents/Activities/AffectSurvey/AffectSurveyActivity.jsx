@@ -47,7 +47,7 @@ function searchFilter (fullList, searchText) {
     const text = searchText.toLowerCase()
     return (
       (curItem.name && curItem.name.toLowerCase().includes(text)) ||
-      (curItem.description && curItem.description.toLowerCase().includes(searchText))
+      (curItem.description && curItem.description.toLowerCase().includes(text))
     )
   })
 }
@@ -61,7 +61,7 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   const { listRoot, innerList, listItem } = useStyles()
 
   // Subscribe to changes in global states (GLOBAL STATE)
-  let emojiList = useRecoilValue(STATE.AffectListState)
+  const emojiList = useRecoilValue(STATE.AffectListState)
   const moodHistoryList = useRecoilValue(STATE.AffectHistoryListState)
   const favoriteAffectsList = useRecoilValue(STATE.FavoriteAffectsListState)
   const disabledAffects = useRecoilValue(STATE.DisabledAffectsListState)
@@ -112,13 +112,15 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
     }
   }
 
-  // filter out the disabled emojis from the emoji list
-  emojiList = emojiList.filter((emoji) => (
-    disabledAffects.some((badEmojis) => (badEmojis !== emoji._id))
+  // Filter out globally inactive and team-disabled emojis
+  const enabledEmojis = emojiList.filter((emoji) => (
+    emoji.active && !disabledAffects.some((disabledEmojiID) => (disabledEmojiID === emoji._id))
   ))
 
-  // Build list of Emoji elements filtered by search text
-  const filteredEmojis = (searchText === '' ? emojiList : searchFilter(emojiList, searchText))
+  // Filter list of emojis by searchText (if any)
+  const filteredEmojis = (searchText === '' ? enabledEmojis : searchFilter(enabledEmojis, searchText))
+
+  // Build the COMPLETE list of Emoji elements
   const allEmojiElements = filteredEmojis.map((emoji) => (
     <Emoji
       className={listItem}
@@ -131,7 +133,7 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
     />
   ))
 
-  // Build the Emoji elements for the favorites only
+  // Build the FAVORITES list of emoji elements
   const favEmojiElements = filteredEmojis
     .filter((curEmoji) => (
       favoriteAffectsList?.some((favID) => (favID === curEmoji._id))

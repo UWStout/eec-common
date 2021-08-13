@@ -4,7 +4,6 @@ import * as HELPER from './backgroundHelper.js'
 
 // Colorful logger
 import { makeLogger } from '../../../util/Logger.js'
-import { get } from 'store2'
 const LOG = makeLogger('RECOIL Global State', '#27213C', '#EEF4ED')
 
 // CAUTION: This must be set once early in the lifecycle of the
@@ -31,13 +30,29 @@ export const MessagingContextState = atom({
 /** Is the connect panel open and visible */
 export const ConnectVisibilityState = atom({
   key: 'ConnectVisibilityState',
-  default: false
+  default: false,
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Connect panel visibility updated', newVal)
+      })
+    }
+  ]
 })
 
 /** Is the Bubble feedback dialog open and visible */
 export const BubbleVisibilityState = atom({
   key: 'BubbleVisibilityState',
-  default: false
+  default: false,
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Bubble visibility updated', newVal)
+      })
+    }
+  ]
 })
 
 /** The trail of activities clicked through in the connect panel */
@@ -104,12 +119,28 @@ export const PopActivityState = selector({
 /** Has the user selected a new mood in the affect survey */
 export const LastSelectedAffectIDState = atom({
   key: 'LastSelectedAffectIDState',
-  default: ''
+  default: '',
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Last selected Affect ID updated', newVal)
+      })
+    }
+  ]
 })
 
 export const NVCIdentifiedState = atom({
   key: 'NVCIdentifiedState',
-  default: false
+  default: false,
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('NVC Identified State updated', newVal)
+      })
+    }
+  ]
 })
 
 /** Basic info for current user */
@@ -148,7 +179,15 @@ function generateTextBoxID () {
 /** Text boxes we are monitoring */
 export const TextBoxMapState = atom({
   key: 'TextBoxMapState',
-  default: new Map()
+  default: new Map(),
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Text Box Map State updated', newVal)
+      })
+    }
+  ]
 })
 
 export const TextBoxListState = selector({
@@ -192,7 +231,15 @@ export const TextBoxListState = selector({
 /** Latest message from Karuna server */
 export const KarunaMessageState = atom({
   key: 'KarunaMessageState',
-  default: { }
+  default: { },
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Karuna Message State updated', newVal)
+      })
+    }
+  ]
 })
 
 /** Privacy preferences data for sharing mood */
@@ -282,7 +329,18 @@ export const FavoriteAffectsListState = atom({
   ]
 })
 
-export const toggleDeleteState = atom({ key: 'Toggle', default: false })
+export const toggleDeleteState = atom({
+  key: 'Toggle',
+  default: false,
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('toggle delete state updated', newVal)
+      })
+    }
+  ]
+})
 
 /** Selector to set Favorite affects (with side-effects) */
 export const FavoriteAffectsListStateSetter = selector({
