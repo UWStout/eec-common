@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
-import { KarunaMessageState, BubbleDisplayedFeedbackState } from '../../data/globalState.js'
+import { KarunaMessageState, BubbleDisplayedFeedbackStateSetter } from '../../data/globalState.js'
 
 import { Grid } from '@material-ui/core'
 
@@ -16,8 +16,7 @@ export default function FeedbackDialogContent (props) {
 
   // Displayed state
   // const [displayedFeedback/*, setDisplayedFeedback */] = useState(displayed)
-  const displayedFeedback = useRecoilValue(BubbleDisplayedFeedbackState)
-
+  const displayedFeedback = useRecoilValue(BubbleDisplayedFeedbackStateSetter)
   // Register to global state changes
   const karunaMessage = useRecoilValue(KarunaMessageState)
 

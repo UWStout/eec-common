@@ -55,6 +55,40 @@ export const BubbleVisibilityState = atom({
   ]
 })
 
+export const BubbleVisibilityStateSetter = selector({
+  key: 'BubbleVisibilityStateSetter',
+  get: ({ get }) => {
+    return get(BubbleVisibilityState)
+  },
+
+  set: ({ set }, isVisible) => {
+    // Update local cached state
+    set(BubbleVisibilityState, isVisible)
+  }
+})
+
+/** What activity is displayed on the karuna bubble feedback dialog */
+export const BubbleDisplayedFeedbackState = atom({
+  key: 'BubbleDisplayedFeedbackState',
+  default: 'observations'
+})
+
+export const BubbleDisplayedFeedbackStateSetter = selector({
+  key: 'BubbleDisplayedFeedbackStateSetter',
+  get: ({ get }) => {
+    const currentStatus = get(UserStatusState)
+    LOG('current affect id is', currentStatus.currentAffectID)
+    if (!currentStatus || !currentStatus.currentAffectID) {
+      return 'affectSurvey'
+    }
+    return get(BubbleDisplayedFeedbackState)
+  },
+  set: ({ set }, isVisible) => {
+    // Update local cached state
+    set(BubbleDisplayedFeedbackState, isVisible)
+  }
+})
+
 /** The trail of activities clicked through in the connect panel */
 export const ActivityStackState = atom({
   key: 'ActivityStackState',
@@ -242,12 +276,6 @@ export const KarunaMessageState = atom({
   ]
 })
 
-/** What activity is displayed on the karuna bubble feedback dialog */
-export const BubbleDisplayedFeedbackState = atom({
-  key: 'BubbleDisplayedFeedbackState',
-  default: 'observations'
-})
-
 /** Privacy preferences data for sharing mood */
 export const PrivacyPrefsState = atom({
   key: 'PrivacyPrefsState',
@@ -432,7 +460,7 @@ export const UserAffectIDState = selector({
   key: 'UserAffectIDState',
   get: ({ get }) => {
     const currentStatus = get(UserStatusState)
-    return currentStatus.currentAffectID
+    return currentStatus?.currentAffectID
   },
 
   set: ({ get, set }, newAffectID) => {

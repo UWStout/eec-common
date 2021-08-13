@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
-import { ConnectVisibilityState, BubbleVisibilityState, KarunaMessageState } from './data/globalState.js'
+import { ConnectVisibilityState, BubbleVisibilityStateSetter, KarunaMessageState, BubbleDisplayedFeedbackStateSetter } from './data/globalState.js'
 
 import PersistentBubble from './KarunaBubble/PersistentBubble.jsx'
 import FeedbackDialog from './KarunaBubble/FeedbackDialog/FeedbackDialog.jsx'
@@ -16,15 +16,19 @@ export default function KarunaBubble (props) {
   const setMainConnectPanelOpen = useSetRecoilState(ConnectVisibilityState)
 
   // Hide/Show the feedback dialog
-  const [FeedbackDialogOpen, setFeedbackDialogOpen] = useRecoilState(BubbleVisibilityState)
+  const [FeedbackDialogOpen, setFeedbackDialogOpen] = useRecoilState(BubbleVisibilityStateSetter)
+  const displayedFeedback = useRecoilValue(BubbleDisplayedFeedbackStateSetter)
 
   // Receive changes in the karuna message (GLOBAL STATE)
   const karunaMessage = useRecoilValue(KarunaMessageState)
   useEffect(() => {
-    if (karunaMessage?.content) {
+    if (displayedFeedback === 'affectSurvey') {
+      setFeedbackDialogOpen(true)
+      window.dispatchEvent(new CustomEvent('resize'))
+    } else if (karunaMessage?.content) {
       setFeedbackDialogOpen(true)
     }
-  }, [karunaMessage, setFeedbackDialogOpen])
+  }, [displayedFeedback, karunaMessage, setFeedbackDialogOpen])
 
   // Timeout for hiding the feedback dialog
   const [feedbackHideTimeout, setFeedbackHideTimeout] = useState(false)
