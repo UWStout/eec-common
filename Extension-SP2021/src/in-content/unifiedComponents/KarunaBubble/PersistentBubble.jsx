@@ -11,24 +11,24 @@ import { AccountCircle } from '@material-ui/icons'
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
-    bottom: theme.spacing(2),
-    right: theme.spacing(3)
-  },
-  contextIndicator: {
-    fontSize: 16,
-    color: 'white',
-    position: 'absolute',
-    bottom: theme.spacing(5),
-    right: theme.spacing(2.3)
+    bottom: '0%',
+    right: '0%',
+    padding: theme.spacing(2)
   },
   accountIndicator: {
-    fontSize: 16,
+    fontSize: theme.spacing(3),
     position: 'absolute',
-    bottom: '37px',
-    right: '23px'
+    right: theme.spacing(3.2),
+    bottom: theme.spacing(5.1)
+  },
+  contextIndicator: {
+    color: 'white',
+    position: 'absolute',
+    right: theme.spacing(2.8),
+    bottom: theme.spacing(5.1)
   },
   iconStyle: {
-    fontSize: 60
+    fontSize: theme.spacing(7)
   }
 }))
 
@@ -87,7 +87,7 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
         </div>}
       {userLoggedIn && isContextIndicated &&
         <div className={classes.contextIndicator}>
-          <Typography>
+          <Typography variant="body1">
             { 'NVC' }
           </Typography>
         </div>}
