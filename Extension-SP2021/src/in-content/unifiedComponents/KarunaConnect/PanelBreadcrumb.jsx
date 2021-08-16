@@ -13,9 +13,7 @@ import { ACTIVITIES } from '../Activities/Activities'
 const useStyles = makeStyles((theme) => ({
   rootStyle: {
     borderBottom: '1px solid grey',
-    marginBottom: '6px',
-    width: '100%',
-    alignItems: 'flex-end'
+    width: '100%'
   }
 }))
 
@@ -56,7 +54,7 @@ export default function PanelBreadcrumbs (props) {
 
   // Render
   return (
-    <Grid container item xs={12} className={rootStyle} spacing={1}>
+    <Grid container item xs={12} className={rootStyle}>
       <Grid item xs={11}>
         <Typography variant="subtitle2">
           {'KARUNA'}
