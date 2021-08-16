@@ -1,14 +1,34 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Tooltip as MuiTooltip } from '@material-ui/core'
+import MuiTooltip from '@material-ui/core/Tooltip'
 import { withStyles } from '@material-ui/core/styles'
 
 import FeedbackDialogContent from './FeedbackDialogContent.jsx'
 
+// AIW working on styling
+// const Tooltip = withStyles((theme) => ({
+//   arrow: {
+//     '&:before': {
+//       border: '1px solid white'
+//     },
+//     color: theme.palette.common.white
+//   },
+//   tooltip: {
+//     backgroundColor: theme.palette.common.white,
+//     border: '1px solid white',
+//     color: '#4A4A4A',
+//     fontSize: 12
+    // maxWidth: 210
+    // maxHeight: 180, // the words overflow when this is on
+    // overflow: scroll // gets rid of the arrow for some reason?
+//   }
+// }))(MuiTooltip)
+
 const Tooltip = withStyles((theme) => ({
   arrow: {
-    '&:before': {
+    fontSize: theme.spacing(2),
+    '&::before': {
       border: '1px solid white'
     },
     color: theme.palette.common.white
@@ -17,10 +37,8 @@ const Tooltip = withStyles((theme) => ({
     backgroundColor: theme.palette.common.white,
     border: '1px solid white',
     color: '#4A4A4A',
-    fontSize: 12
-    // maxWidth: 210
-    // maxHeight: 180, // the words overflow when this is on
-    // overflow: scroll // gets rid of the arrow for some reason?
+    fontSize: theme.typography.body1,
+    padding: theme.spacing(2)
   }
 }))(MuiTooltip)
 
@@ -59,5 +77,5 @@ FeedbackDialog.propTypes = {
 
 FeedbackDialog.defaultProps = {
   children: null,
-  offset: '-10, -20'
+  offset: '-16, -25'
 }
