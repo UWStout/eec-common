@@ -72,10 +72,10 @@ const Paper = withStyles((theme) => ({
     overflowY: 'auto',
     overflowX: 'hidden',
 
-    paddingTop: theme.spacing(1),
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(4),
-    paddingLeft: theme.spacing(1),
+    paddingTop: theme.spacing(2),
+    paddingRight: theme.spacing(3),
+    paddingBottom: theme.spacing(5),
+    paddingLeft: theme.spacing(2),
     zIndex: 300,
 
     // Animate changes in the 'right' property
@@ -240,7 +240,7 @@ ConnectMainDrawer.propTypes = {
 ConnectMainDrawer.defaultProps = {
   hidden: false,
   onHide: null,
-  // waitToHide: 3000
+  waitToHide: 3000
   // AIW Testing styles
-  waitToHide: 100000
+  // waitToHide: 100000
 }
