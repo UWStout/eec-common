@@ -19,9 +19,9 @@ import FeedbackDialogContent from './FeedbackDialogContent.jsx'
 //     border: '1px solid white',
 //     color: '#4A4A4A',
 //     fontSize: 12
-    // maxWidth: 210
-    // maxHeight: 180, // the words overflow when this is on
-    // overflow: scroll // gets rid of the arrow for some reason?
+//     maxWidth: 210
+//     maxHeight: 180, // the words overflow when this is on
+//     overflow: scroll // gets rid of the arrow for some reason?
 //   }
 // }))(MuiTooltip)
 

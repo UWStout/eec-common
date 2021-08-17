@@ -1,6 +1,7 @@
 import { atom, selector } from 'recoil'
 
 import * as HELPER from './backgroundHelper.js'
+import { ACTIVITIES } from '../Activities/Activities.js'
 
 // Colorful logger
 import { makeLogger } from '../../../util/Logger.js'
@@ -76,8 +77,19 @@ export const BubbleDisplayedFeedbackState = atom({
 export const BubbleDisplayedFeedbackStateSetter = selector({
   key: 'BubbleDisplayedFeedbackStateSetter',
   get: ({ get }) => {
+    // Check if the user is logged in first
+    const validUser = get(ValidUserState)
+    if (!validUser) {
+      return get(BubbleDisplayedFeedbackState)
+    }
+
+    // SFB: I don't think this should be done here. The question of weather or not
+    // their affect has been set yet can really only be answered server-side, not
+    // client side. There's a lot of unrelated reasons that currentStatus might be
+    // undefined client side (not being logged in for example) and the client can't
+    // really differentiate between them.
     const currentStatus = get(UserStatusState)
-    LOG('current affect id is', currentStatus.currentAffectID)
+    LOG('current affect id is', currentStatus?.currentAffectID)
     if (!currentStatus || !currentStatus.currentAffectID) {
       return 'affectSurvey'
     }
@@ -92,7 +104,7 @@ export const BubbleDisplayedFeedbackStateSetter = selector({
 /** The trail of activities clicked through in the connect panel */
 export const ActivityStackState = atom({
   key: 'ActivityStackState',
-  default: [],
+  default: [ACTIVITIES.LOGIN.key],
   effects_UNSTABLE: [
     ({ onSet }) => {
       // Log any value changes for debugging

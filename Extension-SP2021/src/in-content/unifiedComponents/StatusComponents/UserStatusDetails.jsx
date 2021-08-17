@@ -98,13 +98,12 @@ export default function UserStatusDetails (props) {
       <Grid item xs={12}>
         <Typography variant="body1">
           {'I\'m: '}
-          <br />
-          <Select aria-label="Change Collaboration Status" value={collaboration} onChange={onChangeCollaboration} className={indentLeft}>
-            <MenuItem value={'Focused'}>{makeCollaboration('Focused', iconTweakStyle)}</MenuItem>
-            <MenuItem value={'Open to Collaboration'}>{makeCollaboration('Open to Collaboration', iconTweakStyle)}</MenuItem>
-            <MenuItem value={'Currently Collaborating'}>{makeCollaboration('Currently Collaborating', iconTweakStyle)}</MenuItem>
-          </Select>
         </Typography>
+        <Select aria-label="Change Collaboration Status" value={collaboration} onChange={onChangeCollaboration} className={indentLeft}>
+          <MenuItem value={'Focused'}>{makeCollaboration('Focused', iconTweakStyle)}</MenuItem>
+          <MenuItem value={'Open to Collaboration'}>{makeCollaboration('Open to Collaboration', iconTweakStyle)}</MenuItem>
+          <MenuItem value={'Currently Collaborating'}>{makeCollaboration('Currently Collaborating', iconTweakStyle)}</MenuItem>
+        </Select>
       </Grid>
 
       {/* Time-to-respond */}
