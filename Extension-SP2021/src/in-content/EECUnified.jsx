@@ -19,6 +19,9 @@ import UnifiedApp from './unifiedComponents/UnifiedApp.jsx'
 // For global state initialization
 import { setMessagingContext } from './unifiedComponents/data/globalState.js'
 
+// Manual import of CSS to make animate.css work
+import * as AnimateCSS from './CSSHelpers/animateCSS.js'
+
 // Colorful logger
 import { makeLogger } from '../util/Logger.js'
 const LOG = makeLogger('EEC Unified', '#222', '#bada55')
@@ -55,12 +58,16 @@ class EECUnified extends HTMLElement {
     // Set the context name
     this.contextName = contextName
 
+    // Create 3rd party library CSS for the shadow dom
+    this.vendorStyle = jQuery('<style>')
+    this.vendorStyle.text(AnimateCSS.getCSSString())
+
     // Setup root div for react unified app
     this.unifiedPanel = jQuery('<div>')
     this.unifiedPanel.addClass('eec-unified-root')
 
     // Attach the elements to the shadow DOM
-    jQuery(this.shadowRoot).append(this.unifiedPanel)
+    jQuery(this.shadowRoot).append(this.vendorStyle, this.unifiedPanel)
 
     // Create a comment node for injection of Material-UI styles
     this.insertionNode = jQuery('<noscript>').attr('id', 'jss-insertion-point')
