@@ -11,6 +11,9 @@ import MuiAccordion from '@material-ui/core/Accordion'
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 
+// AIW Testing conversion of team culture and NVC to external links
+import MuiLink from '@material-ui/core/Link'
+
 import { Grid, Typography } from '@material-ui/core'
 import { ExpandMore, Settings as SettingsIcon } from '@material-ui/icons'
 
@@ -65,6 +68,15 @@ const AccordionDetails = withStyles((theme) => ({
   }
 }))(MuiAccordionDetails)
 
+// AIW Testing conversion of team culture and NVC to external links
+const Link = withStyles((theme) => ({
+  root: {
+    underline: 'none',
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1)
+  }
+}))(MuiLink)
+
 export default function ConnectMainActivity (props) {
   const { hidden, retracted } = props
 
@@ -80,84 +92,102 @@ export default function ConnectMainActivity (props) {
     setExpanded(isExpanded ? panel : false)
   }
 
+  // AIW Testing conversion of team culture and NVC to external links
+  const preventDefault = (event) => event.preventDefault()
+
   // Ensure there is an active team
   if (activeTeamID === '') {
     return <Typography variant="body1">{'No active team'}</Typography>
   }
 
   return (
-    <Grid container item xs={12} role={'region'} aria-label={'Main Content'}>
-      {/* user status list item */}
-      <Accordion square expanded={expanded === 'userStatus'} aria-controls={'karunaStatusDrawer'} onChange={handleChange('userStatus')}>
-        <AccordionSummary
-          expandIcon={<SettingsIcon />}
-          aria-label={'Current User Status'}
-          aria-controls="user-status-content"
-          id="user-status-header"
-        >
-          <StatusListItem userStatus={currentUserStatus} userInfo={currentUserInfo} />
-        </AccordionSummary>
-        <AccordionDetails>
-          <Suspense fallback={<div />}>
-            <UserStatusDetails hidden={hidden} retracted={retracted} />
-          </Suspense>
-        </AccordionDetails>
-      </Accordion>
+    <Grid container item xs={12} role={'region'} aria-label={'Main Content'} spacing={3}>
+      <Grid container item xs={12}>
+        {/* user status list item */}
+        <Accordion square expanded={expanded === 'userStatus'} aria-controls={'karunaStatusDrawer'} onChange={handleChange('userStatus')}>
+          <AccordionSummary
+            expandIcon={<SettingsIcon />}
+            aria-label={'Current User Status'}
+            aria-controls="user-status-content"
+            id="user-status-header"
+          >
+            <StatusListItem userStatus={currentUserStatus} userInfo={currentUserInfo} />
+          </AccordionSummary>
+          <AccordionDetails>
+            <Suspense fallback={<div />}>
+              <UserStatusDetails hidden={hidden} retracted={retracted} />
+            </Suspense>
+          </AccordionDetails>
+        </Accordion>
 
-      {/* Team Status list item */}
-      <Accordion square expanded={expanded === 'teamStatus'} onChange={handleChange('teamStatus')}>
-        <AccordionSummary
-          expandIcon={<ExpandMore />}
-          aria-label={'Team Status'}
-          aria-controls="team-status-content"
-          id="team-status-header"
-        >
-          {/* <Typography>Team Status</Typography> */}
-          {/* AIW Testing out team name in the header */}
-          <Typography>
-            {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'} Status
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Suspense fallback={<div />}>
-            <TeamStatusDetails />
-          </Suspense>
-        </AccordionDetails>
-      </Accordion>
+        {/* Team Status list item */}
+        <Accordion square expanded={expanded === 'teamStatus'} onChange={handleChange('teamStatus')}>
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
+            aria-label={'Team Status'}
+            aria-controls="team-status-content"
+            id="team-status-header"
+          >
+            {/* <Typography>Team Status</Typography> */}
+            {/* AIW Testing out team name in the header */}
+            <Typography>
+              {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'} Status
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Suspense fallback={<div />}>
+              <TeamStatusDetails />
+            </Suspense>
+          </AccordionDetails>
+        </Accordion>
 
-      {/* Team Culture list item */}
-      <Accordion square expanded={expanded === 'teamCulture'} onChange={handleChange('teamCulture')}>
-        <AccordionSummary
-          expandIcon={<ExpandMore />}
-          aria-label={'Team Culture'}
-          aria-controls="team-culture-content"
-          id="team-culture-header"
-        >
-          {/* <Typography>Team Culture</Typography> */}
-          {/* AIW Testing out team name in the header */}
+        {/* AIW Testing conversion of team culture and NVC to external links */}
+        {/* Team Culture list item */}
+        {/* <Accordion square expanded={expanded === 'teamCulture'} onChange={handleChange('teamCulture')}>
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
+            aria-label={'Team Culture'}
+            aria-controls="team-culture-content"
+            id="team-culture-header"
+          > */}
+            {/* <Typography>Team Culture</Typography> */}
+            {/* AIW Testing out team name in the header */}
+            {/* <Typography>
+              {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'} Culture
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant={'body2'}>WIP</Typography>
+          </AccordionDetails>
+        </Accordion> */}
+
+        {/* NVC Information list item */}
+        {/* <Accordion square expanded={expanded === 'nvcInfo'} onChange={handleChange('nvcInfo')}>
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
+            aria-label={'NVC Information'}
+            aria-controls="nvc-info-content"
+            id="nvc-info-header"
+          >
+            <Typography>NVC</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <ListNVCElements />
+          </AccordionDetails>
+        </Accordion> */}
+      </Grid>
+      <Grid container item xs={12}>
+        <Link href="#" onClick={preventDefault}>
           <Typography>
             {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'} Culture
           </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography variant={'body2'}>WIP</Typography>
-        </AccordionDetails>
-      </Accordion>
-
-      {/* NVC Information list item */}
-      <Accordion square expanded={expanded === 'nvcInfo'} onChange={handleChange('nvcInfo')}>
-        <AccordionSummary
-          expandIcon={<ExpandMore />}
-          aria-label={'NVC Information'}
-          aria-controls="nvc-info-content"
-          id="nvc-info-header"
-        >
+        </Link>
+      </Grid>
+      <Grid container item xs={12}>
+        <Link href="#" onClick={preventDefault}>
           <Typography>NVC</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <ListNVCElements />
-        </AccordionDetails>
-      </Accordion>
+        </Link>
+      </Grid>
     </Grid>
   )
 }
