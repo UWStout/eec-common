@@ -378,6 +378,7 @@ export function sendWatsonResponse (responseText, clientPromptObj, clientContext
     clientEmail: clientSessions[this.id].email,
     context: clientContext,
     content: responseText,
+    isWatson: true,
     entities,
     intents
   }

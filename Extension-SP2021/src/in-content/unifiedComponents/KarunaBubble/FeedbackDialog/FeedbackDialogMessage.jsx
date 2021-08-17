@@ -19,22 +19,17 @@ const useStyles = makeStyles((theme) => ({
 
 function FeedbackDialogMessage (props) {
   const { karunaMessage } = props
-  const { rootStyle, itemStyle } = useStyles()
-
-  // Without a message, just return an empty div
-  if (!karunaMessage?.content) {
-    return <div />
-  }
+  const { itemStyle } = useStyles()
 
   return (
     <Grid container spacing={1} >
-      <Grid item xs={12} className={rootStyle}>
-        <Typography aria-label='title' variant='h6'>
-          {'Message from Karuna:'}
-        </Typography>
-      </Grid>
       <Grid item xs={12} className={itemStyle}>
-        {karunaMessage.content}
+        <Typography variant="body1">
+          {karunaMessage?.content && karunaMessage.content !== '' &&
+            karunaMessage.content}
+          {!(karunaMessage?.content) &&
+            'All is well!'}
+        </Typography>
       </Grid>
     </Grid>
   )
@@ -43,7 +38,11 @@ function FeedbackDialogMessage (props) {
 FeedbackDialogMessage.propTypes = {
   karunaMessage: PropTypes.shape({
     content: PropTypes.string
-  }).isRequired
+  })
+}
+
+FeedbackDialogMessage.defaultProps = {
+  karunaMessage: null
 }
 
 export default FeedbackDialogMessage

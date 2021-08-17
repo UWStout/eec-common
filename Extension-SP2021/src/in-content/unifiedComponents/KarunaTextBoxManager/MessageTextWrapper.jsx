@@ -4,8 +4,8 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import debounce from 'debounce'
 
-import { useSetRecoilState, useRecoilValue } from 'recoil'
-import { NVCIdentifiedState, ActiveKarunaMessageState } from '../data/globalState'
+import { useRecoilValue } from 'recoil'
+import { ActiveKarunaMessageState } from '../data/globalState'
 
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -53,7 +53,7 @@ export default function MessageTextWrapper (props) {
   const { outerWrapper, middleDiv, innerDiv } = useStyles()
 
   // Global state for identified NVC element
-  const setIsNVCIndicated = useSetRecoilState(NVCIdentifiedState)
+  // const setIsNVCIndicated = useSetRecoilState(NVCIdentifiedState)
   const activeKarunaMessage = useRecoilValue(ActiveKarunaMessageState)
 
   // Track the text box as a jQuery element in component state
@@ -95,13 +95,11 @@ export default function MessageTextWrapper (props) {
       }
 
       // LOG('Computed rects:', rects)
-      if (rects.length > 0) setIsNVCIndicated(true) // puts 'NVC' on top of bubble
-      else setIsNVCIndicated(false)
       setHighlightRects(rects)
     } catch (err) {
       // LOG.error('Error computing word rects', err)
     }
-  }, [highlightRangeList, setIsNVCIndicated])
+  }, [highlightRangeList])
 
   // Respond to change in textBox param
   useEffect(() => {

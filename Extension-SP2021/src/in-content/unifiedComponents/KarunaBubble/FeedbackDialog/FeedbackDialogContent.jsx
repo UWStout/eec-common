@@ -65,7 +65,7 @@ export default function FeedbackDialogContent (props) {
         {displayedFeedback === 'affectSurvey' &&
           <FeedbackDialogAffectSurvey />}
 
-        {displayedFeedback === 'karunaMessage' &&
+        {(displayedFeedback === 'karunaMessage' || displayedFeedback === 'none') &&
           <FeedbackDialogMessage karunaMessage={activeKarunaMessage} />}
       </Grid>
     </Grid>
