@@ -50,7 +50,9 @@ export default function TeamStatusDetails (props) {
   }
 
   return (
-    <Grid container direction='column' spacing={1} item xs={12} className={rootGridStyle}>
+    // AIW Adjusting styling
+    // <Grid container direction='column' spacing={1} item xs={12} className={rootGridStyle}>
+    <Grid container direction='column' item xs={12} className={rootGridStyle}>
       {/* AIW Testing out team name in the header */}
       {/* <Grid item>
         <Typography variant='body1'>

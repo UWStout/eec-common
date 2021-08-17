@@ -44,14 +44,16 @@ const AccordionSummary = withStyles((theme) => ({
   root: {
     paddingLeft: 0,
     paddingRight: 0,
-    borderBottom: '1px solid rgba(0, 0, 0, .125)'
+    // AIW Testing styling
+    // borderBottom: '1px solid rgba(0, 0, 0, .125)'
+    borderBottom: 0
   },
   expanded: {}
 }))(MuiAccordionSummary)
 
 const AccordionDetails = withStyles((theme) => ({
   root: {
-    paddingLeft: theme.spacing(2),
+    paddingLeft: theme.spacing(1),
     paddingRight: 0,
     borderBottom: '1px solid rgba(0, 0, 0, .125)'
   }
