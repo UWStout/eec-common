@@ -174,14 +174,24 @@ export default function ConnectMainActivity (props) {
         </Accordion> */}
       </Grid>
       <Grid container item xs={12}>
-        <Link href="#" onClick={preventDefault}>
+        <Link
+          href="#" onClick={preventDefault}
+          aria-label={'Team Culture'}
+          aria-controls="team-culture-content"
+          id="team-culture-header"
+        >
           <Typography>
             {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'} Culture
           </Typography>
         </Link>
       </Grid>
       <Grid container item xs={12}>
-        <Link href="#" onClick={preventDefault}>
+        <Link
+          href="#" onClick={preventDefault}
+          aria-label={'NVC Information'}
+          aria-controls="nvc-info-content"
+          id="nvc-info-header"
+        >
           <Typography>NVC</Typography>
         </Link>
       </Grid>
