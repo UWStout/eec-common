@@ -37,7 +37,10 @@ const Accordion = withStyles((theme) => ({
       borderBottom: 0
     }
   },
-  expanded: {}
+  expanded: {
+    // AIW Testing Styling
+    // margin: 0
+  }
 }))(MuiAccordion)
 
 const AccordionSummary = withStyles((theme) => ({
@@ -48,7 +51,10 @@ const AccordionSummary = withStyles((theme) => ({
     // borderBottom: '1px solid rgba(0, 0, 0, .125)'
     borderBottom: 0
   },
-  expanded: {}
+  expanded: {
+    // AIW Testing Styling
+    // margin: 0
+  }
 }))(MuiAccordionSummary)
 
 const AccordionDetails = withStyles((theme) => ({
