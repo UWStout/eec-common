@@ -1,31 +1,35 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue, useRecoilState } from 'recoil'
-import { ValidUserState, NVCIdentifiedState, ConnectVisibilityState } from '../data/globalState'
+import { ValidUserState, KarunaMessageQueueState, ActiveKarunaMessageState, ConnectVisibilityState } from '../data/globalState'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { SvgIcon, IconButton, Typography } from '@material-ui/core'
 import { AccountCircle } from '@material-ui/icons'
+
+import { animateCSS } from '../Shared/animateHelper.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
     bottom: '0%',
     right: '0%',
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
+    '--animate-repeat': 5
   },
   accountIndicator: {
     fontSize: theme.spacing(3),
     position: 'absolute',
     right: theme.spacing(3.2),
-    bottom: theme.spacing(5.1)
+    bottom: theme.spacing(4.5)
   },
   contextIndicator: {
     color: 'white',
     position: 'absolute',
-    right: theme.spacing(2.8),
-    bottom: theme.spacing(5.1)
+    minWidth: '36px',
+    right: theme.spacing(2.5),
+    bottom: theme.spacing(5.25)
   },
   iconStyle: {
     fontSize: theme.spacing(7)
@@ -34,13 +38,30 @@ const useStyles = makeStyles((theme) => ({
 
 const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref) {
   const { hidden, onHide, cancelHide, setOpen } = props
-  const isContextIndicated = useRecoilValue(NVCIdentifiedState)
-
   const classes = useStyles()
 
   // State of user login (GLOBAL STATE)
   const userLoggedIn = useRecoilValue(ValidUserState)
+  const messageQueue = useRecoilValue(KarunaMessageQueueState)
+  const activeKarunaMessage = useRecoilValue(ActiveKarunaMessageState)
   const [mainPanelOpen, setMainPanelOpen] = useRecoilState(ConnectVisibilityState)
+
+  // Determine what indicators to show
+  let showCount = false
+  let showNVCIndicator = false
+  if (activeKarunaMessage) {
+    if (activeKarunaMessage?.entities && activeKarunaMessage.entities.length > 0) {
+      showNVCIndicator = true
+    }
+  } else {
+    if (messageQueue.length > 1) {
+      showCount = true
+    } else if (messageQueue.length === 1) {
+      if (messageQueue[0]?.entities && messageQueue[0].entities.length > 0) {
+        showNVCIndicator = true
+      }
+    }
+  }
 
   const clickCallback = () => {
     if (!userLoggedIn) {
@@ -56,6 +77,13 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
       }
     }
   }
+
+  useEffect(() => {
+    const ariaLabel = (userLoggedIn ? 'Open Feedback Dialog' : 'Open Login Dialog')
+    if (!userLoggedIn || (activeKarunaMessage === null && messageQueue.length > 0)) {
+      animateCSS(`[aria-label="${ariaLabel}"]`, 'tada')
+    }
+  }, [activeKarunaMessage, messageQueue, userLoggedIn])
 
   return (
     <IconButton
@@ -85,7 +113,15 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
         <div className={classes.accountIndicator}>
           <AccountCircle />
         </div>}
-      {userLoggedIn && isContextIndicated &&
+
+      {userLoggedIn && showCount &&
+        <div className={classes.contextIndicator}>
+          <Typography variant="body1">
+            { messageQueue.length > 9 ? '9+' : messageQueue.length }
+          </Typography>
+        </div>}
+
+      {userLoggedIn && showNVCIndicator &&
         <div className={classes.contextIndicator}>
           <Typography variant="body1">
             { 'NVC' }

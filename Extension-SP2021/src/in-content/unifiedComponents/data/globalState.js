@@ -71,7 +71,15 @@ export const BubbleVisibilityStateSetter = selector({
 /** What activity is displayed on the karuna bubble feedback dialog */
 export const BubbleDisplayedFeedbackState = atom({
   key: 'BubbleDisplayedFeedbackState',
-  default: 'none'
+  default: 'none',
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Bubble displayed feedback updated', newVal)
+      })
+    }
+  ]
 })
 
 /** The trail of activities clicked through in the connect panel */
@@ -290,7 +298,12 @@ export const KarunaMessageEnqueueState = selector({
     if (!Array.isArray(messageQueue) || messageQueue.length < 1) {
       set(KarunaMessageQueueState, [newMessage])
     } else {
-      set(KarunaMessageQueueState, [newMessage, ...messageQueue])
+      if (messageQueue[0].isWatson && newMessage.isWatson) {
+        // Coalesce watson messages
+        set(KarunaMessageQueueState, [newMessage, ...messageQueue.slice(1, messageQueue.length - 1)])
+      } else {
+        set(KarunaMessageQueueState, [newMessage, ...messageQueue])
+      }
     }
   }
 })
@@ -584,14 +597,5 @@ export const TeammatesUserInfoState = selector({
       LOG.error(err)
       return []
     }
-  }
-})
-
-/** Most recent teammates basic user info */
-export const ContextTrackingStatusState = selector({
-  key: 'ContextTrackingStatusState',
-  get: async ({ get }) => {
-    const activeTeamID = get(ActiveTeamIDState)
-
   }
 })

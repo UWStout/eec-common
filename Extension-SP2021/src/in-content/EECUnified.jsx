@@ -191,7 +191,13 @@ class EECUnified extends HTMLElement {
         if (this.statusEmitter) {
           this.statusEmitter.emit('login')
         }
-        // this.updateVisibility(true)
+
+        if (this.backgroundPort) {
+          this.backgroundPort.postMessage({
+            type: 'contextReady',
+            context: this.contextName
+          })
+        }
         break
 
       case 'logout':
