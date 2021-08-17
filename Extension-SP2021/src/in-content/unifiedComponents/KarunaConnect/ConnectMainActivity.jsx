@@ -2,7 +2,6 @@
 import React, { useState, Suspense } from 'react'
 import PropTypes from 'prop-types'
 
-// AIW Testing out team name in the header
 import { LoggedInUserState, UserStatusState, ActiveTeamIDState, TeammatesUserInfoState } from '../data/globalState.js'
 
 import { withStyles } from '@material-ui/core/styles'
@@ -82,7 +81,7 @@ export default function ConnectMainActivity (props) {
 
   const currentUserInfo = useRecoilValue(LoggedInUserState)
   const currentUserStatus = useRecoilValue(UserStatusState)
-  // AIW Testing out team name in the header
+
   // Subscribe to global state about teams (GLOBAL STATE)
   const activeTeamID = useRecoilValue(ActiveTeamIDState)
   const teammatesInfo = useRecoilValue(TeammatesUserInfoState)
@@ -128,8 +127,6 @@ export default function ConnectMainActivity (props) {
             aria-controls="team-status-content"
             id="team-status-header"
           >
-            {/* <Typography>Team Status</Typography> */}
-            {/* AIW Testing out team name in the header */}
             <Typography>
               {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'} Status
             </Typography>
