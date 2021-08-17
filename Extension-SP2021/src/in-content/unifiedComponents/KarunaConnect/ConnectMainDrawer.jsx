@@ -240,7 +240,7 @@ ConnectMainDrawer.propTypes = {
 ConnectMainDrawer.defaultProps = {
   hidden: false,
   onHide: null,
-  waitToHide: 3000
+  // waitToHide: 3000
   // AIW Testing styles
-  // waitToHide: 100000
+  waitToHide: 100000
 }
