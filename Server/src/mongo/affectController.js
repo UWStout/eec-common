@@ -410,3 +410,31 @@ export function removeAffectHistoryEntry (affectLogID, dateRange) {
     })
   })
 }
+
+/**
+ * Retrieve a user's most recent affect history entry (according to 'timestamp' field)
+ *
+ * @param {string} userID The OID of the user
+ * @return {Promise} Resolves only if the query was successful, rejects otherwise
+ */
+export function mostRecentAffectHistory (userID) {
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('AffectHistory')
+        .find({ userID: new ObjectID(userID) })
+        .sort({ timestamp: -1 })
+        .limit(1)
+        .toArray(function (err, result) {
+          if (err) {
+            debug('Failed to find most recent affect history')
+            debug(err)
+            return reject(err)
+          }
+
+          // Make sure there's at least 1 (will be zero if they've never set it)
+          if (result.length < 1) { return resolve(null) }
+          return resolve(result[0])
+        })
+    })
+  })
+}

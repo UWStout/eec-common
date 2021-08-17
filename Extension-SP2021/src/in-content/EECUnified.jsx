@@ -162,6 +162,7 @@ class EECUnified extends HTMLElement {
   setBackgroundPort (extensionPort) {
     this.backgroundPort = extensionPort
     if (this.backgroundPort) {
+      LOG('Binding background message listener')
       this.backgroundPort.onMessage.addListener(
         this.backgroundMessage.bind(this)
       )
@@ -197,7 +198,10 @@ class EECUnified extends HTMLElement {
 
       case 'karunaMessage':
         if (this.statusEmitter) {
+          LOG('Background karunaMessage bouncing', message)
           this.statusEmitter.emit('karunaMessage', message)
+        } else {
+          LOG('Background karunaMessage but emitter is undefined', message)
         }
         break
     }

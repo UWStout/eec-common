@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
-import { KarunaMessageState, LoggedInUserState, MessagingContextState, TextBoxListState } from './data/globalState.js'
+import { KarunaMessageEnqueueState, LoggedInUserState, MessagingContextState, TextBoxListState } from './data/globalState.js'
 
 import { CssBaseline } from '@material-ui/core'
 
@@ -15,8 +15,8 @@ import KarunaBubble from './KarunaBubble.jsx'
 import KarunaTextBoxManager from './KarunaTextBoxManager.jsx'
 
 // Colorful logger (enable if logging is needed)
-// import { makeLogger } from '../../util/Logger.js'
-// const LOG = makeLogger('UNIFIED React App', 'lavender', 'black')
+import { makeLogger } from '../../util/Logger.js'
+const LOG = makeLogger('UNIFIED React App', 'lavender', 'black')
 
 // The sidebar Karuna Connect object
 export default function UnifiedApp (props) {
@@ -45,12 +45,13 @@ export default function UnifiedApp (props) {
   }, [emitter, setLoggedInUserState])
 
   // Track karuna server messages globally
-  const setKarunaMessageState = useSetRecoilState(KarunaMessageState)
+  const pushKarunaMessage = useSetRecoilState(KarunaMessageEnqueueState)
   useEffect(() => {
     emitter.on('karunaMessage', (newMessage) => {
-      setKarunaMessageState(newMessage)
+      LOG('Adding karuna message to queue:', newMessage)
+      pushKarunaMessage(newMessage)
     })
-  }, [emitter, setKarunaMessageState])
+  }, [emitter, pushKarunaMessage])
 
   // Track logged in state globally
   const setTextBoxList = useSetRecoilState(TextBoxListState)

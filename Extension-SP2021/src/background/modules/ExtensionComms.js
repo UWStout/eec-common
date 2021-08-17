@@ -22,15 +22,28 @@ export function setupExtensionCommunication () {
 
   // Route messages from the Karuna server back to the proper port
   getSocket().on('karunaMessage', (msg) => {
-    // Loop through active port names and look for matching context
-    for (const portName in portSessions) {
-      const context = portName.split('-')[0]
-      if (context === msg.context && portSessions[portName]) {
-        // Relay message to that port
-        console.log('[BACKGROUND] + Context matched, posting message')
-        portSessions[portName].postMessage(
-          { type: 'karunaMessage', ...msg }
-        )
+    console.log('[BACKGROUND] Message received from karuna:', msg)
+    if (msg.context === '*') {
+      // Loop through active port names and broadcast message to all
+      for (const portName in portSessions) {
+        if (portSessions[portName]) {
+          console.log(`[BACKGROUND] posting message to ${portName}`)
+          portSessions[portName].postMessage(
+            { type: 'karunaMessage', ...msg }
+          )
+        }
+      }
+    } else {
+      // Loop through active port names and look for matching context
+      for (const portName in portSessions) {
+        const context = portName.split('-')[0]
+        if (context === msg.context && portSessions[portName]) {
+          // Relay message to that port
+          console.log('[BACKGROUND] + Context matched, posting message')
+          portSessions[portName].postMessage(
+            { type: 'karunaMessage', ...msg }
+          )
+        }
       }
     }
   })

@@ -116,16 +116,20 @@ function socketClientSession (clientInfo) {
     return
   }
 
-  // Check for any timed triggers
-  Analysis.checkTimedTriggers(clientInfo)
-    .then(() => {})
-    .catch((err) => {
-      debug('Error checking timed triggers on client session update')
-      debug(err)
-    })
+  // Decode client token
+  const tokenPayload = { ...decodeToken(clientInfo.token) }
+
+  // Check for any timed triggers on a non-global session
+  if (clientInfo.context !== 'global') {
+    Analysis.checkTimedTriggers(tokenPayload)
+      .catch((err) => {
+        debug('Error checking timed triggers on client session update')
+        debug(err)
+      })
+  }
 
   // Write/Update session and broadcast change
-  clientSessions[this.id] = { ...decodeToken(clientInfo.token) }
+  clientSessions[this.id] = tokenPayload
   clientSocketLookup[clientSessions[this.id].email] = this.id
 
   // If not a global connect, update context list and broadcast change
@@ -388,32 +392,22 @@ export function sendWatsonResponse (responseText, clientPromptObj, clientContext
   this.emit('karunaMessage', messageObj)
 }
 
-export function sendGenericMessage (message, userID, context) {
+export function sendGenericMessage (message, userID, context, showAffectSurvey = false) {
   if (message.trim() === '') {
     return
   }
-  // get User email from userID
-  // use DBUser
-  // console.log('userID: ' + userID)
 
   DBUser.getUserDetails(userID)
     .then((details) => {
-      console.log(details)
       const userEmail = details.email
-      console.log(userEmail)
       const socketID = clientSocketLookup[userEmail]
-
-      // Broadcast to all sockets
-      console.log(`Broadcasting message to ${userEmail} - ${message}`)
-
-      console.log('context is ' + context)
-
       if (socketID) {
-        console.log('emitting generic message')
+        debug('emitting generic message:', message)
         mySocket.to(socketID).emit('karunaMessage', {
           clientEmail: userEmail, // user email
           context: context,
-          content: message
+          content: message,
+          affectSurvey: showAffectSurvey
         })
       }
     })

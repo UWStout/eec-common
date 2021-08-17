@@ -71,34 +71,7 @@ export const BubbleVisibilityStateSetter = selector({
 /** What activity is displayed on the karuna bubble feedback dialog */
 export const BubbleDisplayedFeedbackState = atom({
   key: 'BubbleDisplayedFeedbackState',
-  default: 'observations'
-})
-
-export const BubbleDisplayedFeedbackStateSetter = selector({
-  key: 'BubbleDisplayedFeedbackStateSetter',
-  get: ({ get }) => {
-    // Check if the user is logged in first
-    const validUser = get(ValidUserState)
-    if (!validUser) {
-      return get(BubbleDisplayedFeedbackState)
-    }
-
-    // SFB: I don't think this should be done here. The question of weather or not
-    // their affect has been set yet can really only be answered server-side, not
-    // client side. There's a lot of unrelated reasons that currentStatus might be
-    // undefined client side (not being logged in for example) and the client can't
-    // really differentiate between them.
-    const currentStatus = get(UserStatusState)
-    LOG('current affect id is', currentStatus?.currentAffectID)
-    if (!currentStatus || !currentStatus.currentAffectID) {
-      return 'affectSurvey'
-    }
-    return get(BubbleDisplayedFeedbackState)
-  },
-  set: ({ set }, isVisible) => {
-    // Update local cached state
-    set(BubbleDisplayedFeedbackState, isVisible)
-  }
+  default: 'none'
 })
 
 /** The trail of activities clicked through in the connect panel */
@@ -275,17 +248,71 @@ export const TextBoxListState = selector({
 })
 
 /** Latest message from Karuna server */
-export const KarunaMessageState = atom({
-  key: 'KarunaMessageState',
-  default: { },
+export const KarunaMessageQueueState = atom({
+  key: 'KarunaMessageQueueState',
+  default: [],
   effects_UNSTABLE: [
     ({ onSet }) => {
       // Log any value changes for debugging
       onSet((newVal) => {
-        LOG('Karuna Message State updated', newVal)
+        LOG('Karuna Message Queue State updated', newVal)
       })
     }
   ]
+})
+
+/** Latest message from Karuna server */
+export const ActiveKarunaMessageState = atom({
+  key: 'ActiveKarunaMessageState',
+  default: null,
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Active Karuna Message State updated', newVal)
+      })
+    }
+  ]
+})
+
+/** Latest message from Karuna server */
+export const KarunaMessageEnqueueState = selector({
+  key: 'KarunaMessageEnqueueState',
+
+  /** Get message queue */
+  get: ({ get }) => {
+    return get(KarunaMessageQueueState)
+  },
+
+  /** Enqueue a new message */
+  set: ({ get, set }, newMessage) => {
+    const messageQueue = get(KarunaMessageQueueState)
+    if (!Array.isArray(messageQueue) || messageQueue.length < 1) {
+      set(KarunaMessageQueueState, [newMessage])
+    } else {
+      set(KarunaMessageQueueState, [newMessage, ...messageQueue])
+    }
+  }
+})
+
+/** Latest message from Karuna server */
+export const KarunaMessageDequeueState = selector({
+  key: 'KarunaMessageDequeueState',
+
+  /** Get message queue */
+  get: ({ get }) => {
+    return get(KarunaMessageQueueState)
+  },
+
+  /** Remove next message in queue and set it as the Active message */
+  set: ({ get, set }) => {
+    const messageQueue = get(KarunaMessageQueueState)
+    if (Array.isArray(messageQueue) && messageQueue.length > 0) {
+      const newActiveMessage = messageQueue[messageQueue.length - 1]
+      set(KarunaMessageQueueState, messageQueue.slice(0, -1))
+      set(ActiveKarunaMessageState, newActiveMessage)
+    }
+  }
 })
 
 /** Privacy preferences data for sharing mood */
@@ -557,5 +584,14 @@ export const TeammatesUserInfoState = selector({
       LOG.error(err)
       return []
     }
+  }
+})
+
+/** Most recent teammates basic user info */
+export const ContextTrackingStatusState = selector({
+  key: 'ContextTrackingStatusState',
+  get: async ({ get }) => {
+    const activeTeamID = get(ActiveTeamIDState)
+
   }
 })

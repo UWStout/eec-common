@@ -39,7 +39,7 @@ export default function KarunaConnect (props) {
 
   // Whenever logged-in state changes, re-write activity stack
   useEffect(() => {
-    if (userLoggedIn) {
+    if (!userLoggedIn) {
       setActivityStack([ACTIVITIES.MAIN.key])
     } else {
       setActivityStack([ACTIVITIES.LOGIN.key])
