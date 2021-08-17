@@ -300,7 +300,7 @@ export const KarunaMessageEnqueueState = selector({
     } else {
       if (messageQueue[0].isWatson && newMessage.isWatson) {
         // Coalesce watson messages
-        set(KarunaMessageQueueState, [newMessage, ...messageQueue.slice(1, messageQueue.length - 1)])
+        set(KarunaMessageQueueState, [newMessage, ...messageQueue.slice(1, messageQueue.length)])
       } else {
         set(KarunaMessageQueueState, [newMessage, ...messageQueue])
       }
