@@ -10,6 +10,10 @@ import { AccountCircle } from '@material-ui/icons'
 
 import { animateCSS } from '../Shared/animateHelper.js'
 
+// Colorful logger (enable if logging is needed)
+import { makeLogger } from '../../../util/Logger.js'
+const LOG = makeLogger('Persistent Bubble Component', 'yellow', 'black')
+
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
@@ -49,16 +53,26 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
   // Determine what indicators to show
   let showCount = false
   let showNVCIndicator = false
+  let showAlertIndicator = false
   if (activeKarunaMessage) {
     if (activeKarunaMessage?.entities && activeKarunaMessage.entities.length > 0) {
+      LOG('Showing NVC indicator')
       showNVCIndicator = true
+    } else if (activeKarunaMessage?.content && activeKarunaMessage.content !== '') {
+      LOG('Showing alert indicator')
+      showAlertIndicator = true
     }
   } else {
     if (messageQueue.length > 1) {
+      LOG('Showing Count')
       showCount = true
     } else if (messageQueue.length === 1) {
       if (messageQueue[0]?.entities && messageQueue[0].entities.length > 0) {
+        LOG('Showing NVC indicator')
         showNVCIndicator = true
+      } else if (messageQueue[0]?.content && messageQueue[0].content !== '') {
+        LOG('Showing alert indicator')
+        showAlertIndicator = true
       }
     }
   }
@@ -78,6 +92,7 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
     }
   }
 
+  // Shake the icon whenever there's a new message to view
   useEffect(() => {
     const ariaLabel = (userLoggedIn ? 'Open Feedback Dialog' : 'Open Login Dialog')
     if (!userLoggedIn || (activeKarunaMessage === null && messageQueue.length > 0)) {
@@ -109,24 +124,21 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
           </g>
         </svg>
       </SvgIcon>
+
       {!userLoggedIn &&
         <div className={classes.accountIndicator}>
           <AccountCircle />
         </div>}
 
-      {userLoggedIn && showCount &&
+      {userLoggedIn && (showCount || showAlertIndicator || showNVCIndicator) &&
         <div className={classes.contextIndicator}>
           <Typography variant="body1">
-            { messageQueue.length > 9 ? '9+' : messageQueue.length }
+            {showCount && (messageQueue.length > 9 ? '9+' : messageQueue.length)}
+            {showNVCIndicator && 'NVC'}
+            {showAlertIndicator && '❕'}
           </Typography>
         </div>}
 
-      {userLoggedIn && showNVCIndicator &&
-        <div className={classes.contextIndicator}>
-          <Typography variant="body1">
-            { 'NVC' }
-          </Typography>
-        </div>}
     </IconButton>
   )
 })
