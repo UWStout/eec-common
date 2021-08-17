@@ -2,7 +2,8 @@
 import React, { useState, Suspense } from 'react'
 import PropTypes from 'prop-types'
 
-import { LoggedInUserState, UserStatusState } from '../data/globalState.js'
+// AIW Testing out team name in the header
+import { LoggedInUserState, UserStatusState, ActiveTeamIDState, TeammatesUserInfoState } from '../data/globalState.js'
 
 import { withStyles } from '@material-ui/core/styles'
 
@@ -43,14 +44,16 @@ const AccordionSummary = withStyles((theme) => ({
   root: {
     paddingLeft: 0,
     paddingRight: 0,
-    borderBottom: '1px solid rgba(0, 0, 0, .125)'
+    // AIW Testing styling
+    // borderBottom: '1px solid rgba(0, 0, 0, .125)'
+    borderBottom: 0
   },
   expanded: {}
 }))(MuiAccordionSummary)
 
 const AccordionDetails = withStyles((theme) => ({
   root: {
-    paddingLeft: theme.spacing(2),
+    paddingLeft: theme.spacing(1),
     paddingRight: 0,
     borderBottom: '1px solid rgba(0, 0, 0, .125)'
   }
@@ -61,10 +64,19 @@ export default function ConnectMainActivity (props) {
 
   const currentUserInfo = useRecoilValue(LoggedInUserState)
   const currentUserStatus = useRecoilValue(UserStatusState)
+  // AIW Testing out team name in the header
+  // Subscribe to global state about teams (GLOBAL STATE)
+  const activeTeamID = useRecoilValue(ActiveTeamIDState)
+  const teammatesInfo = useRecoilValue(TeammatesUserInfoState)
 
   const [expanded, setExpanded] = useState('')
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
+  }
+
+  // Ensure there is an active team
+  if (activeTeamID === '') {
+    return <Typography variant="body1">{'No active team'}</Typography>
   }
 
   return (
@@ -94,7 +106,11 @@ export default function ConnectMainActivity (props) {
           aria-controls="team-status-content"
           id="team-status-header"
         >
-          <Typography>Team Status</Typography>
+          {/* <Typography>Team Status</Typography> */}
+          {/* AIW Testing out team name in the header */}
+          <Typography>
+            {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'} Status
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Suspense fallback={<div />}>
@@ -111,7 +127,11 @@ export default function ConnectMainActivity (props) {
           aria-controls="team-culture-content"
           id="team-culture-header"
         >
-          <Typography>Team Culture</Typography>
+          {/* <Typography>Team Culture</Typography> */}
+          {/* AIW Testing out team name in the header */}
+          <Typography>
+            {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'} Culture
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography variant={'body2'}>WIP</Typography>

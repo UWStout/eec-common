@@ -50,12 +50,15 @@ export default function TeamStatusDetails (props) {
   }
 
   return (
-    <Grid container direction='column' spacing={1} item xs={12} className={rootGridStyle}>
-      <Grid item>
+    // AIW Adjusting styling
+    // <Grid container direction='column' spacing={1} item xs={12} className={rootGridStyle}>
+    <Grid container direction='column' item xs={12} className={rootGridStyle}>
+      {/* AIW Testing out team name in the header */}
+      {/* <Grid item>
         <Typography variant='body1'>
           {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'}
         </Typography>
-      </Grid>
+      </Grid> */}
       <Grid item className={scrollingList}>
         <List role={'list'} component="div" aria-label={'Status of Teammates'}>
           {teamStatusListItems}
