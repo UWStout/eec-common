@@ -11,8 +11,8 @@ import { rawCollaborationIcon } from '../Shared/CollaborationIcon.jsx'
 
 import { ACTIVITIES } from '../Activities/Activities.js'
 
-import { makeLogger } from '../../../util/Logger.js'
-const LOG = makeLogger('CONNECT Status Activity', 'pink', 'black')
+// import { makeLogger } from '../../../util/Logger.js'
+// const LOG = makeLogger('CONNECT Status Activity', 'pink', 'black')
 
 const IndentedTextButton = withStyles((theme) => ({
   root: {

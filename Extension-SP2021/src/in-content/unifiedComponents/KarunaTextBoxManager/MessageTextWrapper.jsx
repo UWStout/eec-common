@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import debounce from 'debounce'
 
 import { useSetRecoilState, useRecoilValue } from 'recoil'
-import { NVCIdentifiedState, KarunaMessageState } from '../data/globalState'
+import { NVCIdentifiedState, ActiveKarunaMessageState } from '../data/globalState'
 
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -15,8 +15,8 @@ import { computeWordRects } from './WordSpanner.js'
 import { updateMessageText } from './BackgroundMessager.js'
 
 // Colorful logger
-import { makeLogger } from '../../../util/Logger.js'
-const LOG = makeLogger('MESSAGE Wrapper', 'maroon', 'white')
+// import { makeLogger } from '../../../util/Logger.js'
+// const LOG = makeLogger('MESSAGE Wrapper', 'maroon', 'white')
 
 // DEBUG: Just for testing
 const highlightWordList = ['test', 'seth', 'the']
@@ -54,7 +54,7 @@ export default function MessageTextWrapper (props) {
 
   // Global state for identified NVC element
   const setIsNVCIndicated = useSetRecoilState(NVCIdentifiedState)
-  const karunaMessage = useRecoilValue(KarunaMessageState)
+  const activeKarunaMessage = useRecoilValue(ActiveKarunaMessageState)
 
   // Track the text box as a jQuery element in component state
   const [textBoxJQElem, setTextBoxJQElem] = useState(null)
@@ -70,15 +70,15 @@ export default function MessageTextWrapper (props) {
 
   // Update highlightRangeList when karunaMessage changes
   const highlightRangeList = useMemo(() => {
-    if (karunaMessage.entities) {
+    if (activeKarunaMessage?.entities) {
       const rangeList = []
-      karunaMessage.entities.forEach(entity => {
+      activeKarunaMessage.entities.forEach(entity => {
         rangeList.push(entity.location)
       })
       // console.log('highlightRangeList is', rangeList)
       return rangeList
     }
-  }, [karunaMessage])
+  }, [activeKarunaMessage])
 
   const updateUnderlinedWords = useCallback((JQTextBox) => {
     try {
