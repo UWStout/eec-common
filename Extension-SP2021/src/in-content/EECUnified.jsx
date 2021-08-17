@@ -166,6 +166,12 @@ class EECUnified extends HTMLElement {
       this.backgroundPort.onMessage.addListener(
         this.backgroundMessage.bind(this)
       )
+
+      LOG('Announcing context is ready')
+      this.backgroundPort.postMessage({
+        type: 'contextReady',
+        context: this.contextName
+      })
     }
   }
 

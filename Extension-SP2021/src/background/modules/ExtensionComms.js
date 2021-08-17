@@ -193,7 +193,9 @@ function portListener (port) {
 
   // Announce the session to the karuna server
   console.log(`[BACKGROUND] Session opened for "${fullPortID}"`)
-  announceSession(context)
+  if (context === 'global') {
+    announceSession(context)
+  }
 
   // Listen for standard messages
   port.onMessage.addListener((message) => {
@@ -201,6 +203,11 @@ function portListener (port) {
     if (!readValue('JWT')) { return }
 
     switch (message.type) {
+      // In-content script is ready
+      case 'contextReady':
+        announceSession(message.context)
+        break
+
       // Text is updating in an in-context script
       case 'textUpdate':
         getSocket().emit('messageUpdate', {
