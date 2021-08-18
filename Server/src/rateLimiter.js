@@ -2,13 +2,21 @@
 import MongoDB from 'mongodb'
 import { RateLimiterMongo } from 'rate-limiter-flexible'
 
+// Read extra environment variables from the .env file
+import dotenv from 'dotenv'
+
+// Load .env config
+dotenv.config()
+
+// URL of the database server
+const DB_SERVER_URL = 'mongodb://localhost:27017'
+const PROD_SERVER_URL = `mongodb+srv://${process.env.MONGO_USER}@karunacluster1.yb2nw.mongodb.net/karunaLimiter?retryWrites=true&w=majority`
+
 // Create options object for a mongoDB backed rate-limiter
 const storeOpts = {
   storeClient: MongoDB.MongoClient.connect(
-    'mongodb://localhost:27017', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    }
+    (process.env.HEROKU ? PROD_SERVER_URL : DB_SERVER_URL),
+    { useNewUrlParser: true, useUnifiedTopology: true }
   ),
   dbName: 'karunaLimiter'
 }

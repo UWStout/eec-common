@@ -7,9 +7,9 @@
     "start": "node src/server.js",
     "dev": "nodemon --watch src src/server.js dev",
     "build-deps": "bash copyDeps.sh",
-    "client": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outdir=views/auth ./client/LoginPage.jsx ./client/LogoutPage.jsx ./client/AccountCreationPage.jsx",
+    "client": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outdir=views/auth ./client/LoginPage.jsx ./client/LogoutPage.jsx ./client/RegisterPage.jsx",
     "clientdev-mon": "nodemon --watch client -e js,jsx,pug --exec npm run clientdev",
-    "clientdev": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outdir=views/auth ./client/LoginPage.jsx ./client/LogoutPage.jsx ./client/AccountCreationPage.jsx",
+    "clientdev": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outdir=views/auth ./client/LoginPage.jsx ./client/LogoutPage.jsx ./client/RegisterPage.jsx",
     "test": "mocha"
   },
   "license": "MIT",

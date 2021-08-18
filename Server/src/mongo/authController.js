@@ -69,14 +69,15 @@ export function validateUser (email, password) {
 /**
  * Create a new user in the database
  * tested in test 3 of test.js
- * @param {string} firstName First name of the user to create
- * @param {string} lastName Last name of the user to create
+ * @param {string} fullName Full real name of the user to create
+ * @param {string} preferredName Nickname or preferred name of the user to create
  * @param {string} email email of the user to create
- * @param {string} userType User account type ('standard' or 'admin')
  * @param {string} password Plaintext password
+ * @param {string} preferredPronouns The user's preferred pronouns (optional, defaults to empty)
+ * @param {string} userType User account type ('standard', 'manager', or 'admin'), default to standard
  * @return {Promise} Rejects on failure, resolves to the newly created ID on success
  */
-export function createUser (firstName, lastName, email, userType, password) {
+export function createUser (fullName, preferredName, email, password, preferredPronouns = '', userType = 'standard') {
   return new Promise((resolve, reject) => {
     // Hash password
     bcrypt.hash(password, SALT_ROUNDS, (err, passwordHash) => {
@@ -90,8 +91,24 @@ export function createUser (firstName, lastName, email, userType, password) {
       // Make new user data entry
       retrieveDBHandle('karunaData').then((DBHandle) => {
         DBHandle.collection('Users')
-          .insertOne({ firstName, lastName, email, userType, passwordHash, teams: [], meta: {} })
-          .then((result) => { return resolve() })
+          .insertOne({
+            name: fullName,
+            preferredName,
+            preferredPronouns,
+            email,
+            passwordHash,
+            userType,
+
+            // Include empty parts of scheme
+            contextAlias: {
+              avatar: {}
+            },
+            status: {},
+            lastLogin: {},
+            teams: [],
+            meta: {}
+          })
+          .then((result) => { return resolve(result.insertedId) })
           .catch((error) => {
             debug('Failed to insert new user')
             debug(error)

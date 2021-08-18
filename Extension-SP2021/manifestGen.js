@@ -58,8 +58,7 @@ const manifest = {
     '*://*.discord.com/*',
     '*://*.discord.gg/*',
     '*://*.slack.com/*',
-    '*://karuna.run/*',
-    '*://localhost/*',
+    (_DEV_ ? '*://localhost/*' : '*://karuna.run/*'),
     'webRequest',
     'webRequestBlocking'
   ]

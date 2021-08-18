@@ -2,56 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Karuna Account Creation</title>
+    <title>Karuna Account Creation Form</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="../lib/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="../style/accounts.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Plaster:300,400,500,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
   </head>
 
-  <body class="text-center">
-    <form class="form-signin needs-validation" novalidate>
-      <img class="mb-4" src="../media/Karuna.png" alt="Stylized logo of the Karuna project." width="140" />
-      <h1 class="h3 mb-3 font-weight-normal">Create an Account</h1>
-
-      <!-- First and last name grouped as upper and lower -->
-      <label for="firstName" class="sr-only">First Name</label>
-      <input type="text" name="First Name" id="firstName" class="form-control upper-input" placeholder="First Name" required autofocus>
-
-      <label for="lastName" class="sr-only">Last Name</label>
-      <input type="text" name="Last Name" id="lastName" class="form-control lower-input" placeholder="Last Name" required>
-
-      <!-- Lone email input -->
-      <label for="inputEmail" class="sr-only">Email address</label>
-      <input type="email" name="e-mail" id="inputEmail" class="form-control" placeholder="Email address" required>
-
-      <!-- Two password fields grouped as upper and lower -->
-      <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" name="New Password" id="inputPassword" class="form-control upper-input" placeholder="Password" required>
-
-      <label for="confirmPassword" class="sr-only">Confirm Password</label>
-      <input type="password" name="Confirm Password" id="confirmPassword" class="form-control lower-input" placeholder="Confirm Password" required>
-
-      <!-- Button to create account -->
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Create Account</button>
-
-      <!-- Link to sign-in form -->
-      <p class="mt-4"><a href="login.html">Sign-in to existing account</a></p>
-    </form>
-
-    <!-- Bootstrap JS, with dependencies Popper.js and jQuery -->
-    <script src="../lib/jquery.slim.min.js"></script>
-    <script src="../lib/bootstrap.bundle.min.js"></script>
-
-    <!-- Axios for ajax requests -->
-    <script src="../lib/axios.min.js"></script>
-
-    <!-- Store2 for local storage -->
-    <script src="../lib/store2.min.js"></script>
-          
-    <!-- Our custom javascript -->
-    <script src="register.js"></script>
+  <body>
+    <div id="root"></div>
+    <script src="AccountCreationPage.js"></script>
   </body>
 </html>

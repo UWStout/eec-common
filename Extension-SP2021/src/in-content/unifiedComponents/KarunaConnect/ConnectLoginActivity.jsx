@@ -5,6 +5,7 @@ import { Grid, Button, TextField, FormControlLabel, Checkbox } from '@material-u
 import ExternalLink from '../Shared/ExternalLink.jsx'
 
 import * as BACKGROUND from '../data/backgroundHelper.js'
+import { HOST_NAME } from '../../../util/serverConfig.js'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
@@ -43,7 +44,7 @@ export default function ConnectLoginActivity (props) {
           onChange={(e) => { setEmail(e.target.value); setHasError(false) }}
           error={hasError}
         />
-        <ExternalLink href="https://localhost:3000/register.html">
+        <ExternalLink href={`https://${HOST_NAME}/Register.html`}>
           {'I need an account'}
         </ExternalLink>
       </Grid>
@@ -60,7 +61,7 @@ export default function ConnectLoginActivity (props) {
           onChange={(e) => { setPassword(e.target.value); setHasError(false) }}
           error={hasError}
         />
-        <ExternalLink href="https://localhost:3000/">
+        <ExternalLink href={`https://${HOST_NAME}/Recovery.html`}>
           {'Forgot password?'}
         </ExternalLink>
       </Grid>
