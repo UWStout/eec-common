@@ -4,53 +4,23 @@
     <meta charset="utf-8">
     <title>Karuna Sign In Form</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="../lib/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="../style/accounts.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Plaster:300,400,500,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
   </head>
 
-  <body class="text-center">
+  <body>
     <!-- Show while checking for login -->
-    <div id="preValidate">
-      <p id="validateMsg">Checking for prior login ...</p>
+    <div id="preValidate" style="width: 100%; padding: 10px;">
+      <p id="validateMsg" style="width: 100%; text-align: center;">Checking for prior sign in ...</p>
     </div>
 
-    <!-- Login form -->
-    <form class="form-signin needs-validation" novalidate hidden>
-      <img class="mb-4" src="../media/Karuna.png" alt="Stylized logo of the Karuna project." width="140" />
-      <h1 class="h3 mb-3 font-weight-normal">Please Sign In</h1>
-  
-      <!-- Lone email input -->
-      <label for="inputEmail" class="sr-only">Email address</label>
-      <input type="email" id="inputEmail" class="form-control upper-input" placeholder="Email address" required>
+    <!-- Renders the root login form -->
+    <div id="root"></div>
 
-      <!-- Two password fields grouped as upper and lower -->
-      <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" id="inputPassword" class="form-control lower-input" placeholder="Password" required>
-  
-      <!-- Button to create account -->
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In to Account</button>
-
-      <!-- Link to registration form -->
-      <p class="mt-4"><a href="register.html">Create new account</a></p>
-
-    </form>
-
-    <!-- Bootstrap JS, with dependencies Popper.js and jQuery -->
-    <script src="../lib/jquery.slim.min.js"></script>
-    <script src="../lib/bootstrap.bundle.min.js"></script>
-
-    <!-- Axios for ajax requests -->
-    <script src="../lib/axios.min.js"></script>
-
-    <!-- Store2 and js.cookie for storage -->
-    <script src="../lib/store2.min.js"></script>
-    <script src="../lib/js.cookie.js"></script>
-
-    <!-- Our custom javascript -->
-    <script src="authHelper.js"></script>
-    <script src="login.js"></script>
+    <script src="LoginPage.js"></script>
   </body>
 </html>

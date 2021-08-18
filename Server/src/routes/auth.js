@@ -8,6 +8,9 @@ import JWT from 'jsonwebtoken'
 import * as DBUser from '../mongo/userController.js'
 import * as DBAuth from '../mongo/authController.js'
 
+// Rate limiting middleware
+import rateLimiter from '../rateLimiter.js'
+
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('karuna:server:auth_routes')
@@ -71,10 +74,11 @@ export function decodeToken (req, res, next) {
 }
 
 // Create a router to attach to an express server app
+// This one will be rate limited (as these are authentication routes)
 const router = new Express.Router()
+router.use(rateLimiter('authRoutes', 3, 10))
 
 // ******* API routes **************
-
 router.post('/login', async (req, res) => {
   // Extract and check for required fields
   const { email, password } = req.body
@@ -102,7 +106,6 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     // Something went wrong so log it
     debug('Failed validation')
-    debug(err)
 
     // Respond with invalid
     return res.status(400).json({ invalid: true, message: 'Invalid email or password' })
