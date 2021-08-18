@@ -4,9 +4,11 @@ import { useRecoilValue } from 'recoil'
 import { ActiveTeamIDState, TeammatesUserInfoState } from '../data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Typography, List, Grid } from '@material-ui/core'
+import { Typography, List, Grid, withStyles } from '@material-ui/core'
 
 import StatusListItem from './StatusListItem.jsx'
+
+import MuiSearchBar from 'material-ui-search-bar'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('Team Status Details', 'pink', 'black')
@@ -21,6 +23,12 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '184px'
   }
 }))
+
+const SearchBar = withStyles((theme) => ({
+  root: {
+    // paddingBottom: theme.spacing(2)
+  }
+}))(MuiSearchBar)
 
 export default function TeamStatusDetails (props) {
   // Construct our style class names
@@ -52,14 +60,26 @@ export default function TeamStatusDetails (props) {
   return (
     // AIW Adjusting styling
     // <Grid container direction='column' spacing={1} item xs={12} className={rootGridStyle}>
-    <Grid container direction='column' item xs={12} className={rootGridStyle}>
+    <Grid container direction='row' item xs={12} className={rootGridStyle} wrap="wrap" spacing={2}>
       {/* AIW Testing out team name in the header */}
       {/* <Grid item>
         <Typography variant='body1'>
           {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'}
         </Typography>
       </Grid> */}
-      <Grid item className={scrollingList}>
+      {/* For searching through the possible moods */}
+      <Grid item xs={12}>
+        <SearchBar
+          role={'search'}
+          // value={searchText}
+          // onClick={() => { setExpanded('all') }}
+          // onChange={onSearchTextChanged}
+          placeholder={'search team members'}
+          // disabled={noInteraction}
+          aria-label={'Team Member Search Box'}
+        />
+      </Grid>
+      <Grid item xs={12} className={scrollingList}>
         <List role={'list'} component="div" aria-label={'Status of Teammates'}>
           {teamStatusListItems}
         </List>
