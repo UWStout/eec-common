@@ -109,19 +109,20 @@ router.post('/update', authenticateToken, async (req, res) => {
 router.post('/promote', authenticateToken, async (req, res) => {
   // Attempt to retrieve user ID (and check token payload for id)
   const userID = req.body.id
-  if (!userID || !req.user.id) {
-    return res.status(400).send({ error: true, message: 'Invalid or missing user ID' })
+  const newType = req.body.newType
+  if (!userID || (newType !== 'admin' && newType !== 'manager') || !req.user.id) {
+    return res.status(400).send({ error: true, message: 'Invalid or missing user ID / promotion type' })
   }
 
   // Ensure this is an authorized update (self-update or 'admin' user only)
-  debug(`User "${req.user.id}" wants to promote "${userID}" and they are a/an "${req.user.userType}" user`)
+  debug(`User "${req.user.id}" wants to promote "${userID}" to a "${newType}" and they are a/an "${req.user.userType}" user`)
   if (req.user.userType !== 'admin') {
     return res.status(403).send({ error: true, message: 'Only admins can promote users' })
   }
 
-  // Update the user to 'admin' type
+  // Update the user to 'admin' or 'manager' type
   try {
-    await DBUser.updateUser(userID, { userType: 'admin' })
+    await DBUser.updateUser(userID, { userType: newType })
     // res.send({ success: true })
     return res.json({ success: true })
   } catch (err) {

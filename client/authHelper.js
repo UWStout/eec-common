@@ -12,7 +12,7 @@ export function extractDestination () {
   // Determine the destination URL to redirect to after login
   destURL = (new URLSearchParams(window.location.search)).get('dest')
   if (!destURL || destURL === '') {
-    destURL = 'oz/emeraldCity.html'
+    destURL = 'dbAdmin/manageTeams.html'
   }
 
   // Log the extracted URL (or the default)

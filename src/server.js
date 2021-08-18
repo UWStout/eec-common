@@ -33,8 +33,11 @@ import logRouter from './routes/log.js'
 // Custom router for testing purposes
 // import testRouter from './routes/test.js'
 
+// DISABLED
+// Custom router for manually simulating the server
+// import wizardRouter from './routes/wizard.js'
+
 // Custom router for admin-only backend routes
-import wizardRouter from './routes/wizard.js'
 import dbAdminRouter from './routes/dbAdmin.js'
 
 // print messages only during debug
@@ -128,8 +131,9 @@ app.use(`${SERVER_ROOT}data/unit`, orgUnitRouter)
 // All testing routes are under '/test/'
 // app.use(`${SERVER_ROOT}test`, testRouter)
 
+// DISABLED
 // All wizard routes are under '/oz/'
-app.use(`${SERVER_ROOT}oz`, wizardRouter)
+// app.use(`${SERVER_ROOT}oz`, wizardRouter)
 
 // All database administration routes are under '/dbAdmin/'
 app.use(`${SERVER_ROOT}dbAdmin`, dbAdminRouter)
@@ -165,10 +169,9 @@ if (process.argv.find((arg) => { return arg === 'dev' })) {
 function adminIndex (req, res, next) {
   res.render('adminIndex.ejs', {
     adminLinkList: [
-      { href: `${SERVER_ROOT}login.html`, text: 'General login page for accessing backend server pages' },
-      { href: `${SERVER_ROOT}logout.html`, text: 'Clear credentials from a previous login' },
-      { href: `${SERVER_ROOT}register.html`, text: 'Create a new standard Karuna account' },
-      { href: `${SERVER_ROOT}oz`, text: 'Wizard backend interface' },
+      { href: `${SERVER_ROOT}Login.html`, text: 'General login page for accessing backend server pages' },
+      { href: `${SERVER_ROOT}Logout.html`, text: 'Clear credentials from a previous login' },
+      { href: `${SERVER_ROOT}Register.html`, text: 'Create a new standard Karuna account' },
       { href: `${SERVER_ROOT}dbAdmin/manageUsers.html`, text: 'User data view and editing' },
       { href: `${SERVER_ROOT}dbAdmin/manageTeams.html`, text: 'Team data view and editing' },
       { href: `${SERVER_ROOT}dbAdmin/manageUnits.html`, text: 'Org Unit data view and editing' }

@@ -23045,7 +23045,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
-  // client/AccountCreationPage.jsx
+  // client/RegisterPage.jsx
   var import_react20 = __toModule(require_react());
   var import_react_dom3 = __toModule(require_react_dom());
 
@@ -72133,7 +72133,7 @@ zzzzzzzz
     }, "WiSys Ignite Grant"), "."));
   }
 
-  // client/AccountCreationPage.jsx
+  // client/RegisterPage.jsx
   import_react_dom3.default.render(/* @__PURE__ */ import_react20.default.createElement(Recoil_index_2, null, /* @__PURE__ */ import_react20.default.createElement(CssBaseline_default, null), /* @__PURE__ */ import_react20.default.createElement(SignUpForm, null), /* @__PURE__ */ import_react20.default.createElement(Box_default, {
     mt: 8
   }, /* @__PURE__ */ import_react20.default.createElement(Copyright, null))), document.getElementById("root"));
@@ -72240,4 +72240,4 @@ object-assign
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-//# sourceMappingURL=AccountCreationPage.js.map
+//# sourceMappingURL=RegisterPage.js.map

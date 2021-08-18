@@ -40303,7 +40303,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function extractDestination() {
     destURL = new URLSearchParams(window.location.search).get("dest");
     if (!destURL || destURL === "") {
-      destURL = "oz/emeraldCity.html";
+      destURL = "dbAdmin/manageTeams.html";
     }
     console.log("After login, will redirect to: " + destURL);
   }

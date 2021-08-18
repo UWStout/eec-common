@@ -114,21 +114,18 @@ router.post('/login', async (req, res) => {
 
 router.post('/register', async (req, res) => {
   // Extract and check required fields
-  const { email, firstName, lastName, password } = req.body
-  if (!email || !firstName || !lastName || !password) {
+  const { email, fullName, preferredName, preferredPronouns, password } = req.body
+  if (!email || !fullName || !preferredName || !password) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
   }
-
-  // Optional field (defaults to standard user)
-  const userType = req.body.userType || 'standard'
 
   // Check if user with the same email is already registered
   try {
     const existingID = await DBUser.emailExists(email)
     if (existingID !== -1) {
       return res.status(400).json({
-        invalid: true, userID: existingID, message: 'Email already registered'
+        invalid: true, exists: true, userID: existingID, message: 'Email already registered'
       })
     }
   } catch (err) {
@@ -140,7 +137,7 @@ router.post('/register', async (req, res) => {
   // Attempt to create user
   debug(`Making account for ${email}`)
   try {
-    const userID = await DBAuth.createUser(firstName, lastName, email, userType, password)
+    const userID = await DBAuth.createUser(fullName, preferredName, email, password, preferredPronouns)
     return res.json(userID)
   } catch (error) {
     console.error(`Failed to create account ${email}`)
