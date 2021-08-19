@@ -97,6 +97,9 @@ router.post('/update', authenticateToken, async (req, res) => {
       teams = [...teams, ...uniqueTeams]
     }
 
+    // Ensure all teams are ObjectIDs
+    teams = teams.map((curTeamID) => (new ObjectID(curTeamID)))
+
     // Update the user in the DB
     await DBUser.updateUser(userID, { firstName, lastName, teams, meta: userMeta })
     return res.json({ success: true })
