@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect } from 'react'
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { ConnectVisibilityState, BubbleVisibilityState, ValidUserState, ActivityStackState, ActiveTeamIDState } from './data/globalState.js'
+import { ConnectVisibilityState, BubbleVisibilityState, ValidUserState, ActivityStackState } from './data/globalState.js'
 
 import { Container } from '@material-ui/core'
 
@@ -29,7 +29,7 @@ export default function KarunaConnect (props) {
   const setActivityStack = useSetRecoilState(ActivityStackState)
 
   // Setter for the active teams
-  const setActiveTeamID = useSetRecoilState(ActiveTeamIDState)
+  // const setActiveTeamID = useSetRecoilState(ActiveTeamIDState)
 
   // Ensure bubble feedback closes whenever we open the main panel
   const openMainPanel = () => {
@@ -47,11 +47,11 @@ export default function KarunaConnect (props) {
   }, [userLoggedIn, setActivityStack, setMainPanelOpen])
 
   // DEBUG: Default to a known team for now
-  useEffect(() => {
-    if (userLoggedIn) {
-      setActiveTeamID('610f02d6345079e794032eb8')
-    }
-  }, [setActiveTeamID, userLoggedIn])
+  // useEffect(() => {
+  //   if (userLoggedIn) {
+  //     setActiveTeamID('610f02d6345079e794032eb8')
+  //   }
+  // }, [setActiveTeamID, userLoggedIn])
 
   // Main render
   return (

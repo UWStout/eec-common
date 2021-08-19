@@ -67,7 +67,7 @@ router.post('/update', authenticateToken, async (req, res) => {
   }
 
   // Disallow updating of password, email, or userType with this endpoint
-  if (req.body.password || req.body.email || req.body.userType) {
+  if (req.body.password || req.body.passwordHash || req.body.email || req.body.userType) {
     return res.status(400).send({ error: true, message: 'Cannot update password, email, or userType' })
   }
 
@@ -138,8 +138,9 @@ router.get('/details/:id', authenticateToken, async (req, res) => {
   }
 
   // Is this user authorized to see these details
-  if (req.user.id !== userID && req.user.type !== 'admin') {
-    return res.status(403).send({ error: true, message: 'Not authorized' })
+  debug(`User "${req.user.id}" wants to view details of "${userID}" and they are a/an "${req.user.userType}" user`)
+  if (req.user.id !== userID && req.user.userType !== 'admin') {
+    return res.status(403).send({ error: true, message: 'You can only view your own details unless you are an admin' })
   }
 
   // Attempt to retrieve user details

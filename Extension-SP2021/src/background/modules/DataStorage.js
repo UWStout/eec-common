@@ -100,12 +100,13 @@ export function retrieveUser () {
   if (jsonObj?.id) {
     return {
       id: jsonObj.id,
-      email: jsonObj.email,
-      name: jsonObj.name,
-      preferredName: jsonObj.preferredName,
-      preferredPronouns: jsonObj.preferredPronouns,
-      userType: jsonObj.userType,
-      contextAlias: jsonObj.contextAlias
+      email: jsonObj.email || '',
+      name: jsonObj.name || '',
+      preferredName: jsonObj.preferredName || '',
+      preferredPronouns: jsonObj.preferredPronouns || '',
+      userType: jsonObj.userType || 'standard',
+      activeTeam: jsonObj.activeTeam || '',
+      contextAlias: jsonObj.contextAlias || {}
     }
   }
 

@@ -571,17 +571,12 @@ export const TimeToRespondState = selector({
 })
 
 /** Currently Active Team (TODO: Make this an array of ALL active teams) */
-export const ActiveTeamIDState = atom({
+export const ActiveTeamIDState = selector({
   key: 'ActiveTeamIDState',
-  default: '',
-  effects_UNSTABLE: [
-    ({ onSet }) => {
-      // Log any value changes for debugging
-      onSet((newVal) => {
-        LOG('Active Team ID Updated', newVal)
-      })
-    }
-  ]
+  get: ({ get }) => {
+    const userInfo = get(LoggedInUserState)
+    return userInfo?.activeTeam || ''
+  }
 })
 
 /** Most recent teammates basic user info */

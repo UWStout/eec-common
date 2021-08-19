@@ -6,9 +6,9 @@ if [ -e ../Media/Instruction\ Images/ ]; then
   cp ../Media/Instruction\ Images/*.png ./public/media/
 fi
 
-if [ -e ../ExtensionRefactor/KarunaEEC-Extension.zip ]; then
+if [ -e ../Extension-SP2021/KarunaEEC-Extension.zip ]; then
   echo "Copying extension zip to static public folder ..."
-  cp ../ExtensionRefactor/KarunaEEC-Extension.zip ./public/media/
+  cp ../Extension-SP2021/KarunaEEC-Extension.zip ./public/media/
 fi
 
 echo "Copying JS libraries to static public folder ..."
