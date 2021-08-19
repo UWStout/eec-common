@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom'
 
 import { CssBaseline, Container, Box, Typography } from '@material-ui/core'
 
-import KarunaIcon from './components/KarunaIcon.jsx'
-import Copyright from './components/Copyright.jsx'
+import KarunaIcon from './clientComponents/KarunaIcon.jsx'
+import Copyright from './clientComponents/Copyright.jsx'
 
 // Static style for the root element
 const rootStyle = {

@@ -27,7 +27,7 @@ export function validateUser (email, password) {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users')
         // Find user with matching email (leave out teams and meta in returned document)
-        .findOne({ email }, { projection: { teams: 0, meta: 0 } }, (err, result) => {
+        .findOne({ email }, { projection: { meta: 0 } }, (err, result) => {
           // Check for an error
           if (err || !result) {
             debug(`User not found "${email}"`)
@@ -58,6 +58,7 @@ export function validateUser (email, password) {
               preferredName: result.preferredName,
               preferredPronouns: result.preferredPronouns,
               userType: result.userType,
+              activeTeam: (result?.teams?.length > 0 ? result.teams[0] : ''),
               contextAlias: result.contextAlias
             })
           })

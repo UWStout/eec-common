@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { useRecoilValue } from 'recoil'
-import { FullNameState, PreferredNameState, PreferredPronounsState, EmailState, PasswordState } from '../globalData.js'
+import { FullNameState, PreferredNameState, PreferredPronounsState, EmailState, PasswordState } from './globalData.js'
 
 import { Paper, Stepper, Step, StepLabel, Button, Typography, Link } from '@material-ui/core'
 

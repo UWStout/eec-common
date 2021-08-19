@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilState } from 'recoil'
-import { FullNameState, PreferredNameState, PreferredPronounsState, EmailState } from '../globalData'
+import { FullNameState, PreferredNameState, PreferredPronounsState, EmailState } from './globalData'
 
 import { Grid, Typography, TextField } from '@material-ui/core'
 

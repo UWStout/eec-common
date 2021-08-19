@@ -5,8 +5,8 @@ import ReactDOM from 'react-dom'
 
 import { Box, Container, CssBaseline } from '@material-ui/core'
 
-import Copyright from './components/Copyright.jsx'
-import SignInForm from './components/SignInForm.jsx'
+import Copyright from './clientComponents/Copyright.jsx'
+import SignInForm from './clientComponents/SignInForm.jsx'
 
 import { extractDestination, preValidate, validateLogin } from './authHelper.js'
 
