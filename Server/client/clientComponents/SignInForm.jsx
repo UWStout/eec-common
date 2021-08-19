@@ -105,7 +105,7 @@ export default function SignInForm (props) {
         />
         <FormControlLabel
           control={<Checkbox value="remember" color="primary" onChange={(e) => { setRememberMeState(e.target.checked) }} />}
-          label="Remember me for 7 days"
+          label="Remember me for 5 days"
         />
         <Button
           type="submit"
@@ -119,12 +119,12 @@ export default function SignInForm (props) {
         </Button>
         <Grid container>
           <Grid item xs>
-            <Link href="./ResetPassword.html" target="_blank" variant="body2">
+            <Link href="./Recovery.html" target="_blank" variant="body2">
               {'Forgot password?'}
             </Link>
           </Grid>
           <Grid item>
-            <Link href="./AccountCreation.html" target="_blank" variant="body2">
+            <Link href="./Register.html" target="_blank" variant="body2">
               {'Don\'t have an account? Sign Up'}
             </Link>
           </Grid>
