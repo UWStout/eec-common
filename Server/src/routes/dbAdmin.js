@@ -14,7 +14,7 @@ dotenv.config()
 const debug = Debug('karuna:server:db_admin')
 
 // Path for redirection
-const REDIRECT_PATH = `${process.argv.SERVER_ROOT ? process.argv.SERVER_ROOT : ''}/dbAdmin/`
+const REDIRECT_PATH = `${process.argv.SERVER_ROOT ? process.argv.SERVER_ROOT : ''}/dbAdmin`
 
 // Path to raw view files
 const DB_ADMIN_VIEW_PATH = './views/dbAdmin'
@@ -25,13 +25,13 @@ const router = new Express.Router()
 // Examine requests and ensure authorization before responding
 router.get('/*', decodeToken, (req, res) => {
   // Rewrite default path
-  if (req.path === '/') { return res.redirect(REDIRECT_PATH + 'manageUsers.html') }
+  if (req.path === '/') { return res.redirect(REDIRECT_PATH + '/Users.html') }
 
   // All remaining paths require authorization so redirect if not logged in
   if (!req.user || req.user.error) {
     // Send to login
     debug(`Redirecting ${req.path} to login.html`)
-    const dest = encodeURIComponent(REDIRECT_PATH + 'manageUsers.html')
+    const dest = encodeURIComponent(REDIRECT_PATH + req.path)
     return res.redirect(`../login.html?dest=${dest}`)
   }
 

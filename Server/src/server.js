@@ -168,11 +168,13 @@ if (process.argv.find((arg) => { return arg === 'dev' })) {
 // Return an index of all available admin pages currently enabled
 function adminIndex (req, res, next) {
   res.render('adminIndex.ejs', {
-    adminLinkList: [
+    accountLinkList: [
       { href: `${SERVER_ROOT}Login.html`, text: 'General login page for accessing backend server pages' },
       { href: `${SERVER_ROOT}Logout.html`, text: 'Clear credentials from a previous login' },
       { href: `${SERVER_ROOT}Register.html`, text: 'Create a new standard Karuna account' },
-      { href: `${SERVER_ROOT}Recovery.html`, text: 'Account recovery form (not yet implemented)' },
+      { href: `${SERVER_ROOT}Recovery.html`, text: 'Account recovery form (not yet implemented)' }
+    ],
+    adminLinkList: [
       { href: `${SERVER_ROOT}dbAdmin/Users.html`, text: 'User data viewing and editing' },
       { href: `${SERVER_ROOT}dbAdmin/Teams.html`, text: 'Team data viewing and editing' },
       { href: `${SERVER_ROOT}dbAdmin/OrgUnits.html`, text: 'Org Unit data viewing and editing' }
