@@ -172,6 +172,7 @@ function adminIndex (req, res, next) {
       { href: `${SERVER_ROOT}Login.html`, text: 'General login page for accessing backend server pages' },
       { href: `${SERVER_ROOT}Logout.html`, text: 'Clear credentials from a previous login' },
       { href: `${SERVER_ROOT}Register.html`, text: 'Create a new standard Karuna account' },
+      { href: `${SERVER_ROOT}Recovery.html`, text: 'Account recovery form (not yet implemented)' },
       { href: `${SERVER_ROOT}dbAdmin/manageUsers.html`, text: 'User data view and editing' },
       { href: `${SERVER_ROOT}dbAdmin/manageTeams.html`, text: 'Team data view and editing' },
       { href: `${SERVER_ROOT}dbAdmin/manageUnits.html`, text: 'Org Unit data view and editing' }
