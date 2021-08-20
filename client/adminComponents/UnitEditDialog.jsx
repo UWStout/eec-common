@@ -68,9 +68,9 @@ export default function UnitEditDialog (props) {
           <Grid item xs={12}>
             <TextField
               required
-              id="teamName"
-              name="teamName"
-              label="Team Name"
+              id="unitName"
+              name="unitName"
+              label="Organization Unit Name"
               fullWidth
               value={unitName}
               onChange={(e) => { setUnitName(e.target.value) }}
