@@ -92,3 +92,52 @@ export function updateItem (which, newData) {
       })
   })
 }
+
+export function createItem (which, itemInfo) {
+  return new Promise((resolve, reject) => {
+    // Validate 'which' type
+    if (which !== 'team' && which !== 'unit') {
+      return reject(new Error(`Invalid type for item creation "${which}"`))
+    }
+
+    // Start the POST create request
+    axios.post(`../data/${which}/register/`, itemInfo)
+      .then((response) => {
+        return resolve()
+      }).catch((error) => {
+        console.log(error)
+        return reject(error)
+      })
+  })
+}
+
+export function deleteItem (which, itemId) {
+  return new Promise((resolve, reject) => {
+    // Validate 'which' type
+    if (which !== 'user' && which !== 'team' && which !== 'unit') {
+      return reject(new Error(`Invalid list type "${which}"`))
+    }
+
+    // Start the DELETE request
+    axios.delete(`../data/${which}/remove/${itemId}`)
+      .then((response) => {
+        return resolve()
+      }).catch((error) => {
+        console.log(error)
+        return reject(error)
+      })
+  })
+}
+
+export function promoteUser (userId) {
+  return new Promise((resolve, reject) => {
+    // Start the POST request
+    axios.post('../data/user/promote', { id: userId, newType: 'admin' })
+      .then((response) => {
+        return resolve(response.data)
+      }).catch((error) => {
+        console.log(error)
+        return reject(error)
+      })
+  })
+}

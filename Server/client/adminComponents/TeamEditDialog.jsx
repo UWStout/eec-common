@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Divider, Slide } from '@material-ui/core'
-import { retrieveFullList, retrieveItem, updateItem } from './dataHelper'
+import { retrieveFullList, retrieveItem, updateItem, createItem } from './dataHelper'
 
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -23,12 +23,12 @@ export default function TeamEditDialog (props) {
 
   const [orgUnitList, setOrgUnitList] = useState([])
   const [teamName, setTeamName] = useState('')
+  const [teamDescription, setTeamDescription] = useState('')
   const [teamOrgId, setTeamOrgId] = useState('')
 
   useEffect(() => {
-    if (!teamId) { return }
+    // Get fresh list of all org units
     (async () => {
-      // Get list of all org units
       try {
         const allOrgUnits = await retrieveFullList('unit')
         setOrgUnitList(allOrgUnits)
@@ -36,25 +36,42 @@ export default function TeamEditDialog (props) {
         console.error('Failed to retrieve org unit list')
         console.error(err)
       }
-
-      // Get details for the indicated team
-      try {
-        const teamDetails = await retrieveItem('team', teamId)
-        setTeamName(teamDetails.name)
-        setTeamOrgId(teamDetails.orgId)
-      } catch (err) {
-        console.error('Failed to retrieve team details')
-        console.error(err)
-      }
     })()
+
+    // If no id, this is a new team
+    if (!teamId) {
+      setTeamName('')
+      setTeamDescription('')
+      setTeamOrgId('')
+    } else {
+      // Get details for an existing team
+      (async () => {
+        try {
+          const teamDetails = await retrieveItem('team', teamId)
+          setTeamName(teamDetails.name)
+          setTeamDescription(teamDetails.description)
+          setTeamOrgId(teamDetails.orgId)
+        } catch (err) {
+          console.error('Failed to retrieve team details')
+          console.error(err)
+        }
+      })()
+    }
   }, [teamId])
 
   const handleClose = async (save) => {
     if (save) {
       setDisableActions(true)
       try {
-        await updateItem('team', { id: teamId, name: teamName, orgId: teamOrgId })
-        onDialogClose({ name: teamName, orgId: teamOrgId })
+        if (teamId === '') {
+          const newTeam = { name: teamName, description: teamDescription, orgId: teamOrgId }
+          await createItem('team', newTeam)
+          onDialogClose()
+        } else {
+          const updatedTeam = { id: teamId, name: teamName, description: teamDescription, orgId: teamOrgId }
+          await updateItem('team', updatedTeam)
+          onDialogClose(updatedTeam)
+        }
       } catch (err) {
         console.error('Failed to save data')
         console.error(err)
@@ -75,7 +92,9 @@ export default function TeamEditDialog (props) {
       TransitionComponent={Transition}
       aria-labelledby="team-edit-dialog-title"
     >
-      <DialogTitle id="team-edit-dialog-title">Edit Team</DialogTitle>
+      <DialogTitle id="team-edit-dialog-title">
+        {teamId === '' ? 'Create New Team' : 'Edit Team'}
+      </DialogTitle>
       <DialogContent className={classes.contentStyle}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
@@ -91,9 +110,21 @@ export default function TeamEditDialog (props) {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              id="teamDescription"
+              name="teamDescription"
+              label="Team Description (optional)"
+              multiline
+              rows={4}
+              fullWidth
+              value={teamDescription}
+              onChange={(e) => { setTeamDescription(e.target.value) }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
               id="teamOrgUnitId"
               name="teamOrgUnitId"
-              label="Team Org Unit"
+              label="Team Org Unit (optional)"
               select
               fullWidth
               value={teamOrgId}
