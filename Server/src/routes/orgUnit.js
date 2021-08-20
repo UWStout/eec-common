@@ -60,7 +60,7 @@ router.get('/list', authenticateToken, async (req, res) => {
 
 // Update team data
 router.post('/update', authenticateToken, async (req, res) => {
-  // Attempt to retrieve user ID (and check token payload for id)
+  // Attempt to retrieve unit ID
   const unitID = req.body.id || req.body._id
   if (!unitID) {
     return res.status(400).send({ error: true, message: 'Invalid or missing org unit ID' })
@@ -77,10 +77,17 @@ router.post('/update', authenticateToken, async (req, res) => {
     const teamDetails = await DBUnit.getOrgUnitDetails(unitID)
 
     // Update values or fall-back to previous value
-    const unitName = req.body.name || teamDetails.name
+    const name = req.body.name || teamDetails.name
+    const description = req.body.description || teamDetails.description
+    const adminId = req.body.adminId || teamDetails.adminId
+
+    // check if adminId is a reasonable parameter for ObjectID (hexadecimal)
+    if (adminId && !ObjectID.isValid(adminId)) {
+      res.status(400).json({ invalid: true, message: 'adminId must be a single String of 12 bytes or a string of 24 hex characters' })
+    }
 
     // Update the team in the DB
-    await DBUnit.updateOrgUnit(unitID, { name: unitName })
+    await DBUnit.updateOrgUnit(unitID, { name, description, adminId })
     return res.json({ success: true })
   } catch (err) {
     UTIL.checkAndReportError('Error updating org unit', res, err, debug)
@@ -90,21 +97,21 @@ router.post('/update', authenticateToken, async (req, res) => {
 // 7. test unitController's createOrgUnit function: works!
 router.post('/register', authenticateToken, async (req, res) => {
   // Extract and check required fields
-  const { unitName, description, adminID } = req.body
+  const { unitName, description, adminId } = req.body
   if (!unitName) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
   }
 
-  // check if adminID is a reasonable parameter for ObjectID (hexadecimal)
-  if (adminID && !ObjectID.isValid(adminID)) {
-    res.status(400).json({ invalid: true, message: 'adminID must be a single String of 12 bytes or a string of 24 hex characters' })
+  // check if adminId is a reasonable parameter for ObjectID (hexadecimal)
+  if (adminId && !ObjectID.isValid(adminId)) {
+    res.status(400).json({ invalid: true, message: 'adminId must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
   // Attempt to create org
   debug(`Creating ${unitName}`)
   try {
-    await DBUnit.createOrgUnit(unitName, description, adminID)
+    await DBUnit.createOrgUnit(unitName, description, adminId)
     return res.json({ success: true })
   } catch (error) {
     console.error(`Failed to create ${unitName}`)
