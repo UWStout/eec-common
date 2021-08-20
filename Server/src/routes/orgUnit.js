@@ -128,7 +128,7 @@ router.get('/details/:unitID', authenticateToken, async (req, res) => {
   }
 
   // attempt to get org unit details
-  debug(`attempting to list teams for user ${unitID}`)
+  debug(`attempting to list details for org unit ${unitID}`)
   try {
     const unit = await DBUnit.getOrgUnitDetails(unitID)
     return res.json(unit)
@@ -140,9 +140,9 @@ router.get('/details/:unitID', authenticateToken, async (req, res) => {
 })
 
 // 9. test teamController's removeOrgUnit function
-router.delete('/remove', authenticateToken, async (req, res) => {
+router.delete('/remove/:unitID', authenticateToken, async (req, res) => {
   // Extract and check required fields
-  const { unitID } = req.body
+  const unitID = req.params.unitID
   if (!unitID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return

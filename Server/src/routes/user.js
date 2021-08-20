@@ -82,8 +82,9 @@ router.post('/update', authenticateToken, async (req, res) => {
     const userDetails = await DBUser.getUserDetails(userID)
 
     // Update values or fall-back to previous value
-    const firstName = req.body.firstName || userDetails.firstName
-    const lastName = req.body.lastName || userDetails.lastName
+    const name = req.body.name || userDetails.name
+    const preferredName = req.body.preferredName || userDetails.preferredName
+    const preferredPronouns = req.body.preferredPronouns || userDetails.preferredPronouns
 
     // Merge any changes to 'meta' (and sanitize non-object meta values)
     if (typeof userDetails.meta !== 'object') { userDetails.meta = {} }
@@ -101,7 +102,9 @@ router.post('/update', authenticateToken, async (req, res) => {
     teams = teams.map((curTeamID) => (new ObjectID(curTeamID)))
 
     // Update the user in the DB
-    await DBUser.updateUser(userID, { firstName, lastName, teams, meta: userMeta })
+    await DBUser.updateUser(userID, {
+      name, preferredName, preferredPronouns, teams, meta: userMeta
+    })
     return res.json({ success: true })
   } catch (err) {
     UTIL.checkAndReportError('Error updating user', res, err, debug)
@@ -126,7 +129,6 @@ router.post('/promote', authenticateToken, async (req, res) => {
   // Update the user to 'admin' or 'manager' type
   try {
     await DBUser.updateUser(userID, { userType: newType })
-    // res.send({ success: true })
     return res.json({ success: true })
   } catch (err) {
     UTIL.checkAndReportError('Error promoting user', res, err, debug)
@@ -205,9 +207,9 @@ router.get('/listInTeam/:teamID', authenticateToken, async (req, res) => {
 })
 
 // 16. test userController's removeUser (userID) function
-router.delete('/remove', authenticateToken, async (req, res) => {
+router.delete('/remove/:userID', authenticateToken, async (req, res) => {
   // Extract and check required fields
-  const { userID } = req.body
+  const userID = req.params.userID
   if (!userID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return

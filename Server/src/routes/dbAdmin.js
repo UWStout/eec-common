@@ -30,9 +30,9 @@ router.get('/*', decodeToken, (req, res) => {
   // All remaining paths require authorization so redirect if not logged in
   if (!req.user || req.user.error) {
     // Send to login
-    debug(`Redirecting ${req.path} to login.html`)
+    debug(`Redirecting ${req.path} to Login.html`)
     const dest = encodeURIComponent(REDIRECT_PATH + req.path)
-    return res.redirect(`../login.html?dest=${dest}`)
+    return res.redirect(`../Login.html?dest=${dest}`)
   }
 
   // Check for admin status

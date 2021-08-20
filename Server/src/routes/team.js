@@ -183,9 +183,9 @@ router.post('/addUser', authenticateToken, async (req, res) => {
 })
 
 // 8. test teamController's removeTeam function: works!
-router.delete('/remove', authenticateToken, async (req, res) => {
+router.delete('/remove/:teamID', authenticateToken, async (req, res) => {
   // Extract and check required fields
-  const { teamID } = req.body
+  const teamID = req.params.teamID
   if (!teamID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
