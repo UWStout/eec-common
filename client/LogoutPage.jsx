@@ -17,7 +17,7 @@ $(() => {
   Cookies.remove('JWT')
 
   // Redirect to login
-  setTimeout(() => { window.location.href = './login.html' }, 1500)
+  setTimeout(() => { window.location.href = './Login.html' }, 1500)
 })
 
 // Static style for the root element

@@ -8,11 +8,13 @@ import { Pagination } from '@material-ui/lab'
 import KarunaIcon from '../clientComponents/KarunaIcon.jsx'
 import DataListItem from './DataListItem.jsx'
 
+import ItemDeleteDialog from './ItemDeleteDialog.jsx'
 import UserEditDialog from './UserEditDialog.jsx'
 import UnitEditDialog from './UnitEditDialog.jsx'
 import TeamEditDialog from './TeamEditDialog.jsx'
 
 import { retrieveList } from './dataHelper.js'
+import PromoteUserDialog from './PromoteUserDialog.jsx'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,12 +45,18 @@ export default function DataList (props) {
   const [totalPages, setTotalPages] = useState(10)
   const [itemsPerPage, setItemsPerPage] = useState(25)
 
-  // Data Editor State
+  // Data Dialogs State
   const [editorOpen, setEditorOpen] = useState(false)
+  const [altDialogOpen, setAltDialogOpen] = useState(false)
+  const [promotedCount, setPromotedCount] = useState(0)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState('')
+  const [deletedCount, setDeletedCount] = useState(0)
 
   // Data state
   const [listData, setListData] = useState([])
   const [activeItemId, setActiveItemId] = useState('')
+  const [activeItemName, setActiveItemName] = useState('')
   const [activeItemIndex, setActiveItemIndex] = useState(0)
 
   // Callbacks for editing data
@@ -58,11 +66,41 @@ export default function DataList (props) {
     setEditorOpen(true)
   }
 
+  const onDeleteItem = (dataItem, index) => {
+    setActiveItemId(dataItem._id)
+    if (dataType === 'user') {
+      setDeleteConfirmText(dataItem.email)
+    } else {
+      setDeleteConfirmText(dataItem.name)
+    }
+    setDeleteDialogOpen(true)
+  }
+
+  const onItemAltAction = (dataItem, index) => {
+    setActiveItemId(dataItem._id)
+    setActiveItemName(dataItem.name)
+    setAltDialogOpen(true)
+  }
+
   const onEditorClose = (newData) => {
     if (newData && activeItemIndex >= 0 && activeItemIndex < listData.length) {
       listData[activeItemIndex] = { ...listData[activeItemIndex], ...newData }
     }
     setEditorOpen(false)
+  }
+
+  const onDeleteDialogClose = (deleted) => {
+    if (deleted) {
+      setDeletedCount(deletedCount + 1)
+    }
+    setDeleteDialogOpen(false)
+  }
+
+  const onAltDialogClose = (promoted) => {
+    if (promoted) {
+      setPromotedCount(promotedCount + 1)
+    }
+    setAltDialogOpen(false)
   }
 
   useEffect(() => {
@@ -81,7 +119,7 @@ export default function DataList (props) {
         console.error(err)
       }
     })()
-  }, [currentPage, dataType, itemsPerPage])
+  }, [currentPage, dataType, itemsPerPage, deletedCount, promotedCount])
 
   // Control the value of current page
   const handlePageChange = (event, value) => {
@@ -92,9 +130,13 @@ export default function DataList (props) {
     <DataListItem
       key={dataItem._id}
       dataItem={dataItem}
+      dataType={dataType}
       button
       onClick={(e) => { onEditItem(dataItem, i) }}
+      onAction={(e) => { onItemAltAction(dataItem, i) }}
+      onDelete={(e) => { onDeleteItem(dataItem, i) }}
       selected={dataItem._id === activeItemId}
+      isAdmin={dataType === 'user' ? dataItem.userType === 'admin' : false}
     />
   ))
 
@@ -114,11 +156,37 @@ export default function DataList (props) {
       </div>
       <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} className={classes.pagerStyle} />
       {dataType === 'user' &&
-        <UserEditDialog open={editorOpen} onDialogClose={onEditorClose} userId={activeItemId} />}
+        <UserEditDialog
+          open={editorOpen}
+          onDialogClose={onEditorClose}
+          userId={activeItemId}
+        />}
       {dataType === 'team' &&
-        <TeamEditDialog open={editorOpen} onDialogClose={onEditorClose} teamId={activeItemId} />}
+        <TeamEditDialog
+          open={editorOpen}
+          onDialogClose={onEditorClose}
+          teamId={activeItemId}
+        />}
       {dataType === 'unit' &&
-        <UnitEditDialog open={editorOpen} onDialogClose={onEditorClose} unitId={activeItemId} />}
+        <UnitEditDialog
+          open={editorOpen}
+          onDialogClose={onEditorClose}
+          unitId={activeItemId}
+        />}
+      <ItemDeleteDialog
+        open={deleteDialogOpen}
+        onDialogClose={onDeleteDialogClose}
+        itemId={activeItemId}
+        dataType={dataType}
+        confirmText={deleteConfirmText}
+      />
+      {dataType === 'user' &&
+        <PromoteUserDialog
+          open={altDialogOpen}
+          onDialogClose={onAltDialogClose}
+          userId={activeItemId}
+          userName={activeItemName}
+        />}
     </div>
   )
 }
