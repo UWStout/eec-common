@@ -77,13 +77,12 @@ router.post('/update', authenticateToken, async (req, res) => {
     const teamDetails = await DBTeam.getTeamDetails(teamID)
 
     // Update values or fall-back to previous value
-    const teamName = req.body.name || teamDetails.name
-
-    // Accept null, so only undefined will fallback to previous value
+    const name = req.body.name || teamDetails.name
+    const description = req.body.description || teamDetails.description
     const orgId = (req.body.orgId === undefined ? teamDetails.orgId : req.body.orgId)
 
     // Update the team in the DB
-    await DBTeam.updateTeam(teamID, { name: teamName, orgId })
+    await DBTeam.updateTeam(teamID, { name, description, orgId })
     return res.json({ success: true })
   } catch (err) {
     UTIL.checkAndReportError('Error updating team', res, err, debug)
@@ -93,8 +92,8 @@ router.post('/update', authenticateToken, async (req, res) => {
 // 5. test teamController createTeam
 router.post('/register', authenticateToken, async (req, res) => {
   // Extract and check required fields
-  const { teamName, unitID, userID } = req.body
-  if (!teamName) {
+  const { name, description, unitID, userID } = req.body
+  if (!name) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
   }
@@ -135,15 +134,15 @@ router.post('/register', authenticateToken, async (req, res) => {
 
   // Remove the unit object that was merged in
   project = { unit: 0 }
- */
+  */
 
-  // Attempt to create user
-  debug(`Making team ${teamName}`)
+  // Attempt to create team
+  debug(`Making team ${name}`)
   try {
-    await DBTeam.createTeam(teamName, unitID, userID)
+    await DBTeam.createTeam(name, description, unitID, userID)
     return res.json({ success: true })
   } catch (error) {
-    console.error(`Failed to create team ${teamName}`)
+    console.error(`Failed to create team ${name}`)
     console.error(error)
     return res.status(500).json({ error: true, message: 'Error while creating team' })
   }
@@ -183,9 +182,9 @@ router.post('/addUser', authenticateToken, async (req, res) => {
 })
 
 // 8. test teamController's removeTeam function: works!
-router.delete('/remove', authenticateToken, async (req, res) => {
+router.delete('/remove/:teamID', authenticateToken, async (req, res) => {
   // Extract and check required fields
-  const { teamID } = req.body
+  const teamID = req.params.teamID
   if (!teamID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
