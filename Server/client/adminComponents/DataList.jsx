@@ -3,18 +3,20 @@ import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography, List } from '@material-ui/core'
-import { Pagination } from '@material-ui/lab'
 
 import KarunaIcon from '../clientComponents/KarunaIcon.jsx'
+
+import DataListNavBar from './DataListNavBar.jsx'
 import DataListItem from './DataListItem.jsx'
 
-import ItemDeleteDialog from './ItemDeleteDialog.jsx'
 import UserEditDialog from './UserEditDialog.jsx'
 import UnitEditDialog from './UnitEditDialog.jsx'
 import TeamEditDialog from './TeamEditDialog.jsx'
 
-import { retrieveList } from './dataHelper.js'
+import ItemDeleteDialog from './ItemDeleteDialog.jsx'
 import PromoteUserDialog from './PromoteUserDialog.jsx'
+
+import { retrieveList } from './dataHelper.js'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -30,20 +32,22 @@ const useStyles = makeStyles((theme) => ({
   dataTable: {
     width: '100%',
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-    borderTop: '1px solid lightgray',
-    borderBottom: '1px solid lightgray'
+    marginBottom: theme.spacing(2)
   }
 }))
 
 export default function DataList (props) {
-  const { dataType } = props
+  const { dataType, sortByOptions, filterByOptions } = props
   const classes = useStyles()
 
   // Paging and filtering state
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(10)
   const [itemsPerPage, setItemsPerPage] = useState(25)
+  const [sortBy, setSortBy] = useState('')
+  const [sortOrder, setSortOrder] = useState(1)
+  const [filterText, setFilterText] = useState('')
+  const [filterBy, setFilterBy] = useState('')
 
   // Data Dialogs State
   const [editorOpen, setEditorOpen] = useState(false)
@@ -108,7 +112,7 @@ export default function DataList (props) {
       try {
         // Retrieve the latest user data
         const response = await retrieveList(
-          dataType, currentPage, itemsPerPage
+          dataType, currentPage, itemsPerPage, sortBy, sortOrder, filterBy, filterText
         )
 
         // Update local state
@@ -119,7 +123,7 @@ export default function DataList (props) {
         console.error(err)
       }
     })()
-  }, [currentPage, dataType, itemsPerPage, deletedCount, promotedCount])
+  }, [currentPage, dataType, itemsPerPage, deletedCount, promotedCount, sortBy, sortOrder, filterBy, filterText])
 
   // Control the value of current page
   const handlePageChange = (event, value) => {
@@ -148,13 +152,49 @@ export default function DataList (props) {
         {dataType === 'team' && 'Team Management'}
         {dataType === 'unit' && 'Org Unit Management'}
       </Typography>
-      <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} className={classes.pagerStyle} />
+
+      <DataListNavBar
+        name={'upper-nav'}
+        totalPages={totalPages}
+        currentPage={currentPage}
+        perPage={itemsPerPage}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        filterBy={filterBy}
+        filterText={filterText}
+        sortByOptions={sortByOptions}
+        filterByOptions={filterByOptions}
+        onPageChange={handlePageChange}
+        onPerPageChange={(newPerPage) => { setItemsPerPage(newPerPage) }}
+        onSortByChange={(newSortBy) => { setSortBy(newSortBy) }}
+        onSortOrderChange={(newSortOrder) => { setSortOrder(newSortOrder) }}
+        onFilterByChange={(newFilterBy) => { setFilterBy(newFilterBy) }}
+        onFilterTextChange={(newFilterText) => { setFilterText(newFilterText) }}
+      />
       <div className={classes.dataTable}>
         <List>
           {listElements}
         </List>
       </div>
-      <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} className={classes.pagerStyle} />
+      <DataListNavBar
+        name={'lower-nav'}
+        totalPages={totalPages}
+        currentPage={currentPage}
+        perPage={itemsPerPage}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        filterBy={filterBy}
+        filterText={filterText}
+        sortByOptions={sortByOptions}
+        filterByOptions={filterByOptions}
+        onPageChange={handlePageChange}
+        onPerPageChange={(newPerPage) => { setItemsPerPage(newPerPage) }}
+        onSortByChange={(newSortBy) => { setSortBy(newSortBy) }}
+        onSortOrderChange={(newSortOrder) => { setSortOrder(newSortOrder) }}
+        onFilterByChange={(newFilterBy) => { setFilterBy(newFilterBy) }}
+        onFilterTextChange={(newFilterText) => { setFilterText(newFilterText) }}
+      />
+
       {dataType === 'user' &&
         <UserEditDialog
           open={editorOpen}
@@ -192,5 +232,22 @@ export default function DataList (props) {
 }
 
 DataList.propTypes = {
-  dataType: PropTypes.string.isRequired
+  dataType: PropTypes.string.isRequired,
+  sortByOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      text: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
+    })
+  ),
+  filterByOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      text: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
+    })
+  )
+}
+
+DataList.defaultProps = {
+  sortByOptions: [],
+  filterByOptions: []
 }
