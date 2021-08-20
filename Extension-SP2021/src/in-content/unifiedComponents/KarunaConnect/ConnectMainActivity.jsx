@@ -10,7 +10,6 @@ import MuiAccordion from '@material-ui/core/Accordion'
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 
-// AIW Testing conversion of team culture and NVC to external links
 import MuiLink from '@material-ui/core/Link'
 
 import { Grid, Typography } from '@material-ui/core'
@@ -30,33 +29,32 @@ const Accordion = withStyles((theme) => ({
     width: '100%',
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
+    margin: theme.spacing(0, 0, 3, 0),
     boxShadow: 'none',
     borderTop: 'none',
     '&:before': {
       display: 'none'
     },
-    '&:not(:last-child)': {
-      borderBottom: 0
+    '&$expanded': {
+      margin: theme.spacing(0, 0, 3, 0)
     }
   },
-  expanded: {
-    // AIW Testing Styling
-    // margin: 0
-  }
+  expanded: {}
 }))(MuiAccordion)
 
 const AccordionSummary = withStyles((theme) => ({
   root: {
     paddingLeft: 0,
     paddingRight: 0,
-    // AIW Testing styling
-    // borderBottom: '1px solid rgba(0, 0, 0, .125)'
     borderBottom: 0
   },
-  expanded: {
-    // AIW Testing Styling
-    // margin: 0
-  }
+  content: {
+    margin: 0,
+    '&$expanded': {
+      margin: 0
+    }
+  },
+  expanded: {}
 }))(MuiAccordionSummary)
 
 const AccordionDetails = withStyles((theme) => ({
@@ -67,12 +65,15 @@ const AccordionDetails = withStyles((theme) => ({
   }
 }))(MuiAccordionDetails)
 
-// AIW Testing conversion of team culture and NVC to external links
 const Link = withStyles((theme) => ({
   root: {
     underline: 'none',
     paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1)
+    paddingRight: theme.spacing(1),
+    margin: theme.spacing(0, 0, 3, 0),
+    '&:last-of-type': {
+      margin: 0
+    }
   }
 }))(MuiLink)
 
@@ -100,7 +101,7 @@ export default function ConnectMainActivity (props) {
   }
 
   return (
-    <Grid container item xs={12} role={'region'} aria-label={'Main Content'} spacing={3}>
+    <Grid container item xs={12} role={'region'} aria-label={'Main Content'}>
       <Grid container item xs={12}>
         {/* user status list item */}
         <Accordion square expanded={expanded === 'userStatus'} aria-controls={'karunaStatusDrawer'} onChange={handleChange('userStatus')}>
@@ -184,8 +185,7 @@ export default function ConnectMainActivity (props) {
             {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'} Culture
           </Typography>
         </Link>
-      </Grid>
-      <Grid container item xs={12}>
+
         <Link
           href="#" onClick={preventDefault}
           aria-label={'NVC Information'}
