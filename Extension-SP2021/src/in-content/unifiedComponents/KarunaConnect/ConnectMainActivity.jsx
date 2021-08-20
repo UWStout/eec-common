@@ -176,6 +176,7 @@ export default function ConnectMainActivity (props) {
       </Grid>
       <Grid container item xs={12}>
         <Link
+          // AIW The target destination is intended to be whatever the Team's culture document is.
           href="#" onClick={preventDefault}
           aria-label={'Team Culture'}
           aria-controls="team-culture-content"
@@ -187,6 +188,7 @@ export default function ConnectMainActivity (props) {
         </Link>
 
         <Link
+          // AIW The target destination is intended to be whatever the Team's comunication model is.
           href="#" onClick={preventDefault}
           aria-label={'NVC Information'}
           aria-controls="nvc-info-content"
