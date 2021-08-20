@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-import { makeStyles } from '@material-ui/core/styles'
-import { Typography, List } from '@material-ui/core'
+import { useRecoilValue } from 'recoil'
+import { PaginationState, SortingState, FilteringState } from './globalNavState'
+
+import { makeStyles, withStyles } from '@material-ui/core/styles'
+import { Typography, List, Fab, Tooltip } from '@material-ui/core'
+import { Add as AddIcon } from '@material-ui/icons'
 
 import KarunaIcon from '../clientComponents/KarunaIcon.jsx'
 
@@ -18,6 +22,12 @@ import PromoteUserDialog from './PromoteUserDialog.jsx'
 
 import { retrieveList } from './dataHelper.js'
 
+const ButtonTooltip = withStyles((theme) => ({
+  tooltip: {
+    fontSize: 16
+  }
+}))(Tooltip)
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -25,9 +35,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center'
   },
-  pagerStyle: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2)
+  addItemButton: {
+    position: 'fixed',
+    bottom: theme.spacing(6),
+    right: theme.spacing(6)
   },
   dataTable: {
     width: '100%',
@@ -41,23 +52,24 @@ export default function DataList (props) {
   const classes = useStyles()
 
   // Paging and filtering state
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(10)
-  const [itemsPerPage, setItemsPerPage] = useState(25)
-  const [sortBy, setSortBy] = useState('')
-  const [sortOrder, setSortOrder] = useState(1)
-  const [filterText, setFilterText] = useState('')
-  const [filterBy, setFilterBy] = useState('')
+  const pagination = useRecoilValue(PaginationState)
+  const sorting = useRecoilValue(SortingState)
+  const filtering = useRecoilValue(FilteringState)
+  const [totalPages, setTotalPages] = useState(1)
 
   // Data Dialogs State
   const [editorOpen, setEditorOpen] = useState(false)
+  const [editedCount, setEditedCount] = useState(0)
+
   const [altDialogOpen, setAltDialogOpen] = useState(false)
   const [promotedCount, setPromotedCount] = useState(0)
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
   const [deletedCount, setDeletedCount] = useState(0)
 
   // Data state
+  const [activeRetrieve, setActiveRetrieve] = useState(false)
   const [listData, setListData] = useState([])
   const [activeItemId, setActiveItemId] = useState('')
   const [activeItemName, setActiveItemName] = useState('')
@@ -67,6 +79,12 @@ export default function DataList (props) {
   const onEditItem = (dataItem, index) => {
     setActiveItemId(dataItem._id)
     setActiveItemIndex(index)
+    setEditorOpen(true)
+  }
+
+  const onNewItem = () => {
+    setActiveItemId('')
+    setActiveItemIndex(-1)
     setEditorOpen(true)
   }
 
@@ -87,8 +105,12 @@ export default function DataList (props) {
   }
 
   const onEditorClose = (newData) => {
-    if (newData && activeItemIndex >= 0 && activeItemIndex < listData.length) {
-      listData[activeItemIndex] = { ...listData[activeItemIndex], ...newData }
+    if (newData) {
+      if (activeItemIndex >= 0 && activeItemIndex < listData.length) {
+        listData[activeItemIndex] = { ...listData[activeItemIndex], ...newData }
+      }
+    } else {
+      setEditedCount(editedCount + 1)
     }
     setEditorOpen(false)
   }
@@ -108,27 +130,32 @@ export default function DataList (props) {
   }
 
   useEffect(() => {
+    if (activeRetrieve) { return }
+    setActiveRetrieve(true);
     (async () => {
       try {
         // Retrieve the latest user data
         const response = await retrieveList(
-          dataType, currentPage, itemsPerPage, sortBy, sortOrder, filterBy, filterText
+          dataType,
+          pagination.currentPage,
+          pagination.perPage,
+          sorting.sortBy,
+          sorting.sortOrder,
+          filtering.filterBy,
+          filtering.filterText
         )
 
         // Update local state
         setListData(response.data)
-        setTotalPages(Math.ceil(response.count / itemsPerPage))
+        setTotalPages(Math.ceil(response.count / pagination.perPage))
       } catch (err) {
         console.error('Failed to retrieve team data')
         console.error(err)
+      } finally {
+        setActiveRetrieve(false)
       }
     })()
-  }, [currentPage, dataType, itemsPerPage, deletedCount, promotedCount, sortBy, sortOrder, filterBy, filterText])
-
-  // Control the value of current page
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value)
-  }
+  }, [dataType, deletedCount, promotedCount, editedCount, pagination, sorting, filtering])
 
   const listElements = listData.map((dataItem, i) => (
     <DataListItem
@@ -153,48 +180,14 @@ export default function DataList (props) {
         {dataType === 'unit' && 'Org Unit Management'}
       </Typography>
 
-      <DataListNavBar
-        name={'upper-nav'}
-        totalPages={totalPages}
-        currentPage={currentPage}
-        perPage={itemsPerPage}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        filterBy={filterBy}
-        filterText={filterText}
-        sortByOptions={sortByOptions}
-        filterByOptions={filterByOptions}
-        onPageChange={handlePageChange}
-        onPerPageChange={(newPerPage) => { setItemsPerPage(newPerPage) }}
-        onSortByChange={(newSortBy) => { setSortBy(newSortBy) }}
-        onSortOrderChange={(newSortOrder) => { setSortOrder(newSortOrder) }}
-        onFilterByChange={(newFilterBy) => { setFilterBy(newFilterBy) }}
-        onFilterTextChange={(newFilterText) => { setFilterText(newFilterText) }}
-      />
+      {/* Nav bars and main data list */}
+      <DataListNavBar name={'upper-nav'} totalPages={totalPages} sortByOptions={sortByOptions} filterByOptions={filterByOptions} />
       <div className={classes.dataTable}>
-        <List>
-          {listElements}
-        </List>
+        <List>{listElements}</List>
       </div>
-      <DataListNavBar
-        name={'lower-nav'}
-        totalPages={totalPages}
-        currentPage={currentPage}
-        perPage={itemsPerPage}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        filterBy={filterBy}
-        filterText={filterText}
-        sortByOptions={sortByOptions}
-        filterByOptions={filterByOptions}
-        onPageChange={handlePageChange}
-        onPerPageChange={(newPerPage) => { setItemsPerPage(newPerPage) }}
-        onSortByChange={(newSortBy) => { setSortBy(newSortBy) }}
-        onSortOrderChange={(newSortOrder) => { setSortOrder(newSortOrder) }}
-        onFilterByChange={(newFilterBy) => { setFilterBy(newFilterBy) }}
-        onFilterTextChange={(newFilterText) => { setFilterText(newFilterText) }}
-      />
+      <DataListNavBar name={'lower-nav'} totalPages={totalPages} sortByOptions={sortByOptions} filterByOptions={filterByOptions} />
 
+      {/* Dialogs for editing items */}
       {dataType === 'user' &&
         <UserEditDialog
           open={editorOpen}
@@ -213,6 +206,8 @@ export default function DataList (props) {
           onDialogClose={onEditorClose}
           unitId={activeItemId}
         />}
+
+      {/* Special dialogs for deleting or promoting a user */}
       <ItemDeleteDialog
         open={deleteDialogOpen}
         onDialogClose={onDeleteDialogClose}
@@ -227,6 +222,18 @@ export default function DataList (props) {
           userId={activeItemId}
           userName={activeItemName}
         />}
+
+      {/* Button to add a new item */}
+      <ButtonTooltip title={`Create new ${dataType}`} placement="top">
+        <Fab
+          color="primary"
+          aria-label={`Create new ${dataType}`}
+          className={classes.addItemButton}
+          onClick={(e) => { onNewItem() }}
+        >
+          <AddIcon />
+        </Fab>
+      </ButtonTooltip>
     </div>
   )
 }

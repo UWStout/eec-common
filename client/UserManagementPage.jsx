@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import { RecoilRoot } from 'recoil'
+
 import { Container, CssBaseline, Box } from '@material-ui/core'
 
 import DataList from './adminComponents/DataList.jsx'
@@ -17,11 +19,13 @@ const userFieldOptions = [
 ReactDOM.render(
   <Container component="main" maxWidth="md">
     <CssBaseline />
-    <DataList
-      dataType={'user'}
-      sortByOptions={userFieldOptions}
-      filterByOptions={userFieldOptions}
-    />
+    <RecoilRoot>
+      <DataList
+        dataType={'user'}
+        sortByOptions={userFieldOptions}
+        filterByOptions={userFieldOptions}
+      />
+    </RecoilRoot>
     <Box mt={8}>
       <Copyright />
     </Box>

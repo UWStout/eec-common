@@ -93,6 +93,24 @@ export function updateItem (which, newData) {
   })
 }
 
+export function createItem (which, itemInfo) {
+  return new Promise((resolve, reject) => {
+    // Validate 'which' type
+    if (which !== 'team' && which !== 'unit') {
+      return reject(new Error(`Invalid type for item creation "${which}"`))
+    }
+
+    // Start the POST create request
+    axios.post(`../data/${which}/register/`, itemInfo)
+      .then((response) => {
+        return resolve()
+      }).catch((error) => {
+        console.log(error)
+        return reject(error)
+      })
+  })
+}
+
 export function deleteItem (which, itemId) {
   return new Promise((resolve, reject) => {
     // Validate 'which' type

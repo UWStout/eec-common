@@ -38,14 +38,16 @@ export async function getTeamDetails (teamID) {
  *
  * tested in test 5 of test.js
  *
- * @param {string} teamName Name for the new team
+ * @param {string} name Name for the new team
+ * @param {string} description Description for the new team (may be empty)
  * @param {number} unitID ID of the related unit (may be empty)
  * @param {number} userID ID of a user to add to the team (may be empty)
  * @return {number} ID of the newly created team or null if creation fails
  */
-export function createTeam (teamName, unitID, userID) {
+export function createTeam (name, description, unitID, userID) {
   const insertThis = {
-    teamName,
+    name,
+    description,
     unitID: (ObjectID.isValid(unitID) ? new ObjectID(unitID) : undefined)
   }
 

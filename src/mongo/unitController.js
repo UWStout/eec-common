@@ -37,16 +37,16 @@ export async function getOrgUnitDetails (unitID) {
  *
  * tested in test 7 of test.js
  *
- * @param {string} unitName Name for the new org unit
+ * @param {string} name Name for the new org unit
  * @param {string} description Description of the org unit (may be null)
- * @param {string} adminID ID of admin user (may be null)
+ * @param {string} adminId ID of admin user (may be null)
  * @return {Promise} Resolves to ID of the newly created org unit, rejects if creation fails
  */
-export async function createOrgUnit (unitName, description, adminID) {
+export async function createOrgUnit (name, description, adminId) {
   const insertThis = {
-    unitName,
+    name,
     description,
-    adminID: (ObjectID.isValid(adminID) ? new ObjectID(adminID) : undefined)
+    adminId: (ObjectID.isValid(adminId) ? new ObjectID(adminId) : undefined)
   }
 
   const DBHandle = await retrieveDBHandle('karunaData')
@@ -83,16 +83,16 @@ export function removeOrgUnit (unitID) {
  *
  * tested in test 23 of test.js
  *
- * @param {string} userID ID of the user to update
+ * @param {string} unitID ID of the user to update
  * @param {Object} newData New data for the org unit document (will be merged with existing document)
  * @return {Promise} Resolves with no data if successful, rejects on error
  */
-export function updateOrgUnits (userID, newData) {
+export function updateOrgUnit (unitID, newData) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Units')
         .findOneAndUpdate(
-          { _id: new ObjectID(userID) },
+          { _id: new ObjectID(unitID) },
           { $set: { ...newData } },
           (err, result) => {
             if (err) {
