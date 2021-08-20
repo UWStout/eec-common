@@ -507,27 +507,6 @@ export const UserStatusState = atom({
   ]
 })
 
-/** Global state for the user's mood/affect */
-export const UserAffectIDState = selector({
-  key: 'UserAffectIDState',
-  get: ({ get }) => {
-    const currentStatus = get(UserStatusState)
-    return currentStatus?.currentAffectID
-  },
-
-  set: ({ get, set }, newAffectID) => {
-    // Update local cached state
-    const currentStatus = get(UserStatusState)
-    set(UserStatusState, {
-      ...currentStatus,
-      currentAffectID: newAffectID
-    })
-
-    // Send to the database (TODO: fix hard-coded privacy)
-    HELPER.setCurrentAffect(newAffectID, false, MSG_CONTEXT)
-  }
-})
-
 /** Global state for the user's collaboration status */
 export const UserCollaborationState = selector({
   key: 'UserCollaborationState',
@@ -592,5 +571,43 @@ export const TeammatesUserInfoState = selector({
       LOG.error(err)
       return []
     }
+  }
+})
+
+/** Most recent teammates basic user info */
+export const TeamAffectTemperature = selector({
+  key: 'TeamAffectTemperature',
+  get: async ({ get }) => {
+    const activeTeamID = get(ActiveTeamIDState)
+    try {
+      const teamTemperature = await HELPER.retrieveTeamAffectTemperature(activeTeamID, MSG_CONTEXT)
+      return teamTemperature
+    } catch (err) {
+      LOG.error(`Failed to retrieve team affect temperature for team "${activeTeamID}"`)
+      LOG.error(err)
+      return 'N/A'
+    }
+  }
+})
+
+/** Global state for the user's mood/affect */
+export const UserAffectIDState = selector({
+  key: 'UserAffectIDState',
+  get: ({ get }) => {
+    const currentStatus = get(UserStatusState)
+    return currentStatus?.currentAffectID
+  },
+
+  set: ({ get, set }, newAffectID) => {
+    // Update local cached state
+    const currentStatus = get(UserStatusState)
+    set(UserStatusState, {
+      ...currentStatus,
+      currentAffectID: newAffectID
+    })
+
+    // Send to the database (TODO: fix hard-coded privacy)
+    HELPER.setCurrentAffect(newAffectID, false, MSG_CONTEXT)
+    get(TeamAffectTemperature)
   }
 })
