@@ -16,8 +16,8 @@ export default function DataListItem (props) {
         </Avatar>
       </ListItemAvatar>
       <ListItemText
-        primary={dataItem.name}
-        secondary={dataItem._id}
+        primary={dataType === 'user' ? `${dataItem.name} (${dataItem.preferredName})` : dataItem.name}
+        secondary={dataType === 'user' ? dataItem.email : dataItem._id}
       />
       <ListItemSecondaryAction>
         {dataType === 'user' && !isAdmin &&
@@ -39,7 +39,9 @@ export default function DataListItem (props) {
 DataListItem.propTypes = {
   dataItem: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    _id: PropTypes.string.isRequired
+    _id: PropTypes.string.isRequired,
+    preferredName: PropTypes.string,
+    email: PropTypes.string
   }),
   onAction: PropTypes.func,
   onDelete: PropTypes.func,

@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom'
 
 import { RecoilRoot } from 'recoil'
 
-import { Container, CssBaseline, Box } from '@material-ui/core'
+import { createTheme } from '@material-ui/core/styles'
+import { Container, CssBaseline, Box, ThemeProvider } from '@material-ui/core'
 
 import DataList from './adminComponents/DataList.jsx'
 import Copyright from './clientComponents/Copyright.jsx'
@@ -16,19 +17,24 @@ const userFieldOptions = [
   { text: 'ID', value: '_id' }
 ]
 
+// Create a default theme
+const theme = createTheme()
+
 ReactDOM.render(
-  <Container component="main" maxWidth="md">
-    <CssBaseline />
-    <RecoilRoot>
-      <DataList
-        dataType={'user'}
-        sortByOptions={userFieldOptions}
-        filterByOptions={userFieldOptions}
-      />
-    </RecoilRoot>
-    <Box mt={8}>
-      <Copyright />
-    </Box>
-  </Container>,
+  <ThemeProvider theme={theme}>
+    <Container component="main" maxWidth="md">
+      <CssBaseline />
+      <RecoilRoot>
+        <DataList
+          dataType={'user'}
+          sortByOptions={userFieldOptions}
+          filterByOptions={userFieldOptions}
+        />
+      </RecoilRoot>
+      <Box mt={8}>
+        <Copyright />
+      </Box>
+    </Container>
+  </ThemeProvider>,
   document.getElementById('root')
 )
