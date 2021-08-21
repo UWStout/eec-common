@@ -23,3 +23,8 @@ export const FilteringState = atom({
     filterText: ''
   }
 })
+
+export const AdvancedNavigationState = atom({
+  key: 'AdvancedNavigationState',
+  default: false
+})
