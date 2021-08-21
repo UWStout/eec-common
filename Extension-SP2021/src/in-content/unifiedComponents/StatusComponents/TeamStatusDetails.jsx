@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { useRecoilValue } from 'recoil'
-import { ActiveTeamIDState, TeammatesUserInfoState } from '../data/globalState.js'
+import { ActiveTeamIDState, TeamAffectTemperature, TeammatesUserInfoState, UserAffectIDState } from '../data/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography, List, Grid, withStyles } from '@material-ui/core'
@@ -37,6 +37,13 @@ export default function TeamStatusDetails (props) {
   // Subscribe to global state about teams (GLOBAL STATE)
   const activeTeamID = useRecoilValue(ActiveTeamIDState)
   const teammatesInfo = useRecoilValue(TeammatesUserInfoState)
+  const teamTemperature = useRecoilValue(TeamAffectTemperature)
+  // const currentAffect = useRecoilValue(UserAffectIDState)
+
+
+  // useEffect(() => {
+  //   teamTemperature = useRecoilValue(TeamAffectTemperature)
+  // }, [currentAffect])
 
   // Ensure there is an active team
   if (activeTeamID === '') {
@@ -68,6 +75,9 @@ export default function TeamStatusDetails (props) {
         </Typography>
       </Grid> */}
       {/* For searching through the possible moods */}
+      <Grid item xs={12}>
+        Team Temperature is {teamTemperature}
+      </Grid>
       <Grid item xs={12}>
         <SearchBar
           role={'search'}

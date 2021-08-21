@@ -148,6 +148,16 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       }
       break
 
+    case 'ajax-teamAffectTemperature':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No team id available (not logged in?)'
+        })
+      } else {
+        promise = getTeamAffectTemperature(message.teamID)
+      }
+      break
+
     default: {
       console.log('Unknown ajax message:')
       console.log(message)
@@ -247,6 +257,21 @@ function getTeamInfoAndStatus (teamID) {
     requestPromise.catch((error) => { return reject(error) })
   })
 }
+
+function getTeamAffectTemperature (teamID) {
+  return new Promise((resolve, reject) => {
+    // Request data from the server
+    const config = { headers: authorizationHeader(), validateStatus }
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/team/getTeamAffectTemperature/${teamID}`, config)
+    requestPromise.then((response) => {
+      return resolve(response?.data)
+    })
+
+    // Reject on error from the first request (request to get user status)
+    requestPromise.catch((error) => { return reject(error) })
+  })
+}
+
 
 function setUserAffect (userID, context, affectID, isPrivate) {
   return new Promise((resolve, reject) => {

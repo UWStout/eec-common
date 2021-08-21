@@ -171,7 +171,6 @@ router.get('/count', authenticateToken, async (req, res) => {
   }
 })
 
-// 11. test userController's listUsersInTeam (teamID) function
 router.get('/listInTeam/:teamID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const teamID = req.params.teamID

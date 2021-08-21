@@ -260,5 +260,38 @@ router.get('/details/:teamID', authenticateToken, async (req, res) => {
   }
 })
 
+router.get('/getTeamAffectTemperature/:teamID', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const teamID = req.params.teamID
+  if (!teamID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
+  if (!ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters', teamID })
+    return
+  }
+
+  debug(`attempt to Team temperature based on current user affects in team ${teamID}`)
+  try {
+    const temp = await DBTeam.getTeamAffectTemperature(teamID)
+    if (temp.error) {
+      return res.status(400).json(temp)
+    }
+
+    // if (!temp.find((curUser) => (req.user.id === curUser._id.toString()))) {
+    //   return res.status(403).json({ error: true, message: 'You are not a member of that team' })
+    // }
+    // return res.json(temp)
+    return res.json(temp[0].avgTemp)
+  } catch (error) {
+    console.error(`Failed to get team affect temperature in team ${teamID}`)
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while getting team affect temperature' })
+  }
+})
+
 // Expose the router for use in other files
 export default router
