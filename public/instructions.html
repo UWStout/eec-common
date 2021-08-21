@@ -3,127 +3,17 @@
   <head>
     <title>Karuna EEC - Extension Installation</title>
 
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
-    <!-- Custom Page Styling -->
-    <style>
-      ul li:nth-child(odd) {
-        background-color: rgb(248, 248, 248);
-      }
-
-      img {
-        width: 100%;
-      }
-    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Plaster:300,400,500,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
   </head>
+
   <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="pb-2 mt-4 mb-2 border-bottom">
-            <h1>Welcome to Karuna</h1>
-          </div>
-          <p class="pt-2 lead">Welcome to the development server for the Karuna EEC tool! From here, you can download and install
-            the latest version of the Chrome Extension Alpha. You will also find instructions for installing and activating the extension.
-          </p>
-
-          <h3>IMPORTANT</h3>
-          <p class="pt-2">If you have a PREVIOUS version of the extension installed, you should REMOVE it before installing the latest
-            version.  This can be done from the 'chrome://extension' page by clicking the remove button on the old version.
-          </p>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-12">
-          <div class="accordion pb-4" id="accordion">
-            <div class="card">
-              <div class="card-header" id="headingOne">
-                <button class="btn collapsed btn-link text-decoration-none" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                  <h3 class="mb-0">Downloading the Extension</h3>
-                </button>
-              </div>
-          
-              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-                <div class="card-body">
-                  <p class="pt-2 pb-2 mb-s border-bottom lead">Karuna uses a Chrome browser extension to assist with team communication. The extension must be
-                    installed and active in your browser for the full Karuna experience. You must also access your team communication tools
-                    through their web browser interfaces.
-                  </p>
-                  <div class="text-center pt-2 pb-4">
-                    <a class="btn btn-lg btn-primary" href="./media/KarunaEEC-Extension.zip" role="button">Download Karuna Extension</a>
-                  </div>
-                  <ul class="list-group pt-2 pb-2">
-                    <li class="list-group-item">Click the above button to Download the extension archive.</li>
-                    <li class="list-group-item">Locate the archive on your computer (look in your 'downloads' folder)</li>
-                    <li class="list-group-item">Extract all files from the archive to a folder on your computer <a class="text-decoration-none" href="#figure1">(fig 1)</a>:
-                      <ol>
-                        <li>Select the archive zip file</li>
-                        <li>Click 'Compressed Folder Tools'</li>
-                        <li>Click Extract all and point it to a reasonable location on your computer</li>
-                      </ol>
-                    </li>
-                  </ul>
-        
-                  <figure class="blockquote p-4" id="figure1">
-                    <img class="border" src="./media/ExtractAll.png" alt="Screenshot showing the zip archive selected in the windows file explorer and pointing out the 'compressed tools' and 'extract all' options." />
-                    <figcaption class="blockquote-footer"><b>Figure 1:</b> <em>Expanding the extension archive</em></figcaption>
-                  </figure>
-                </div>
-              </div>
-            </div>  <!-- Card -->
-
-            <div class="card">
-              <div class="card-header" id="headingTwo">
-                <button class="btn btn-link collapsed text-decoration-none" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                  <h3 class="mb-0">Installing the Extension</h3>
-                </button>
-              </div>
-              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                <div class="card-body">
-                  <p class="pt-2 pb-2 mb-s border-bottom lead">The extension will eventually be available in the Chrome Web Store but during
-                    the Alpha phase of development, you must install the extension manually. NOTE: Make sure you have downloaded and
-                    expanded the extension archive first (see above).
-                  </p>
-                  <ul class="list-group pt-2 pb-2">
-                    <li class="list-group-item"><span class="font-weight-bold">1)</span> Open Chrome and visit the URL <span class="text-monospace font-weight-bold">chrome://extensions</span> <a class="text-decoration-none" href="#figure2">(fig 2)</a></li>
-                    <li class="list-group-item"><span class="font-weight-bold">2)</span> In the upper right, toggle the 'Developer Mode' to the on position</li>
-                    <li class="list-group-item"><span class="font-weight-bold">3)</span> Click the 'Load Unpacked'</li>
-                    <li class="list-group-item"><span class="font-weight-bold">4)</span> Navigate to the expanded extension folder on your computer <a class="text-decoration-none" href="#figure3">(fig 3)</a></li>
-                    <li class="list-group-item"><span class="font-weight-bold">5)</span> Click 'select folder' to load and activate the extension</li>
-                  </ul>
-        
-                  <figure class="blockquote pt-4 pb-2" id="figure2">
-                    <img class="border" src="./media/InstallUnpacked.png" alt="Screenshot showing the 'chrome://extensions' page pointing out the 'developer mode' toggle and the 'load unpacked' button." />
-                    <figcaption class="blockquote-footer"><b>Figure 2:</b> <em>Installing and enabling the extension</em></figcaption>
-                  </figure>
-
-                  <figure class="blockquote pb-4 pt-2" id="figure3">
-                    <img class="border" src="./media/SelectFolder.png" alt="Screenshot showing the folder selection interface after clicking 'load unpacked' pointing out the path and the 'select folder' button." />
-                    <figcaption class="blockquote-footer"><b>Figure 3:</b> <em>Selecting the unpacked folder (your folder path may be different)</em></figcaption>
-                  </figure>
-                </div>
-              </div>
-            </div> <!-- Card -->
-
-          </div> <!-- Accordion -->
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-12" style="text-align: center;">
-          <a href="adminIndex.html"><small>Dev/Admin Page Access</small></a>
-        </div>
-      </div>
-    </div>
-
-    <!-- jQuery then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <!-- Renders the root instructions -->
+    <div id="root"></div>
+    <script src="InstructionsPage.js"></script>
   </body>
 </html>
