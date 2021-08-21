@@ -258,3 +258,75 @@ export function addToTeam (userID, teamID) {
     })
   })
 }
+
+/**
+ * List all the users that belong to a certain team.
+ *
+ * @param {string} teamID ObjectID string of an existing team
+ * @returns {Promise} Resolves to array of affect id strings on success, rejects with error on failure
+ */
+export function getTeamAffectTemperature (teamID) {
+  // Check for proper TeamID
+  if (!teamID) {
+    return Promise.reject(new Error('TeamID must be defined'))
+  }
+
+  return new Promise((resolve, reject) => {
+    // Retrieve team details
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      try {
+        DBHandle.collection('Teams').findOne({ _id: new ObjectID(teamID) }, (err, result) => {
+          // Check for and handle error
+          if (err) {
+            debug('Error retrieving team for "listUserAffectsInTeam"')
+            debug(err)
+            return reject(err)
+          }
+
+          // For invalid teamID (does not exist)
+          if (!result) { return resolve({ error: true, message: 'Team not found' }) }
+
+          // Retrieve filtered list of users (w/o sensitive info) with team info joined
+          DBHandle.collection('Users').aggregate([
+            { $match: { teams: new ObjectID(teamID) } },
+            {
+              $lookup: {
+                from: 'Affects',
+                localField: 'status.currentAffectID',
+                foreignField: '_id',
+                as: 'userAffects'
+              }
+            },
+            { $unwind: { path: '$userAffects', preserveNullAndEmptyArrays: true } },
+            {
+              $group: { _id: null, avgTemp: { $avg: '$userAffects.positivity' } }
+            }
+            // {
+            //   $project: { temp: '$userAffects.positivity', _id: 0 }
+            // }
+          ], (err, cursor) => {
+            // Check for and handle error
+            if (err) {
+              debug('Error listing teams for "listUserAffectsInTeam"')
+              debug(err)
+              return reject(err)
+            }
+
+            // Convert to array and return
+            cursor.toArray((err, docs) => {
+              if (err) {
+                debug('Cursor toArray failed for "listUserAffectsInTeam"')
+                debug(err)
+                return reject(err)
+              }
+              // Resolve with the results
+              return resolve(docs)
+            })
+          })
+        })
+      } catch (err) {
+        return resolve({ error: true, message: err.toString() })
+      }
+    })
+  })
+}
