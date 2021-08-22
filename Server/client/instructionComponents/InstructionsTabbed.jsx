@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useCallback } from 'react'
 
 import SwipeableViews from 'react-swipeable-views'
 
@@ -7,7 +7,12 @@ import { AppBar, Tabs, Tab, Typography } from '@material-ui/core'
 
 import KarunaIcon from '../clientComponents/KarunaIcon.jsx'
 import TabPanel from './TabPanel.jsx'
-import { BasicInstallation, BasicUsage, AccountCreation, OtherPages, AdvancedInstallation } from './TabContent.jsx'
+
+import BasicInstallation from './instructionTabs/BasicInstallation.jsx'
+import BasicUsage from './instructionTabs/BasicUsage.jsx'
+import AccountCreation from './instructionTabs/AccountCreation.jsx'
+import OtherPages from './instructionTabs/OtherPages.jsx'
+import AdvancedInstallation from './instructionTabs/AdvancedInstallation.jsx'
 
 export function a11yPropsTab (name) {
   return {
@@ -59,6 +64,26 @@ export default function InstructionsTabbed () {
     <OtherPages key={3} />,
     <AdvancedInstallation key={4} />
   ]
+
+  // Hash change listener function
+  const hashChangeListener = useCallback(() => {
+    switch (window.location.hash) {
+      case '#basic-install': setActiveIndex(0); break
+      case '#account-creation': setActiveIndex(1); break
+      case '#basic-usage': setActiveIndex(2); break
+      case '#other-pages': setActiveIndex(3); break
+      case '#advanced-installation': setActiveIndex(4); break
+    }
+  }, [])
+
+  // Initialize and respond to updated hashes
+  useEffect(() => {
+    hashChangeListener()
+    window.addEventListener('hashchange', hashChangeListener)
+    return () => {
+      window.removeEventListener('hashchange', hashChangeListener)
+    }
+  }, [hashChangeListener])
 
   return (
     <React.Fragment>

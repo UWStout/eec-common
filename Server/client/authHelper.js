@@ -82,6 +82,20 @@ export async function validateLogin (email, password, expiration, onSuccess, onF
 }
 
 /**
+ * Check if an email is already in use by another account.
+ * @param {string} email Email to check for conflict (already registered)
+ * @returns {Promise} resolves if not in conflict, rejects in all other cases
+ */
+export async function checkEmailConflict (email) {
+  return new Promise((resolve, reject) => {
+    // Try to send the register request
+    axios.post('./auth/email', { email })
+      .then(() => { resolve() })
+      .catch((err) => { reject(err) })
+  })
+}
+
+/**
  * Attempt to create a new user
  * @param {object} newUser Object with 'name', 'preferredName', 'preferredPronouns', 'email', and 'password'
  * @returns {Promise} Resolves or rejects based on success
