@@ -146,6 +146,34 @@ router.post('/register', async (req, res) => {
   }
 })
 
+// A route to check if an email is already registered
+router.post('/email', async (req, res) => {
+  // Extract and check required fields
+  const { email } = req.body
+  if (!email) {
+    res.status(400).json({ invalid: true, message: 'Missing email to check' })
+    return
+  }
+
+  // Check if user with the same email is already registered
+  try {
+    const existingID = await DBUser.emailExists(email)
+    if (existingID !== -1) {
+      // 409 = CONFLICT
+      return res.status(409).json({
+        invalid: true, exists: true, message: 'Email already registered'
+      })
+    }
+  } catch (err) {
+    return res.status(500).json({
+      error: true, message: 'Could not check email'
+    })
+  }
+
+  // All is well
+  res.status(200).json({ message: 'OK' })
+})
+
 // A simple validation route (returns 200 and 'OK' if token is valid)
 router.get('/validate', authenticateToken, (req, res) => {
   res.send('OK')

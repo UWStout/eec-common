@@ -10,16 +10,12 @@ import AccountInfoForm from './AccountInfoForm.jsx'
 import PasswordForm from './PasswordForm.jsx'
 import PrivacyConsentForm from './PrivacyConsentForm.jsx'
 
-import { createAccount } from '../authHelper.js'
+import { createAccount, checkEmailConflict } from '../authHelper.js'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    // marginTop: theme.spacing(3),
-    // marginBottom: theme.spacing(3),
     padding: theme.spacing(2),
     [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
-      // marginTop: theme.spacing(6),
-      // marginBottom: theme.spacing(6),
       padding: theme.spacing(3)
     }
   },
@@ -65,14 +61,26 @@ export default function SignUpForm () {
   const [activeStep, setActiveStep] = useState(0)
   const handleBack = () => { setActiveStep(activeStep - 1) }
   const handleNext = async () => {
-    // Is this the last step?
-    if (activeStep === steps.length - 1) {
+    // Is this the first step?
+    if (activeStep === 0) {
+      try {
+        await checkEmailConflict(email)
+      } catch (err) {
+        if (err?.response?.status === 429) {
+          window.alert('Too fast, please wait 10 seconds')
+        } else if (err?.response?.status === 409) {
+          window.alert('Email is already in use, please contact an admin to reset your password.')
+        }
+        return
+      }
+    } else if (activeStep === steps.length - 1) {
+      // Is this the last step?
       try {
         // Try to create new user
         await createAccount({ fullName, preferredName, preferredPronouns, email, password })
       } catch (err) {
         if (err?.response?.status === 429) {
-          window.alert('Too many failed attempts (wait 10 seconds)')
+          window.alert('Too many failed attempts to register (please wait 10 seconds)')
         } else {
           const message = (err?.response?.data?.message ? err.response.data.message : 'unknown error')
           window.alert(`Error creating account. Please contact an administrator for help.\n\n(Info: ${message})`)
@@ -105,9 +113,23 @@ export default function SignUpForm () {
             {`Welcome to Karuna, ${preferredName}!`}
           </Typography>
           <Typography variant="subtitle1">
-            {'Your account has been successfully created. You should now follow the '}
-            <Link target="_blank" href="./instructions.html">{'instructions'}</Link>
-            {' for installing the extension to start using Karuna with your team!'}
+            {'Your account has been successfully created. To continue, make sure you have '}
+            <Link href="./instructions.html#basic-install">
+              {'installed the extension'}
+            </Link>
+            {'. Then read about '}
+            <Link href="./instructions.html#basic-usage">
+              {'basic usage'}
+            </Link>
+            {', or visit '}
+            <Link href="https://teams.microsoft.com" target="_blank">
+              {'Microsoft Teams'}
+            </Link>
+            {' or '}
+            <Link href="https://discord.com" target="_blank">
+              {'Discord'}
+            </Link>
+            {' and look for the karuna bubble in the lower left to log in.'}
             <br />
             <br />
             {'Contact your team manager if you need further assistance.'}
