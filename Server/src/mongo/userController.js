@@ -56,18 +56,31 @@ export async function getUserDetails (userID) {
 export function emailExists (email) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
-      DBHandle
-        .collection('Users')
-        .findOne({ email: email }, { _id: 1 }, (err, result) => {
+      DBHandle.collection('Users').createIndex(
+        { email: 1 },
+        { collation: { locale: 'en', strength: 2 } },
+        (err, result) => {
           // Check for an error
-          if (err) {
-            return resolve(-1)
+          if (err || !result) {
+            if (err) { debug(err) }
+            return reject(new Error('Collated Index failed'))
           }
-          // check if findOne failed
-          if (result == null) {
-            return resolve(-1)
-          } else { return resolve(result) }
-        })
+
+          DBHandle.collection('Users').findOne({ email: email }, {
+            collation: { locale: 'en', strength: 2 },
+            projection: { _id: 1 }
+          }, (err, result) => {
+            // Check for an error
+            if (err) {
+              return resolve(-1)
+            }
+            // check if findOne failed
+            if (result == null) {
+              return resolve(-1)
+            } else { return resolve(result) }
+          })
+        }
+      )
     })
   })
 }
@@ -458,18 +471,16 @@ export async function updateUserTimeToRespond (userID, time, units, automatic) {
 
   const DBHandle = await retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
-    return DBHandle.collection('Users')
-      .findOneAndUpdate(
-        { _id: new ObjectID(userID) },
-        { $set: { 'status.timeToRespond': { time, units, automatic } } },
-        (err, result) => {
-          if (err) {
-            debug('Failed to update user time to respond')
-            debug(err)
-            return reject(err)
-          }
-          return resolve(result)
+    DBHandle.collection('Users').findOneAndUpdate(
+      { _id: new ObjectID(userID) },
+      { $set: { 'status.timeToRespond': { time, units, automatic } } },
+      (err, result) => {
+        if (err) {
+          debug('Failed to update user time to respond')
+          debug(err)
+          return reject(err)
         }
-      )
+        return resolve(result)
+      })
   })
 }

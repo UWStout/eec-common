@@ -17,14 +17,20 @@ const debug = Debug('karuna:server:auth_routes')
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
-  // Check for cookie first
-  let token = req.cookies && req.cookies.JWT
+  // Try the authorization header next
+  const authHeader = req.headers.authorization
+  const type = authHeader && authHeader.split(' ')[0]
+  let token = authHeader && authHeader.split(' ')[1]
+  if (token && (!type || type.toLowerCase() !== 'digest')) {
+    return res.status(401).json({
+      error: true, message: 'not authorized'
+    })
+  }
+
+  // If no auth digest / token, try cookies instead
   if (!token) {
-    // Try the authorization header next
-    const authHeader = req.headers.authorization
-    const type = authHeader && authHeader.split(' ')[0]
-    token = authHeader && authHeader.split(' ')[1]
-    if (!type || type.toLowerCase() !== 'digest' || !token) {
+    token = req.cookies && req.cookies.JWT
+    if (!token) {
       return res.status(401).json({
         error: true, message: 'not authorized'
       })

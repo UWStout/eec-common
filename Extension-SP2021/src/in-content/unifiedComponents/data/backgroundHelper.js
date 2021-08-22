@@ -2,9 +2,6 @@
 import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('BACKGROUND Helper', '#27213C', '#EEF4ED')
 
-// A delay to test lazy loading
-const FAKE_DELAY = 0
-
 /**
  * Generic chrome.runtime.sendMessage function to simplify interacting with the background part of the
  * extension.  Background messages are processed as follows:
@@ -22,9 +19,9 @@ export function sendMessageToBackground (messageObject, context = 'none',
   errorMessage = 'Unknown error', successCB = null, errorCB = null) {
   chrome.runtime.sendMessage({ ...messageObject, context }, (data) => {
     if (data && data.error) {
-      LOG(errorMessage, data.error)
+      LOG(errorMessage, data)
       if (errorCB) {
-        return errorCB(data.error)
+        return errorCB(data.message)
       }
     }
 
@@ -60,7 +57,11 @@ export function retrieveAffectList (context = 'none') {
 
       // Success and failure callbacks
       (data) => { return resolve(data) },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error retrieving affect list')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -76,7 +77,11 @@ export function retrieveAffectHistoryList (context = 'none') {
 
       // Success and failure callbacks
       (data) => { return resolve(data) },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error retrieving affect history list')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -92,7 +97,11 @@ export function retrieveFavoriteAffectsList (context = 'none') {
 
       // Success and failure callbacks
       (data) => { return resolve(data) },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error retrieving favorite affect list')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -108,7 +117,11 @@ export function setFavoriteAffect (affectID, context = 'none') {
 
       // Success and failure callbacks
       () => { return resolve() },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error setting favorite affect')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -124,7 +137,11 @@ export function removeFavoriteAffect (affectID, context = 'none') {
 
       // Success and failure callbacks
       () => { return resolve() },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error removing favorite affect')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -140,7 +157,11 @@ export function retrieveTeamDisabledAffectsList (teamID, context = 'none') {
 
       // Success and failure callbacks
       (data) => { return resolve(data) },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error retrieving team disabled affects')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -156,7 +177,11 @@ export function setTeamDisabledAffect (teamID, affectID, context = 'none') {
 
       // Success and failure callbacks
       () => { return resolve() },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error setting team disabled affect')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -172,7 +197,11 @@ export function removeTeamDisabledAffect (teamID, affectID, context = 'none') {
 
       // Success and failure callbacks
       () => { return resolve() },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error removing team disabled affect')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -193,7 +222,11 @@ export function retrieveMoodPrivacy (context = 'none') {
         }
         return resolve(newPrivacy.value)
       },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error retrieving privacy')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -209,7 +242,11 @@ export function setCurrentAffect (affectID, privacy, context = 'none') {
 
       // Success and failure callbacks
       () => { return resolve() },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error setting current affect')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -224,7 +261,11 @@ export function setCurrentCollaboration (collaboration, context = 'none') {
 
       // Success and failure callbacks
       () => { return resolve() },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error setting current collaboration status')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -239,7 +280,11 @@ export function setTimeToRespond (timeToRespond, context = 'none') {
 
       // Success and failure callbacks
       () => { return resolve() },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error setting time to respond')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -255,7 +300,11 @@ export function setMoodPrivacy (newPrivacy, context = 'none') {
 
       // Success and failure callbacks
       () => { return resolve() },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error setting mood privacy')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -266,10 +315,12 @@ export function retrieveUserStatus (context = 'none') {
       { type: 'ajax-getUserStatus' },
       context,
       'Retrieving current user status failed: ',
-      (currentUserStatus) => {
-        setTimeout(() => { return resolve(currentUserStatus) }, FAKE_DELAY)
-      },
-      (message) => { return reject(new Error(message)) }
+      (currentUserStatus) => { return resolve(currentUserStatus) },
+      (message) => {
+        LOG.error('Error retrieving current user status')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -281,7 +332,11 @@ export function retrieveTeamUserInfoAndStatus (teamID) {
       'N/A', // Context does not matter
       'Retrieving teammates info and status failed: ',
       (userInfo) => { return resolve(userInfo) },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error retrieving team user info/status')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -293,7 +348,11 @@ export function retrieveTeamAffectTemperature (teamID) {
       'N/A', // Context does not matter
       'Retrieving teammates info and status failed: ',
       (userInfo) => { return resolve(userInfo) },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error retrieving team temperature')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }
@@ -305,7 +364,11 @@ export function retrieveBasicUserInfo () {
       'N/A', // Context doesn't matter
       'Retrieving basic user info failed: ',
       (userInfo) => { return resolve(userInfo) },
-      (message) => { return reject(new Error(message)) }
+      (message) => {
+        LOG.error('Error retrieving basic user info')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
     )
   })
 }

@@ -40,9 +40,10 @@ export default function Emoji (props) {
 Emoji.propTypes = {
   affect: PropTypes.shape(AffectObjectShape).isRequired,
   handleClick: PropTypes.func,
-  favoriteList: PropTypes.arrayOf(PropTypes.string).isRequired
+  favoriteList: PropTypes.arrayOf(PropTypes.string)
 }
 
 Emoji.defaultProps = {
-  handleClick: null
+  handleClick: null,
+  favoriteList: []
 }

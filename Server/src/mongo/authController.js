@@ -25,44 +25,58 @@ const SALT_ROUNDS = 10
 export function validateUser (email, password) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
-      DBHandle.collection('Users')
-        // Find user with matching email (leave out teams and meta in returned document)
-        .findOne({ email }, { projection: { meta: 0 } }, (err, result) => {
+      DBHandle.collection('Users').createIndex(
+        { email: 1 },
+        { collation: { locale: 'en', strength: 2 } },
+        (err, result) => {
           // Check for an error
           if (err || !result) {
-            debug(`User not found "${email}"`)
             if (err) { debug(err) }
-            return reject(new Error('Invalid email or password'))
+            return reject(new Error('Collated Index failed'))
           }
 
-          // Hash and validate the password (it is stored hashed)
-          bcrypt.compare(password, result.passwordHash, (error, valid) => {
-            // Check if an error occurred
-            if (error) {
-              debug('Error hashing password')
-              debug(err)
-              return reject(error)
-            }
-
-            // Was the password valid
-            if (!valid) {
-              debug('Password failed hash check')
+          // Find user with matching email (leave out teams and meta in returned document)
+          DBHandle.collection('Users').findOne({ email }, {
+            collation: { locale: 'en', strength: 2 },
+            projection: { meta: 0 }
+          }, (err, result) => {
+            // Check for an error
+            if (err || !result) {
+              debug(`User not found "${email}"`)
+              if (err) { debug(err) }
               return reject(new Error('Invalid email or password'))
             }
 
-            // Sanitize and return userInfo
-            return resolve({
-              id: result._id,
-              email: result.email,
-              name: result.name,
-              preferredName: result.preferredName,
-              preferredPronouns: result.preferredPronouns,
-              userType: result.userType,
-              activeTeam: (result?.teams?.length > 0 ? result.teams[0] : ''),
-              contextAlias: result.contextAlias
+            // Hash and validate the password (it is stored hashed)
+            bcrypt.compare(password, result.passwordHash, (error, valid) => {
+              // Check if an error occurred
+              if (error) {
+                debug('Error hashing password')
+                debug(err)
+                return reject(error)
+              }
+
+              // Was the password valid
+              if (!valid) {
+                debug('Password failed hash check')
+                return reject(new Error('Invalid email or password'))
+              }
+
+              // Sanitize and return userInfo
+              return resolve({
+                id: result._id,
+                email: result.email,
+                name: result.name,
+                preferredName: result.preferredName,
+                preferredPronouns: result.preferredPronouns,
+                userType: result.userType,
+                activeTeam: (result?.teams?.length > 0 ? result.teams[0] : ''),
+                contextAlias: result.contextAlias
+              })
             })
           })
-        })
+        }
+      )
     })
   })
 }
@@ -72,7 +86,7 @@ export function validateUser (email, password) {
  * tested in test 3 of test.js
  * @param {string} fullName Full real name of the user to create
  * @param {string} preferredName Nickname or preferred name of the user to create
- * @param {string} email email of the user to create
+ * @param {string} email email of the user to create (CHECK FOR CASE-INSENSITIVE UNIQUENESS BEFORE CALLING)
  * @param {string} password Plaintext password
  * @param {string} preferredPronouns The user's preferred pronouns (optional, defaults to empty)
  * @param {string} userType User account type ('standard', 'manager', or 'admin'), default to standard

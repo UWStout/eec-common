@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Divider = withStyles((theme) => ({
-  rootStyle: {
+  root: {
     width: '100%'
   }
 }))(MuiDivider)
