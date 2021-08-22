@@ -9,34 +9,17 @@ import { Paper, Stepper, Step, StepLabel, Button, Typography, Link } from '@mate
 import AccountInfoForm from './AccountInfoForm.jsx'
 import PasswordForm from './PasswordForm.jsx'
 import PrivacyConsentForm from './PrivacyConsentForm.jsx'
-import KarunaIcon from './KarunaIcon.jsx'
 
 import { createAccount } from '../authHelper.js'
 
 const useStyles = makeStyles((theme) => ({
-  layout: {
-    width: 'auto',
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
-      width: 600,
-      marginLeft: 'auto',
-      marginRight: 'auto'
-    }
-  },
-  logoStyle: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  },
   paper: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
+    // marginTop: theme.spacing(3),
+    // marginBottom: theme.spacing(3),
     padding: theme.spacing(2),
     [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
-      marginTop: theme.spacing(6),
-      marginBottom: theme.spacing(6),
+      // marginTop: theme.spacing(6),
+      // marginBottom: theme.spacing(6),
       padding: theme.spacing(3)
     }
   },
@@ -106,60 +89,51 @@ export default function SignUpForm () {
   const [nextStepEnabled, setNextStepEnabled] = useState(true)
 
   return (
-    <div className={classes.layout}>
-      <div className={classes.logoStyle}>
-        <KarunaIcon />
-        <Typography component="h1" variant="h5">
-          {'Create a New Karuna Account'}
-        </Typography>
-      </div>
+    <Paper className={classes.paper}>
+      <Stepper activeStep={activeStep} className={classes.stepper}>
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
 
-      <Paper className={classes.paper}>
-        <Stepper activeStep={activeStep} className={classes.stepper}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+      {activeStep === steps.length ?
+        /* At last step */
+        <React.Fragment>
+          <Typography variant="h5" gutterBottom>
+            {`Welcome to Karuna, ${preferredName}!`}
+          </Typography>
+          <Typography variant="subtitle1">
+            {'Your account has been successfully created. You should now follow the '}
+            <Link target="_blank" href="./instructions.html">{'instructions'}</Link>
+            {' for installing the extension to start using Karuna with your team!'}
+            <br />
+            <br />
+            {'Contact your team manager if you need further assistance.'}
+          </Typography>
+        </React.Fragment> :
 
-        {activeStep === steps.length ?
-          /* At last step */
-          <React.Fragment>
-            <Typography variant="h5" gutterBottom>
-              {`Welcome to Karuna, ${preferredName}!`}
-            </Typography>
-            <Typography variant="subtitle1">
-              {'Your account has been successfully created. You should now follow the '}
-              <Link target="_blank" href="./instructions.html">{'instructions'}</Link>
-              {' for installing the extension to start using Karuna with your team!'}
-              <br />
-              <br />
-              {'Contact your team manager if you need further assistance.'}
-            </Typography>
-          </React.Fragment> :
-
-          /* All other steps */
-          <React.Fragment>
-            {getStepContent(activeStep, { setNextStepEnabled })}
-            <div className={classes.buttons}>
-              {activeStep !== 0 && (
-                <Button onClick={handleBack} className={classes.button}>
-                  {'Back'}
-                </Button>
-              )}
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-                className={classes.button}
-                disabled={!nextStepEnabled}
-              >
-                {activeStep === steps.length - 1 ? 'Create Account' : 'Next'}
+        /* All other steps */
+        <React.Fragment>
+          {getStepContent(activeStep, { setNextStepEnabled })}
+          <div className={classes.buttons}>
+            {activeStep !== 0 && (
+              <Button onClick={handleBack} className={classes.button}>
+                {'Back'}
               </Button>
-            </div>
-          </React.Fragment>}
-      </Paper>
-    </div>
+            )}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleNext}
+              className={classes.button}
+              disabled={!nextStepEnabled}
+            >
+              {activeStep === steps.length - 1 ? 'Create Account' : 'Next'}
+            </Button>
+          </div>
+        </React.Fragment>}
+    </Paper>
   )
 }

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography, Button, List, ListItem, ListItemText, Link, Grid } from '@material-ui/core'
 
-import KarunaIcon from './KarunaIcon.jsx'
+import KarunaIcon from '../clientComponents/KarunaIcon.jsx'
 import InstructionPanel from './InstructionPanel.jsx'
 
 const SERVER_ROOT = ''
