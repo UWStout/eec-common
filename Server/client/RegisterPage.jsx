@@ -1,20 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import { RecoilRoot } from 'recoil'
-
 import { CssBaseline, Box } from '@material-ui/core'
 
-import SignUpForm from './clientComponents/SignUpForm.jsx'
+import Register from './clientComponents/Register.jsx'
 import Copyright from './clientComponents/Copyright.jsx'
 
 ReactDOM.render(
-  <RecoilRoot>
+  <React.Fragment>
     <CssBaseline />
-    <SignUpForm />
+    <Register />
     <Box mt={8}>
       <Copyright />
     </Box>
-  </RecoilRoot>,
+  </React.Fragment>,
   document.getElementById('root')
 )
