@@ -13,6 +13,9 @@ import MongoDB from 'mongodb'
 // Utility functions
 import * as UTIL from './utils.js'
 
+// Allow interaction with the socket.io server
+import { userStatusUpdated } from '../sockets.js'
+
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('karuna:server:user')
@@ -275,6 +278,7 @@ router.post('/collaboration', authenticateToken, async (req, res) => {
   // Attempt to update user collaboration status
   try {
     await DBUser.updateUserCollaboration(userID, collaborationStatus)
+    userStatusUpdated(userID) // runs async, but no need to await
     res.json({ success: true })
   } catch (error) {
     console.error('Failed to update user collaboration status')
@@ -305,6 +309,7 @@ router.post('/timeToRespond', authenticateToken, async (req, res) => {
   // Attempt to update user time to respond
   try {
     await DBUser.updateUserTimeToRespond(userID, time, units, automatic)
+    userStatusUpdated(userID) // runs async, but no need to await
     res.json({ success: true })
   } catch (error) {
     console.error('Failed to update user time to respond')

@@ -13,7 +13,8 @@ import { authenticateToken } from './auth.js'
 // for testing the database
 import MongoDB from 'mongodb'
 
-// import { analyzeAffect } from '../analysisEngine.js'
+// Allow interaction with the socket.io server
+import { userStatusUpdated } from '../sockets.js'
 
 // Create debug output object
 import Debug from 'debug'
@@ -203,7 +204,9 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
   try {
     // updates history and user status
     await DBAffect.insertAffectHistoryEntry(affectID, relatedID, isUser, isPrivate)
-    debug('affect updated')
+    if (isUser) {
+      userStatusUpdated(relatedID) // runs async, but no need to await
+    }
     res.json({ success: true })
   } catch (error) {
     console.error('Failed to insert affect history log')

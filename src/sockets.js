@@ -23,8 +23,12 @@ const debug = Debug('karuna:server:socket')
 dotenv.config()
 
 // Option to enable the Watson analysis engine
-// TODO: Consider disabling wizard when this is true
+// NOTE: Can conflict with Wizard, consider only having one enabled
 const WATSON_ENABLED = process.env?.WATSON_ENABLED === 'true'
+
+// Option to enable the wizard
+// NOTE: Can conflict with Watson, consider only having one enabled
+const WIZARD_ENABLED = process.env?.WIZARD_ENABLED === 'true'
 
 // Useful global info
 const clientSessions = {}
@@ -41,9 +45,11 @@ export function makeSocket (serverListener) {
 
   // Respond to new socket connections
   mySocket.on('connection', (socket) => {
-    // Wizard specific messages
-    socket.on('wizardSession', socketWizardSession.bind(socket))
-    socket.on('wizardMessage', socketWizardMessage.bind(socket)) // <-- LOG TO DATABASE
+    if (WIZARD_ENABLED) {
+      // Wizard specific messages
+      socket.on('wizardSession', socketWizardSession.bind(socket))
+      socket.on('wizardMessage', socketWizardMessage.bind(socket)) // <-- LOG TO DATABASE
+    }
 
     // sending message to client through karuna bubble
     socket.on('genericMessage', socketGenericMessage.bind(socket))
@@ -106,13 +112,15 @@ function socketClientSession (clientInfo) {
     debug(`[WS:${this.id}] updated client session (${clientInfo.context})`)
     clientSocketLookup[clientSessions[this.id].email] = undefined // In case the email has changed
   } else {
+    // Join the universal clients room and a room for JUST this socket
     debug(`[WS:${this.id}] new client session (${clientInfo.context})`)
     this.join('clients')
+    this.join(this.id)
   }
 
   // Is there a valid token
   if (!clientInfo.token) {
-    debug(`[WS:${this.id}] invalid client session token missing`)
+    debug(`[WS:${this.id}] invalid - client session token missing`)
     return
   }
 
@@ -129,19 +137,39 @@ function socketClientSession (clientInfo) {
   }
 
   // Write/Update session and broadcast change
-  clientSessions[this.id] = tokenPayload
+  clientSessions[this.id] = { ...clientSessions[this.id], ...tokenPayload }
   clientSocketLookup[clientSessions[this.id].email] = this.id
 
-  // If not a global connect, update context list and broadcast change
+  // Connect to team rooms if not already
+  if (!clientSessions[this.id].teams) {
+    DBUser.getUserDetails(tokenPayload.id)
+      .then((result) => {
+        const teams = result?.teams ? result.teams : []
+        teams.forEach((teamID) => {
+          this.join(`team-${teamID}`)
+        })
+        clientSessions[this.id].teams = result.teams
+      })
+      .catch((err) => {
+        debug('Error retrieving user team list, can\'t add to team rooms.')
+        debug(err)
+      })
+  }
+
+  // If not a global connect, update context list, timestamps, and optionally broadcast change
   if (clientInfo.context !== 'global') {
     // Pack in array if not already
     if (!Array.isArray(clientInfo.context)) {
       clientInfo.context = [clientInfo.context]
     }
 
-    // Update session list and broadcast
+    // Update session list
     clientSessions[this.id].contexts = [...clientInfo.context]
-    mySocket.to('wizards').emit('updateSessions', clientSessions)
+
+    // Broadcast to wizard
+    if (WIZARD_ENABLED) {
+      mySocket.to('wizards').emit('updateSessions', clientSessions)
+    }
 
     // Record the context connection in user entry in database
     const req = this.request
@@ -168,6 +196,7 @@ function socketWizardSession (wizardInfo) {
       debug(`[WS:${this.id}] new wizard session for ${wizardSessions[this.id].email}`)
     }
 
+    // Join the wizards room and send the wizard a list of active sessions
     this.join('wizards')
     mySocket.to(this.id).emit('updateSessions', clientSessions)
 
@@ -304,11 +333,13 @@ function socketMessageUpdate (message) {
   }
 
   // Bounce message to wizard (no logging because it floods the console)
-  mySocket.to('wizards').emit('clientTyping', {
-    clientEmail: clientSessions[this.id].email,
-    context: message.context,
-    data: message.data
-  })
+  if (WIZARD_ENABLED) {
+    mySocket.to('wizards').emit('clientTyping', {
+      clientEmail: clientSessions[this.id].email,
+      context: message.context,
+      data: message.data
+    })
+  }
 }
 
 // Attempt to send message from Client
@@ -358,12 +389,14 @@ async function socketMessageSend (message) {
   }
 
   // Log action (if debug is enabled) and send the message to the wizard
-  debug(`[WS:${this.id}] message sent to wizard from ${message.context}`)
-  mySocket.to('wizards').emit('clientSend', {
-    clientEmail: clientSessions[this.id].email,
-    context: message.context,
-    data: message.data
-  })
+  if (WIZARD_ENABLED) {
+    debug(`[WS:${this.id}] message sent to wizard from ${message.context}`)
+    mySocket.to('wizards').emit('clientSend', {
+      clientEmail: clientSessions[this.id].email,
+      context: message.context,
+      data: message.data
+    })
+  }
 }
 
 // Attempt to send message to client FROM Watson
@@ -414,6 +447,41 @@ export function sendGenericMessage (message, userID, context, showAffectSurvey =
     })
     .catch((err) => {
       debug('could not get user details')
+      debug(err)
+    })
+}
+
+export async function userStatusUpdated (userID) {
+  DBUser.getUserDetails(userID)
+    .then((details) => {
+      const socketID = clientSocketLookup[details?.email]
+      if (socketID) {
+        if (Array.isArray(clientSessions[socketID].teams) && clientSessions[socketID].teams.length > 0) {
+          // Send message to all team rooms but NOT to this user's socket
+          mySocket.to(
+            // Create array of team room names
+            clientSessions[socketID].teams.map((teamID) => (`team-${teamID}`))
+          )
+            // Leave out current user
+            .except(socketID)
+            // Send latest status
+            .emit('teammateStatusUpdate', {
+              userId: userID,
+              context: '*',
+              currentAffectID: details.status.currentAffectID,
+              collaboration: details.status.collaboration,
+              timeToRespond: details.status.timeToRespond
+            })
+        } else {
+          debug('No teams to emit too / teams invalid:')
+          debug(clientSessions[socketID].teams)
+        }
+      } else {
+        debug(`Failed to broadcast status: could not find socket session for user ${details?.email}`)
+      }
+    })
+    .catch((err) => {
+      debug(`Failed to broadcast status: could not get user details for ${userID}`)
       debug(err)
     })
 }
