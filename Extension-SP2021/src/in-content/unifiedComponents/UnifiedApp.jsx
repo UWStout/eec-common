@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
-import { KarunaMessageEnqueueState, LoggedInUserState, MessagingContextState, TextBoxListState } from './data/globalState.js'
+import { KarunaMessageEnqueueState, LoggedInUserState, MessagingContextState, TextBoxListState, TeammateStatusUpdateState } from './data/globalState.js'
 
 import { CssBaseline } from '@material-ui/core'
 
@@ -43,6 +43,15 @@ export default function UnifiedApp (props) {
       setLoggedInUserState({})
     })
   }, [emitter, setLoggedInUserState])
+
+  // Track user status updates globally
+  const setTeammateStatusUpdate = useSetRecoilState(TeammateStatusUpdateState)
+  useEffect(() => {
+    emitter.on('teammateStatusUpdate', (newUserStatus) => {
+      LOG('Teammate status updated:', newUserStatus)
+      setTeammateStatusUpdate()
+    })
+  }, [emitter, setTeammateStatusUpdate])
 
   // Track karuna server messages globally
   const pushKarunaMessage = useSetRecoilState(KarunaMessageEnqueueState)

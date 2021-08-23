@@ -22,12 +22,12 @@ export function setupExtensionCommunication () {
 
   // Route messages from the Karuna server back to the proper port
   getSocket().on('karunaMessage', (msg) => {
-    console.log('[BACKGROUND] Message received from karuna:', msg)
+    console.log('[BACKGROUND] Karuna message received from server:', msg)
     if (msg.context === '*') {
       // Loop through active port names and broadcast message to all
       for (const portName in portSessions) {
         if (portSessions[portName]) {
-          console.log(`[BACKGROUND] posting message to ${portName}`)
+          console.log(`[BACKGROUND] posting karuna message to ${portName}`)
           portSessions[portName].postMessage(
             { type: 'karunaMessage', ...msg }
           )
@@ -39,11 +39,24 @@ export function setupExtensionCommunication () {
         const context = portName.split('-')[0]
         if (context === msg.context && portSessions[portName]) {
           // Relay message to that port
-          console.log('[BACKGROUND] + Context matched, posting message')
+          console.log('[BACKGROUND] + Context matched, posting karuna message')
           portSessions[portName].postMessage(
             { type: 'karunaMessage', ...msg }
           )
         }
+      }
+    }
+  })
+
+  getSocket().on('teammateStatusUpdate', (msg) => {
+    console.log('[BACKGROUND] Teammate status message received from server:', msg)
+    // Loop through active port names and broadcast message to all
+    for (const portName in portSessions) {
+      if (portSessions[portName]) {
+        console.log(`[BACKGROUND] posting teammateStatus message to ${portName}`)
+        portSessions[portName].postMessage(
+          { type: 'teammateStatusUpdate', ...msg }
+        )
       }
     }
   })
@@ -136,9 +149,12 @@ function oneTimeMessage (message, sender, sendResponse) {
 
         // Send the token to each in-context session
         for (const portName in portSessions) {
-          portSessions[portName].postMessage(
-            { type: 'login', token: message.data }
-          )
+          // CAUTION: Sometimes it is undefined (not sure why)
+          if (portSessions[portName]) {
+            portSessions[portName].postMessage(
+              { type: 'login', token: message.data }
+            )
+          }
         }
         sendResponse('ok')
         return resolve('ok')

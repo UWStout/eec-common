@@ -70,6 +70,8 @@ export function validateUser (email, password) {
                 preferredName: result.preferredName,
                 preferredPronouns: result.preferredPronouns,
                 userType: result.userType,
+
+                // NOTE: This is a LOT to store in the token, consider alternative?
                 activeTeam: (result?.teams?.length > 0 ? result.teams[0] : ''),
                 contextAlias: result.contextAlias
               })

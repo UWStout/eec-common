@@ -216,6 +216,15 @@ class EECUnified extends HTMLElement {
           LOG('Background karunaMessage but emitter is undefined', message)
         }
         break
+
+      case 'teammateStatusUpdate':
+        if (this.statusEmitter) {
+          LOG('Teammate status update message bouncing', message)
+          this.statusEmitter.emit('teammateStatusUpdate', message)
+        } else {
+          LOG('Teammate status update message but emitter is undefined', message)
+        }
+        break
     }
   }
 
