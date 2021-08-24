@@ -325,6 +325,22 @@ export function retrieveUserStatus (context = 'none') {
   })
 }
 
+export function retrieveUserTeams (context = 'none') {
+  return new Promise((resolve, reject) => {
+    sendMessageToBackground(
+      { type: 'ajax-getUserTeams' },
+      context,
+      'Retrieving current user teams failed: ',
+      (userTeams) => { return resolve(userTeams) },
+      (message) => {
+        LOG.error('Error retrieving current user teams')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
+    )
+  })
+}
+
 export function retrieveTeamUserInfoAndStatus (teamID) {
   return new Promise((resolve, reject) => {
     sendMessageToBackground(

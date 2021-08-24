@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { UserStatusState, AffectListState } from '../data/globalState.js'
 import { useRecoilValue } from 'recoil'
+import { UserStatusState } from '../data/globalSate/userState.js'
+import { AffectListState } from '../data/globalSate/teamState.js'
 
 import MuiPaper from '@material-ui/core/Paper'
 import { MoreVert } from '@material-ui/icons'

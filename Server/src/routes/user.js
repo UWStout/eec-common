@@ -236,6 +236,33 @@ router.delete('/remove/:userID', authenticateToken, async (req, res) => {
   }
 })
 
+// Get just the list of teams for a user
+router.get('/teams/:userID?', authenticateToken, async (req, res) => {
+  // Extract and check required fields (fallback to the authorization id if no param)
+  const userID = req.params.userID || req.user.id
+
+  // check if userID is a reasonable parameter for ObjectID
+  if (userID && !ObjectID.isValid(userID)) {
+    res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
+  }
+
+  // Check that userIDs match
+  if (userID !== req.user.id && req.user.userType !== 'admin') {
+    return res.status(403).send({ error: true, message: 'Cannot list teams for other users' })
+  }
+
+  // attempt to get user status
+  debug('attempting to get user\'s team list')
+  try {
+    const fullDetails = await DBUser.getUserDetails(userID)
+    return res.json(fullDetails.teams)
+  } catch (error) {
+    debug('Failed to get user teams')
+    debug(error)
+    return res.status(500).json({ error: true, message: 'Error while trying to get user teams' })
+  }
+})
+
 /**
  * API routes for status object
  */

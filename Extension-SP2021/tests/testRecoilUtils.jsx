@@ -11,7 +11,9 @@ import { create as JSSCreate } from 'jss'
 import { StylesProvider, jssPreset } from '@material-ui/core/styles'
 
 // Import state to set
-import { LoggedInUserState, UserStatusState, AffectListState, AffectHistoryListState, PrivacyPrefsState, UserAffectIDState, LastSelectedAffectIDState } from '../src/in-content/unifiedComponents/data/globalState.js'
+import { LoggedInUserState, PrivacyPrefsState, LastSelectedAffectIDState } from '../src/in-content/unifiedComponents/data/globalSate/appState.js'
+import { UserStatusState, AffectHistoryListState, UserAffectIDState } from '../src/in-content/unifiedComponents/data/globalSate/userState.js'
+import { AffectListState } from '../src/in-content/unifiedComponents/data/globalSate/teamState.js'
 
 /** Function to set initial recoil state for testing */
 function initializeState (snapshot) {

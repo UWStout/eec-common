@@ -104,9 +104,7 @@ export function retrieveUser () {
       name: jsonObj.name || '',
       preferredName: jsonObj.preferredName || '',
       preferredPronouns: jsonObj.preferredPronouns || '',
-      userType: jsonObj.userType || 'standard',
-      activeTeam: jsonObj.activeTeam || '',
-      contextAlias: jsonObj.contextAlias || {}
+      userType: jsonObj.userType || 'standard'
     }
   }
 

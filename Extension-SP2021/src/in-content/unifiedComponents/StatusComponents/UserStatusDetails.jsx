@@ -1,7 +1,9 @@
 import React from 'react'
 
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil'
-import { AffectListState, UserStatusState, UserCollaborationState, PushActivityState } from '../data/globalState.js'
+import { AffectListState } from '../data/globalSate/teamState.js'
+import { UserStatusState, UserCollaborationState } from '../data/globalSate/userState.js'
+import { PushActivityState } from '../data/globalSate/appState.js'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography, Link, Select, MenuItem } from '@material-ui/core'

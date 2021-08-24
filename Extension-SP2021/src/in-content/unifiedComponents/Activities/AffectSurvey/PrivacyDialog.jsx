@@ -11,7 +11,7 @@ import {
   PrivacyPrefsStateSetter,
   UserAffectIDState,
   LastSelectedAffectIDState
-} from '../../data/globalState.js'
+} from '../../data/globalSate/globalState.js'
 
 import { makeLogger } from '../../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Privacy Dialog', 'yellow', 'black')

@@ -4,7 +4,8 @@ import { withStyles, makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography, Button } from '@material-ui/core'
 
 import { useSetRecoilState } from 'recoil'
-import { UserCollaborationState, PopActivityState } from '../data/globalState.js'
+import { UserCollaborationState } from '../data/globalSate/userState.js'
+import { PopActivityState } from '../data/globalSate/appState.js'
 
 import { ACTIVITIES } from './Activities.js'
 import { rawCollaborationIcon } from '../Shared/CollaborationIcon.jsx'

@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { AffectListState } from '../data/globalState.js'
 import { useRecoilValue } from 'recoil'
+import { AffectListState } from '../data/globalSate/teamState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography, Grid } from '@material-ui/core'

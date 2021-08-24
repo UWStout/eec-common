@@ -3,7 +3,7 @@ import React from 'react'
 import { Grid, Typography } from '@material-ui/core'
 
 import { useSetRecoilState } from 'recoil'
-import { PopActivityState } from '../data/globalState.js'
+import { PopActivityState } from '../data/globalSate/appState.js'
 
 import { ACTIVITIES } from './Activities.js'
 

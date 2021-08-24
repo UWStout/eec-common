@@ -1,17 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { FavoriteAffectsListStateSetter, ToggleFavoriteDeleteState } from '../data/globalSate/userState.js'
+import { useSetRecoilState } from 'recoil'
+
 import { ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core'
 import { Favorite } from '@material-ui/icons'
 
 import { AffectObjectShape } from '../data/dataTypeShapes.js'
-import * as STATE from '../data/globalState.js'
-import { useSetRecoilState } from 'recoil'
 
 export default function Emoji (props) {
   const { favoriteList, affect, handleClick, ...restProps } = props
-  const setFavorite = useSetRecoilState(STATE.FavoriteAffectsListStateSetter)
-  const toggleRemoveFavorite = useSetRecoilState(STATE.toggleDeleteState)
+  const setFavorite = useSetRecoilState(FavoriteAffectsListStateSetter)
+  const toggleRemoveFavorite = useSetRecoilState(ToggleFavoriteDeleteState)
 
   const isFavorite = favoriteList?.some((favorites) => (favorites === affect._id))
 

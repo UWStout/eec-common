@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { useRecoilValue } from 'recoil'
-import { ActiveTeamIDState, TeamAffectTemperature, TeammatesUserInfoState, UserAffectIDState } from '../data/globalState.js'
+import { ActiveTeamIDState, TeamAffectTemperature, TeammatesUserInfoState } from '../data/globalSate/teamState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography, List, Grid, withStyles } from '@material-ui/core'

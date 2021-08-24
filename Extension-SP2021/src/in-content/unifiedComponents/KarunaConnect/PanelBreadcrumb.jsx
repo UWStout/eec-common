@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { ActivityStackState, PopActivityState, TeammatesUserInfoState } from '../data/globalState.js'
+import { ActivityStackState, PopActivityState } from '../data/globalSate/appState.js'
+import { TeammatesUserInfoState } from '../data/globalSate/teamState.js'
 import { useRecoilValue, useRecoilState } from 'recoil'
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'

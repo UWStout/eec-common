@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { useRecoilState } from 'recoil'
-import { TimeToRespondState } from '../data/globalState.js'
+import { TimeToRespondState } from '../data/globalSate/userState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { TextField, InputAdornment, FormControlLabel, Select, MenuItem, Checkbox, Typography } from '@material-ui/core'

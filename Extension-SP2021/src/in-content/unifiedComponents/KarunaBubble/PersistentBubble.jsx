@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue, useRecoilState } from 'recoil'
-import { ValidUserState, KarunaMessageQueueState, ActiveKarunaMessageState, ConnectVisibilityState } from '../data/globalState'
+import { ValidUserState, KarunaMessageQueueState, ActiveKarunaMessageState, ConnectVisibilityState } from '../data/globalSate/globalState'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { SvgIcon, IconButton, Typography } from '@material-ui/core'

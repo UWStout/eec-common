@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
-import { KarunaMessageQueueState, KarunaMessageDequeueState, ActiveKarunaMessageState, BubbleDisplayedFeedbackState } from '../../data/globalState.js'
+import { KarunaMessageQueueState, KarunaMessageDequeueState, ActiveKarunaMessageState, BubbleDisplayedFeedbackState } from '../../data/globalSate/appState.js'
 
 import { Grid } from '@material-ui/core'
 

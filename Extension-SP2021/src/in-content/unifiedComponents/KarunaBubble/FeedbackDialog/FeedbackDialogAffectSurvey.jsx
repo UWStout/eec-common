@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 
 import { useRecoilValue } from 'recoil'
-import { AffectListState, UserStatusState, PrivacyPrefsState } from '../../data/globalState.js'
+import { AffectListState } from '../../data/globalSate/teamState.js'
+import { UserStatusState } from '../../data/globalSate/userState.js'
+import { PrivacyPrefsState } from '../../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'

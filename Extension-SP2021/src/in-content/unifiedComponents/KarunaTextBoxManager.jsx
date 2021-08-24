@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
-import { TextBoxMapState } from './data/globalState.js'
+import { TextBoxMapState } from './data/globalSate/appState.js'
 
 import MessageTextWrapper from './KarunaTextBoxManager/MessageTextWrapper.jsx'
 

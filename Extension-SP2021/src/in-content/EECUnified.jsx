@@ -17,7 +17,7 @@ import { MuiThemeProvider, createTheme, StylesProvider, jssPreset } from '@mater
 import UnifiedApp from './unifiedComponents/UnifiedApp.jsx'
 
 // For global state initialization
-import { setMessagingContext } from './unifiedComponents/data/globalState.js'
+import { setMessagingContext } from './unifiedComponents/data/globalSate/appState.js'
 
 // Manual import of CSS to make animate.css work
 import * as AnimateCSS from './CSSHelpers/animateCSS.js'

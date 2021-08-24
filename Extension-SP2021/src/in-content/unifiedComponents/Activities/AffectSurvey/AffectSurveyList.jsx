@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { debounce } from 'debounce'
 
 import { useRecoilValue, useRecoilState } from 'recoil'
-import * as STATE from '../../data/globalState.js'
+import * as STATE from '../../data/globalSate/globalState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse, Grid } from '@material-ui/core'

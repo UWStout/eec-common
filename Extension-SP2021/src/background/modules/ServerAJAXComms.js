@@ -48,6 +48,16 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       }
       break
 
+    case 'ajax-getUserTeams':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = getUserTeams()
+      }
+      break
+
     case 'ajax-teamInfoAndStatus':
       if (!userData.id) {
         promise = Promise.resolve({
@@ -235,6 +245,21 @@ function getUserStatus (userID) {
     // Request data from the server
     const config = { headers: authorizationHeader(), validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/status/${userID}`, config)
+    requestPromise.then((response) => {
+      return resolve(response?.data)
+    })
+
+    // Reject on error from the first request (request to get user status)
+    requestPromise.catch((error) => { return reject(error) })
+  })
+}
+
+// Retrieve list of teams for user
+function getUserTeams () {
+  return new Promise((resolve, reject) => {
+    // Request data from the server
+    const config = { headers: authorizationHeader(), validateStatus }
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/teams/`, config)
     requestPromise.then((response) => {
       return resolve(response?.data)
     })

@@ -9,7 +9,7 @@ import {
   UserAffectIDState,
   LastSelectedAffectIDState,
   PopActivityState
-} from '../../data/globalState.js'
+} from '../../data/globalSate/globalState.js'
 
 import ExternalLink from '../../Shared/ExternalLink.jsx'
 

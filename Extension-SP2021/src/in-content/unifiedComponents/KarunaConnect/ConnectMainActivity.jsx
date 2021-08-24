@@ -2,7 +2,9 @@
 import React, { useState, Suspense } from 'react'
 import PropTypes from 'prop-types'
 
-import { LoggedInUserState, UserStatusState, ActiveTeamIDState, TeammatesUserInfoState } from '../data/globalState.js'
+import { LoggedInUserState } from '../data/globalSate/appState.js'
+import { UserStatusState } from '../data/globalSate/userState.js'
+import { ActiveTeamIDState, TeammatesUserInfoState } from '../data/globalSate/teamState.js'
 
 import { withStyles } from '@material-ui/core/styles'
 

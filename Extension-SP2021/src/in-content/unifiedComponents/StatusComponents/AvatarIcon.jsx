@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { MessagingContextState } from '../data/globalState'
+import { MessagingContextState } from '../data/globalSate/globalState'
 import { useRecoilValue } from 'recoil'
 
 import { makeStyles } from '@material-ui/core/styles'

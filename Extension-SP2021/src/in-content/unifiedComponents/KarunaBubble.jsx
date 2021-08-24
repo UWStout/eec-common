@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
-import { ConnectVisibilityState, BubbleVisibilityStateSetter, ActiveKarunaMessageState, BubbleDisplayedFeedbackState } from './data/globalState.js'
+import { ConnectVisibilityState, BubbleVisibilityStateSetter, ActiveKarunaMessageState, BubbleDisplayedFeedbackState } from './data/globalSate/appState.js'
 
 import PersistentBubble from './KarunaBubble/PersistentBubble.jsx'
 import FeedbackDialog from './KarunaBubble/FeedbackDialog/FeedbackDialog.jsx'
