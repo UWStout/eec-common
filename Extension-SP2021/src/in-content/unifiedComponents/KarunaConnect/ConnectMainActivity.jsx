@@ -2,8 +2,8 @@
 import React, { useState, Suspense } from 'react'
 import PropTypes from 'prop-types'
 
-import { LoggedInUserState } from '../data/globalSate/appState.js'
-import { UserStatusState } from '../data/globalSate/userState.js'
+import { useRecoilValue } from 'recoil'
+import { LoggedInUserState, UserStatusState } from '../data/globalSate/userState.js'
 import { ActiveTeamIDState, TeammatesUserInfoState } from '../data/globalSate/teamState.js'
 
 import { withStyles } from '@material-ui/core/styles'
@@ -19,8 +19,6 @@ import { ExpandMore, Settings as SettingsIcon } from '@material-ui/icons'
 
 import StatusListItem from '../StatusComponents/StatusListItem.jsx'
 import UserStatusDetails from '../StatusComponents/UserStatusDetails.jsx'
-import ListNVCElements from '../NVCInfoSections/ListNVCElements.jsx'
-import { useRecoilValue } from 'recoil'
 import TeamStatusDetails from '../StatusComponents/TeamStatusDetails.jsx'
 
 // import { makeLogger } from '../../../util/Logger.js'

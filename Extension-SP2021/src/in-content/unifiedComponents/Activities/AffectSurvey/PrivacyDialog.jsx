@@ -6,12 +6,8 @@ import { Grid, Typography, FormGroup, FormControlLabel, Link, Checkbox } from '@
 import { OpenInBrowser } from '@material-ui/icons/'
 
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import {
-  PrivacyPrefsState,
-  PrivacyPrefsStateSetter,
-  UserAffectIDState,
-  LastSelectedAffectIDState
-} from '../../data/globalSate/globalState.js'
+import { PrivacyPrefsState, PrivacyPrefsStateSetter, UserAffectIDState } from '../../data/globalSate/userState.js'
+import { LastSelectedAffectIDState } from '../../data/globalSate/appState.js'
 
 import { makeLogger } from '../../../../util/Logger.js'
 const LOG = makeLogger('CONNECT Privacy Dialog', 'yellow', 'black')

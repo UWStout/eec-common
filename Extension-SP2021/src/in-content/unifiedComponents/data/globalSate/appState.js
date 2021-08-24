@@ -174,32 +174,6 @@ export const NVCIdentifiedState = atom({
   ]
 })
 
-/** Basic info for current user */
-export const LoggedInUserState = atom({
-  key: 'LoggedInUserState',
-  default: { },
-  effects_UNSTABLE: [
-    ({ setSelf, onSet }) => {
-      // Initialize
-      setSelf(HELPER.retrieveBasicUserInfo())
-
-      // Log any value changes for debugging
-      onSet((newVal) => {
-        LOG('Logged in user updated', newVal)
-      })
-    }
-  ]
-})
-
-/** Simple global state to check if the user is logged in */
-export const ValidUserState = selector({
-  key: 'ValidUserState',
-  get: ({ get }) => {
-    const userState = get(LoggedInUserState)
-    return (userState?.id !== undefined)
-  }
-})
-
 // Assigning IDs to text boxes
 let idCounter = 0
 function generateTextBoxID () {
@@ -329,41 +303,5 @@ export const KarunaMessageDequeueState = selector({
       set(KarunaMessageQueueState, messageQueue.slice(0, -1))
       set(ActiveKarunaMessageState, newActiveMessage)
     }
-  }
-})
-
-/** Privacy preferences data for sharing mood */
-export const PrivacyPrefsState = atom({
-  key: 'PrivacyPrefsState',
-  default: {
-    private: true,
-    prompt: true
-  },
-  effects_UNSTABLE: [
-    ({ setSelf, onSet }) => {
-      // Initialize
-      setSelf(HELPER.retrieveMoodPrivacy(MSG_CONTEXT))
-
-      // Log any value changes for debugging
-      onSet((newVal) => {
-        LOG('Privacy preferences updated', newVal)
-      })
-    }
-  ]
-})
-
-/** Selector to set Privacy Preferences (with side-effects) */
-export const PrivacyPrefsStateSetter = selector({
-  key: 'PrivacyPrefsStateSetter',
-  get: ({ get }) => {
-    return get(PrivacyPrefsState)
-  },
-
-  set: ({ set }, newPrivacy) => {
-    // Update local cached state
-    set(PrivacyPrefsState, { ...newPrivacy })
-
-    // Send to the database
-    HELPER.setMoodPrivacy(newPrivacy, MSG_CONTEXT)
   }
 })

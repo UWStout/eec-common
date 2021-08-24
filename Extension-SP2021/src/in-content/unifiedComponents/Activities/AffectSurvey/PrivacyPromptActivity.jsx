@@ -4,12 +4,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography, FormGroup, FormControlLabel, Button, Checkbox } from '@material-ui/core'
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import {
-  PrivacyPrefsStateSetter,
-  UserAffectIDState,
-  LastSelectedAffectIDState,
-  PopActivityState
-} from '../../data/globalSate/globalState.js'
+import { PrivacyPrefsStateSetter, UserAffectIDState } from '../../data/globalSate/userState.js'
+import { LastSelectedAffectIDState, PopActivityState } from '../../data/globalSate/appState.js'
 
 import ExternalLink from '../../Shared/ExternalLink.jsx'
 

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import debounce from 'debounce'
 
 import { useRecoilValue } from 'recoil'
-import { ActiveKarunaMessageState } from '../data/globalSate/globalState'
+import { ActiveKarunaMessageState } from '../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 

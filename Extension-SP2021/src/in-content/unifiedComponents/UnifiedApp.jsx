@@ -4,8 +4,9 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
-import { KarunaMessageEnqueueState, LoggedInUserState, MessagingContextState, TextBoxListState } from './data/globalSate/appState.js'
+import { KarunaMessageEnqueueState, MessagingContextState, TextBoxListState } from './data/globalSate/appState.js'
 import { TeammateStatusUpdateState } from './data/globalSate/teamState.js'
+import { LoggedInUserState } from './data/globalSate/userState.js'
 
 import { CssBaseline } from '@material-ui/core'
 

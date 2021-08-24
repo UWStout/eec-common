@@ -7,6 +7,32 @@ import { getMessagingContext } from './appState.js'
 import { makeLogger } from '../../../../util/Logger.js'
 const LOG = makeLogger('RECOIL User State', '#27213C', '#EEF4ED')
 
+/** Basic info for current user */
+export const LoggedInUserState = atom({
+  key: 'LoggedInUserState',
+  default: { },
+  effects_UNSTABLE: [
+    ({ setSelf, onSet }) => {
+      // Initialize
+      setSelf(HELPER.retrieveBasicUserInfo())
+
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Logged in user updated', newVal)
+      })
+    }
+  ]
+})
+
+/** Simple global state to check if the user is logged in */
+export const ValidUserState = selector({
+  key: 'ValidUserState',
+  get: ({ get }) => {
+    const userState = get(LoggedInUserState)
+    return (userState?.id !== undefined)
+  }
+})
+
 /** List of user's recent emoji */
 export const AffectHistoryListState = atom({
   key: 'AffectHistoryListState',
@@ -175,5 +201,41 @@ export const UserAffectIDState = selector({
 
     // Send to the database (TODO: fix hard-coded privacy)
     HELPER.setCurrentAffect(newAffectID, false, getMessagingContext())
+  }
+})
+
+/** Privacy preferences data for sharing mood */
+export const PrivacyPrefsState = atom({
+  key: 'PrivacyPrefsState',
+  default: {
+    private: true,
+    prompt: true
+  },
+  effects_UNSTABLE: [
+    ({ setSelf, onSet }) => {
+      // Initialize
+      setSelf(HELPER.retrieveMoodPrivacy(getMessagingContext()))
+
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Privacy preferences updated', newVal)
+      })
+    }
+  ]
+})
+
+/** Selector to set Privacy Preferences (with side-effects) */
+export const PrivacyPrefsStateSetter = selector({
+  key: 'PrivacyPrefsStateSetter',
+  get: ({ get }) => {
+    return get(PrivacyPrefsState)
+  },
+
+  set: ({ set }, newPrivacy) => {
+    // Update local cached state
+    set(PrivacyPrefsState, { ...newPrivacy })
+
+    // Send to the database
+    HELPER.setMoodPrivacy(newPrivacy, getMessagingContext())
   }
 })

@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { ActivityStackState } from '../data/globalSate/globalState'
+import { ActivityStackState } from '../data/globalSate/appState.js'
 import { useRecoilValue } from 'recoil'
 
 import MuiPaper from '@material-ui/core/Paper'

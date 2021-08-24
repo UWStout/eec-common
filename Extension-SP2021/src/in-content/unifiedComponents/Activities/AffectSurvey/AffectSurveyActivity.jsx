@@ -4,7 +4,9 @@ import PropTypes from 'prop-types'
 import { debounce } from 'debounce'
 
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil'
-import * as STATE from '../../data/globalSate/globalState.js'
+import { PushActivityState, PopActivityState, LastSelectedAffectIDState } from '../../data/globalSate/appState.js'
+import { AffectListState, DisabledAffectsListState } from '../../data/globalSate/teamState.js'
+import { AffectHistoryListState, FavoriteAffectsListState, UserAffectIDState, PrivacyPrefsState } from '../../data/globalSate/userState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse, Grid } from '@material-ui/core'
@@ -61,19 +63,19 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   const { listRoot, innerList, listItem } = useStyles()
 
   // Subscribe to changes in global states (GLOBAL STATE)
-  const emojiList = useRecoilValue(STATE.AffectListState)
-  const moodHistoryList = useRecoilValue(STATE.AffectHistoryListState)
-  const favoriteAffectsList = useRecoilValue(STATE.FavoriteAffectsListState)
-  const disabledAffects = useRecoilValue(STATE.DisabledAffectsListState)
+  const emojiList = useRecoilValue(AffectListState)
+  const moodHistoryList = useRecoilValue(AffectHistoryListState)
+  const favoriteAffectsList = useRecoilValue(FavoriteAffectsListState)
+  const disabledAffects = useRecoilValue(DisabledAffectsListState)
 
   // Values and mutator functions for global state (GLOBAL STATE)
-  const [userAffectID, setUserAffectID] = useRecoilState(STATE.UserAffectIDState)
-  const setLastSelectedAffectID = useSetRecoilState(STATE.LastSelectedAffectIDState)
-  const affectPrivacy = useRecoilValue(STATE.PrivacyPrefsState)
+  const [userAffectID, setUserAffectID] = useRecoilState(UserAffectIDState)
+  const setLastSelectedAffectID = useSetRecoilState(LastSelectedAffectIDState)
+  const affectPrivacy = useRecoilValue(PrivacyPrefsState)
 
   // Global activity management
-  const pushActivity = useSetRecoilState(STATE.PushActivityState)
-  const popActivity = useSetRecoilState(STATE.PopActivityState)
+  const pushActivity = useSetRecoilState(PushActivityState)
+  const popActivity = useSetRecoilState(PopActivityState)
 
   // Current search text (if any)
   const [searchText, setSearchText] = useState('')

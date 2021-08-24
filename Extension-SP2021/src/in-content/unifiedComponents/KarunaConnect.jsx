@@ -1,7 +1,8 @@
 import React, { Suspense, useEffect } from 'react'
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { ConnectVisibilityState, BubbleVisibilityState, ValidUserState, ActivityStackState } from './data/globalSate/appState.js'
+import { ConnectVisibilityState, BubbleVisibilityState, ActivityStackState } from './data/globalSate/appState.js'
+import { ValidUserState } from './data/globalSate/userState.js'
 
 import { Container } from '@material-ui/core'
 

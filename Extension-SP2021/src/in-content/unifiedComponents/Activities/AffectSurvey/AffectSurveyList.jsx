@@ -4,7 +4,9 @@ import PropTypes from 'prop-types'
 import { debounce } from 'debounce'
 
 import { useRecoilValue, useRecoilState } from 'recoil'
-import * as STATE from '../../data/globalSate/globalState.js'
+import { AffectListState } from '../../data/globalSate/teamState.js'
+import { AffectHistoryListState, PrivacyPrefsStateSetter, UserAffectIDState } from '../../data/globalSate/userState.js'
+import { LastSelectedAffectIDState } from '../../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse, Grid } from '@material-ui/core'
@@ -73,13 +75,13 @@ export default function AffectSurveyList (props) {
   const { listRoot, innerList, listItem } = useStyles()
 
   // Subscribe to changes in global states (GLOBAL STATE)
-  const emojiList = useRecoilValue(STATE.AffectListState)
-  const moodHistoryList = useRecoilValue(STATE.AffectHistoryListState)
+  const emojiList = useRecoilValue(AffectListState)
+  const moodHistoryList = useRecoilValue(AffectHistoryListState)
 
   // Values and mutator functions for global state (GLOBAL STATE)
-  const [affectPrivacy, setPrivacy] = useRecoilState(STATE.PrivacyPrefsStateSetter)
-  const [userAffectID, setUserAffectID] = useRecoilState(STATE.UserAffectIDState)
-  const [selectedAffectID, setSelectedAffectID] = useRecoilState(STATE.LastSelectedAffectIDState)
+  const [affectPrivacy, setPrivacy] = useRecoilState(PrivacyPrefsStateSetter)
+  const [userAffectID, setUserAffectID] = useRecoilState(UserAffectIDState)
+  const [selectedAffectID, setSelectedAffectID] = useRecoilState(LastSelectedAffectIDState)
 
   // Visibility of the privacy dialog
   const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false)
