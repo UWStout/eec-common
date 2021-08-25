@@ -12,6 +12,7 @@ import { KeyboardArrowRight, Cancel } from '@material-ui/icons'
 import MuiDivider from '@material-ui/core/Divider'
 
 import { ACTIVITIES } from '../Activities/Activities'
+import TeamTabs from './TeamTabs.jsx'
 
 const useStyles = makeStyles((theme) => ({
   rootStyle: {
@@ -85,7 +86,8 @@ export default function PanelBreadcrumbs (props) {
       </Grid>
       <Grid item xs={12}>
         {/* AIW this is a placeholder for an eventual tabbed teamName carousel component */}
-        <Typography variant="caption">{teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'}</Typography>
+        {/* <Typography variant="caption">{teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'}</Typography> */}
+        <TeamTabs />
       </Grid>
     </Grid>
   )

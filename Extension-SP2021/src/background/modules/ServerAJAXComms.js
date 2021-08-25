@@ -297,7 +297,6 @@ function getTeamAffectTemperature (teamID) {
   })
 }
 
-
 function setUserAffect (userID, context, affectID, isPrivate) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios

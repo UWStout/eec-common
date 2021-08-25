@@ -174,6 +174,22 @@ router.get('/count', authenticateToken, async (req, res) => {
   }
 })
 
+router.get('/teams/', authenticateToken, async (req, res) => {
+  // Read userID from authorization params
+  const userID = req.user.id
+  if (!userID || !ObjectID.isValid(userID)) {
+    return res.status(400).send({ error: true, message: 'Invalid ID', id: userID })
+  }
+
+  // Attempt to retrieve user details
+  try {
+    const userTeamDetails = await DBUser.getUserTeams(userID)
+    res.send(userTeamDetails)
+  } catch (err) {
+    UTIL.checkAndReportError('Error retrieving user team details', res, err, debug)
+  }
+})
+
 router.get('/listInTeam/:teamID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const teamID = req.params.teamID
@@ -233,33 +249,6 @@ router.delete('/remove/:userID', authenticateToken, async (req, res) => {
     console.error(`Failed to remove user ${userID}`)
     console.error(error)
     return res.status(500).json({ error: true, message: 'Error while removing user' })
-  }
-})
-
-// Get just the list of teams for a user
-router.get('/teams/:userID?', authenticateToken, async (req, res) => {
-  // Extract and check required fields (fallback to the authorization id if no param)
-  const userID = req.params.userID || req.user.id
-
-  // check if userID is a reasonable parameter for ObjectID
-  if (userID && !ObjectID.isValid(userID)) {
-    res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
-  }
-
-  // Check that userIDs match
-  if (userID !== req.user.id && req.user.userType !== 'admin') {
-    return res.status(403).send({ error: true, message: 'Cannot list teams for other users' })
-  }
-
-  // attempt to get user status
-  debug('attempting to get user\'s team list')
-  try {
-    const fullDetails = await DBUser.getUserDetails(userID)
-    return res.json(fullDetails.teams)
-  } catch (error) {
-    debug('Failed to get user teams')
-    debug(error)
-    return res.status(500).json({ error: true, message: 'Error while trying to get user teams' })
   }
 })
 

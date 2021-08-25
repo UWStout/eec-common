@@ -101,7 +101,7 @@ export default function ConnectMainActivity (props) {
   }
 
   return (
-    <Grid container item xs={12} role={'region'} aria-label={'Main Content'}>
+    <Grid container item xs={12} role={'region'} aria-label={'Main Content'} id="main-activity-content">
       <Grid container item xs={12}>
         {/* user status list item */}
         <Accordion square expanded={expanded === 'userStatus'} aria-controls={'karunaStatusDrawer'} onChange={handleChange('userStatus')}>

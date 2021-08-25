@@ -46,6 +46,49 @@ export async function getUserDetails (userID) {
 }
 
 /**
+ * Lookup the full team info for this user's array of teams
+ * @param {string} userID A valid ObjectID that matches a document in the 'Users' collection
+ * @returns {Promise} A promise that rejects on an error and resolves to the array of team docs
+ */
+export async function getUserTeams (userID) {
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users').aggregate([
+        // Get user's array of team IDs
+        { $match: { _id: new ObjectID(userID) } },
+        { $project: { _id: 0, teamId: '$teams' } },
+
+        // Convert results to list of just the team IDs, one per doc
+        { $unwind: '$teamId' },
+
+        // Join each entry with it's data in the 'Teams' collection
+        {
+          $lookup: {
+            from: 'Teams',
+            localField: 'teamId',
+            foreignField: '_id',
+            as: 'team'
+          }
+        },
+
+        // Reduce each entry to just the joined information
+        { $unwind: '$team' }, /* so it's not an array of one */
+        { $replaceRoot: { newRoot: '$team' } } /* So it's only the joined team info */
+      ]).toArray((err, docs) => {
+        if (err) {
+          debug('Cursor toArray failed for "getUserTeams"')
+          debug(err)
+          return reject(err)
+        }
+
+        // Resolve with the results
+        return resolve(docs)
+      })
+    })
+  })
+}
+
+/**
  * Check if a user already exists for the given email
  *
  * tested in test 2 of test.js

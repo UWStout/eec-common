@@ -125,20 +125,22 @@ export const UserStatusState = atom({
 })
 
 /** User's team list */
-export const UserTeamsState = atom({
+export const UserTeamsState = selector({
   key: 'UserTeamsState',
-  default: [],
-  effects_UNSTABLE: [
-    ({ setSelf, onSet }) => {
-      // Initialize
-      setSelf(HELPER.retrieveUserTeams(getMessagingContext()))
-
-      // Log any value changes for debugging
-      onSet((newVal) => {
-        LOG('User team List updated', newVal)
-      })
+  get: async ({ get }) => {
+    const userInfo = get(LoggedInUserState)
+    if (userInfo.id) {
+      try {
+        const teams = await HELPER.retrieveUserTeams(getMessagingContext())
+        return teams
+      } catch (err) {
+        LOG.error('Failed to retrieve teams')
+        LOG.error(err)
+      }
+    } else {
+      LOG('No User id to retrieve teams')
     }
-  ]
+  }
 })
 
 /** Global state for the user's collaboration status */

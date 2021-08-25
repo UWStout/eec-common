@@ -70,6 +70,12 @@ export default function UnifiedApp (props) {
     emitter.on('updateTextBoxes', setTextBoxList)
   }, [emitter, setTextBoxList])
 
+  // Track logged in state globally
+  // const userTeams = useRecoilValue(UserTeamsState)
+  // useEffect(() => {
+  //   LOG('User teams changed: ', userTeams)
+  // }, [userTeams])
+
   return (
     <React.Fragment>
       <CssBaseline />

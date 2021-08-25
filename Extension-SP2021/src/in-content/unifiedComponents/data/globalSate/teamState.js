@@ -89,7 +89,7 @@ export const ActiveTeamIDState = selector({
 
     // Confirm that both the array and team index are valid
     if (Array.isArray(teams) && teams.length > activeTeamIndex) {
-      return teams[activeTeamIndex]
+      return teams[activeTeamIndex]._id
     } else {
       return ''
     }
@@ -114,8 +114,14 @@ export const ActiveTeamInfoUpdatedState = atom({
 export const TeammatesUserInfoState = selector({
   key: 'TeammatesUserInfoState',
   get: async ({ get }) => {
-    const activeTeamID = get(ActiveTeamIDState)
     get(ActiveTeamInfoUpdatedState) // <-- import to ensure we update whenever this one does
+
+    const activeTeamID = get(ActiveTeamIDState)
+    if (activeTeamID === '') {
+      LOG('No active team, skipping teammate info retrieval')
+      return []
+    }
+
     try {
       const teammatesInfo = await HELPER.retrieveTeamUserInfoAndStatus(activeTeamID, getMessagingContext())
       return teammatesInfo
