@@ -1,6 +1,5 @@
 import { atom, selector } from 'recoil'
 
-import * as HELPER from '../backgroundHelper.js'
 import { ACTIVITIES } from '../../Activities/Activities.js'
 
 // Colorful logger
@@ -70,6 +69,12 @@ export const BubbleVisibilityStateSetter = selector({
     // Update local cached state
     set(BubbleVisibilityState, isVisible)
   }
+})
+
+/** Should all panel input be disabled (to prevent focusing) */
+export const DisableInputState = atom({
+  key: 'DisableInputState',
+  default: true
 })
 
 /** What activity is displayed on the karuna bubble feedback dialog */

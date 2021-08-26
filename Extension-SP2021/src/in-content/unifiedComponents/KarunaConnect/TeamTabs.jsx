@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useRecoilState, useRecoilValue } from 'recoil'
+import { DisableInputState } from '../data/globalSate/appState.js'
 import { UserTeamsState } from '../data/globalSate/userState.js'
 import { ActiveTeamIndexState } from '../data/globalSate/teamState.js'
 
@@ -58,6 +59,7 @@ export default function TeamTabs () {
 
   const userTeams = useRecoilValue(UserTeamsState)
   const [activeTeamIndex, setActiveTeamIndex] = useRecoilState(ActiveTeamIndexState)
+  const disableAllInput = useRecoilValue(DisableInputState)
 
   const teamListIsEmpty = (!Array.isArray(userTeams) || userTeams.length < 1)
   return (
@@ -76,11 +78,11 @@ export default function TeamTabs () {
     >
       {/* Are there any teams to display? */}
       {teamListIsEmpty
-        ? <MiniTab label={'(no team)'} />
+        ? <MiniTab label={'(no team)'} disabled={disableAllInput} />
 
         // Map the list of team names to tabs
         : userTeams.map((team) => (
-          <MiniTab key={team._id} label={team.name} {...tabA11yProps(team._id)} />
+          <MiniTab key={team._id} label={team.name} {...tabA11yProps(team._id)} disabled={disableAllInput} />
         ))}
     </MiniTabs>
   )

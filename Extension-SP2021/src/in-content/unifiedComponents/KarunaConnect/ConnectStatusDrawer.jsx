@@ -31,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
 
   // Style when the panel is hidden
   panelHidden: {
-    right: `calc(0% - ${theme.spacing(1)}px)` // default is 11
+    right: `calc(0% - ${theme.spacing(1)}px)`, // default is 11
+    display: 'none' // SFB: need to delay this until animation finishes or it immediately disappears
   },
 
   // Styling of Grid container

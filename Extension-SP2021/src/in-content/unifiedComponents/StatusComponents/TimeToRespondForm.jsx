@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { TimeToRespondState } from '../data/globalSate/userState.js'
+import { DisableInputState } from '../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { TextField, InputAdornment, FormControlLabel, Select, MenuItem, Checkbox, Typography } from '@material-ui/core'
@@ -14,7 +15,12 @@ const useStyles = makeStyles((theme) => ({
   indentLeftText: {
     display: 'flex',
     marginLeft: theme.spacing(2),
-    color: theme.palette.grey['600']
+    color: theme.palette.text.secondary
+  },
+  indentLeftTextDisabled: {
+    display: 'flex',
+    marginLeft: theme.spacing(2),
+    color: theme.palette.text.disabled
   },
   shortIndentLeft: {
     width: '60%',
@@ -23,9 +29,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function TimeToRespondForm (props) {
-  const { shortIndentLeft, indentLeft, indentLeftText } = useStyles()
+  const { shortIndentLeft, indentLeft, indentLeftText, indentLeftTextDisabled } = useStyles()
 
   const [timeToRespond, setTimeToRespond] = useRecoilState(TimeToRespondState)
+  const disableAllInput = useRecoilValue(DisableInputState)
+
   const [automatic, setAutomatic] = useState(timeToRespond?.automatic)
   const [time, setLocalTTR] = useState(timeToRespond?.time)
   const [units, setUnits] = useState(timeToRespond?.units)
@@ -39,13 +47,13 @@ export default function TimeToRespondForm (props) {
       <TextField
         type="number"
         value={time}
+        disabled={disableAllInput || automatic}
         onChange={(e) => {
           setLocalTTR(parseInt(e.target.value))
           synchronizeTTR(parseInt(e.target.value), units, automatic)
         }}
         min={0}
         max={99}
-        disabled={automatic}
         className={shortIndentLeft}
         InputProps={{
           startAdornment: (
@@ -62,7 +70,7 @@ export default function TimeToRespondForm (props) {
                   synchronizeTTR(time, e.target.value, automatic)
                 }}
                 aria-label={'Time to Respond units'}
-                disabled={automatic}
+                disabled={disableAllInput || automatic}
                 disableUnderline
               >
                 <MenuItem value={'m'}>m</MenuItem>
@@ -77,6 +85,7 @@ export default function TimeToRespondForm (props) {
         control={
           <Checkbox
             checked={automatic}
+            disabled={disableAllInput}
             onChange={(e) => {
               setAutomatic(e.target.checked)
               synchronizeTTR(time, units, e.target.checked)
@@ -87,7 +96,7 @@ export default function TimeToRespondForm (props) {
         label="Keep track for me"
         className={indentLeft}
       />
-      <Typography variant="caption" className={indentLeftText}>
+      <Typography variant="caption" className={disableAllInput ? indentLeftTextDisabled : indentLeftText}>
         {'If selected, Karuna will automatically set based on an average of your response times.'}
       </Typography>
     </React.Fragment>

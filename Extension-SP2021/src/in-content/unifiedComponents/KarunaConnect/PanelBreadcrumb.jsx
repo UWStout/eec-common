@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { ActivityStackState, PopActivityState } from '../data/globalSate/appState.js'
-import { TeammatesUserInfoState } from '../data/globalSate/teamState.js'
+import { ActivityStackState, PopActivityState, DisableInputState } from '../data/globalSate/appState.js'
 import { useRecoilValue, useRecoilState } from 'recoil'
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'
@@ -52,9 +51,7 @@ export default function PanelBreadcrumbs (props) {
   // Get global activity stack info
   const activityStack = useRecoilValue(ActivityStackState)
   const [currentActivityKey, popActivity] = useRecoilState(PopActivityState)
-
-  // Subscribe to global state about teams (GLOBAL STATE)
-  const teammatesInfo = useRecoilValue(TeammatesUserInfoState)
+  const disableAllInput = useRecoilValue(DisableInputState)
 
   const backCallback = () => {
     popActivity(currentActivityKey)
@@ -76,9 +73,9 @@ export default function PanelBreadcrumbs (props) {
         </Grid>
         <Grid item xs={1}>
           {activityStack.length <= 1 &&
-            <CloseButton onClick={closeCallback} />}
+            <CloseButton onClick={closeCallback} disabled={disableAllInput} />}
           {activityStack.length > 1 &&
-            <BackButton onClick={backCallback} />}
+            <BackButton onClick={backCallback} disabled={disableAllInput} />}
         </Grid>
       </Grid>
       <Grid item xs={12}>

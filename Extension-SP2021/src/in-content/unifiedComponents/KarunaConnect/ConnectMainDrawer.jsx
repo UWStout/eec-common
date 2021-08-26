@@ -1,8 +1,8 @@
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-import { ActivityStackState } from '../data/globalSate/appState.js'
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { ActivityStackState, DisableInputState } from '../data/globalSate/appState.js'
 
 import MuiPaper from '@material-ui/core/Paper'
 
@@ -26,30 +26,29 @@ import TimeToRespondActivity from '../Activities/TimeToRespondActivity.jsx'
 import MoreUserSettingsActivity from '../Activities/MoreUserSettingsActivity.jsx'
 
 // DEBUG: Enable this logger when needed
-// import { makeLogger } from '../../../util/Logger.js'
-// const LOG = makeLogger('CONNECT Main Panel', 'lime', 'black')
+import { makeLogger } from '../../../util/Logger.js'
+const LOG = makeLogger('CONNECT Main Drawer', 'lime', 'black')
 
 const useStyles = makeStyles((theme) => ({
   // Style when the panel is retracted
   panelRetracted: {
     // AIW Comment in for testing styling
-    right: '0%'
-    // right: `calc(0% - ${theme.spacing(14)}px)`
+    // right: '0%'
+    right: `calc(0% - ${theme.spacing(14)}px)`
   },
 
   // Style when the panel is fully expanded
   panelExpanded: {
     // AIW Comment in for testing styling
-    right: '0%'
-    // right: `calc(0% - ${theme.spacing(1)}px)`
+    // right: '0%'
+    right: `calc(0% - ${theme.spacing(1)}px)`
   },
 
   // Style when the panel is hidden
   panelHidden: {
     // AIW Comment in for testing styling
-    right: '0%'
-    // right: `calc(0% - ${theme.spacing(39)}px)`,
-    // display: 'none' // panel not accessible by tab when hidden
+    // right: '0%'
+    right: `calc(0% - ${theme.spacing(39)}px)`
   },
 
   // Activities need to be relatively positioned to overlap with siblings
@@ -104,9 +103,6 @@ export default function ConnectMainDrawer (props) {
     activityStyle
   } = useStyles()
 
-  // Global activity state
-  const activityStack = useRecoilValue(ActivityStackState)
-
   // Hover state of mouse
   const [mouseIsOver, setMouseIsOver] = useState(false)
 
@@ -117,9 +113,24 @@ export default function ConnectMainDrawer (props) {
   const [retractTimeout, setRetractTimeout] = useState(false)
   const [isRetracted, setIsRetracted] = useState(false)
 
+  // Ensure that when the hidden prop changes we update isRetracted
+  useEffect(() => {
+    if (!hidden) {
+      setIsRetracted(false)
+    }
+  }, [hidden, setIsRetracted])
+
+  // Global activity and input disabled state
+  const activityStack = useRecoilValue(ActivityStackState)
+  const setDisableInput = useSetRecoilState(DisableInputState)
+  useEffect(() => {
+    setDisableInput(isRetracted || hidden)
+  }, [hidden, isRetracted, setDisableInput])
+
   // Function for queueing a hide request
   const hide = (immediate) => {
     if (onHide && !hidden) {
+      LOG('Hiding main drawer in ' + waitToHide + ' ms')
       if (immediate) {
         onHide()
       } else {
@@ -132,6 +143,7 @@ export default function ConnectMainDrawer (props) {
   // Function for canceling a pending hide request
   const cancelHide = () => {
     if (hideTimeout) {
+      LOG('Canceling hiding')
       clearTimeout(hideTimeout)
       setHideTimeout(false)
     }
@@ -140,10 +152,11 @@ export default function ConnectMainDrawer (props) {
   // Function for queueing a retract request
   const retract = (immediate) => {
     if (!isRetracted) {
+      LOG('Retracting main drawer in ' + (waitToHide / 3) + ' ms')
       if (immediate) {
         setIsRetracted(true)
       } else {
-        const timeoutHandle = setTimeout(() => { setIsRetracted(true) }, waitToHide / 2)
+        const timeoutHandle = setTimeout(() => { setIsRetracted(true) }, waitToHide / 3)
         setRetractTimeout(timeoutHandle)
       }
     }
@@ -152,6 +165,7 @@ export default function ConnectMainDrawer (props) {
   // Function for canceling a pending retract request
   const cancelRetract = () => {
     if (retractTimeout) {
+      LOG('Canceling retracting')
       clearTimeout(retractTimeout)
       setRetractTimeout(false)
       setIsRetracted(false)
@@ -205,13 +219,27 @@ export default function ConnectMainDrawer (props) {
     </ActivityBase>
   )
 
+  // Compute which class should be used (for panel positioning)
+  let currentClass = panelHidden
+  if (!hidden) {
+    if (mouseIsOver) {
+      currentClass = panelExpanded
+    } else {
+      if (isRetracted) {
+        currentClass = panelRetracted
+      } else {
+        currentClass = panelExpanded
+      }
+    }
+  }
+
   // Return the proper MUI elements
   return (
     <Paper
       role={'complementary'}
       aria-label={'Main Drawer'}
       elevation={5}
-      className={`${hidden ? panelHidden : (mouseIsOver ? panelExpanded : (isRetracted ? panelRetracted : panelExpanded))}`}
+      className={currentClass}
       onMouseEnter={() => { setMouseIsOver(true); cancelHide(); cancelRetract() }}
       onMouseLeave={() => { setMouseIsOver(false); hide(false); retract(false) }}
     >
@@ -240,7 +268,7 @@ ConnectMainDrawer.propTypes = {
 ConnectMainDrawer.defaultProps = {
   hidden: false,
   onHide: null,
-  waitToHide: 3000
+  waitToHide: 6000
   // AIW Testing styles
   // waitToHide: 100000
 }

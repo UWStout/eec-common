@@ -21,13 +21,16 @@ const useStyles = makeStyles((theme) => ({
 
     // Colors as a hash of user id
     color: theme.palette.getContrastText(props.bgColor),
-    backgroundColor: props.bgColor
+    backgroundColor: props.bgColor,
+
+    // Opacity if disabled
+    opacity: (props.disabled ? 0.5 : 1.0)
   })
 }))
 
 function AvatarIcon (props) {
   // Deconstruct props
-  const { userInfo, team } = props
+  const { userInfo, team, disabled } = props
 
   // Subscribe to changes in messaging context
   const messagingContext = useRecoilValue(MessagingContextState)
@@ -36,7 +39,7 @@ function AvatarIcon (props) {
   const bgColor = stringToColor(userInfo.id || userInfo._id)
 
   // Build style rule with props
-  const { avatarStyle } = useStyles({ team, bgColor })
+  const { avatarStyle } = useStyles({ team, bgColor, disabled })
 
   // Build initials
   const names = userInfo.name.split(' ')
@@ -55,11 +58,13 @@ function AvatarIcon (props) {
 
 AvatarIcon.propTypes = {
   userInfo: PropTypes.shape(BasicUserInfoShape).isRequired,
-  team: PropTypes.bool
+  team: PropTypes.bool,
+  disabled: PropTypes.bool
 }
 
 AvatarIcon.defaultProps = {
-  team: false
+  team: false,
+  disabled: false
 }
 
 export default AvatarIcon

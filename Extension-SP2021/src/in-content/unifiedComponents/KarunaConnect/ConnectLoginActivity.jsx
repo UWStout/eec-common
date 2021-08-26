@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 
+import { DisableInputState } from '../data/globalSate/appState.js'
+import { useRecoilValue } from 'recoil'
+
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Button, TextField, FormControlLabel, Checkbox } from '@material-ui/core'
 import ExternalLink from '../Shared/ExternalLink.jsx'
@@ -18,10 +21,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ConnectLoginActivity (props) {
   const { fullWidth } = useStyles()
+
+  // Local form value state
   const [rememberMe, setRememberMe] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [hasError, setHasError] = useState(false)
+
+  // Get global input state
+  const disableAllInput = useRecoilValue(DisableInputState)
 
   const handleCheckboxChange = (e) => {
     setRememberMe(e.target.checked)
@@ -43,8 +51,9 @@ export default function ConnectLoginActivity (props) {
           value={email}
           onChange={(e) => { setEmail(e.target.value); setHasError(false) }}
           error={hasError}
+          disabled={disableAllInput}
         />
-        <ExternalLink href={`https://${HOST_NAME}/Register.html`}>
+        <ExternalLink href={`https://${HOST_NAME}/Register.html`} small disabled={disableAllInput}>
           {'I need an account'}
         </ExternalLink>
       </Grid>
@@ -60,8 +69,9 @@ export default function ConnectLoginActivity (props) {
           value={password}
           onChange={(e) => { setPassword(e.target.value); setHasError(false) }}
           error={hasError}
+          disabled={disableAllInput}
         />
-        <ExternalLink href={`https://${HOST_NAME}/Recovery.html`}>
+        <ExternalLink href={`https://${HOST_NAME}/Recovery.html`} small disabled={disableAllInput}>
           {'Forgot password?'}
         </ExternalLink>
       </Grid>
@@ -74,6 +84,7 @@ export default function ConnectLoginActivity (props) {
               checked={rememberMe}
               onChange={handleCheckboxChange}
               name="login-remember-me"
+              disabled={disableAllInput}
             />
           }
           label="Remember me for 7 days"
@@ -82,7 +93,7 @@ export default function ConnectLoginActivity (props) {
 
       {/* Trigger the Login */}
       <Grid item>
-        <Button variant="contained" color="primary" className={fullWidth} onClick={validateLogin}>
+        <Button variant="contained" color="primary" className={fullWidth} onClick={validateLogin} disabled={disableAllInput}>
           {'Login'}
         </Button>
       </Grid>

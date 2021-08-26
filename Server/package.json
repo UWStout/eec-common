@@ -7,16 +7,20 @@
     "start": "node src/server.js",
     "dev": "nodemon --watch src src/server.js dev",
     "build": "run-s copydeps public client admin",
-    "copydeps": "./copyDeps.sh",
+    "copydeps": "bash copyDeps.sh",
+
     "prepublic": "rm -f ./public/*.js ./public/*.js.map",
     "public": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outdir=public ./client/InstructionsPage.jsx",
     "publicdev": "esbuild --watch --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outdir=public ./client/InstructionsPage.jsx",
+
     "preclient": "rm -f ./views/auth/*.js ./views/auth/*.js.map",
     "client": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outdir=views/auth ./client/LoginPage.jsx ./client/LogoutPage.jsx ./client/RegisterPage.jsx ./client/RecoveryPage.jsx",
     "clientdev": "esbuild --watch --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outdir=views/auth ./client/LoginPage.jsx ./client/LogoutPage.jsx ./client/RegisterPage.jsx ./client/RecoveryPage.jsx",
+
     "preadmin": "rm -f ./views/dbAdmin/*.js ./views/dbAdmin/*.js.map",
     "admin": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outdir=views/dbAdmin ./client/UserManagementPage.jsx ./client/TeamManagementPage.jsx ./client/OrgUnitManagementPage.jsx",
     "admindev": "esbuild --watch --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outdir=views/dbAdmin ./client/UserManagementPage.jsx ./client/TeamManagementPage.jsx ./client/OrgUnitManagementPage.jsx",
+
     "test": "mocha"
   },
   "license": "MIT",

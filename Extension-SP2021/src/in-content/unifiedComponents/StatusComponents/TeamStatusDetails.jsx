@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useRecoilValue } from 'recoil'
+import { DisableInputState } from '../data/globalSate/appState.js'
 import { ActiveTeamIDState, TeamAffectTemperature, TeammatesUserInfoState } from '../data/globalSate/teamState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -14,6 +15,9 @@ import MuiSearchBar from 'material-ui-search-bar'
 // const LOG = makeLogger('Team Status Details', 'pink', 'black')
 
 const useStyles = makeStyles((theme) => ({
+  disabledText: {
+    color: theme.palette.text.disabled
+  },
   rootGridStyle: {
     paddingRight: '0px'
   },
@@ -32,27 +36,30 @@ const SearchBar = withStyles((theme) => ({
 
 export default function TeamStatusDetails (props) {
   // Construct our style class names
-  const { rootGridStyle, scrollingList } = useStyles()
+  const { rootGridStyle, scrollingList, disabledText } = useStyles()
 
   // Subscribe to global state about teams (GLOBAL STATE)
+  const disableAllInput = useRecoilValue(DisableInputState)
   const activeTeamID = useRecoilValue(ActiveTeamIDState)
   const teammatesInfo = useRecoilValue(TeammatesUserInfoState)
   const teamTemperature = useRecoilValue(TeamAffectTemperature)
-  // const currentAffect = useRecoilValue(UserAffectIDState)
-
-
-  // useEffect(() => {
-  //   teamTemperature = useRecoilValue(TeamAffectTemperature)
-  // }, [currentAffect])
 
   // Ensure there is an active team
   if (activeTeamID === '') {
-    return <Typography variant="body1">{'No active team'}</Typography>
+    return (
+      <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
+        {'No active team'}
+      </Typography>
+    )
   }
 
   // Ensure there are teammates to display
   if (!Array.isArray(teammatesInfo) || teammatesInfo.length < 1) {
-    return <Typography variant="body1">{'Failed to retrieve teammates for active team'}</Typography>
+    return (
+      <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
+        {'Failed to retrieve teammates for active team'}
+      </Typography>
+    )
   }
 
   // Build array of 'team' statuses
@@ -60,7 +67,7 @@ export default function TeamStatusDetails (props) {
   for (let i = 0; i < teammatesInfo.length; i++) {
     const teammate = teammatesInfo[i]
     teamStatusListItems.push(
-      <StatusListItem key={teammate._id} userInfo={teammate} userStatus={teammate.status} isTeammate />
+      <StatusListItem key={teammate._id} userInfo={teammate} userStatus={teammate.status} isTeammate disabled={disableAllInput} />
     )
   }
 
@@ -68,15 +75,13 @@ export default function TeamStatusDetails (props) {
     // AIW Adjusting styling
     // <Grid container direction='column' spacing={1} item xs={12} className={rootGridStyle}>
     <Grid container direction='row' item xs={12} className={rootGridStyle} wrap="wrap" spacing={2}>
-      {/* AIW Testing out team name in the header */}
-      {/* <Grid item>
-        <Typography variant='body1'>
-          {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'}
-        </Typography>
-      </Grid> */}
       {/* For searching through the possible moods */}
       <Grid item xs={12}>
-        Team Temperature is {teamTemperature}
+        <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
+          {typeof teamTemperature === 'number'
+            ? `Team Temperature is ${teamTemperature.toFixed(2)}`
+            : 'No team temperature'}
+        </Typography>
       </Grid>
       <Grid item xs={12}>
         <SearchBar
@@ -85,7 +90,7 @@ export default function TeamStatusDetails (props) {
           // onClick={() => { setExpanded('all') }}
           // onChange={onSearchTextChanged}
           placeholder={'search team members'}
-          // disabled={noInteraction}
+          disabled={disableAllInput}
           aria-label={'Team Member Search Box'}
         />
       </Grid>

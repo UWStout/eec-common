@@ -3,11 +3,12 @@ import React from 'react'
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil'
 import { AffectListState } from '../data/globalSate/teamState.js'
 import { UserStatusState, UserCollaborationState } from '../data/globalSate/userState.js'
-import { PushActivityState } from '../data/globalSate/appState.js'
+import { PushActivityState, DisableInputState } from '../data/globalSate/appState.js'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles'
-import { Grid, Typography, Link, Select, MenuItem } from '@material-ui/core'
+import { Grid, Typography, Select, MenuItem } from '@material-ui/core'
 
+import InternalLink from '../Shared/InternalLink.jsx'
 import TimeToRespondForm from './TimeToRespondForm.jsx'
 import { rawCollaborationIcon } from '../Shared/CollaborationIcon.jsx'
 
@@ -21,13 +22,13 @@ const IndentedTextButton = withStyles((theme) => ({
     marginLeft: theme.spacing(2),
     cursor: 'pointer'
   }
-}))(Link)
+}))((props) => (<InternalLink variant="body1" component="span" {...props} />))
 
 const TextButton = withStyles((theme) => ({
   root: {
     cursor: 'pointer'
   }
-}))(Link)
+}))((props) => (<InternalLink variant="body1" component="span" {...props} />))
 
 const useStyles = makeStyles((theme) => ({
   iconTweakStyle: {
@@ -37,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
   },
   indentLeft: {
     marginLeft: theme.spacing(2)
+  },
+  disabledText: {
+    color: theme.palette.text.disabled
   }
 }))
 
@@ -50,12 +54,13 @@ function makeCollaboration (collaboration, iconTweakStyle) {
 }
 
 export default function UserStatusDetails (props) {
-  const { iconTweakStyle, indentLeft } = useStyles()
+  const { iconTweakStyle, indentLeft, disabledText } = useStyles()
 
   // Subscribe to the global emojiList state and current status states (GLOBAL STATE)
   const emojiList = useRecoilValue(AffectListState)
   const currentStatus = useRecoilValue(UserStatusState)
   const [collaboration, setCollaboration] = useRecoilState(UserCollaborationState)
+  const disableAllInput = useRecoilValue(DisableInputState)
 
   // Setter to push a new activity
   const pushActivity = useSetRecoilState(PushActivityState)
@@ -85,10 +90,10 @@ export default function UserStatusDetails (props) {
 
       {/* Affect / Mood */}
       <Grid item xs={12}>
-        <Typography variant="body1">
+        <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
           {'I\'m feeling: '}
           <br />
-          <IndentedTextButton aria-label={'Change Current Mood'} onClick={openAffectSurvey}>
+          <IndentedTextButton aria-label={'Change Current Mood'} onClick={openAffectSurvey} disabled={disableAllInput}>
             {(currentAffect ? currentAffect.characterCodes[0] : '?')}
             {' '}
             {(currentAffect ? currentAffect.name : 'unknown')}
@@ -98,10 +103,10 @@ export default function UserStatusDetails (props) {
 
       {/* Willingness to collaborate */}
       <Grid item xs={12}>
-        <Typography variant="body1">
+        <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
           {'I\'m: '}
         </Typography>
-        <Select aria-label="Change Collaboration Status" value={collaboration} onChange={onChangeCollaboration} className={indentLeft}>
+        <Select aria-label="Change Collaboration Status" value={collaboration} onChange={onChangeCollaboration} className={indentLeft} disabled={disableAllInput}>
           <MenuItem value={'Focused'}>{makeCollaboration('Focused', iconTweakStyle)}</MenuItem>
           <MenuItem value={'Open to Collaboration'}>{makeCollaboration('Open to Collaboration', iconTweakStyle)}</MenuItem>
           <MenuItem value={'Currently Collaborating'}>{makeCollaboration('Currently Collaborating', iconTweakStyle)}</MenuItem>
@@ -110,7 +115,7 @@ export default function UserStatusDetails (props) {
 
       {/* Time-to-respond */}
       <Grid item xs={12}>
-        <Typography variant="body1">
+        <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
           {'I typically respond in:'}
         </Typography>
         <TimeToRespondForm />
@@ -118,7 +123,7 @@ export default function UserStatusDetails (props) {
 
       {/* More Settings */}
       <Grid item xs={12}>
-        <TextButton aria-label="Change More Settings" onClick={onChangeMoreSettings} variant="body1">
+        <TextButton aria-label="Change More Settings" onClick={onChangeMoreSettings} disabled={disableAllInput}>
           {'More Settings'}
         </TextButton>
       </Grid>

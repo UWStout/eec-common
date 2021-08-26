@@ -29,9 +29,6 @@ export default function KarunaConnect (props) {
   // Setter for the activity stack
   const setActivityStack = useSetRecoilState(ActivityStackState)
 
-  // Setter for the active teams
-  // const setActiveTeamID = useSetRecoilState(ActiveTeamIDState)
-
   // Ensure bubble feedback closes whenever we open the main panel
   const openMainPanel = () => {
     setBubbleFeedbackOpen(false)
@@ -46,13 +43,6 @@ export default function KarunaConnect (props) {
       setActivityStack([ACTIVITIES.LOGIN.key])
     }
   }, [userLoggedIn, setActivityStack, setMainPanelOpen])
-
-  // DEBUG: Default to a known team for now
-  // useEffect(() => {
-  //   if (userLoggedIn) {
-  //     setActiveTeamID('610f02d6345079e794032eb8')
-  //   }
-  // }, [setActiveTeamID, userLoggedIn])
 
   // Main render
   return (
