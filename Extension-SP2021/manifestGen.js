@@ -5,10 +5,22 @@ if (process.argv.find((arg) => { return arg === 'dev' })) {
   _DEV_ = true
 }
 
+const IN_CONTENT_HOSTS = [
+  '*://*.teams.microsoft.com/*',
+  '*://*.discord.com/*',
+  '*://*.discord.gg/*',
+  '*://*.slack.com/*'
+]
+
+const HOST_LIST = [
+  ...IN_CONTENT_HOSTS,
+  (_DEV_ ? '*://localhost/*' : '*://karuna.run/*')
+]
+
 const manifest = {
   manifest_version: 2,
   name: (_DEV_ ? 'Karuna EEC DEV Extension' : 'Karuna EEC Extension'),
-  version: '0.2.0',
+  version: '0.3.0',
   description: 'Chrome extension for the Karuna EEC system to help with empathetic communication over electronic tools.',
   icons: {
     16: `images/icon-${_DEV_ ? 'dev-' : ''}16.png`,
@@ -22,12 +34,7 @@ const manifest = {
     default_popup: 'html/popup.html'
   },
   content_scripts: [{
-    matches: [
-      '*://teams.microsoft.com/*',
-      '*://*.discord.com/*',
-      '*://*.discord.gg/*',
-      '*://*.slack.com/*'
-    ],
+    matches: IN_CONTENT_HOSTS,
     css: [
       'css/animate.min.css'
     ],
@@ -51,13 +58,9 @@ const manifest = {
     ],
     persistent: true
   },
-  content_security_policy: 'script-src \'self\' \'unsafe-eval\'; object-src \'self\'; img-src * data: \'self\'',
+  content_security_policy: "script-src 'self' 'unsafe-eval'; object-src 'self'; img-src * data: 'self'",
   permissions: [
-    '*://*.teams.microsoft.com/*',
-    '*://*.discord.com/*',
-    '*://*.discord.gg/*',
-    '*://*.slack.com/*',
-    (_DEV_ ? '*://localhost/*' : '*://karuna.run/*'),
+    ...HOST_LIST,
     'webRequest',
     'webRequestBlocking'
   ]
