@@ -4,14 +4,16 @@ import { DisableInputState } from '../data/globalSate/appState.js'
 import { useRecoilValue } from 'recoil'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Grid, Button, TextField, FormControlLabel, Checkbox } from '@material-ui/core'
+import { Grid, Button, FormControlLabel, Checkbox } from '@material-ui/core'
+
 import ExternalLink from '../Shared/ExternalLink.jsx'
+import TunneledTextField from '../Shared/TunneledTextField.jsx'
 
 import * as BACKGROUND from '../data/backgroundHelper.js'
 import { HOST_NAME } from '../../../util/serverConfig.js'
 
 // import { makeLogger } from '../../../util/Logger.js'
-// const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
+// const LOG = makeLogger('CONNECT Login Activity', 'lightblue', 'black')
 
 const useStyles = makeStyles((theme) => ({
   fullWidth: {
@@ -43,13 +45,13 @@ export default function ConnectLoginActivity (props) {
     <Grid container item direction={'column'} spacing={2} role={'region'} aria-label={'Login Activity'}>
       <Grid item>
         {/* Account primary name */}
-        <TextField
+        <TunneledTextField
           id="login-email"
           label="Email"
           helperText="Please enter your email"
           className={fullWidth}
           value={email}
-          onChange={(e) => { setEmail(e.target.value); setHasError(false) }}
+          onChange={(val) => { setEmail(val); setHasError(false) }}
           error={hasError}
           disabled={disableAllInput}
         />
@@ -60,14 +62,14 @@ export default function ConnectLoginActivity (props) {
 
       <Grid item>
         {/* Account password */}
-        <TextField
+        <TunneledTextField
           id="login-password"
           label="Password"
           helperText="Please enter you password"
           type="password"
           className={fullWidth}
           value={password}
-          onChange={(e) => { setPassword(e.target.value); setHasError(false) }}
+          onChange={(val) => { setPassword(val); setHasError(false) }}
           error={hasError}
           disabled={disableAllInput}
         />

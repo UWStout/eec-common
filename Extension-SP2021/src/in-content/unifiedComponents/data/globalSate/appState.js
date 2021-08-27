@@ -77,6 +77,35 @@ export const DisableInputState = atom({
   default: true
 })
 
+/** Track which TextField input is focused (if any) */
+export const ActiveInputRefState = atom({
+  key: 'ActiveInputRefState',
+  default: null,
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Active Input Ref updated', newVal)
+      })
+    }
+  ]
+})
+
+/** Track which TextField input is focused (if any) */
+export const TypeToActiveInputState = selector({
+  key: 'TypeToActiveInputState',
+  get: ({ get }) => {
+    const inputRefObject = get(ActiveInputRefState)
+    return inputRefObject?.inputRef?.current
+  },
+  set: ({ get, set }, keyChar) => {
+    const inputRefObject = get(ActiveInputRefState)
+    if (inputRefObject?.append) {
+      inputRefObject.append(keyChar)
+    }
+  }
+})
+
 /** What activity is displayed on the karuna bubble feedback dialog */
 export const BubbleDisplayedFeedbackState = atom({
   key: 'BubbleDisplayedFeedbackState',
@@ -217,12 +246,10 @@ export const TextBoxListState = selector({
       // Ensure each text box has a unique ID
       if (textBox.id === undefined || textBox.id === '') {
         textBox.id = `karunaTextBox-${generateTextBoxID()}`
-        LOG(`New Text Box: ${textBox.id}`)
       }
 
       // Check if ID is new
       if (!textBoxMap.has(textBox.id)) {
-        LOG('Foreign Text Box: ', textBox.id)
         textBoxesChanged = true
       }
       newTextBoxMap.set(textBox.id, textBox)
@@ -230,9 +257,6 @@ export const TextBoxListState = selector({
 
     // If something is different, update the atom
     if (textBoxesChanged || newTextBoxMap.size !== textBoxMap.size) {
-      LOG('Text Boxes Changed', newTextBoxMap.keys())
-      LOG(`>   ${newTextBoxMap.size} !== ${textBoxMap.size}`)
-      LOG(`Lists are ${textBoxMap === newTextBoxMap ? 'equal' : 'NOT equal'}`)
       set(TextBoxMapState, newTextBoxMap)
     }
   }

@@ -12,8 +12,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse, Grid } from '@material-ui/core'
 import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/icons'
 
-import SearchBar from 'material-ui-search-bar'
-
+import TunneledSearchBar from '../../Shared/TunneledSearchBar.jsx'
 import Emoji from '../../Shared/Emoji.jsx'
 
 import { ACTIVITIES } from '../Activities.js'
@@ -182,7 +181,7 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
 
       {/* For searching through the possible moods */}
       <Grid item>
-        <SearchBar
+        <TunneledSearchBar
           role={'search'}
           value={searchText}
           onClick={() => { setExpanded('all') }}

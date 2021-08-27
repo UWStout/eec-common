@@ -5,8 +5,10 @@ import { TimeToRespondState } from '../data/globalSate/userState.js'
 import { DisableInputState } from '../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { TextField, InputAdornment, FormControlLabel, Select, MenuItem, Checkbox, Typography } from '@material-ui/core'
+import { InputAdornment, FormControlLabel, Select, MenuItem, Checkbox, Typography } from '@material-ui/core'
+
 import { rawTimeToRespondIcon } from '../Shared/TimeToRespondIcon.jsx'
+import TunneledTextField from '../Shared/TunneledTextField.jsx'
 
 const useStyles = makeStyles((theme) => ({
   indentLeft: {
@@ -44,13 +46,13 @@ export default function TimeToRespondForm (props) {
 
   return (
     <React.Fragment>
-      <TextField
+      <TunneledTextField
         type="number"
         value={time}
         disabled={disableAllInput || automatic}
-        onChange={(e) => {
-          setLocalTTR(parseInt(e.target.value))
-          synchronizeTTR(parseInt(e.target.value), units, automatic)
+        onChange={(val) => {
+          setLocalTTR(parseInt(val))
+          synchronizeTTR(parseInt(val), units, automatic)
         }}
         min={0}
         max={99}

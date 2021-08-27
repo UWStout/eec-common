@@ -1,15 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
+
+import { debounce } from 'debounce'
 
 import { useRecoilValue } from 'recoil'
 import { DisableInputState } from '../data/globalSate/appState.js'
 import { ActiveTeamIDState, TeamAffectTemperature, TeammatesUserInfoState } from '../data/globalSate/teamState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Typography, List, Grid, withStyles } from '@material-ui/core'
+import { Typography, List, Grid } from '@material-ui/core'
 
 import StatusListItem from './StatusListItem.jsx'
-
-import MuiSearchBar from 'material-ui-search-bar'
+import TunneledSearchBar from '../Shared/TunneledSearchBar.jsx'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('Team Status Details', 'pink', 'black')
@@ -28,11 +29,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const SearchBar = withStyles((theme) => ({
-  root: {
-    // paddingBottom: theme.spacing(2)
-  }
-}))(MuiSearchBar)
+// const SearchBar = withStyles((theme) => ({
+//   root: {
+//     // paddingBottom: theme.spacing(2)
+//   }
+// }))(MuiSearchBar)
 
 export default function TeamStatusDetails (props) {
   // Construct our style class names
@@ -43,6 +44,12 @@ export default function TeamStatusDetails (props) {
   const activeTeamID = useRecoilValue(ActiveTeamIDState)
   const teammatesInfo = useRecoilValue(TeammatesUserInfoState)
   const teamTemperature = useRecoilValue(TeamAffectTemperature)
+
+  // Current search text (if any)
+  const [searchText, setSearchText] = useState('')
+  const onSearchTextChanged = debounce((newText) => {
+    setSearchText(newText)
+  }, 200)
 
   // Ensure there is an active team
   if (activeTeamID === '') {
@@ -62,14 +69,16 @@ export default function TeamStatusDetails (props) {
     )
   }
 
-  // Build array of 'team' statuses
-  const teamStatusListItems = []
-  for (let i = 0; i < teammatesInfo.length; i++) {
-    const teammate = teammatesInfo[i]
-    teamStatusListItems.push(
-      <StatusListItem key={teammate._id} userInfo={teammate} userStatus={teammate.status} isTeammate disabled={disableAllInput} />
-    )
-  }
+  // Build array of 'team' status elements (with search text filter)
+  const filterText = searchText.toLowerCase()
+  const teamStatusListItems = teammatesInfo.filter((teammate) => (
+    searchText === '' ||
+    teammate.name.toLowerCase().includes(filterText) ||
+    teammate.preferredName.toLowerCase().includes(filterText) ||
+    teammate.email.toLowerCase().includes(filterText)
+  )).map((teammate) => (
+    <StatusListItem key={teammate._id} userInfo={teammate} userStatus={teammate.status} isTeammate disabled={disableAllInput} />
+  ))
 
   return (
     // AIW Adjusting styling
@@ -84,11 +93,10 @@ export default function TeamStatusDetails (props) {
         </Typography>
       </Grid>
       <Grid item xs={12}>
-        <SearchBar
+        <TunneledSearchBar
           role={'search'}
-          // value={searchText}
-          // onClick={() => { setExpanded('all') }}
-          // onChange={onSearchTextChanged}
+          value={searchText}
+          onChange={onSearchTextChanged}
           placeholder={'search team members'}
           disabled={disableAllInput}
           aria-label={'Team Member Search Box'}

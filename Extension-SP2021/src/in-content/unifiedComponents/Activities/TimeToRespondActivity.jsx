@@ -5,8 +5,9 @@ import { TimeToRespondState } from '../data/globalSate/userState.js'
 import { PopActivityState } from '../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Grid, Typography, FormControl, FormControlLabel, Checkbox, TextField, Select, MenuItem, Button } from '@material-ui/core'
+import { Grid, Typography, FormControl, FormControlLabel, Checkbox, Select, MenuItem, Button } from '@material-ui/core'
 
+import TunneledTextField from '../Shared/TunneledTextField.jsx'
 import { ACTIVITIES } from './Activities.js'
 
 // import { makeLogger } from '../../../util/Logger.js'
@@ -52,10 +53,10 @@ export default function TimeToRespondActivity (props) {
       </Grid>
 
       <Grid item xs={5}>
-        <TextField
+        <TunneledTextField
           type="number"
           value={localTTR}
-          onChange={(e) => { setLocalTTR(parseInt(e.target.value)) }}
+          onChange={(val) => { setLocalTTR(parseInt(val)) }}
           min={0}
           max={99}
           disabled={automatic}

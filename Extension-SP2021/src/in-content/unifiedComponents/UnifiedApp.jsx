@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
-import { KarunaMessageEnqueueState, MessagingContextState, TextBoxListState } from './data/globalSate/appState.js'
+import { KarunaMessageEnqueueState, MessagingContextState, TextBoxListState, TypeToActiveInputState } from './data/globalSate/appState.js'
 import { TeammateStatusUpdateState } from './data/globalSate/teamState.js'
 import { LoggedInUserState } from './data/globalSate/userState.js'
 
@@ -63,6 +63,16 @@ export default function UnifiedApp (props) {
       pushKarunaMessage(newMessage)
     })
   }, [emitter, pushKarunaMessage])
+
+  // Capture tunneled keys
+  const typeToActiveInput = useSetRecoilState(TypeToActiveInputState)
+  useEffect(() => {
+    emitter.on('tunnel-key', (keyEvent) => {
+      if (keyEvent.type === 'keydown') {
+        typeToActiveInput(keyEvent.key)
+      }
+    })
+  }, [emitter, typeToActiveInput])
 
   // Track logged in state globally
   const setTextBoxList = useSetRecoilState(TextBoxListState)
