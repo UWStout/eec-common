@@ -26,7 +26,7 @@ export const AffectListState = atom({
 })
 
 const ToggleDisabledDeleteState = atom({
-  key: 'ToggleDeleteState',
+  key: 'ToggleDisabledDeleteState',
   default: false,
   effects_UNSTABLE: [
     ({ onSet }) => {

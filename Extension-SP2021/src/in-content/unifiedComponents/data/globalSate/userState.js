@@ -68,7 +68,7 @@ export const FavoriteAffectsListState = atom({
 })
 
 export const ToggleFavoriteDeleteState = atom({
-  key: 'ToggleDeleteState',
+  key: 'ToggleFavoriteDeleteState',
   default: false,
   effects_UNSTABLE: [
     ({ onSet }) => {
