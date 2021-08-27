@@ -462,8 +462,6 @@ export async function userStatusUpdated (userID) {
             // Create array of team room names
             clientSessions[socketID].teams.map((teamID) => (`team-${teamID}`))
           )
-            // Leave out current user
-            .except(socketID)
             // Send latest status
             .emit('teammateStatusUpdate', {
               userId: userID,
