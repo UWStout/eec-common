@@ -5,7 +5,7 @@ import SwipeableViews from 'react-swipeable-views'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { AppBar, Tabs, Tab, Typography } from '@material-ui/core'
 
-import KarunaIcon from '../clientComponents/KarunaIcon.jsx'
+import KarunaIcon from '../sharedComponents/KarunaIcon.jsx'
 import TabPanel from './TabPanel.jsx'
 
 import BasicInstallation from './instructionTabs/BasicInstallation.jsx'

@@ -5,7 +5,7 @@ import { RecoilRoot } from 'recoil'
 
 import { Typography } from '@material-ui/core'
 
-import KarunaIcon from './KarunaIcon.jsx'
+import KarunaIcon from '../sharedComponents/KarunaIcon.jsx'
 import SignUpForm from './SignUpForm.jsx'
 
 const useStyles = makeStyles((theme) => ({

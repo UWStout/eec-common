@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Button, TextField, FormControlLabel, Checkbox, Link, Grid, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
-import KarunaIcon from './KarunaIcon.jsx'
+import KarunaIcon from '../sharedComponents/KarunaIcon.jsx'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
