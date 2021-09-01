@@ -8,7 +8,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { Typography, List, Fab, Tooltip } from '@material-ui/core'
 import { Add as AddIcon } from '@material-ui/icons'
 
-import KarunaIcon from '../clientComponents/KarunaIcon.jsx'
+import KarunaIcon from '../sharedComponents/KarunaIcon.jsx'
 
 import DataListNavBar from './DataListNavBar.jsx'
 import DataListItem from './DataListItem.jsx'

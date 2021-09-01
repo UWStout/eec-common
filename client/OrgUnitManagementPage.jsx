@@ -7,7 +7,7 @@ import { createTheme } from '@material-ui/core/styles'
 import { Container, CssBaseline, Box, ThemeProvider } from '@material-ui/core'
 
 import DataList from './adminComponents/DataList.jsx'
-import Copyright from './clientComponents/Copyright.jsx'
+import Copyright from './sharedComponents/Copyright.jsx'
 
 // Create a default theme
 const theme = createTheme()

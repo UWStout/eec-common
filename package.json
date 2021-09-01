@@ -14,8 +14,8 @@
     "publicdev": "esbuild --watch --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outdir=public ./client/InstructionsPage.jsx",
 
     "preclient": "rm -f ./views/auth/*.js ./views/auth/*.js.map",
-    "client": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outdir=views/auth ./client/LoginPage.jsx ./client/LogoutPage.jsx ./client/RegisterPage.jsx ./client/RecoveryPage.jsx",
-    "clientdev": "esbuild --watch --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outdir=views/auth ./client/LoginPage.jsx ./client/LogoutPage.jsx ./client/RegisterPage.jsx ./client/RecoveryPage.jsx",
+    "client": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outdir=views/auth ./client/LoginPage.jsx ./client/LogoutPage.jsx ./client/RegisterPage.jsx ./client/RecoveryPage.jsx ./client/PrivacyPage.jsx",
+    "clientdev": "esbuild --watch --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outdir=views/auth ./client/LoginPage.jsx ./client/LogoutPage.jsx ./client/RegisterPage.jsx ./client/RecoveryPage.jsx ./client/PrivacyPage.jsx",
 
     "preadmin": "rm -f ./views/dbAdmin/*.js ./views/dbAdmin/*.js.map",
     "admin": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outdir=views/dbAdmin ./client/UserManagementPage.jsx ./client/TeamManagementPage.jsx ./client/OrgUnitManagementPage.jsx",

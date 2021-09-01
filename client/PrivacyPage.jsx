@@ -5,6 +5,7 @@ import { CssBaseline, Container, Box, Typography } from '@material-ui/core'
 
 import KarunaIcon from './sharedComponents/KarunaIcon.jsx'
 import Copyright from './sharedComponents/Copyright.jsx'
+import PrivacyPolicy from './sharedComponents/PrivacyPolicy.jsx'
 
 // Static style for the root element
 const rootStyle = {
@@ -30,22 +31,21 @@ const captionTextStyle = {
 
 // Render the form
 ReactDOM.render(
-  <Container component="main" maxWidth="xs">
+  <Container component="main" maxWidth="md">
     <CssBaseline />
     <div style={rootStyle}>
       <KarunaIcon />
       <div style={titleTextStyle}>
         <Typography component="h1" variant="h5" gutterBottom>
-          {'Karuna Account Recovery'}
+          {'Karuna Privacy Policy'}
         </Typography>
       </div>
       <div style={captionTextStyle}>
         <Typography variant="body1" color="textSecondary">
-          {'Currently there is no automatic way to reset your password.'}
-          <br />
-          <br />
-          {'Please contact an administrator for help.'}
+          {'Below is the latest text of the latest Karuna privacy policy where we '}
+          {'outline what data is collected while you use Karuna and what we do with it.'}
         </Typography>
+        <PrivacyPolicy height={500} />
       </div>
     </div>
     <Box mt={8}>

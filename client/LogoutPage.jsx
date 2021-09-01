@@ -7,8 +7,8 @@ import ReactDOM from 'react-dom'
 
 import { CssBaseline, Container, Box, Typography } from '@material-ui/core'
 
-import KarunaIcon from './clientComponents/KarunaIcon.jsx'
-import Copyright from './clientComponents/Copyright.jsx'
+import KarunaIcon from './sharedComponents/KarunaIcon.jsx'
+import Copyright from './sharedComponents/Copyright.jsx'
 
 // Pre-validate based on stored token
 $(() => {

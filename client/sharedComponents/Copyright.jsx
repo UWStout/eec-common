@@ -7,11 +7,18 @@ export default function Copyright () {
     <React.Fragment>
       <Typography variant="body2" color="textSecondary" align="center">
         {'Copyright © '}
-        <Link color="inherit" href="https://karuna.net/">
+        <Link color="inherit" href="/">
           {'The Karuna Research Team'}
         </Link>
         {' '}
         {new Date().getFullYear()}
+        {'.'}
+      </Typography>
+      <Typography variant="body2" color="textSecondary" align="center">
+        {'Read our current '}
+        <Link color="inherit" underline="always" href="/Privacy.html">
+          {'privacy policy'}
+        </Link>
         {'.'}
       </Typography>
       <br />
