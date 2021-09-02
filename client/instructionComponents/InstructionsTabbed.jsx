@@ -6,7 +6,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { AppBar, Tabs, Tab, Typography } from '@material-ui/core'
 
 import KarunaIcon from '../sharedComponents/KarunaIcon.jsx'
-import TabPanel from './TabPanel.jsx'
+import TabPanel from '../sharedComponents/TabPanel.jsx'
 
 import BasicInstallation from './instructionTabs/BasicInstallation.jsx'
 import BasicUsage from './instructionTabs/BasicUsage.jsx'
