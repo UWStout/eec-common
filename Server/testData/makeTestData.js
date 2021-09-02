@@ -10,22 +10,29 @@ import MongoDB from 'mongodb'
 // Password hashing library
 import bcrypt from 'bcrypt'
 
+// Filler generator
+import { LoremIpsum } from 'lorem-ipsum'
+
 // Our own database helper functions
 import * as DBHelp from './dbHelper.js'
+
+// Filler generation object
+const lorem = new LoremIpsum({
+  sentencesPerParagraph: { max: 8, min: 4 },
+  wordsPerSentence: { max: 16, min: 4 }
+})
 
 // Just some common pronoun lists (not by any means comprehensive)
 const PRONOUNS = [
   '', // For those that might leave this blank
   '(he/him)',
   '(he/him/his)',
+  '(he/them)',
   '(she/her)',
   '(she/her/hers)',
-  '(they/them)',
-  '(they/them/theirs)',
-  '(he/them)',
   '(she/them)',
-  '(they/him)',
-  '(they/her)'
+  '(they/them)',
+  '(they/them/theirs)'
 ]
 
 // URLs for random portrait images
@@ -34,6 +41,18 @@ const AVATAR_URL = [
   ...[...Array(95).keys()].map(val => (`https://randomuser.me/api/portraits/thumb/men/${val}.jpg`)),
   ...[...Array(10).keys()].map(val => (`https://randomuser.me/api/portraits/thumb/lego/${val}.jpg`))
 ]
+
+const PRONOUN_AVATAR_MAP = {
+  '': [190, 199],
+  '(he/him)': [95, 189],
+  '(he/him/his)': [95, 189],
+  '(he/them)': [95, 189],
+  '(she/her)': [0, 94],
+  '(she/her/hers)': [0, 94],
+  '(she/them)': [0, 94],
+  '(they/them)': [190, 199],
+  '(they/them/theirs)': [190, 199]
+}
 
 // Time to respond units
 const TIME_UNITS = ['d', 'h', 'm']
@@ -71,9 +90,12 @@ function hashPassword (password) {
 
     // Parse orgs
     const rawOrgStr = fs.readFileSync('./rawOrgsAndTeams/testOrgs.json', { encoding: 'utf8' })
-    const rawOrgs = JSON.parse(rawOrgStr)
+    let rawOrgs = JSON.parse(rawOrgStr)
 
-    // Insert orgs
+    // Adjust and then insert orgs
+    rawOrgs = rawOrgs.map((org, i) => (
+      { ...org, description: (Math.random() < 0.1 ? '' : getRandomDescription()) }
+    ))
     await DBHelp.clearCollection(DBHandle, 'Units')
     const orgIDs = await DBHelp.insertAllInCollection(DBHandle, 'Units', rawOrgs)
 
@@ -81,11 +103,13 @@ function hashPassword (password) {
     const rawTeamStr = fs.readFileSync('./rawOrgsAndTeams/testTeams.json', { encoding: 'utf8' })
     let rawTeams = JSON.parse(rawTeamStr)
 
-    // Decorate with random org IDs (~10% will remain null)
+    // Decorate with descriptions, culture, and random org IDs (~10% will have no org)
     rawTeams = rawTeams.map((team, i) => {
       const randOrgId = new ObjectID(orgIDs[Math.floor(Math.random() * rawOrgs.length)])
       return {
         name: team.name,
+        description: (Math.random() < 0.1 ? '' : getRandomDescription()),
+        culture: (Math.random() < 0.1 ? '' : getRandomCulture(team.name)),
         orgId: (Math.random() < 0.1 ? null : randOrgId)
       }
     })
@@ -133,15 +157,17 @@ function hashPassword (password) {
         } while (!rawAffects[affectIndex[0]].active || !rawAffects[affectIndex[1]].active)
         const privateAffect = (Math.random() >= 0.5)
 
-        // Pick a random avatar
-        const avatar = AVATAR_URL[getRandIndex(AVATAR_URL)]
+        // Pick an appropriate avatar
+        const pronoun = PRONOUNS[getRandIndex(PRONOUNS)]
+        const avatarIndexes = PRONOUN_AVATAR_MAP[pronoun]
+        const avatar = AVATAR_URL[getRandomInt(avatarIndexes[0], avatarIndexes[1])]
 
         // Return proper user
         rawUsers.push({
           /* User provided data */
           email: user.email,
           passwordHash,
-          preferredPronouns: PRONOUNS[getRandIndex(PRONOUNS)],
+          preferredPronouns: pronoun,
           name: `${user.name.first} ${user.name.last}`,
           preferredName: user.name.first,
           userType: (Math.random() > 0.75 ? 'admin' : 'standard'),
@@ -260,4 +286,59 @@ function randomTimestamp () {
 
 function getRandomSuffix () {
   return `${getRandomInt(0, 9)}${getRandomInt(0, 9)}${getRandomInt(0, 9)}${getRandomInt(0, 9)}`
+}
+
+function getRandomDescription () {
+  return lorem.generateParagraphs(1)
+}
+
+function getRandomCulture (teamName) {
+  // Generate a title
+  let culture = `# ${teamName} Culture Document\n\n`
+
+  // Generate a few paragraphs
+  for (let i = 0; i < getRandomInt(1, 3); i++) {
+    culture += lorem.generateParagraphs(1)
+    culture += '\n\n'
+  }
+
+  // Randomly add more sections
+  while (Math.random() > 0.333) {
+    // A section heading
+    culture += generateHeading(2)
+    culture += '\n'
+
+    // Generate some paragraphs or lists
+    for (let i = 0; i < getRandomInt(2, 5); i++) {
+      if (Math.random() > 0.5) {
+        culture += generateList()
+      } else {
+        culture += lorem.generateParagraphs(1)
+        culture += '\n'
+      }
+      culture += '\n'
+    }
+
+    // Possibly add a sub-section
+    if (Math.random() > 0.6) {
+      culture += generateHeading(3)
+      culture += '\n'
+      culture += lorem.generateParagraphs(1)
+      culture += '\n\n'
+    }
+    culture += '\n'
+  }
+
+  return culture
+}
+
+function generateHeading (level) {
+  return `${'#'.repeat(level)} ${lorem.generateWords(getRandomInt(1, 3))}\n`
+}
+
+function generateList () {
+  const items = getRandomInt(3, 10)
+  return [...Array(items).keys()].map((val) => (
+    `- ${lorem.generateWords(getRandomInt(3, 8))}`
+  )).join('\n') + '\n'
 }
