@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from 'store2'
 
 const MAX_PER_PAGE = 250
 
@@ -140,4 +141,29 @@ export function promoteUser (userId) {
         return reject(error)
       })
   })
+}
+
+export function checkTeamMember (teamID) {
+  return new Promise((resolve, reject) => {
+    axios.get(`../data/user/memberOfTeam/${teamID}`)
+      .then((response) => {
+        return resolve(response.data.member)
+      }).catch((error) => {
+        console.log(error)
+        return reject(error)
+      })
+  })
+}
+
+export function userIsAdmin () {
+  const token = store.local.get('JWT')
+
+  // Validate that token has a payload
+  if (typeof token !== 'string' || token.split('.').length < 2) {
+    return false
+  }
+
+  // Decode the JWT payload only and check user type
+  const userInfo = JSON.parse(atob(token.split('.')[1]))
+  return (userInfo?.userType === 'admin')
 }

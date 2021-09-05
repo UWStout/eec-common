@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Typography, Box, Fab, Tooltip } from '@material-ui/core'
-import { Edit as EditIcon, Save as SaveIcon, Close as CloseIcon } from '@material-ui/icons'
-
-import MDEditor from '@uiw/react-md-editor'
-import '@uiw/react-md-editor/esm/index.css'
+import { Typography, Box, Link } from '@material-ui/core'
 
 import KarunaIcon from '../sharedComponents/KarunaIcon.jsx'
+import { checkTeamMember, retrieveItem, updateItem, userIsAdmin } from './dataHelper.js'
+import ToggleEditor from './ToggleEditor.jsx'
 
 export function a11yPropsTab (name) {
   return {
@@ -28,61 +27,68 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     position: 'relative',
     minHeight: 200
-  },
-  floatingButtonBox: {
-    display: 'flex',
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    marginTop: theme.spacing(1),
-    borderTop: (params) => (params.editingActive ? '' : '1px solid lightgray')
-  },
-  floatingButton: {
-    margin: theme.spacing(1)
-  },
-  extendedIcon: {
-    marginRight: theme.spacing(1)
   }
 }))
 
-export default function InstructionsTabbed () {
-  // Is markdown editing active
-  const [editingActive, setEditingActive] = useState(false)
+export default function TeamCultureComponent (props) {
+  // Destructure component props
+  const { user, teamID } = props
+  const classes = useStyles()
 
   // The last value saved to or retrieved from the DB
   const [teamCultureMD, setTeamCultureMD] = useState('loading ...')
 
-  // The current local markdown data
-  const [localMarkdown, setLocalMarkdown] = useState(teamCultureMD)
+  // Is the current user a member of the team in question
+  const [isMemberOrAdmin, setIsMemberOrAdmin] = useState(true)
 
-  // Compute styling classes using parameters
-  const classes = useStyles({ editingActive })
+  // Is an asynchronous update active?
+  const [asyncActive, setAsyncActive] = useState(false)
 
-  // Retrieve team culture from database
+  // Retrieve team culture from database (once at start)
   useEffect(() => {
-    // TODO
-  }, [])
-
-  // When team culture changes, be sure to sync local culture
-  useEffect(() => {
-    setLocalMarkdown(teamCultureMD)
-  }, [teamCultureMD])
-
-  // Track unsaved changes as state
-  const [unsavedChanges, setUnsavedChanges] = useState(false)
-  useEffect(() => {
-    setUnsavedChanges(localMarkdown !== teamCultureMD)
-  }, [localMarkdown, teamCultureMD])
+    const getTeamAsync = async () => {
+      setAsyncActive(true)
+      try {
+        const isMember = await checkTeamMember(teamID)
+        const isAdmin = userIsAdmin()
+        setIsMemberOrAdmin(isMember || isAdmin)
+        if (isMember || isAdmin) {
+          const teamData = await retrieveItem('team', teamID)
+          setTeamCultureMD(teamData.culture)
+        }
+      } catch (err) {
+        window.alert('Failed to retrieve team culture (See console for details)')
+        console.error('err')
+      } finally {
+        setAsyncActive(false)
+      }
+    }
+    if (user && teamID) {
+      getTeamAsync()
+    }
+  }, [user, teamID])
 
   // Simulate saving by just setting equal for now
-  const saveChanges = () => {
-    setTeamCultureMD(localMarkdown)
+  const saveChanges = (newMarkdown) => {
+    const saveTeamAsync = async () => {
+      setAsyncActive(true)
+      try {
+        await updateItem('team', { id: teamID, culture: newMarkdown })
+        setTeamCultureMD(newMarkdown)
+      } catch (err) {
+        window.alert('Failed to save team culture (See console for details)')
+        console.error(err)
+      } finally {
+        setAsyncActive(false)
+      }
+    }
+    if (user && teamID) {
+      saveTeamAsync()
+    }
   }
 
-  // Simulate discarding
-  const discardChanges = () => {
-    setLocalMarkdown(teamCultureMD)
-    setEditingActive(false)
-  }
+  // Get current page for use in redirection if needed
+  const currentPage = encodeURIComponent(window.location)
 
   return (
     <React.Fragment>
@@ -94,54 +100,36 @@ export default function InstructionsTabbed () {
       </div>
 
       <Box p={3} className={classes.pageRoot}>
-        {editingActive ?
-          <MDEditor
-            value={localMarkdown}
-            onChange={setLocalMarkdown}
-          /> :
-          <MDEditor.Markdown source={localMarkdown} />}
+        {!user ?
+          <Typography variant="body1">
+            {'Please '}
+            <Link color="inherit" underline="always" href={`/Login.html?dest=${currentPage}`}>
+              {'login'}
+            </Link>
+            {' to continue.'}
+          </Typography> :
 
-        <div className={classes.floatingButtonBox}>
-          {!editingActive ?
-            <Tooltip title="Edit Team Culture">
-              <Fab
-                color="primary"
-                aria-label="edit"
-                onClick={() => { setEditingActive(true) }}
-                className={classes.floatingButton}
-              >
-                <EditIcon />
-              </Fab>
-            </Tooltip> :
+            (!teamID || !isMemberOrAdmin ?
+              <Typography variant="body1">{'Invalid team. Make sure ID is included in URL and that you are a member of that team.'}</Typography> :
 
-            <React.Fragment>
-              <Tooltip title="Save Changes">
-                <Fab
-                  variant="extended"
-                  color={unsavedChanges ? 'primary' : 'default'}
-                  aria-label="save"
-                  onClick={() => { saveChanges() }}
-                  className={classes.floatingButton}
-                >
-                  <SaveIcon />
-                </Fab>
-              </Tooltip>
-
-              <Tooltip title="Cancel Editing">
-                <Fab
-                  variant="extended"
-                  aria-label={unsavedChanges ? 'cancel' : 'close'}
-                  color={unsavedChanges ? 'secondary' : 'default'}
-                  onClick={() => { discardChanges() }}
-                  className={classes.floatingButton}
-                >
-                  <CloseIcon className={classes.extendedIcon} />
-                  {unsavedChanges ? 'Cancel' : 'Close'}
-                </Fab>
-              </Tooltip>
-            </React.Fragment>}
-        </div>
+              <ToggleEditor
+                markdown={teamCultureMD}
+                saveChanges={saveChanges}
+                disabled={asyncActive}
+              />)}
       </Box>
     </React.Fragment>
   )
+}
+
+TeamCultureComponent.propTypes = {
+  teamID: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.string,
+    userType: PropTypes.string
+  })
+}
+
+TeamCultureComponent.defaultProps = {
+  user: null
 }

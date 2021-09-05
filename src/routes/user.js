@@ -146,7 +146,6 @@ router.get('/details/:id', authenticateToken, async (req, res) => {
   }
 
   // Is this user authorized to see these details
-  debug(`User "${req.user.id}" wants to view details of "${userID}" and they are a/an "${req.user.userType}" user`)
   if (req.user.id !== userID && req.user.userType !== 'admin') {
     return res.status(403).send({ error: true, message: 'You can only view your own details unless you are an admin' })
   }
@@ -190,7 +189,7 @@ router.get('/teams/', authenticateToken, async (req, res) => {
   }
 })
 
-router.get('/listInTeam/:teamID', authenticateToken, async (req, res) => {
+router.get('/memberOfTeam/:teamID', authenticateToken, async (req, res) => {
   // Extract and check required fields
   const teamID = req.params.teamID
   if (!teamID) {
@@ -205,15 +204,43 @@ router.get('/listInTeam/:teamID', authenticateToken, async (req, res) => {
   }
 
   // attempt to list users in the given team
+  debug(`attempt to check membership in team ${teamID}`)
+  try {
+    const isMember = await DBUser.memberOfTeam(req.user.id, teamID)
+    return res.json({ member: isMember })
+  } catch (error) {
+    console.error('Failed to check membership')
+    console.error(error)
+    return res.status(500).json({ error: true, message: 'Error while checking team membership' })
+  }
+})
+
+router.get('/listInTeam/:teamID', authenticateToken, async (req, res) => {
+  // Extract and check required fields
+  const teamID = req.params.teamID
+  if (!teamID) {
+    res.status(400).json({ invalid: true, message: 'Missing required information' })
+    return
+  }
+
+  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
+  if (!ObjectID.isValid(teamID)) {
+    res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters', teamID })
+    return
+  }
+
+  // Is this allowed?
+  const isMember = await DBUser.memberOfTeam(req.user.id, teamID)
+  if (!isMember && req.user.userType !== 'admin') {
+    return res.status(403).send({ error: true, message: 'Must be on team or be an admin' })
+  }
+
+  // attempt to list users in the given team
   debug(`attempt to list users in Team ${teamID}`)
   try {
     const users = await DBUser.listUsersInTeam(teamID)
     if (users.error) {
-      return res.status(400).json(users)
-    }
-
-    if (!users.find((curUser) => (req.user.id === curUser._id.toString()))) {
-      return res.status(403).json({ error: true, message: 'You are not a member of that team' })
+      return res.status(400).json({ error: true, message: 'Failed to list team members' })
     }
 
     return res.json(users)
@@ -233,9 +260,20 @@ router.delete('/remove/:userID', authenticateToken, async (req, res) => {
     return
   }
 
+  if (userID === req.params.userID) {
+    res.status(400).json({ invalid: true, message: 'You may not remove your own account' })
+    return
+  }
+
   // check if userID is a reasonable parameter for ObjectID (hexadecimal)
   if (userID && !ObjectID.isValid(userID)) {
     res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
+    return
+  }
+
+  // Is this allowed?
+  if (req.user.userType !== 'admin') {
+    return res.status(403).send({ error: true, message: 'Only admins can remove accounts' })
   }
 
   // attempt to remove user
@@ -286,6 +324,11 @@ router.post('/collaboration', authenticateToken, async (req, res) => {
     return
   }
 
+  // Is this user authorized to do this
+  if (req.user.id !== userID) {
+    return res.status(403).send({ error: true, message: 'You can only update your own status' })
+  }
+
   // check if userID is a reasonable parameter for ObjectID
   if (!ObjectID.isValid(userID)) {
     res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
@@ -310,6 +353,11 @@ router.post('/timeToRespond', authenticateToken, async (req, res) => {
   if (!userID) {
     res.status(400).json({ invalid: true, message: 'Missing required information' })
     return
+  }
+
+  // Is this user authorized to do this
+  if (req.user.id !== userID) {
+    return res.status(403).send({ error: true, message: 'You can only update your own status' })
   }
 
   // check if userID is a reasonable parameter for ObjectID
