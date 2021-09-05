@@ -27,10 +27,19 @@ const debug = Debug('karuna:mongo:teamController')
  * @return {Promise} Resolves to JS Object with all the team details, rejects on error
  */
 export async function getTeamDetails (teamID) {
-  const DBHandle = await retrieveDBHandle('karunaData')
-  return DBHandle
-    .collection('Teams')
-    .findOne({ _id: new ObjectID(teamID) })
+  return new Promise((resolve, reject) => {
+    if (!ObjectID.isValid(teamID)) {
+      reject(new Error('Bad teamID, not a valid ObjectID'))
+    }
+
+    retrieveDBHandle('karunaData')
+      .then((DBHandle) => {
+        DBHandle.collection('Teams').findOne({ _id: new ObjectID(teamID) })
+          .then((result) => { return resolve(result) })
+          .catch((err) => { return reject(err) })
+      })
+      .catch((err) => { return reject(err) })
+  })
 }
 
 /**
@@ -40,14 +49,18 @@ export async function getTeamDetails (teamID) {
  *
  * @param {string} name Name for the new team
  * @param {string} description Description for the new team (may be empty)
+ * @param {string} culture Culture document in markdown format (may be empty)
+ * @param {string} commModelLink External URL for the team communication model (may be empty)
  * @param {number} unitID ID of the related unit (may be empty)
  * @param {number} userID ID of a user to add to the team (may be empty)
  * @return {number} ID of the newly created team or null if creation fails
  */
-export function createTeam (name, description, unitID, userID) {
+export function createTeam (name, description, culture, commModelLink, unitID, userID) {
   const insertThis = {
     name,
     description,
+    culture,
+    commModelLink,
     unitID: (ObjectID.isValid(unitID) ? new ObjectID(unitID) : undefined)
   }
 
@@ -97,7 +110,7 @@ export async function removeTeam (teamID) {
 export function updateTeam (userID, newData) {
   return new Promise((resolve, reject) => {
     // Make sure foreign key is the proper ObjectID type (if its defined)
-    if (newData.orgId && (typeof newData.orgId !== 'object' || !(newData.orgId instanceof 'ObjectID'))) {
+    if (newData.orgId && (typeof newData.orgId !== 'object' || !(newData.orgId instanceof ObjectID))) {
       newData.orgId = new ObjectID(newData.orgId)
     }
 
@@ -198,8 +211,8 @@ export function listTeamsInUnit (unitID) {
           // Reshape unit data (removing id)
           const unitData = {
             unitName: result.name,
-            unitAdmin: result.admin,
-            unitCulture: result.culture
+            unitDescription: result.description,
+            unitAdminId: result.adminId
           }
 
           // Retrieve filtered list of teams with unit info joined

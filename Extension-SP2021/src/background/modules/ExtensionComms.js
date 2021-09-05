@@ -5,6 +5,9 @@ import { processAjaxRequest } from './ServerAJAXComms.js'
 
 import { isValidContext } from '../../util/contexts.js'
 
+// Server config
+import * as SERVER_CONFIG from '../../util/serverConfig.js'
+
 // List of active extension communication ports
 const portSessions = {}
 

@@ -45,9 +45,29 @@ export async function getUserDetails (userID) {
     .findOne({ _id: new ObjectID(userID) }, { projection: { passwordHash: 0 } })
 }
 
+export async function memberOfTeam (userID, teamID) {
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users').findOne(
+        { _id: new ObjectID(userID) },
+        { projection: { _id: 0, teams: 1 } }
+      ).then((user) => {
+        if (Array.isArray(user.teams) && user.teams.length > 0) {
+          return resolve(
+            user.teams.findIndex((curTeamID) => (teamID === curTeamID.toString())) !== -1
+          )
+        } else {
+          return resolve(false)
+        }
+      }).catch((err) => { return reject(err) })
+    })
+  })
+}
+
 /**
  * Lookup the full team info for this user's array of teams
  * @param {string} userID A valid ObjectID that matches a document in the 'Users' collection
+ * @param {bool} idsOnly Only return team IDs
  * @returns {Promise} A promise that rejects on an error and resolves to the array of team docs
  */
 export async function getUserTeams (userID) {

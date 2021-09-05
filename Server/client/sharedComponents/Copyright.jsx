@@ -14,6 +14,17 @@ export default function Copyright () {
         {new Date().getFullYear()}
         {'.'}
       </Typography>
+      <br />
+      <Typography variant="body2" color="textSecondary" align="center">
+        {'Server '}
+        <Link color="inherit" underline="always" href="/Login.html">
+          {'login'}
+        </Link>
+        {' or '}
+        <Link color="inherit" underline="always" href="/Logout.html">
+          {'logout'}
+        </Link>
+      </Typography>
       <Typography variant="body2" color="textSecondary" align="center">
         {'Read our current '}
         <Link color="inherit" underline="always" href="/Privacy.html">

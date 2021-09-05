@@ -21,6 +21,8 @@ import UserStatusDetails from '../StatusComponents/UserStatusDetails.jsx'
 import TeamStatusDetails from '../StatusComponents/TeamStatusDetails.jsx'
 import ExternalLink from '../Shared/ExternalLink.jsx'
 
+import { HOST_NAME } from '../../../util/serverConfig.js'
+
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Main Content', 'lightblue', 'black')
 
@@ -184,7 +186,7 @@ export default function ConnectMainActivity (props) {
 
       <Grid container item xs={12}>
         {currentTeam &&
-          <ExternalLink href="#team-culture" variant="body1" aria-label={'Team Culture'} disabled={disableAllInput} classes={{ root: linkRoot }}>
+          <ExternalLink href={`https://${HOST_NAME}/TeamCulture.html?teamID=${currentTeam._id}`} variant="body1" aria-label={'Team Culture'} disabled={disableAllInput} classes={{ root: linkRoot }}>
             {`${currentTeam.name} Culture`}
           </ExternalLink>}
         {currentTeam && <br />}

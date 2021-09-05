@@ -66,7 +66,7 @@ export function decodeJWTPayload (JWT) {
 }
 
 /**
- * Retrieve the JWT stored in this exetnsion's local storage (only if not expired).
+ * Retrieve the JWT stored in this extension's local storage (only if not expired).
  * If the token is expired, this function will clear the token from storage and return
  * undefined.
  * @returns {string|object} The raw JWT string or the payload decoded to a JS object
