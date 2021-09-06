@@ -28,7 +28,8 @@ export default function ConnectLoginActivity (props) {
   const [rememberMe, setRememberMe] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [hasError, setHasError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [submitEnabled, setSubmitEnabled] = useState(true)
 
   // Get global input state
   const disableAllInput = useRecoilValue(DisableInputState)
@@ -38,7 +39,20 @@ export default function ConnectLoginActivity (props) {
   }
 
   const validateLogin = () => {
-    BACKGROUND.login(email, password, () => { setHasError(true) })
+    setSubmitEnabled(false)
+    BACKGROUND.login(
+      email,
+      password,
+      (rememberMe ? 168 : 24),
+      (message, err) => {
+        if (err?.response?.status === 429) {
+          setErrorMessage('Too many failed attempts (wait 10 seconds)')
+        } else {
+          setErrorMessage('Invalid username and/or password')
+        }
+        setSubmitEnabled(true)
+      }
+    )
   }
 
   return (
@@ -48,11 +62,10 @@ export default function ConnectLoginActivity (props) {
         <TunneledTextField
           id="login-email"
           label="Email"
-          helperText="Please enter your email"
           className={fullWidth}
           value={email}
-          onChange={(val) => { setEmail(val); setHasError(false) }}
-          error={hasError}
+          onChange={(val) => { setEmail(val); setErrorMessage('') }}
+          error={errorMessage !== ''}
           disabled={disableAllInput}
         />
         <ExternalLink href={`https://${HOST_NAME}/Register.html`} small disabled={disableAllInput}>
@@ -65,12 +78,12 @@ export default function ConnectLoginActivity (props) {
         <TunneledTextField
           id="login-password"
           label="Password"
-          helperText="Please enter you password"
           type="password"
           className={fullWidth}
           value={password}
-          onChange={(val) => { setPassword(val); setHasError(false) }}
-          error={hasError}
+          onChange={(val) => { setPassword(val); setErrorMessage('') }}
+          error={errorMessage !== ''}
+          helperText={errorMessage !== '' ? errorMessage : ' '}
           disabled={disableAllInput}
         />
         <ExternalLink href={`https://${HOST_NAME}/Recovery.html`} small disabled={disableAllInput}>
@@ -95,7 +108,7 @@ export default function ConnectLoginActivity (props) {
 
       {/* Trigger the Login */}
       <Grid item>
-        <Button variant="contained" color="primary" className={fullWidth} onClick={validateLogin} disabled={disableAllInput}>
+        <Button variant="contained" color="primary" className={fullWidth} onClick={validateLogin} disabled={!submitEnabled || disableAllInput}>
           {'Login'}
         </Button>
       </Grid>

@@ -60,7 +60,7 @@ export async function validateLogin (email, password, expiration, onSuccess, onF
   // Sanitize "expires"
   if (typeof expiration !== 'number') { expiration = 24 }
   if (expiration < 1) { expiration = 1 }
-  if (expiration > 120) { expiration = 120 }
+  if (expiration > 168) { expiration = 168 }
 
   try {
     // Try to send the login request

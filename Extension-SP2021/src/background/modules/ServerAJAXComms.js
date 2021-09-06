@@ -15,7 +15,7 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
   let promise = null
   switch (message.type) {
     case 'ajax-validateAccount':
-      promise = validateAccount(message.email, message.password, message.context)
+      promise = validateAccount(message.email, message.password, message.expiration, message.context)
       break
 
     case 'ajax-getEmojiList':
@@ -197,11 +197,11 @@ function validateStatus (status) {
   return ((status >= 200 && status < 300) || status === 401)
 }
 
-function validateAccount (email, password, context) {
+function validateAccount (email, password, expiration, context) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}auth/login`,
-      { email: email, password: password, context: (context || 'unknown') }
+      { email, password, expiration, context: (context || 'unknown') }
     )
 
     // Listen for server response or error

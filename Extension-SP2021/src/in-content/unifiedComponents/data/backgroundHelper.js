@@ -21,7 +21,7 @@ export function sendMessageToBackground (messageObject, context = 'none',
     if (data && data.error) {
       LOG(errorMessage, data)
       if (errorCB) {
-        return errorCB(data.message)
+        return errorCB(data.message, data.error)
       }
     }
 
@@ -31,10 +31,10 @@ export function sendMessageToBackground (messageObject, context = 'none',
   })
 }
 
-export function login (email, password, onFailed, context) {
+export function login (email, password, expiration, onFailed, context) {
   LOG(`Attempting to login with "${email}" and "${password}"`)
   sendMessageToBackground(
-    { type: 'ajax-validateAccount', email, password },
+    { type: 'ajax-validateAccount', email, password, expiration },
     context,
     'Invalid username or password',
     (data) => {
@@ -44,6 +44,11 @@ export function login (email, password, onFailed, context) {
     },
     onFailed
   )
+}
+
+export function logout () {
+  LOG('Logging out and clearing credentials')
+  sendMessageToBackground({ type: 'logout' }, 'unknown', 'Failed to logout')
 }
 
 export function retrieveAffectList (context = 'none') {

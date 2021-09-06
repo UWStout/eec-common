@@ -56,7 +56,7 @@ export default function SignInForm (props) {
     signInUserCallback(
       emailState,
       passwordState,
-      (rememberMeState ? 120 : 24),
+      (rememberMeState ? 168 : 24),
       () => { setSubmitSuccess(true) },
       (err) => {
         if (err?.response?.status === 429) {
@@ -105,7 +105,7 @@ export default function SignInForm (props) {
         />
         <FormControlLabel
           control={<Checkbox value="remember" color="primary" onChange={(e) => { setRememberMeState(e.target.checked) }} />}
-          label="Remember me for 5 days"
+          label="Remember me for 7 days"
         />
         <Button
           type="submit"

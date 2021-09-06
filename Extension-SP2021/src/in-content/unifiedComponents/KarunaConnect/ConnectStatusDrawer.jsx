@@ -21,7 +21,7 @@ const AffectIcon = React.lazy(() => import('../Shared/AffectIcon.jsx'))
 const useStyles = makeStyles((theme) => ({
   // Style when the panel is fully retracted
   panelRetracted: {
-    right: `calc(0% - ${theme.spacing(6)}px)` // default is 6
+    right: `calc(0% - ${theme.spacing(7)}px)` // default is 6 (SFB: 7 to hide TTR badge)
   },
 
   // Style when the panel is fully expanded
@@ -141,7 +141,7 @@ export default function ConnectStatusDrawer (props) {
             <CollaborationIcon collaboration={currentStatus?.collaboration} placement='left' />
           </Grid>
           <Grid item xs={12}>
-            <TimeToRespondIcon timeToRespond={currentStatus?.timeToRespond} placement='left' />
+            <TimeToRespondIcon timeToRespond={currentStatus?.timeToRespond} flipped placement='left' />
           </Grid>
         </Grid>
       </Grid>

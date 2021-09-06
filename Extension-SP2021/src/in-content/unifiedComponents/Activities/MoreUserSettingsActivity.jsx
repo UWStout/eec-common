@@ -1,31 +1,45 @@
 import React from 'react'
 
-import { Grid, Typography } from '@material-ui/core'
-
+import { ConnectVisibilityState, PopActivityState } from '../data/globalSate/appState.js'
 import { useSetRecoilState } from 'recoil'
-import { PopActivityState } from '../data/globalSate/appState.js'
+
+import { makeStyles } from '@material-ui/core/styles'
+import { Grid, Button } from '@material-ui/core'
 
 import { ACTIVITIES } from './Activities.js'
+import { logout } from '../data/backgroundHelper.js'
 
-import { makeLogger } from '../../../util/Logger.js'
-const LOG = makeLogger('More User Settings Act', 'orange', 'white')
+// import { makeLogger } from '../../../util/Logger.js'
+// const LOG = makeLogger('More User Settings Act', 'orange', 'white')
+
+const useStyles = makeStyles((theme) => ({
+  buttonStyle: {
+    padding: theme.spacing(1)
+  }
+}))
 
 export default function MoreUserSettingsActivity (props) {
-  // Global activity states
+  const classes = useStyles()
+
+  // Global state setters
+  const setConnectVisibility = useSetRecoilState(ConnectVisibilityState)
   const popActivity = useSetRecoilState(PopActivityState)
 
-  // Respond to the dialog closing
-  const onDialogClose = () => {
-    // Dismiss the activity
-    popActivity(ACTIVITIES.MORE_USER_SETTINGS.key)
+  // On sign out, hide drawer, then remove activity and logout
+  const onSignOut = () => {
+    setConnectVisibility(false)
+    setTimeout(() => {
+      popActivity(ACTIVITIES.MORE_USER_SETTINGS.key)
+      logout()
+    }, 500)
   }
 
   return (
     <Grid container item spacing={2}>
       <Grid item xs={12}>
-        <Typography>
-          {'More user settings coming soon'}
-        </Typography>
+        <Button color="primary" onClick={onSignOut} className={classes.buttonStyle}>
+          {'Sign out'}
+        </Button>
       </Grid>
     </Grid>
   )

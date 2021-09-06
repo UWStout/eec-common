@@ -21,8 +21,6 @@ import ConnectLoginActivity from './ConnectLoginActivity.jsx'
 import AffectSurveyActivity from '../Activities/AffectSurvey/AffectSurveyActivity.jsx'
 import AffectSurveyActivitySkeleton from '../Activities/AffectSurvey/AffectSurveyActivitySkeleton.jsx'
 import PrivacyPromptActivity from '../Activities/AffectSurvey/PrivacyPromptActivity.jsx'
-import CollaborationActivity from '../Activities/CollaborationActivity.jsx'
-import TimeToRespondActivity from '../Activities/TimeToRespondActivity.jsx'
 import MoreUserSettingsActivity from '../Activities/MoreUserSettingsActivity.jsx'
 
 // DEBUG: Enable this logger when needed
@@ -188,7 +186,7 @@ export default function ConnectMainDrawer (props) {
 
   activityElements.push(
     <ActivityBase key={ACTIVITIES.AFFECT_SURVEY.key} direction="left" in={activityStack.includes(ACTIVITIES.AFFECT_SURVEY.key)} mountOnEnter unmountOnExit>
-      <Typography variant="body1">{'How are you feeling about the project?'}</Typography>
+      <Typography variant="body1" gutterBottom>{'How are you feeling about the project?'}</Typography>
       <Suspense fallback={<AffectSurveyActivitySkeleton />}>
         <AffectSurveyActivity />
       </Suspense>
@@ -202,19 +200,8 @@ export default function ConnectMainDrawer (props) {
   )
 
   activityElements.push(
-    <ActivityBase key={ACTIVITIES.COLLABORATION_SURVEY.key} direction="left" in={activityStack.includes(ACTIVITIES.COLLABORATION_SURVEY.key)} mountOnEnter unmountOnExit>
-      <CollaborationActivity />
-    </ActivityBase>
-  )
-
-  activityElements.push(
-    <ActivityBase key={ACTIVITIES.TIME_TO_RESPOND_SURVEY.key} direction="left" in={activityStack.includes(ACTIVITIES.TIME_TO_RESPOND_SURVEY.key)} mountOnEnter unmountOnExit>
-      <TimeToRespondActivity />
-    </ActivityBase>
-  )
-
-  activityElements.push(
     <ActivityBase key={ACTIVITIES.MORE_USER_SETTINGS.key} direction="left" in={activityStack.includes(ACTIVITIES.MORE_USER_SETTINGS.key)} mountOnEnter unmountOnExit>
+      <Typography variant="body1" gutterBottom>{'More User Settings'}</Typography>
       <MoreUserSettingsActivity />
     </ActivityBase>
   )
