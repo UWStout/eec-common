@@ -93,6 +93,12 @@ router.post('/login', async (req, res) => {
     return
   }
 
+  // Sanitize "expires"
+  let expiration = req.body.expiration
+  if (typeof expiration !== 'number') { expiration = 24 } // default 1 day
+  if (expiration < 1) { expiration = 1 } // min 1 hour
+  if (expiration > 168) { expiration = 168 } // max 7 days
+
   try {
     // Attempt to validate user
     const userData = await DBAuth.validateUser(email, password)
@@ -106,7 +112,7 @@ router.post('/login', async (req, res) => {
       subject: 'authorization',
       issuer: 'Karuna',
       audience: userData.email,
-      expiresIn: '1d'
+      expiresIn: `${expiration}h`
     })
     return res.json(token)
   } catch (err) {
