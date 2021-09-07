@@ -20,7 +20,7 @@ const HOST_LIST = [
 const manifest = {
   manifest_version: 2,
   name: (_DEV_ ? 'Karuna EEC DEV Extension' : 'Karuna EEC Extension'),
-  version: '0.3.0',
+  version: process.env.npm_package_version,
   description: 'Chrome extension for the Karuna EEC system to help with empathetic communication over electronic tools.',
   icons: {
     16: `images/icon-${_DEV_ ? 'dev-' : ''}16.png`,

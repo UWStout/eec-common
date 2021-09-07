@@ -6,6 +6,10 @@
     "webextensions": true,
     "jest/globals": true
   },
+  "globals": {
+    "_VER_": false,
+    "_DEV_": false
+  },
   "extends": [
     "eslint:recommended",
     "plugin:react/all",

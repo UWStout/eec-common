@@ -8,5 +8,5 @@ fi
 
 if [ -e ../Extension-SP2021/KarunaEEC-Extension.zip ]; then
   echo "Copying extension zip to static public folder ..."
-  cp ../Extension-SP2021/KarunaEEC-Extension.zip ./public/media/
+  cp ../Extension-SP2021/KarunaEEC-Extension.zip ./public/media/KarunaEEC-Extension
 fi

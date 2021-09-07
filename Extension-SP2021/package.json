@@ -1,21 +1,26 @@
 {
   "name": "karuna-eec-extension",
-  "version": "0.2.0",
+  "version": "0.4.1",
   "description": "Web browser extension to integrate with the Karuna EEC project.",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec npm run devbuild",
     "clean": "rimraf dist",
+
     "predevbuild": "node preBuild.js dev",
     "devbuild": "run-s clean devbuild-bundle devbuild-manifest",
-    "devbuild-bundle": "esbuild --bundle --sourcemap --define:_DEV_=true --define:process.env.NODE_ENV=\\\"development\\\" --outdir=dist/js --entry-names=/[name] src/background/background.js src/in-content/in-content.js src/popup/popup.jsx",
+    "devbuild-bundle": "node build.js dev",
     "devbuild-manifest": "node manifestGen.js dev",
     "postdevbuild": "node postBuild.js dev",
+
     "prebuild": "node preBuild.js",
     "build": "run-s clean build-bundle build-manifest",
-    "build-bundle": "esbuild --bundle --minify --define:_DEV_=false --define:process.env.NODE_ENV=\\\"production\\\" --outdir=dist/js --entry-names=/[name] src/background/background.js src/in-content/in-content.js src/popup/popup.jsx",
+    "build-bundle": "node build.js",
     "build-manifest": "node manifestGen.js",
-    "postbuild": "node postBuild.js",
+    "postbuild": "run-s build-postscript build-postshell",
+    "build-postscript": "node postBuild.js",
+    "build-postshell": "bash postBuild.sh",
+
     "test": "jest",
     "testCoverage": "jest --coverage",
     "testWatch": "jest --watchAll"
@@ -29,10 +34,13 @@
   },
   "nodemonConfig": {
     "watch": [
-      "src"
+      "src/background",
+      "src/in-content",
+      "src/popup",
+      "./*.js"
     ],
-    "ext": "js,json,jsx",
-    "delay": 1000
+    "ext": "html,js,json,jsx",
+    "delay": 100
   },
   "devDependencies": {
     "@babel/core": "7.14.6",
@@ -66,7 +74,7 @@
   "dependencies": {
     "@date-io/moment": "^2.11.0",
     "@juggle/resize-observer": "^3.3.1",
-    "@material-ui/core": "^4.12.0",
+    "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@webcomponents/webcomponentsjs": "^2.5.0",
