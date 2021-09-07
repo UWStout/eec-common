@@ -59,8 +59,9 @@ export default function AdvancedInstallation () {
             variant="contained"
             color="primary"
             href="./media/KarunaEEC-Extension.zip"
+            download={`KarunaEEC-Extension-v${_VER_}.zip`}
           >
-            {'Download Karuna Extension'}
+            {`Download Karuna Extension v${_VER_}`}
           </Button>
         </div>
       </Grid>

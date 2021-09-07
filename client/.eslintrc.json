@@ -10,6 +10,10 @@
     "plugin:react-hooks/recommended",
     "standard"
   ],
+  "globals": {
+    "_DEV_": false,
+    "_VER_": false
+  },
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
