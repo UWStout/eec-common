@@ -30,22 +30,16 @@ const LOG = makeLogger('CONNECT Main Drawer', 'lime', 'black')
 const useStyles = makeStyles((theme) => ({
   // Style when the panel is retracted
   panelRetracted: {
-    // AIW Comment in for testing styling
-    // right: '0%'
     right: `calc(0% - ${theme.spacing(14)}px)`
   },
 
   // Style when the panel is fully expanded
   panelExpanded: {
-    // AIW Comment in for testing styling
-    // right: '0%'
     right: `calc(0% - ${theme.spacing(1)}px)`
   },
 
   // Style when the panel is hidden
   panelHidden: {
-    // AIW Comment in for testing styling
-    // right: '0%'
     right: `calc(0% - ${theme.spacing(39)}px)`
   },
 
