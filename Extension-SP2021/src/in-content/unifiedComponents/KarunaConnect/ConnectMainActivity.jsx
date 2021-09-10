@@ -147,41 +147,6 @@ export default function ConnectMainActivity (props) {
               </Suspense>
             </AccordionDetails>
           </Accordion>}
-
-        {/* AIW Testing conversion of team culture and NVC to external links */}
-        {/* Team Culture list item */}
-        {/* <Accordion square expanded={expanded === 'teamCulture'} onChange={handleChange('teamCulture')} disabled={disableAllInput}>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-label={'Team Culture'}
-            aria-controls="team-culture-content"
-            id="team-culture-header"
-          > */}
-        {/* <Typography>Team Culture</Typography> */}
-        {/* AIW Testing out team name in the header */}
-        {/* <Typography>
-            {teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'} Culture
-          </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography variant={'body2'}>WIP</Typography>
-          </AccordionDetails>
-        </Accordion> */}
-
-        {/* NVC Information list item */}
-        {/* <Accordion square expanded={expanded === 'nvcInfo'} onChange={handleChange('nvcInfo')}>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-label={'NVC Information'}
-            aria-controls="nvc-info-content"
-            id="nvc-info-header"
-          >
-            <Typography>NVC</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <ListNVCElements />
-          </AccordionDetails>
-        </Accordion> */}
       </Grid>
 
       <Grid container item xs={12}>
