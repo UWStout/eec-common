@@ -123,11 +123,15 @@ function oneTimeMessage (message, sender, sendResponse) {
       case 'context':
         // Are the context values any different than before?
         if (readValue('userName', message.context) !== message.userName ||
+            readValue('userAppId', message.context) !== message.userAppId ||
             readValue('teamName', message.context) !== message.teamName ||
-            readValue('channelName', message.context) !== message.channelName) {
+            readValue('channelName', message.context) !== message.channelName ||
+            readValue('avatarSrc', message.context) !== message.avatarSrc) {
           writeValue('userName', message.userName, message.context)
+          writeValue('userAppId', message.userAppId, message.context)
           writeValue('teamName', message.teamName, message.context)
           writeValue('channelName', message.channelName, message.context)
+          writeValue('avatarSrc', message.avatarSrc, message.context)
 
           // Echo this message to all listening ports with the same 'context'
           for (const portName in portSessions) {

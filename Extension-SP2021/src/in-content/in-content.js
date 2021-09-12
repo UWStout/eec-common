@@ -39,10 +39,16 @@ const statusEmitter = new EventEmitter3()
 
 // State variables
 let userName = ''
+let userAppId = ''
 let teamName = ''
 let channelName = ''
+let avatarSrc = ''
+let siteCookies = null
 
 jQuery(document).ready(() => {
+  // Read and decode the site cookies
+  updateCookies()
+
   // Define our custom elements
   customElements.define('eec-unified', EECUnified)
 
@@ -92,12 +98,14 @@ jQuery(document).ready(() => {
 
     // Check team and channel names on any page mutation.
     // We use optional chaining to avoid undefined errors
-    const oldValues = { userName, teamName, channelName }
+    const oldValues = { userName, userAppId, teamName, channelName, avatarSrc }
     if (IS_TEAMS) {
       userName = jQuery('img.user-picture')?.first()?.attr('upn')?.trim()
+      avatarSrc = jQuery('img.user-picture')?.first()?.attr('src')
       teamName = jQuery('.team-icon')?.attr('alt')?.substr(19)?.trim()
       channelName = jQuery('.channel-name')?.text()?.trim()
       if (teamName) { teamName = teamName.substr(0, teamName.length - 1) }
+      userAppId = getAppId()
     } else if (IS_DISCORD) {
       const userArea = jQuery('section[aria-label="User area"]')
       userName = userArea.text()?.trim()
@@ -110,12 +118,12 @@ jQuery(document).ready(() => {
     }
 
     // Did something change?
-    if (oldValues.userName !== userName || oldValues.teamName !== teamName || oldValues.channelName !== channelName) {
+    if (oldValues.userName !== userName || oldValues.userAppId !== userAppId || oldValues.teamName !== teamName || oldValues.channelName !== channelName || oldValues.avatarSrc !== avatarSrc) {
       // Print updated context info
-      LOG(`context updated: ${contextName}, ${teamName}/${channelName}/${userName}`)
+      LOG(`context updated: ${contextName}, ${teamName}/${channelName}/${userName} (${userAppId} / ${avatarSrc})`)
 
       // Update data in the background script
-      chrome.runtime.sendMessage({ type: 'context', userName, teamName, channelName, context: contextName })
+      chrome.runtime.sendMessage({ type: 'context', userName, userAppId, teamName, channelName, avatarSrc, context: contextName })
     }
   }
 
@@ -125,6 +133,31 @@ jQuery(document).ready(() => {
   // Start observing the target node for configured mutations
   observer.observe(document.body, { childList: true, subtree: true })
 })
+
+function updateCookies () {
+  const cookies = {}
+  decodeURIComponent(document.cookie).split('; ').forEach((cookieStr) => {
+    const index = cookieStr.indexOf('=')
+    cookies[cookieStr.substr(0, index)] = cookieStr.substr(index + 1)
+  })
+  siteCookies = cookies
+}
+
+function getAppId () {
+  if (IS_TEAMS) {
+    // Decode the Teams JWT
+    const token = siteCookies?.TSAUTHCOOKIE
+    if (typeof token !== 'string' || token.split('.').length < 2) {
+      return null
+    }
+    const payload = JSON.parse(atob(token.split('.')[1]))
+
+    // Return the Teams OrgID
+    return payload.oid
+  }
+
+  return null
+}
 
 // Track and inject the extension for each text-box
 function updateTextBoxes () {

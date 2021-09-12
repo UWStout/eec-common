@@ -239,16 +239,6 @@ class EECUnified extends HTMLElement {
   setContextName (newContext) {
     this.contextName = newContext
     setMessagingContext(newContext)
-    // switch (newContext) {
-    //   case CONTEXT_UTIL.CONTEXT.DISCORD:
-    //     this.unifiedPanel.css('top', '55px')
-    //     break
-
-    //   case CONTEXT_UTIL.CONTEXT.MS_TEAMS:
-    //   default:
-    //     this.unifiedPanel.css('top', '115px')
-    //     break
-    // }
   }
 }
 
