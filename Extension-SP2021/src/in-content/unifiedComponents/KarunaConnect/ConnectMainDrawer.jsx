@@ -18,7 +18,7 @@ import ActivityBase from '../Activities/ActivityBase.jsx'
 
 import ConnectMainActivity from './ConnectMainActivity.jsx'
 import ConnectLoginActivity from './ConnectLoginActivity.jsx'
-import AffectSurveyActivity from '../Activities/AffectSurvey/AffectSurveyActivity.jsx'
+import AffectSurveyConnectActivity from '../Activities/AffectSurvey/AffectSurveyConnectActivity.jsx'
 import AffectSurveyActivitySkeleton from '../Activities/AffectSurvey/AffectSurveyActivitySkeleton.jsx'
 import PrivacyPromptActivity from '../Activities/AffectSurvey/PrivacyPromptActivity.jsx'
 import MoreUserSettingsActivity from '../Activities/MoreUserSettingsActivity.jsx'
@@ -182,7 +182,7 @@ export default function ConnectMainDrawer (props) {
     <ActivityBase key={ACTIVITIES.AFFECT_SURVEY.key} direction="left" in={activityStack.includes(ACTIVITIES.AFFECT_SURVEY.key)} mountOnEnter unmountOnExit>
       <Typography variant="body1" gutterBottom>{'How are you feeling about the project?'}</Typography>
       <Suspense fallback={<AffectSurveyActivitySkeleton />}>
-        <AffectSurveyActivity />
+        <AffectSurveyConnectActivity />
       </Suspense>
     </ActivityBase>
   )

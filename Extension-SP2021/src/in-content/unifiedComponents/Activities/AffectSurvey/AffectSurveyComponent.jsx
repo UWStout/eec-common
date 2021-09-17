@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 
 import { debounce } from 'debounce'
 
-import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil'
-import { PushActivityState, PopActivityState, LastSelectedAffectIDState } from '../../data/globalSate/appState.js'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { LastSelectedAffectIDState } from '../../data/globalSate/appState.js'
 import { AffectListState, DisabledAffectsListState } from '../../data/globalSate/teamState.js'
 import { AffectHistoryListState, FavoriteAffectsListState, UserAffectIDState, PrivacyPrefsState } from '../../data/globalSate/userState.js'
 
@@ -14,8 +14,6 @@ import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/ic
 
 import TunneledSearchBar from '../../Shared/TunneledSearchBar.jsx'
 import Emoji from '../../Shared/Emoji.jsx'
-
-import { ACTIVITIES } from '../Activities.js'
 
 import { makeLogger } from '../../../../util/Logger.js'
 const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')
@@ -56,9 +54,9 @@ function searchFilter (fullList, searchText) {
 /**
  * affect survey pops up in the panel and in the bubble.
  **/
-const AffectSurveyActivity = React.forwardRef((props, ref) => {
+const AffectSurveyComponent = React.forwardRef((props, ref) => {
   // Make/Deconstruct the props and style class names
-  const { noInteraction } = props
+  const { noInteraction, selectionCallback } = props
   const { listRoot, innerList, listItem } = useStyles()
 
   // Subscribe to changes in global states (GLOBAL STATE)
@@ -68,13 +66,9 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   const disabledAffects = useRecoilValue(DisabledAffectsListState)
 
   // Values and mutator functions for global state (GLOBAL STATE)
-  const [userAffectID, setUserAffectID] = useRecoilState(UserAffectIDState)
+  const userAffectID = useRecoilValue(UserAffectIDState)
   const setLastSelectedAffectID = useSetRecoilState(LastSelectedAffectIDState)
   const affectPrivacy = useRecoilValue(PrivacyPrefsState)
-
-  // Global activity management
-  const pushActivity = useSetRecoilState(PushActivityState)
-  const popActivity = useSetRecoilState(PopActivityState)
 
   // Current search text (if any)
   const [searchText, setSearchText] = useState('')
@@ -105,11 +99,8 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   // - Fully commit and update mood
   const onSelection = (affect) => {
     setLastSelectedAffectID(affect?._id)
-    if (affectPrivacy.prompt) {
-      pushActivity(ACTIVITIES.PRIVACY_PROMPT.key)
-    } else {
-      setUserAffectID(affect?._id)
-      popActivity(ACTIVITIES.AFFECT_SURVEY.key)
+    if (selectionCallback) {
+      selectionCallback(affect, affectPrivacy)
     }
   }
 
@@ -279,14 +270,16 @@ const AffectSurveyActivity = React.forwardRef((props, ref) => {
   )
 })
 
-AffectSurveyActivity.displayName = 'AffectSurveyActivity'
+AffectSurveyComponent.displayName = 'AffectSurveyComponent'
 
-AffectSurveyActivity.propTypes = {
-  noInteraction: PropTypes.bool
+AffectSurveyComponent.propTypes = {
+  noInteraction: PropTypes.bool,
+  selectionCallback: PropTypes.func
 }
 
-AffectSurveyActivity.defaultProps = {
-  noInteraction: false
+AffectSurveyComponent.defaultProps = {
+  noInteraction: false,
+  selectionCallback: null
 }
 
-export default AffectSurveyActivity
+export default AffectSurveyComponent
