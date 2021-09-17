@@ -7,6 +7,10 @@ export const ACTIVITIES = {
     key: 'PRIVACY_PROMPT',
     title: 'Privacy'
   },
+  WATSON_MESSAGE: {
+    key: 'WATSON_MESSAGE',
+    title: 'Watson Says'
+  },
   KARUNA_MESSAGE: {
     key: 'KARUNA_MESSAGE',
     title: 'Karuna Says'

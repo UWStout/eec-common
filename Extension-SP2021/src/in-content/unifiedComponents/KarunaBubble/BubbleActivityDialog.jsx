@@ -23,56 +23,74 @@ export default function BubbleActivityDialog (props) {
 
   // Global activity and input disabled state
   const activityStack = useRecoilValue(BubbleActivityStackState)
-  const topActivity = (
-    Array.isArray(activityStack) && activityStack.length >= 1
-      ? activityStack[activityStack.length - 1]
-      : null
-  )
 
-  // Create the persistent icon
+  // Create the persistent icon and the empty base
   const icon = <PersistentBubbleIcon hidden={hidden} {...restProps} />
+  const empty = <div>{'&nbsp;'}</div>
 
   // Construct the proper activity to display based on the stack
-  let activityElement = null
-  switch (topActivity) {
-    case ACTIVITIES.KARUNA_MESSAGE.key:
-      activityElement = (
-        <ActivityBaseBubble baseElement={icon} hidden={hidden}>
-          <KarunaMessageActivity />
-        </ActivityBaseBubble>
-      )
-      break
+  const last = activityStack.length - 1
+  const activityElements = activityStack.map((curActivity, i) => {
+    switch (curActivity.key) {
+      case ACTIVITIES.KARUNA_MESSAGE.key:
+        return (
+          <ActivityBaseBubble
+            baseElement={i === last ? icon : empty}
+            hidden={hidden || (i !== last)}
+          >
+            <KarunaMessageActivity message={curActivity.message} />
+          </ActivityBaseBubble>
+        )
 
-    case ACTIVITIES.AFFECT_SURVEY.key:
-      activityElement = (
-        <ActivityBaseBubble baseElement={icon} hidden={hidden}>
-          <AffectSurveySkeleton>
-            <AffectSurveyBubbleActivity />
-          </AffectSurveySkeleton>
-        </ActivityBaseBubble>
-      )
-      break
+      case ACTIVITIES.WATSON_MESSAGE.key:
+        return (
+          <ActivityBaseBubble
+            baseElement={i === last ? icon : empty}
+            hidden={hidden || (i !== last)}
+          >
+            <KarunaMessageActivity message={curActivity.message} isWatson />
+          </ActivityBaseBubble>
+        )
 
-    case ACTIVITIES.PRIVACY_PROMPT.key:
-      activityElement = (
-        <ActivityBaseBubble baseElement={icon} hidden={hidden}>
-          <PrivacyPromptBubbleActivity />
-        </ActivityBaseBubble>
-      )
-      break
+      case ACTIVITIES.AFFECT_SURVEY.key:
+        return (
+          <ActivityBaseBubble
+            baseElement={i === last ? icon : empty}
+            hidden={hidden || (i !== last)}
+          >
+            <AffectSurveySkeleton>
+              <AffectSurveyBubbleActivity />
+            </AffectSurveySkeleton>
+          </ActivityBaseBubble>
+        )
 
-    case ACTIVITIES.BLANK_MESSAGE.key:
-    default:
-      activityElement = (
-        <ActivityBaseBubble baseElement={icon} hidden={hidden}>
-          <BlankActivity />
-        </ActivityBaseBubble>
-      )
-      break
-  }
+      case ACTIVITIES.PRIVACY_PROMPT.key:
+        return (
+          <ActivityBaseBubble
+            baseElement={i === last ? icon : empty}
+            hidden={hidden || (i !== last)}
+          >
+            <PrivacyPromptBubbleActivity />
+          </ActivityBaseBubble>
+        )
+
+      case ACTIVITIES.BLANK_MESSAGE.key:
+      default:
+        return (
+          <ActivityBaseBubble
+            baseElement={i === last ? icon : empty}
+            hidden={hidden || (i !== last)}
+          >
+            <BlankActivity />
+          </ActivityBaseBubble>
+        )
+    }
+  })
 
   // Return whatever the active activity element is
-  return (activityElement)
+  return (
+    activityElements
+  )
 }
 
 BubbleActivityDialog.propTypes = {

@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
-import { KarunaMessageEnqueueState, MessagingContextState, TextBoxListState, TypeToActiveInputState } from './data/globalSate/appState.js'
+import { MessagingContextState, TextBoxListState, TypeToActiveInputState } from './data/globalSate/appState.js'
 import { TeammateStatusUpdateState } from './data/globalSate/teamState.js'
 import { LoggedInUserState } from './data/globalSate/userState.js'
 
@@ -55,15 +55,6 @@ export default function UnifiedApp (props) {
     })
   }, [emitter, setTeammateStatusUpdate])
 
-  // Track karuna server messages globally
-  const pushKarunaMessage = useSetRecoilState(KarunaMessageEnqueueState)
-  useEffect(() => {
-    emitter.on('karunaMessage', (newMessage) => {
-      LOG('Adding karuna message to queue:', newMessage)
-      pushKarunaMessage(newMessage)
-    })
-  }, [emitter, pushKarunaMessage])
-
   // Capture tunneled keys
   const typeToActiveInput = useSetRecoilState(TypeToActiveInputState)
   useEffect(() => {
@@ -90,7 +81,7 @@ export default function UnifiedApp (props) {
     <React.Fragment>
       <CssBaseline />
       <KarunaConnect />
-      <KarunaBubble />
+      <KarunaBubble emitter={emitter} />
       <KarunaTextBoxManager emitter={emitter} />
     </React.Fragment>
   )
