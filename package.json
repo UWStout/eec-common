@@ -32,7 +32,6 @@
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@uiw/react-md-editor": "^3.6.3",
     "axios": "^0.21.1",
-    "bootstrap": "^4.5.3",
     "chai": "^4.3.4",
     "esbuild": "^0.12.20",
     "eslint": "^7.31.0",
