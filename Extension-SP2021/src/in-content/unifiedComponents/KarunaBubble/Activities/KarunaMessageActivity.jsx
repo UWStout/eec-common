@@ -1,45 +1,41 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-import { useSetRecoilState } from 'recoil'
-import { PushBubbleActivityState, PopBubbleActivityState } from '../../data/globalSate/bubbleActivityState.js'
-import { UserAffectIDState } from '../../data/globalSate/userState.js'
-
-import AffectSurveyComponent from '../../AffectSurvey/AffectSurveyComponent.jsx'
-
-import { ACTIVITIES } from './Activities.js'
+import { Grid, Typography } from '@material-ui/core'
 
 // import { makeLogger } from '../../../../util/Logger.js'
 // const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')
 
 /**
- * Manage the affect survey when shown in the connect panel
+ * Default blank message when there is nothing else to show
+ * (always at the bottom of the stack, should never be popped)
  **/
-const AffectSurveyBubbleActivity = React.forwardRef((props, ref) => {
-  // Values and mutator functions for global state (GLOBAL STATE)
-  const setUserAffectID = useSetRecoilState(UserAffectIDState)
-
-  // Global activity management
-  const pushActivity = useSetRecoilState(PushBubbleActivityState)
-  const popActivity = useSetRecoilState(PopBubbleActivityState)
-
-  // Called when the user clicks on an affect. May:
-  // - Show the privacy preferences prompt
-  // - Fully commit and update mood
-  const onSelection = (affect, affectPrivacy) => {
-    if (affectPrivacy.prompt) {
-      pushActivity(ACTIVITIES.PRIVACY_PROMPT.key)
-    } else {
-      setUserAffectID(affect?._id)
-      popActivity(ACTIVITIES.AFFECT_SURVEY.key)
-    }
-  }
+export default function KarunaMessageActivity (props) {
+  const { requestHide, cancelHide, message } = props
 
   // Show affect survey
   return (
-    <AffectSurveyComponent noInteraction={false} selectionCallback={onSelection} ref={ref} />
+    <div onMouseEnter={cancelHide} onMouseLeave={() => requestHide && requestHide(false)}>
+      <Grid container>
+        <Grid item xs={12}>
+          <Typography variant="body1">
+            {message.content}
+          </Typography>
+        </Grid>
+      </Grid>
+    </div>
   )
-})
+}
 
-AffectSurveyBubbleActivity.displayName = 'AffectSurveyBubbleActivity'
+KarunaMessageActivity.propTypes = {
+  message: PropTypes.shape({
+    content: PropTypes.string.isRequired
+  }).isRequired,
+  requestHide: PropTypes.func,
+  cancelHide: PropTypes.func
+}
 
-export default AffectSurveyBubbleActivity
+KarunaMessageActivity.defaultProps = {
+  requestHide: null,
+  cancelHide: null
+}

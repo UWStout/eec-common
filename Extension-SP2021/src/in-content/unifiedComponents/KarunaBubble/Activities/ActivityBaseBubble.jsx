@@ -39,6 +39,7 @@ export default function ActivityBaseBubble (props) {
       interactive
       placement='top-end'
       TransitionComponent={Zoom}
+      TransitionProps={{ appear: true }}
       open={!hidden && children !== null}
       title={children}
       PopperProps={newPopperProps}

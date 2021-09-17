@@ -10,7 +10,7 @@ const LOG = makeLogger('RECOIL Bubble Activity State', '#27213C', '#EEF4ED')
 /** The trail of activities clicked through in the bubble panel */
 export const BubbleActivityStackState = atom({
   key: 'BubbleActivityStackState',
-  default: [{ key: ACTIVITIES.BLANK_MESSAGE.key }],
+  default: [ACTIVITIES.BLANK_MESSAGE],
   effects_UNSTABLE: [
     ({ onSet }) => {
       // Log any value changes for debugging
@@ -36,7 +36,7 @@ export const PushBubbleActivityState = selector({
     // Validate the enw activity
     if (!newActivity?.key) {
       LOG.error('Invalid bubble activity:', newActivity)
-    } else if (newActivity.key !== ACTIVITIES.BLANK_MESSAGE.key && !newActivity.message) {
+    } else if (newActivity.key !== ACTIVITIES.BLANK_MESSAGE.key && newActivity.key !== ACTIVITIES.PRIVACY_PROMPT.key && !newActivity.message) {
       LOG.error('Bubble activity message missing:', newActivity)
     }
 
@@ -62,7 +62,7 @@ export const PopBubbleActivityState = selector({
     if (activityStack.length > 1) {
       const currentActivity = activityStack[activityStack.length - 1]
       if (currentActivity?.key !== activityToPop?.key) {
-        LOG.error(`Current bubble activity (${currentActivity}) does not match pop request (${activityToPop})`)
+        LOG.error(`Current bubble activity (${currentActivity?.key}) does not match pop request (${activityToPop?.key})`)
       } else {
         set(BubbleActivityStackState, activityStack.slice(0, -1))
       }

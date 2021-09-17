@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (props, ref) {
-  const { hidden, onHide, cancelHide, setOpen } = props
+  const { hidden, requestHide, cancelHide, setOpen } = props
   const classes = useStyles()
 
   // State of user login (GLOBAL STATE)
@@ -64,11 +64,11 @@ const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (pro
       setMainPanelOpen(!mainPanelOpen)
     } else {
       if (setOpen) {
-        cancelHide()
+        if (cancelHide) { cancelHide() }
         setOpen(hidden)
       }
       if (!hidden) {
-        onHide(false)
+        if (requestHide) { requestHide(false) }
       }
     }
   }
@@ -86,7 +86,7 @@ const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (pro
       ref={ref}
       onClick={clickCallback}
       onMouseEnter={cancelHide}
-      onMouseLeave={() => onHide(false)}
+      onMouseLeave={() => requestHide && requestHide(false)}
       className={classes.root}
       aria-label={userLoggedIn ? 'Open Feedback Dialog' : 'Open Login Dialog'}
     >
@@ -123,10 +123,17 @@ const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (pro
 })
 
 PersistentBubbleIcon.propTypes = {
-  hidden: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
-  cancelHide: PropTypes.func.isRequired,
-  setOpen: PropTypes.func.isRequired
+  hidden: PropTypes.bool,
+  requestHide: PropTypes.func,
+  cancelHide: PropTypes.func,
+  setOpen: PropTypes.func
+}
+
+PersistentBubbleIcon.defaultProps = {
+  hidden: false,
+  requestHide: null,
+  cancelHide: null,
+  setOpen: null
 }
 
 export default PersistentBubbleIcon

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { useSetRecoilState, useRecoilValue } from 'recoil'
 import { PrivacyPrefsStateSetter, UserAffectIDState } from '../../data/globalSate/userState.js'
@@ -12,7 +13,9 @@ import { ACTIVITIES } from './Activities.js'
 // import { makeLogger } from '../../../../util/Logger.js'
 // const LOG = makeLogger('Privacy Activity', 'yellow', 'black')
 
-export default function PrivacyPromptConnectActivity (props) {
+export default function PrivacyPromptBubbleActivity (props) {
+  const { requestHide, cancelHide } = props
+
   // Global data states
   const setPrivacy = useSetRecoilState(PrivacyPrefsStateSetter)
   const setCurrentAffect = useSetRecoilState(UserAffectIDState)
@@ -24,7 +27,7 @@ export default function PrivacyPromptConnectActivity (props) {
   // Respond to the dialog closing
   const onPrivacyClose = (canceled, newPrivacy) => {
     // Dismiss the privacy activity
-    popActivity(ACTIVITIES.PRIVACY_PROMPT.key)
+    popActivity(ACTIVITIES.PRIVACY_PROMPT)
 
     if (!canceled) {
       // Update affect and privacy
@@ -32,11 +35,23 @@ export default function PrivacyPromptConnectActivity (props) {
       setPrivacy(newPrivacy)
 
       // Dismiss affect survey too
-      popActivity(ACTIVITIES.AFFECT_SURVEY.key)
+      popActivity(ACTIVITIES.AFFECT_SURVEY)
     }
   }
 
   return (
-    <PrivacyPromptComponent privacyCallback={onPrivacyClose} />
+    <div onMouseEnter={cancelHide} onMouseLeave={() => requestHide && requestHide(false)}>
+      <PrivacyPromptComponent privacyCallback={onPrivacyClose} />
+    </div>
   )
+}
+
+PrivacyPromptBubbleActivity.propTypes = {
+  requestHide: PropTypes.func,
+  cancelHide: PropTypes.func
+}
+
+PrivacyPromptBubbleActivity.defaultProps = {
+  requestHide: null,
+  cancelHide: null
 }

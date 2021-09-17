@@ -66,8 +66,9 @@ export default function KarunaBubble (props) {
       if (immediate) {
         setFeedbackDialogOpen(false)
       } else {
-        const timeoutHandle = setTimeout(() => { setFeedbackDialogOpen(false) }, 3000)
-        setFeedbackHideTimeout(timeoutHandle)
+        // LOG('Hide Requested')
+        // const timeoutHandle = setTimeout(() => { setFeedbackDialogOpen(false) }, 3000)
+        // setFeedbackHideTimeout(timeoutHandle)
       }
     }
   }
@@ -75,6 +76,7 @@ export default function KarunaBubble (props) {
   // Function for canceling a pending hide request
   const cancelHideFeedbackDialog = () => {
     if (feedbackHideTimeout) {
+      LOG('Hide Canceled')
       clearTimeout(feedbackHideTimeout)
       setFeedbackHideTimeout(false)
     }
@@ -85,7 +87,7 @@ export default function KarunaBubble (props) {
     <BubbleActivityDialog
       hidden={!feedbackDialogOpen}
       setOpen={openCloseFeedbackDialog}
-      onHide={hideFeedbackDialog}
+      requestHide={hideFeedbackDialog}
       cancelHide={cancelHideFeedbackDialog}
     />
   )

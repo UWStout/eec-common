@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
@@ -25,7 +25,7 @@ export default function BubbleActivityDialog (props) {
   const activityStack = useRecoilValue(BubbleActivityStackState)
 
   // Create the persistent icon and the empty base
-  const icon = <PersistentBubbleIcon hidden={hidden} {...restProps} />
+  const icon = <PersistentBubbleIcon {...props} />
   const empty = <div>{'&nbsp;'}</div>
 
   // Construct the proper activity to display based on the stack
@@ -35,42 +35,46 @@ export default function BubbleActivityDialog (props) {
       case ACTIVITIES.KARUNA_MESSAGE.key:
         return (
           <ActivityBaseBubble
+            key={ACTIVITIES.KARUNA_MESSAGE.key + i}
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
           >
-            <KarunaMessageActivity message={curActivity.message} />
+            <KarunaMessageActivity message={curActivity.message} {...restProps} />
           </ActivityBaseBubble>
         )
 
       case ACTIVITIES.WATSON_MESSAGE.key:
         return (
           <ActivityBaseBubble
+            key={ACTIVITIES.KARUNA_MESSAGE.key + i}
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
           >
-            <KarunaMessageActivity message={curActivity.message} isWatson />
+            <KarunaMessageActivity message={curActivity.message} isWatson {...restProps} />
           </ActivityBaseBubble>
         )
 
       case ACTIVITIES.AFFECT_SURVEY.key:
         return (
           <ActivityBaseBubble
+            key={ACTIVITIES.AFFECT_SURVEY.key}
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
           >
-            <AffectSurveySkeleton>
-              <AffectSurveyBubbleActivity />
-            </AffectSurveySkeleton>
+            <Suspense fallback={<AffectSurveySkeleton />}>
+              <AffectSurveyBubbleActivity {...restProps} />
+            </Suspense>
           </ActivityBaseBubble>
         )
 
       case ACTIVITIES.PRIVACY_PROMPT.key:
         return (
           <ActivityBaseBubble
+            key={ACTIVITIES.PRIVACY_PROMPT.key}
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
           >
-            <PrivacyPromptBubbleActivity />
+            <PrivacyPromptBubbleActivity {...restProps} />
           </ActivityBaseBubble>
         )
 
@@ -78,10 +82,11 @@ export default function BubbleActivityDialog (props) {
       default:
         return (
           <ActivityBaseBubble
+            key={ACTIVITIES.BLANK_MESSAGE.key}
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
           >
-            <BlankActivity />
+            <BlankActivity {...restProps} />
           </ActivityBaseBubble>
         )
     }
@@ -94,5 +99,7 @@ export default function BubbleActivityDialog (props) {
 }
 
 BubbleActivityDialog.propTypes = {
-  hidden: PropTypes.bool.isRequired
+  hidden: PropTypes.bool.isRequired,
+  requestHide: PropTypes.func,
+  cancelHide: PropTypes.func
 }
