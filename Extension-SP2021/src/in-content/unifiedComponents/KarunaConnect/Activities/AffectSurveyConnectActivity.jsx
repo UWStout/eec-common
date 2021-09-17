@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
-import { PushActivityState, PopActivityState } from '../../data/globalSate/appState.js'
+import { PushConnectActivityState, PopConnectActivityState } from '../../data/globalSate/connectActivityState.js'
 import { UserAffectIDState } from '../../data/globalSate/userState.js'
 
 import AffectSurveyComponent from '../../AffectSurvey/AffectSurveyComponent.jsx'
@@ -23,8 +23,8 @@ const AffectSurveyConnectActivity = React.forwardRef((props, ref) => {
   const setUserAffectID = useSetRecoilState(UserAffectIDState)
 
   // Global activity management
-  const pushActivity = useSetRecoilState(PushActivityState)
-  const popActivity = useSetRecoilState(PopActivityState)
+  const pushActivity = useSetRecoilState(PushConnectActivityState)
+  const popActivity = useSetRecoilState(PopConnectActivityState)
 
   // Called when the user clicks on an affect. May:
   // - Show the privacy preferences prompt

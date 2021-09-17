@@ -2,7 +2,8 @@ import React, { Suspense, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { ActivityStackState, DisableInputState } from '../data/globalSate/appState.js'
+import { DisableInputState } from '../data/globalSate/appState.js'
+import { ConnectActivityStackState } from '../data/globalSate/connectActivityState.js'
 
 import MuiPaper from '@material-ui/core/Paper'
 
@@ -113,7 +114,7 @@ export default function ConnectMainDrawer (props) {
   }, [hidden, setIsRetracted])
 
   // Global activity and input disabled state
-  const activityStack = useRecoilValue(ActivityStackState)
+  const activityStack = useRecoilValue(ConnectActivityStackState)
   const setDisableInput = useSetRecoilState(DisableInputState)
   useEffect(() => {
     setDisableInput(isRetracted || hidden)

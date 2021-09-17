@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { ConnectVisibilityState, PopActivityState } from '../../data/globalSate/appState.js'
+import { ConnectVisibilityState } from '../../data/globalSate/appState.js'
+import { PopConnectActivityState } from '../../data/globalSate/connectActivityState.js'
 import { useSetRecoilState } from 'recoil'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -23,7 +24,7 @@ export default function MoreUserSettingsActivity (props) {
 
   // Global state setters
   const setConnectVisibility = useSetRecoilState(ConnectVisibilityState)
-  const popActivity = useSetRecoilState(PopActivityState)
+  const popActivity = useSetRecoilState(PopConnectActivityState)
 
   // On sign out, hide drawer, then remove activity and logout
   const onSignOut = () => {

@@ -3,7 +3,8 @@ import React from 'react'
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil'
 import { AffectListState } from '../data/globalSate/teamState.js'
 import { UserStatusState, UserCollaborationState } from '../data/globalSate/userState.js'
-import { PushActivityState, DisableInputState } from '../data/globalSate/appState.js'
+import { DisableInputState } from '../data/globalSate/appState.js'
+import { PushConnectActivityState } from '../data/globalSate/connectActivityState.js'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography, Select, MenuItem } from '@material-ui/core'
@@ -63,7 +64,7 @@ export default function UserStatusDetails (props) {
   const disableAllInput = useRecoilValue(DisableInputState)
 
   // Setter to push a new activity
-  const pushActivity = useSetRecoilState(PushActivityState)
+  const pushActivity = useSetRecoilState(PushConnectActivityState)
 
   // Lookup the affect object for the current affectID
   const currentAffect = emojiList.find((item) => {

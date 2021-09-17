@@ -2,7 +2,8 @@ import React from 'react'
 
 import { useSetRecoilState, useRecoilValue } from 'recoil'
 import { PrivacyPrefsStateSetter, UserAffectIDState } from '../../data/globalSate/userState.js'
-import { LastSelectedAffectIDState, PopActivityState } from '../../data/globalSate/appState.js'
+import { LastSelectedAffectIDState } from '../../data/globalSate/appState.js'
+import { PopConnectActivityState } from '../../data/globalSate/connectActivityState.js'
 
 import PrivacyPromptComponent from '../../AffectSurvey/PrivacyPromptComponent.jsx'
 
@@ -18,7 +19,7 @@ export default function PrivacyPromptConnectActivity (props) {
   const lastSelectedAffectID = useRecoilValue(LastSelectedAffectIDState)
 
   // Global activity states
-  const popActivity = useSetRecoilState(PopActivityState)
+  const popActivity = useSetRecoilState(PopConnectActivityState)
 
   // Respond to the dialog closing
   const onPrivacyClose = (canceled, newPrivacy) => {

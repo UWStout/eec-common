@@ -15,14 +15,6 @@ export const ACTIVITIES = {
     key: 'PRIVACY_PROMPT',
     title: 'Privacy'
   },
-  COLLABORATION_SURVEY: {
-    key: 'COLLABORATION_SURVEY',
-    title: 'Collaboration'
-  },
-  TIME_TO_RESPOND_SURVEY: {
-    key: 'TIME_TO_RESPOND_SURVEY',
-    title: 'Time to Respond'
-  },
   MORE_USER_SETTINGS: {
     key: 'MORE_USER_SETTINGS',
     title: 'User Settings'
