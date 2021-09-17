@@ -1,25 +1,45 @@
 import React from 'react'
 
-import { Grid, Typography } from '@material-ui/core'
+import { useSetRecoilState } from 'recoil'
+import { PushBubbleActivityState, PopBubbleActivityState } from '../../data/globalSate/bubbleActivityState.js'
+import { UserAffectIDState } from '../../data/globalSate/userState.js'
+
+import AffectSurveyComponent from '../../AffectSurvey/AffectSurveyComponent.jsx'
+
+import { ACTIVITIES } from './Activities.js'
 
 // import { makeLogger } from '../../../../util/Logger.js'
 // const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')
 
 /**
- * Manage the affect survey when shown in the connect panel
+ * Manage the affect survey when shown in the bubble
  **/
-export default function BlankActivity (props) {
+const AffectSurveyBubbleActivity = React.forwardRef((props, ref) => {
+  // Values and mutator functions for global state (GLOBAL STATE)
+  const setUserAffectID = useSetRecoilState(UserAffectIDState)
+
+  // Global activity management
+  const pushActivity = useSetRecoilState(PushBubbleActivityState)
+  const popActivity = useSetRecoilState(PopBubbleActivityState)
+
+  // Called when the user clicks on an affect. May:
+  // - Show the privacy preferences prompt
+  // - Fully commit and update mood
+  const onSelection = (affect, affectPrivacy) => {
+    if (affectPrivacy.prompt) {
+      pushActivity(ACTIVITIES.PRIVACY_PROMPT.key)
+    } else {
+      setUserAffectID(affect?._id)
+      popActivity(ACTIVITIES.AFFECT_SURVEY.key)
+    }
+  }
+
   // Show affect survey
   return (
-    <Grid container>
-      <Grid item xs={12}>
-        <Typography variant="body1">
-          {'All is Well!'}
-        </Typography>
-        <Typography variant="body1">
-          {'Start typing a message to receive feedback from Karuna here.'}
-        </Typography>
-      </Grid>
-    </Grid>
+    <AffectSurveyComponent noInteraction={false} selectionCallback={onSelection} ref={ref} />
   )
-}
+})
+
+AffectSurveyBubbleActivity.displayName = 'AffectSurveyBubbleActivity'
+
+export default AffectSurveyBubbleActivity
