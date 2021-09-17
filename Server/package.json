@@ -11,7 +11,7 @@
 
     "preclient": "rm -f ./public/*.js ./public/*.map ./views/**/*.js ./views/**/*.map",
     "client": "node buildClient.js",
-    "clientdev": "nodemon --watch client -- buildClient.js dev",
+    "clientdev": "nodemon -e js,jsx,json --watch client -- buildClient.js dev",
 
     "test": "mocha"
   },
