@@ -8,9 +8,9 @@ import { UserStatusState, PrivacyPrefsState } from '../../data/globalSate/userSt
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
 
-import AffectSurveyActivitySkeleton from '../../Activities/AffectSurvey/AffectSurveyActivitySkeleton.jsx'
-import AffectSurveyConnectActivity from '../../Activities/AffectSurvey/AffectSurveyConnectActivity.jsx'
-import PrivacyDialog from '../../Activities/AffectSurvey/PrivacyDialog.jsx'
+import AffectSurveySkeleton from '../../AffectSurvey/AffectSurveySkeleton.jsx'
+import AffectSurveyConnectActivity from '../../KarunaConnect/Activities/AffectSurveyConnectActivity.jsx'
+import PrivacyDialog from '../../KarunaConnect/Activities/PrivacyPromptConnectActivity.jsx'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -53,7 +53,7 @@ export default function FeedbackDialogAffectSurvey (props) {
           {promptText}
         </Typography>
       </Grid>
-      <Suspense fallback={<AffectSurveyActivitySkeleton />}>
+      <Suspense fallback={<AffectSurveySkeleton />}>
         <AffectSurveyConnectActivity />
       </Suspense>
     </Grid>

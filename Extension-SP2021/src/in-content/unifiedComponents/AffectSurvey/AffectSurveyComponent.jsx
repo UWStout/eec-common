@@ -4,18 +4,18 @@ import PropTypes from 'prop-types'
 import { debounce } from 'debounce'
 
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { LastSelectedAffectIDState } from '../../data/globalSate/appState.js'
-import { AffectListState, DisabledAffectsListState } from '../../data/globalSate/teamState.js'
-import { AffectHistoryListState, FavoriteAffectsListState, UserAffectIDState, PrivacyPrefsState } from '../../data/globalSate/userState.js'
+import { LastSelectedAffectIDState } from '../data/globalSate/appState.js'
+import { AffectListState, DisabledAffectsListState } from '../data/globalSate/teamState.js'
+import { AffectHistoryListState, FavoriteAffectsListState, UserAffectIDState, PrivacyPrefsState } from '../data/globalSate/userState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse, Grid } from '@material-ui/core'
 import { ExpandMore, ExpandLess, Favorite, History, Mood } from '@material-ui/icons'
 
-import TunneledSearchBar from '../../Shared/TunneledSearchBar.jsx'
-import Emoji from '../../Shared/Emoji.jsx'
+import TunneledSearchBar from '../Shared/TunneledSearchBar.jsx'
+import Emoji from '../Shared/Emoji.jsx'
 
-import { makeLogger } from '../../../../util/Logger.js'
+import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')
 
 const useStyles = makeStyles((theme) => ({

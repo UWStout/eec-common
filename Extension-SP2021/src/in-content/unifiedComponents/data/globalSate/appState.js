@@ -1,6 +1,6 @@
 import { atom, selector } from 'recoil'
 
-import { ACTIVITIES } from '../../Activities/Activities.js'
+import { ACTIVITIES } from '../../KarunaConnect/Activities/Activities.js'
 
 // Colorful logger
 import { makeLogger } from '../../../../util/Logger.js'

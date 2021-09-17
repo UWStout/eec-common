@@ -10,7 +10,7 @@ import { KeyboardArrowRight, Cancel } from '@material-ui/icons'
 
 import MuiDivider from '@material-ui/core/Divider'
 
-import { ACTIVITIES } from '../Activities/Activities'
+import { ACTIVITIES } from './Activities/Activities'
 import TeamTabs from './TeamTabs.jsx'
 
 const useStyles = makeStyles((theme) => ({

@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 
 import { useRecoilState, useSetRecoilState } from 'recoil'
-import { TimeToRespondState } from '../data/globalSate/userState.js'
-import { PopActivityState } from '../data/globalSate/appState.js'
+import { TimeToRespondState } from '../../data/globalSate/userState.js'
+import { PopActivityState } from '../../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography, FormControl, FormControlLabel, Checkbox, Select, MenuItem, Button } from '@material-ui/core'
 
-import TunneledTextField from '../Shared/TunneledTextField.jsx'
+import TunneledTextField from '../../Shared/TunneledTextField.jsx'
 import { ACTIVITIES } from './Activities.js'
 
 // import { makeLogger } from '../../../util/Logger.js'

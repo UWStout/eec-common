@@ -5,9 +5,9 @@ import { useSetRecoilState } from 'recoil'
 import { PushActivityState, PopActivityState } from '../../data/globalSate/appState.js'
 import { UserAffectIDState } from '../../data/globalSate/userState.js'
 
-import AffectSurveyComponent from './AffectSurveyComponent.jsx'
+import AffectSurveyComponent from '../../AffectSurvey/AffectSurveyComponent.jsx'
 
-import { ACTIVITIES } from '../Activities.js'
+import { ACTIVITIES } from './Activities.js'
 
 // import { makeLogger } from '../../../../util/Logger.js'
 // const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')

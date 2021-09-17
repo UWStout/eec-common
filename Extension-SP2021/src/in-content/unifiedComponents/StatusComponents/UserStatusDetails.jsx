@@ -12,7 +12,7 @@ import InternalLink from '../Shared/InternalLink.jsx'
 import TimeToRespondForm from './TimeToRespondForm.jsx'
 import { rawCollaborationIcon } from '../Shared/CollaborationIcon.jsx'
 
-import { ACTIVITIES } from '../Activities/Activities.js'
+import { ACTIVITIES } from '../KarunaConnect/Activities/Activities.js'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('CONNECT Status Activity', 'pink', 'black')

@@ -19,7 +19,7 @@ const ITEM_COUNT = 10
 /**
  * affect survey pops up in the panel and in the bubble.
  **/
-export default function AffectSurveyActivitySkeleton (props) {
+export default function AffectSurveySkeleton (props) {
   const { listRoot, listItem } = useStyles()
 
   // Affect Survey Skeleton

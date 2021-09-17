@@ -1,18 +1,16 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+
+import { useRecoilValue } from 'recoil'
+import { PrivacyPrefsStateSetter } from '../data/globalSate/userState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography, FormGroup, FormControlLabel, Button, Checkbox } from '@material-ui/core'
 
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { PrivacyPrefsStateSetter, UserAffectIDState } from '../../data/globalSate/userState.js'
-import { LastSelectedAffectIDState, PopActivityState } from '../../data/globalSate/appState.js'
+import ExternalLink from '../Shared/ExternalLink.jsx'
 
-import ExternalLink from '../../Shared/ExternalLink.jsx'
-
-import { ACTIVITIES } from '../Activities.js'
-
-import { makeLogger } from '../../../../util/Logger.js'
-const LOG = makeLogger('Privacy Activity', 'yellow', 'black')
+// import { makeLogger } from '../../../../util/Logger.js'
+// const LOG = makeLogger('Privacy Activity', 'yellow', 'black')
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -26,16 +24,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function PrivacyPromptActivity (props) {
+export default function PrivacyPromptComponent (props) {
+  const { privacyCallback } = props
   const classes = useStyles()
 
   // Global data states
-  const [privacy, setPrivacy] = useRecoilState(PrivacyPrefsStateSetter)
-  const setCurrentAffect = useSetRecoilState(UserAffectIDState)
-  const lastSelectedAffectID = useRecoilValue(LastSelectedAffectIDState)
-
-  // Global activity states
-  const popActivity = useSetRecoilState(PopActivityState)
+  const privacy = useRecoilValue(PrivacyPrefsStateSetter)
 
   // Track local checkbox state
   const [promptState, setPromptState] = useState(privacy.prompt)
@@ -45,20 +39,8 @@ export default function PrivacyPromptActivity (props) {
 
   // Respond to the dialog closing
   const onDialogClose = (canceled, newPrivacy) => {
-    // Dismiss the privacy activity
-    popActivity(ACTIVITIES.PRIVACY_PROMPT.key)
-
-    if (!canceled) {
-      LOG('Closing Privacy Dialog', newPrivacy)
-
-      // Update affect and privacy
-      setCurrentAffect(lastSelectedAffectID)
-      setPrivacy(newPrivacy)
-
-      // Dismiss affect survey too
-      popActivity(ACTIVITIES.AFFECT_SURVEY.key)
-    } else {
-      LOG('CANCELING Privacy Dialog')
+    if (privacyCallback) {
+      privacyCallback(canceled, newPrivacy)
     }
   }
 
@@ -116,4 +98,12 @@ export default function PrivacyPromptActivity (props) {
       </Grid>
     </Grid>
   )
+}
+
+PrivacyPromptComponent.propTypes = {
+  privacyCallback: PropTypes.func
+}
+
+PrivacyPromptComponent.defaultProps = {
+  privacyCallback: null
 }
