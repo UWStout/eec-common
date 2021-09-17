@@ -36,12 +36,23 @@ export const PushBubbleActivityState = selector({
     // Validate the enw activity
     if (!newActivity?.key) {
       LOG.error('Invalid bubble activity:', newActivity)
+      return
     } else if (newActivity.key !== ACTIVITIES.BLANK_MESSAGE.key && newActivity.key !== ACTIVITIES.PRIVACY_PROMPT.key && !newActivity.message) {
       LOG.error('Bubble activity message missing:', newActivity)
+      return
+    }
+
+    const activityStack = get(BubbleActivityStackState)
+
+    // Avoid duplicates of some activities
+    if (newActivity.key === ACTIVITIES.BLANK_MESSAGE.key || newActivity.key === ACTIVITIES.PRIVACY_PROMPT.key || newActivity.key === ACTIVITIES.AFFECT_SURVEY.key) {
+      if (activityStack.indexOf((current) => (current.key === newActivity.key)) >= 0) {
+        LOG.error('Duplicate bubble activity:', newActivity)
+        return
+      }
     }
 
     // Add to top of stack
-    const activityStack = get(BubbleActivityStackState)
     set(BubbleActivityStackState, [...activityStack, newActivity])
   }
 })

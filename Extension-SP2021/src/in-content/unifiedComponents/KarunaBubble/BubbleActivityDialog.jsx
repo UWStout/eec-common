@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
@@ -61,9 +61,7 @@ export default function BubbleActivityDialog (props) {
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
           >
-            <Suspense fallback={<AffectSurveySkeleton />}>
-              <AffectSurveyBubbleActivity {...restProps} />
-            </Suspense>
+            <AffectSurveyBubbleActivity {...restProps} />
           </ActivityBaseBubble>
         )
 

@@ -66,9 +66,9 @@ export default function KarunaBubble (props) {
       if (immediate) {
         setFeedbackDialogOpen(false)
       } else {
-        // LOG('Hide Requested')
-        // const timeoutHandle = setTimeout(() => { setFeedbackDialogOpen(false) }, 3000)
-        // setFeedbackHideTimeout(timeoutHandle)
+        LOG('Hide Requested')
+        const timeoutHandle = setTimeout(() => { setFeedbackDialogOpen(false) }, 3000)
+        setFeedbackHideTimeout(timeoutHandle)
       }
     }
   }

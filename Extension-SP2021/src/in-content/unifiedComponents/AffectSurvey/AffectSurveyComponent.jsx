@@ -19,8 +19,8 @@ import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')
 
 const useStyles = makeStyles((theme) => ({
-  searchBar: {
-    paddingBottom: theme.spacing(2)
+  searchBarStyle: {
+    width: '100%'
   },
   listRoot: {
     width: '100%',
@@ -57,7 +57,7 @@ function searchFilter (fullList, searchText) {
 const AffectSurveyComponent = React.forwardRef((props, ref) => {
   // Make/Deconstruct the props and style class names
   const { noInteraction, selectionCallback } = props
-  const { listRoot, innerList, listItem } = useStyles()
+  const { listRoot, innerList, listItem, searchBarStyle } = useStyles()
 
   // Subscribe to changes in global states (GLOBAL STATE)
   const emojiList = useRecoilValue(AffectListState)
@@ -165,13 +165,12 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
       ref={ref}
       role={'region'}
       aria-label={'Affect Survey'}
-      // className={root}
       container
       spacing={1}
     >
 
       {/* For searching through the possible moods */}
-      <Grid item>
+      <Grid item xs={12} gutterBottom>
         <TunneledSearchBar
           role={'search'}
           value={searchText}
@@ -180,9 +179,10 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
           placeholder={'search emojis'}
           disabled={noInteraction}
           aria-label={'Affect Search Box'}
+          className={searchBarStyle}
         />
       </Grid>
-      <Grid item>
+      <Grid item xs={12}>
 
         <List dense className={listRoot}>
           {/* Recent sub-list */}
