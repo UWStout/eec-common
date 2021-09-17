@@ -10,5 +10,9 @@ export const ACTIVITIES = {
   KARUNA_MESSAGE: {
     key: 'KARUNA_MESSAGE',
     title: 'Karuna Says'
+  },
+  BLANK_MESSAGE: {
+    key: 'BLANK_MESSAGE',
+    title: 'No Messages'
   }
 }

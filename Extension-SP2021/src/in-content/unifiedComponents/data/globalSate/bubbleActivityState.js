@@ -10,7 +10,7 @@ const LOG = makeLogger('RECOIL Bubble Activity State', '#27213C', '#EEF4ED')
 /** The trail of activities clicked through in the bubble panel */
 export const BubbleActivityStackState = atom({
   key: 'BubbleActivityStackState',
-  default: [ACTIVITIES.LOGIN.key],
+  default: [ACTIVITIES.BLANK_MESSAGE.key],
   effects_UNSTABLE: [
     ({ onSet }) => {
       // Log any value changes for debugging

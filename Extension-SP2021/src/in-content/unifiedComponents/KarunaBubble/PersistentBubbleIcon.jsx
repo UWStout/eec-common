@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref) {
+const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (props, ref) {
   const { hidden, onHide, cancelHide, setOpen } = props
   const classes = useStyles()
 
@@ -144,11 +144,11 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
   )
 })
 
-PersistentBubble.propTypes = {
+PersistentBubbleIcon.propTypes = {
   hidden: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
   cancelHide: PropTypes.func.isRequired,
   setOpen: PropTypes.func.isRequired
 }
 
-export default PersistentBubble
+export default PersistentBubbleIcon

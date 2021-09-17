@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
 import { ConnectVisibilityState, BubbleVisibilityStateSetter, ActiveKarunaMessageState, BubbleDisplayedFeedbackState } from './data/globalSate/appState.js'
 
-import PersistentBubble from './KarunaBubble/PersistentBubble.jsx'
-import FeedbackDialog from './KarunaBubble/FeedbackDialog/FeedbackDialog.jsx'
+import PersistentBubbleIcon from './KarunaBubble/PersistentBubbleIcon.jsx'
+import BubleActivityDialog from './KarunaBubble/BubbleActivityDialog.jsx'
 
 // Colorful logger (Enable if logging is needed)
 // import { makeLogger } from '../../util/Logger.js'
@@ -67,17 +67,17 @@ export default function KarunaBubble (props) {
 
   // Main render
   return (
-    <FeedbackDialog
+    <BubleActivityDialog
       hidden={!feedbackDialogOpen}
       onHide={hideFeedbackDialog}
       cancelHide={cancelHideFeedbackDialog}
     >
-      <PersistentBubble
+      <PersistentBubbleIcon
         hidden={!feedbackDialogOpen}
         setOpen={openCloseFeedbackDialog}
         onHide={hideFeedbackDialog}
         cancelHide={cancelHideFeedbackDialog}
       />
-    </FeedbackDialog>
+    </BubleActivityDialog>
   )
 }
