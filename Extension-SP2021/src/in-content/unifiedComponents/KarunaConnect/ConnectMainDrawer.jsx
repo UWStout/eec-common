@@ -2,7 +2,8 @@ import React, { Suspense, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { ActivityStackState, DisableInputState } from '../data/globalSate/appState.js'
+import { DisableInputState } from '../data/globalSate/appState.js'
+import { ConnectActivityStackState } from '../data/globalSate/connectActivityState.js'
 
 import MuiPaper from '@material-ui/core/Paper'
 
@@ -13,15 +14,15 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import PanelBreadcrumbs from './PanelBreadcrumb.jsx'
 
 // All the activities that might be used
-import { ACTIVITIES } from '../Activities/Activities.js'
-import ActivityBase from '../Activities/ActivityBase.jsx'
+import { ACTIVITIES } from './Activities/Activities.js'
+import ActivityBase from './Activities/ActivityBase.jsx'
 
 import ConnectMainActivity from './ConnectMainActivity.jsx'
 import ConnectLoginActivity from './ConnectLoginActivity.jsx'
-import AffectSurveyActivity from '../Activities/AffectSurvey/AffectSurveyActivity.jsx'
-import AffectSurveyActivitySkeleton from '../Activities/AffectSurvey/AffectSurveyActivitySkeleton.jsx'
-import PrivacyPromptActivity from '../Activities/AffectSurvey/PrivacyPromptActivity.jsx'
-import MoreUserSettingsActivity from '../Activities/MoreUserSettingsActivity.jsx'
+import AffectSurveyConnectActivity from './Activities/AffectSurveyConnectActivity.jsx'
+import AffectSurveySkeleton from '../AffectSurvey/AffectSurveySkeleton.jsx'
+import PrivacyPromptConnectActivity from './Activities/PrivacyPromptConnectActivity.jsx'
+import MoreUserSettingsActivity from './Activities/MoreUserSettingsActivity.jsx'
 
 // DEBUG: Enable this logger when needed
 import { makeLogger } from '../../../util/Logger.js'
@@ -113,7 +114,7 @@ export default function ConnectMainDrawer (props) {
   }, [hidden, setIsRetracted])
 
   // Global activity and input disabled state
-  const activityStack = useRecoilValue(ActivityStackState)
+  const activityStack = useRecoilValue(ConnectActivityStackState)
   const setDisableInput = useSetRecoilState(DisableInputState)
   useEffect(() => {
     setDisableInput(isRetracted || hidden)
@@ -181,15 +182,15 @@ export default function ConnectMainDrawer (props) {
   activityElements.push(
     <ActivityBase key={ACTIVITIES.AFFECT_SURVEY.key} direction="left" in={activityStack.includes(ACTIVITIES.AFFECT_SURVEY.key)} mountOnEnter unmountOnExit>
       <Typography variant="body1" gutterBottom>{'How are you feeling about the project?'}</Typography>
-      <Suspense fallback={<AffectSurveyActivitySkeleton />}>
-        <AffectSurveyActivity />
+      <Suspense fallback={<AffectSurveySkeleton />}>
+        <AffectSurveyConnectActivity />
       </Suspense>
     </ActivityBase>
   )
 
   activityElements.push(
     <ActivityBase key={ACTIVITIES.PRIVACY_PROMPT.key} direction="left" in={activityStack.includes(ACTIVITIES.PRIVACY_PROMPT.key)} mountOnEnter unmountOnExit>
-      <PrivacyPromptActivity className={activityStyle} />
+      <PrivacyPromptConnectActivity className={activityStyle} />
     </ActivityBase>
   )
 

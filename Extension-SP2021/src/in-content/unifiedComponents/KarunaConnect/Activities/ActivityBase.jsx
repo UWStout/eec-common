@@ -13,7 +13,8 @@ const Paper = withStyles((theme) => ({
     width: theme.spacing(33),
     paddingRight: theme.spacing(2),
     overflow: 'hidden',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    zIndex: 2
   }
 }))(MuiPaper)
 

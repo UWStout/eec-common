@@ -1,34 +1,52 @@
+/* global EventEmitter3 */
+
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
-import { ConnectVisibilityState, BubbleVisibilityStateSetter, ActiveKarunaMessageState, BubbleDisplayedFeedbackState } from './data/globalSate/appState.js'
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { ConnectVisibilityState, BubbleVisibilityStateSetter } from './data/globalSate/appState.js'
+import { PushBubbleActivityState } from './data/globalSate/bubbleActivityState.js'
 
-import PersistentBubble from './KarunaBubble/PersistentBubble.jsx'
-import FeedbackDialog from './KarunaBubble/FeedbackDialog/FeedbackDialog.jsx'
+import BubbleActivityDialog from './KarunaBubble/BubbleActivityDialog.jsx'
+import { ACTIVITIES } from './KarunaBubble/Activities/Activities.js'
 
 // Colorful logger (Enable if logging is needed)
-// import { makeLogger } from '../../util/Logger.js'
-// const LOG = makeLogger('BUBBLE Component', 'lavender', 'black')
+import { makeLogger } from '../../util/Logger.js'
+const LOG = makeLogger('BUBBLE Component', 'lavender', 'black')
 
 // The karuna dialog bubble
 export default function KarunaBubble (props) {
+  const { emitter } = props
+
+  // Track karuna server messages globally
+  const pushBubbleActivity = useSetRecoilState(PushBubbleActivityState)
+  useEffect(() => {
+    emitter.on('karunaMessage', (newMessage) => {
+      // What type of message is this?
+      let activityKey = ACTIVITIES.BLANK_MESSAGE.key
+      if (newMessage?.affectSurvey) {
+        activityKey = ACTIVITIES.AFFECT_SURVEY.key
+      } else if (newMessage?.observations?.length > 0) {
+        activityKey = ACTIVITIES.WATSON_MESSAGE.key
+      } else if (newMessage) {
+        activityKey = ACTIVITIES.KARUNA_MESSAGE.key
+      }
+
+      // Build and push the activity
+      const newActivity = {
+        key: activityKey,
+        message: newMessage
+      }
+      LOG('Adding activity to bubble queue:', newActivity)
+      pushBubbleActivity(newActivity)
+    })
+  }, [emitter, pushBubbleActivity])
+
   // Full state and setter for visibility of main connect panel (GLOBAL STATE)
   const setMainConnectPanelOpen = useSetRecoilState(ConnectVisibilityState)
 
   // Hide/Show the feedback dialog
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useRecoilState(BubbleVisibilityStateSetter)
-  const displayedFeedback = useRecoilValue(BubbleDisplayedFeedbackState)
-
-  // Receive changes in the karuna message (GLOBAL STATE)
-  const [activeKarunaMessage, setActiveKarunaMessage] = useRecoilState(ActiveKarunaMessageState)
-  useEffect(() => {
-    if (displayedFeedback === 'affectSurvey') {
-      setFeedbackDialogOpen(true)
-      window.dispatchEvent(new CustomEvent('resize'))
-    } else if (activeKarunaMessage?.content) {
-      setFeedbackDialogOpen(true)
-    }
-  }, [displayedFeedback, activeKarunaMessage, setFeedbackDialogOpen])
 
   // Timeout for hiding the feedback dialog
   const [feedbackHideTimeout, setFeedbackHideTimeout] = useState(false)
@@ -37,9 +55,6 @@ export default function KarunaBubble (props) {
   const openCloseFeedbackDialog = (open) => {
     if (open) {
       setMainConnectPanelOpen(false)
-    } else {
-      // Consume the message
-      setActiveKarunaMessage(null)
     }
 
     setFeedbackDialogOpen(open)
@@ -51,6 +66,7 @@ export default function KarunaBubble (props) {
       if (immediate) {
         setFeedbackDialogOpen(false)
       } else {
+        LOG('Hide Requested')
         const timeoutHandle = setTimeout(() => { setFeedbackDialogOpen(false) }, 3000)
         setFeedbackHideTimeout(timeoutHandle)
       }
@@ -60,6 +76,7 @@ export default function KarunaBubble (props) {
   // Function for canceling a pending hide request
   const cancelHideFeedbackDialog = () => {
     if (feedbackHideTimeout) {
+      LOG('Hide Canceled')
       clearTimeout(feedbackHideTimeout)
       setFeedbackHideTimeout(false)
     }
@@ -67,17 +84,19 @@ export default function KarunaBubble (props) {
 
   // Main render
   return (
-    <FeedbackDialog
+    <BubbleActivityDialog
       hidden={!feedbackDialogOpen}
-      onHide={hideFeedbackDialog}
+      setOpen={openCloseFeedbackDialog}
+      requestHide={hideFeedbackDialog}
       cancelHide={cancelHideFeedbackDialog}
-    >
-      <PersistentBubble
-        hidden={!feedbackDialogOpen}
-        setOpen={openCloseFeedbackDialog}
-        onHide={hideFeedbackDialog}
-        cancelHide={cancelHideFeedbackDialog}
-      />
-    </FeedbackDialog>
+    />
   )
+}
+
+KarunaBubble.propTypes = {
+  emitter: PropTypes.instanceOf(EventEmitter3)
+}
+
+KarunaBubble.defaultProps = {
+  emitter: null
 }

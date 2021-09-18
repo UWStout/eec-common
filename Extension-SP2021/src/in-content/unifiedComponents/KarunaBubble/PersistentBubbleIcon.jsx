@@ -2,7 +2,8 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue, useRecoilState } from 'recoil'
-import { KarunaMessageQueueState, ActiveKarunaMessageState, ConnectVisibilityState } from '../data/globalSate/appState.js'
+import { BubbleActivityStackState } from '../data/globalSate/bubbleActivityState.js'
+import { ConnectVisibilityState } from '../data/globalSate/appState.js'
 import { ValidUserState } from '../data/globalSate/userState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -12,8 +13,8 @@ import { AccountCircle } from '@material-ui/icons'
 import { animateCSS } from '../Shared/animateHelper.js'
 
 // Colorful logger (enable if logging is needed)
-import { makeLogger } from '../../../util/Logger.js'
-const LOG = makeLogger('Persistent Bubble Component', 'yellow', 'black')
+// import { makeLogger } from '../../../util/Logger.js'
+// const LOG = makeLogger('Persistent Bubble Component', 'yellow', 'black')
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,42 +42,21 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref) {
-  const { hidden, onHide, cancelHide, setOpen } = props
+const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (props, ref) {
+  const { hidden, requestHide, cancelHide, setOpen } = props
   const classes = useStyles()
 
   // State of user login (GLOBAL STATE)
   const userLoggedIn = useRecoilValue(ValidUserState)
-  const messageQueue = useRecoilValue(KarunaMessageQueueState)
-  const activeKarunaMessage = useRecoilValue(ActiveKarunaMessageState)
+
+  // Other global state
+  const activityStack = useRecoilValue(BubbleActivityStackState)
   const [mainPanelOpen, setMainPanelOpen] = useRecoilState(ConnectVisibilityState)
 
   // Determine what indicators to show
-  let showCount = false
-  let showNVCIndicator = false
-  let showAlertIndicator = false
-  if (activeKarunaMessage) {
-    if (activeKarunaMessage?.entities && activeKarunaMessage.entities.length > 0) {
-      LOG('Showing NVC indicator')
-      showNVCIndicator = true
-    } else if (activeKarunaMessage?.content && activeKarunaMessage.content !== '') {
-      LOG('Showing alert indicator')
-      showAlertIndicator = true
-    }
-  } else {
-    if (messageQueue.length > 1) {
-      LOG('Showing Count')
-      showCount = true
-    } else if (messageQueue.length === 1) {
-      if (messageQueue[0]?.entities && messageQueue[0].entities.length > 0) {
-        LOG('Showing NVC indicator')
-        showNVCIndicator = true
-      } else if (messageQueue[0]?.content && messageQueue[0].content !== '') {
-        LOG('Showing alert indicator')
-        showAlertIndicator = true
-      }
-    }
-  }
+  // let showCount = false
+  // let showNVCIndicator = false
+  const showAlertIndicator = (Array.isArray(activityStack) && activityStack.length > 1)
 
   const clickCallback = () => {
     if (!userLoggedIn) {
@@ -84,11 +64,11 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
       setMainPanelOpen(!mainPanelOpen)
     } else {
       if (setOpen) {
-        cancelHide()
+        if (cancelHide) { cancelHide() }
         setOpen(hidden)
       }
       if (!hidden) {
-        onHide(false)
+        if (requestHide) { requestHide(false) }
       }
     }
   }
@@ -96,17 +76,17 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
   // Shake the icon whenever there's a new message to view
   useEffect(() => {
     const ariaLabel = (userLoggedIn ? 'Open Feedback Dialog' : 'Open Login Dialog')
-    if (!userLoggedIn || (activeKarunaMessage === null && messageQueue.length > 0)) {
+    if (!userLoggedIn || (activityStack.length > 1)) {
       animateCSS(`[aria-label="${ariaLabel}"]`, 'tada')
     }
-  }, [activeKarunaMessage, messageQueue, userLoggedIn])
+  }, [activityStack.length, userLoggedIn])
 
   return (
     <IconButton
       ref={ref}
       onClick={clickCallback}
       onMouseEnter={cancelHide}
-      onMouseLeave={() => onHide(false)}
+      onMouseLeave={() => requestHide && requestHide(false)}
       className={classes.root}
       aria-label={userLoggedIn ? 'Open Feedback Dialog' : 'Open Login Dialog'}
     >
@@ -131,11 +111,9 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
           <AccountCircle />
         </div>}
 
-      {userLoggedIn && (showCount || showAlertIndicator || showNVCIndicator) &&
+      {userLoggedIn && showAlertIndicator &&
         <div className={classes.contextIndicator}>
           <Typography variant="body1">
-            {showCount && (messageQueue.length > 9 ? '9+' : messageQueue.length)}
-            {showNVCIndicator && 'NVC'}
             {showAlertIndicator && '❕'}
           </Typography>
         </div>}
@@ -144,11 +122,18 @@ const PersistentBubble = React.forwardRef(function PersistentBubble (props, ref)
   )
 })
 
-PersistentBubble.propTypes = {
-  hidden: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
-  cancelHide: PropTypes.func.isRequired,
-  setOpen: PropTypes.func.isRequired
+PersistentBubbleIcon.propTypes = {
+  hidden: PropTypes.bool,
+  requestHide: PropTypes.func,
+  cancelHide: PropTypes.func,
+  setOpen: PropTypes.func
 }
 
-export default PersistentBubble
+PersistentBubbleIcon.defaultProps = {
+  hidden: false,
+  requestHide: null,
+  cancelHide: null,
+  setOpen: null
+}
+
+export default PersistentBubbleIcon

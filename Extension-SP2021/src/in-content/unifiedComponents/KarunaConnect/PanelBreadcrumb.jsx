@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { ActivityStackState, PopActivityState, DisableInputState } from '../data/globalSate/appState.js'
+import { DisableInputState } from '../data/globalSate/appState.js'
+import { ConnectActivityStackState, PopConnectActivityState } from '../data/globalSate/connectActivityState.js'
 import { useRecoilValue, useRecoilState } from 'recoil'
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'
@@ -10,7 +11,7 @@ import { KeyboardArrowRight, Cancel } from '@material-ui/icons'
 
 import MuiDivider from '@material-ui/core/Divider'
 
-import { ACTIVITIES } from '../Activities/Activities'
+import { ACTIVITIES } from './Activities/Activities'
 import TeamTabs from './TeamTabs.jsx'
 
 const useStyles = makeStyles((theme) => ({
@@ -49,8 +50,8 @@ export default function PanelBreadcrumbs (props) {
   const { rootStyle } = useStyles()
 
   // Get global activity stack info
-  const activityStack = useRecoilValue(ActivityStackState)
-  const [currentActivityKey, popActivity] = useRecoilState(PopActivityState)
+  const activityStack = useRecoilValue(ConnectActivityStackState)
+  const [currentActivityKey, popActivity] = useRecoilState(PopConnectActivityState)
   const disableAllInput = useRecoilValue(DisableInputState)
 
   const backCallback = () => {

@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
+import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
 import { AffectListState } from '../../data/globalSate/teamState.js'
@@ -7,8 +8,9 @@ import { UserStatusState, PrivacyPrefsState } from '../../data/globalSate/userSt
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
 
-import AffectSurveyList from '../../Activities/AffectSurvey/AffectSurveyList.jsx'
-import PrivacyDialog from '../../Activities/AffectSurvey/PrivacyDialog.jsx'
+import AffectSurveySkeleton from '../../AffectSurvey/AffectSurveySkeleton.jsx'
+import AffectSurveyConnectActivity from '../../KarunaConnect/Activities/AffectSurveyConnectActivity.jsx'
+import PrivacyDialog from '../../KarunaConnect/Activities/PrivacyPromptConnectActivity.jsx'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -16,7 +18,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function FeedbackDialogAffectSurvey (props) {
+export default function FeedbackDialogAffectSurvey (props) {
+  // Process prompts and styles
+  const { promptText } = props
   const classes = useStyles()
 
   // Subscribe to the global emojiList state and current status (GLOBAL STATE)
@@ -46,22 +50,20 @@ function FeedbackDialogAffectSurvey (props) {
     <Grid container spacing={1}>
       <Grid item>
         <Typography variant={'body1'} className={classes.title}>
-          {"Which option best describes how you're feeling?"}
+          {promptText}
         </Typography>
       </Grid>
-      <Grid item>
-        <Typography variant={'body2'} className={classes.title}>
-          {`Previous response: ${affect ? affect.characterCodes[0] : '?'}`}
-        </Typography>
-      </Grid>
-      <Grid item>
-        <AffectSurveyList
-          onBubbleOpenSurvey={() => setPrivacyDialogOpen(true)}
-          onDismissSurvey={() => { setPrivacyDialogOpen(false) }}
-        />
-      </Grid>
+      <Suspense fallback={<AffectSurveySkeleton />}>
+        <AffectSurveyConnectActivity />
+      </Suspense>
     </Grid>
   )
 }
 
-export default FeedbackDialogAffectSurvey
+FeedbackDialogAffectSurvey.propTypes = {
+  promptText: PropTypes.string
+}
+
+FeedbackDialogAffectSurvey.defaultProps = {
+  promptText: 'Which option best describes how you\'re feeling?'
+}

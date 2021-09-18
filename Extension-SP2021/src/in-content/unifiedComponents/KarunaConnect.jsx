@@ -1,7 +1,8 @@
 import React, { Suspense, useEffect } from 'react'
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { ConnectVisibilityState, BubbleVisibilityState, ActivityStackState } from './data/globalSate/appState.js'
+import { ConnectVisibilityState, BubbleVisibilityState } from './data/globalSate/appState.js'
+import { ConnectActivityStackState } from './data/globalSate/connectActivityState.js'
 import { ValidUserState } from './data/globalSate/userState.js'
 
 import { Container } from '@material-ui/core'
@@ -9,7 +10,7 @@ import { Container } from '@material-ui/core'
 import ConnectStatusDrawer from './KarunaConnect/ConnectStatusDrawer.jsx'
 import StatusDrawerSkeleton from './KarunaConnect/StatusDrawerSkeleton.jsx'
 import ConnectMainDrawer from './KarunaConnect/ConnectMainDrawer.jsx'
-import { ACTIVITIES } from './Activities/Activities.js'
+import { ACTIVITIES } from './KarunaConnect/Activities/Activities.js'
 
 // Colorful logger (enable if logging is needed)
 // import { makeLogger } from '../../util/Logger.js'
@@ -27,7 +28,7 @@ export default function KarunaConnect (props) {
   const setBubbleFeedbackOpen = useSetRecoilState(BubbleVisibilityState)
 
   // Setter for the activity stack
-  const setActivityStack = useSetRecoilState(ActivityStackState)
+  const setActivityStack = useSetRecoilState(ConnectActivityStackState)
 
   // Ensure bubble feedback closes whenever we open the main panel
   const openMainPanel = () => {

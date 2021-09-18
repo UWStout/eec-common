@@ -4,11 +4,11 @@ import { withStyles, makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography, Button } from '@material-ui/core'
 
 import { useSetRecoilState } from 'recoil'
-import { UserCollaborationState } from '../data/globalSate/userState.js'
-import { PopActivityState } from '../data/globalSate/appState.js'
+import { UserCollaborationState } from '../../data/globalSate/userState.js'
+import { PopActivityState } from '../../data/globalSate/appState.js'
 
 import { ACTIVITIES } from './Activities.js'
-import { rawCollaborationIcon } from '../Shared/CollaborationIcon.jsx'
+import { rawCollaborationIcon } from '../../Shared/CollaborationIcon.jsx'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('Collaboration Activity', 'blue', 'black')
