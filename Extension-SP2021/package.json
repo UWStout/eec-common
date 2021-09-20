@@ -54,7 +54,7 @@
     "@testing-library/react": "11.2.7",
     "@testing-library/user-event": "13.2.1",
     "copyfiles": "^2.4.1",
-    "esbuild": "^0.12.17",
+    "esbuild": "^0.12.28",
     "eslint": "7.31.0",
     "eslint-config-standard": "16.0.3",
     "eslint-plugin-import": "2.23.4",
