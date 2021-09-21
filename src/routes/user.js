@@ -14,7 +14,7 @@ import MongoDB from 'mongodb'
 import * as UTIL from './utils.js'
 
 // Allow interaction with the socket.io server
-import { userStatusUpdated } from '../sockets.js'
+import { userStatusUpdated } from '../sockets/clientEngine.js'
 
 // Create debug output object
 import Debug from 'debug'

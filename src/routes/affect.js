@@ -14,7 +14,7 @@ import { authenticateToken } from './auth.js'
 import MongoDB from 'mongodb'
 
 // Allow interaction with the socket.io server
-import { userStatusUpdated } from '../sockets.js'
+import { userStatusUpdated } from '../sockets/clientEngine.js'
 
 // Create debug output object
 import Debug from 'debug'
