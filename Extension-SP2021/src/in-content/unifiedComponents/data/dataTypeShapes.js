@@ -35,16 +35,25 @@ export const ContextAliasShape = {
   })
 }
 
-// Basic user info shape (from token with 'id' or DB with '_id' and 'status')
+// Basic user info shape (from token with 'id')
 export const BasicUserInfoShape = {
   id: PropTypes.string,
   email: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   preferredName: PropTypes.string.isRequired,
   preferredPronouns: PropTypes.string.isRequired,
+  userType: PropTypes.string.isRequired
+}
+
+// Extended user info shape (from DB with '_id', 'contextAlias', and 'status')
+export const ExtendedUserInfoShape = {
+  _id: PropTypes.string,
+  email: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  preferredName: PropTypes.string.isRequired,
+  preferredPronouns: PropTypes.string.isRequired,
   userType: PropTypes.string.isRequired,
   contextAlias: PropTypes.shape(ContextAliasShape),
-  _id: PropTypes.string,
   status: PropTypes.shape(StatusObjectShape)
 }
 

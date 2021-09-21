@@ -12,7 +12,7 @@ import CustomTooltip from '../KarunaConnect/CustomTooltip.jsx'
 import CollaborationIcon from '../Shared/CollaborationIcon.jsx'
 import TimeToRespondIcon from '../Shared/TimeToRespondIcon.jsx'
 
-import { BasicUserInfoShape, StatusObjectShape } from '../data/dataTypeShapes.js'
+import { ExtendedUserInfoShape, StatusObjectShape } from '../data/dataTypeShapes.js'
 
 const useStyles = makeStyles((theme) => ({
   gridRoot: (props) => ({
@@ -99,7 +99,7 @@ export default function StatusListItem (props) {
 }
 
 StatusListItem.propTypes = {
-  userInfo: PropTypes.shape(BasicUserInfoShape).isRequired,
+  userInfo: PropTypes.shape(ExtendedUserInfoShape).isRequired,
   userStatus: PropTypes.shape(StatusObjectShape),
   isTeammate: PropTypes.bool,
   disabled: PropTypes.bool

@@ -393,3 +393,19 @@ export function retrieveBasicUserInfo () {
     )
   })
 }
+
+export function retrieveExtendedUserInfo (userId) {
+  return new Promise((resolve, reject) => {
+    sendMessageToBackground(
+      { type: 'ajax-fullUserInfo', userId },
+      'N/A', // Context doesn't matter
+      'Retrieving extended user info failed: ',
+      (userInfo) => { return resolve(userInfo) },
+      (message) => {
+        LOG.error('Error retrieving extended user info')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
+    )
+  })
+}

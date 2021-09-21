@@ -7,7 +7,7 @@ import { getMessagingContext } from './appState.js'
 import { makeLogger } from '../../../../util/Logger.js'
 const LOG = makeLogger('RECOIL User State', '#27213C', '#EEF4ED')
 
-/** Basic info for current user */
+/** Basic info for current user (from token only) */
 export const LoggedInUserState = atom({
   key: 'LoggedInUserState',
   default: { },
@@ -22,6 +22,26 @@ export const LoggedInUserState = atom({
       })
     }
   ]
+})
+
+/** Extended info for current user (from database) */
+export const FullUserState = selector({
+  key: 'FullUserState',
+  get: async ({ get }) => {
+    const userState = get(LoggedInUserState)
+    if (userState?.id) {
+      try {
+        const extendedInfo = await HELPER.retrieveExtendedUserInfo(userState?.id)
+        return extendedInfo
+      } catch (err) {
+        LOG.error('Failed to retrieve extended user info')
+        LOG.error(err)
+        return null
+      }
+    } else {
+      return null
+    }
+  }
 })
 
 /** Simple global state to check if the user is logged in */

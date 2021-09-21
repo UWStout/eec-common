@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, Suspense } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
 import { DisableInputState } from '../data/globalSate/appState.js'
-import { LoggedInUserState, UserTeamsState, UserStatusState } from '../data/globalSate/userState.js'
+import { FullUserState, UserTeamsState, UserStatusState } from '../data/globalSate/userState.js'
 import { ActiveTeamIndexState } from '../data/globalSate/teamState.js'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles'
@@ -88,7 +88,7 @@ export default function ConnectMainActivity (props) {
   const { linkRoot } = useStyles()
 
   // Retrieve some global state values
-  const currentUserInfo = useRecoilValue(LoggedInUserState)
+  const currentFullUserInfo = useRecoilValue(FullUserState)
   const currentUserStatus = useRecoilValue(UserStatusState)
   const disableAllInput = useRecoilValue(DisableInputState)
 
@@ -119,7 +119,9 @@ export default function ConnectMainActivity (props) {
             aria-controls="user-status-content"
             id="user-status-header"
           >
-            <StatusListItem userStatus={currentUserStatus} userInfo={currentUserInfo} />
+            <Suspense fallback={<div>...</div>}>
+              <StatusListItem userStatus={currentUserStatus} userInfo={currentFullUserInfo} />
+            </Suspense>
           </AccordionSummary>
           <AccordionDetails>
             <Suspense fallback={<div />}>

@@ -30,7 +30,7 @@ export function lookupClientSessionId (email) {
 
 export function clearClientSession (id) {
   if (id) {
-    const email = clientSessions[this.id].email
+    const email = clientSessions[id].email
     clientSessions[id] = undefined
     if (email) {
       clientSocketLookup[email] = undefined

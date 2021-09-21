@@ -28,6 +28,16 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       }
       break
 
+    case 'ajax-fullUserInfo':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = getFullUserInfo(userData.id)
+      }
+      break
+
     case 'ajax-getAffectHistory':
       if (!userData.id) {
         promise = Promise.resolve({
@@ -245,6 +255,20 @@ function getUserStatus (userID) {
     // Request data from the server
     const config = { headers: authorizationHeader(), validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/status/${userID}`, config)
+    requestPromise.then((response) => {
+      return resolve(response?.data)
+    })
+
+    // Reject on error from the first request (request to get user status)
+    requestPromise.catch((error) => { return reject(error) })
+  })
+}
+
+function getFullUserInfo (userID) {
+  return new Promise((resolve, reject) => {
+    // Request data from the server
+    const config = { headers: authorizationHeader(), validateStatus }
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/details/${userID}`, config)
     requestPromise.then((response) => {
       return resolve(response?.data)
     })

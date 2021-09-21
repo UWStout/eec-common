@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Avatar } from '@material-ui/core'
-import { BasicUserInfoShape } from '../data/dataTypeShapes'
+import { ExtendedUserInfoShape } from '../data/dataTypeShapes'
 import { stringToColor } from '../../../util/colorHelper'
 
 const useStyles = makeStyles((theme) => ({
@@ -57,7 +57,7 @@ function AvatarIcon (props) {
 }
 
 AvatarIcon.propTypes = {
-  userInfo: PropTypes.shape(BasicUserInfoShape).isRequired,
+  userInfo: PropTypes.shape(ExtendedUserInfoShape).isRequired,
   team: PropTypes.bool,
   disabled: PropTypes.bool
 }
