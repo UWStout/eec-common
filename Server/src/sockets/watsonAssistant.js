@@ -10,7 +10,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 // Create debug logging function
-const debug = Debug('karuna:server:watson')
+const debug = Debug('karuna:server:watson-assistant')
 
 // Info specific to our assistant
 const ASSISTANT_ROOT_SERVER = 'https://api.us-south.assistant.watson.cloud.ibm.com'

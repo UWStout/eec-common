@@ -1,10 +1,9 @@
 // Database controller interfaces
-import * as DBUser from './mongo/userController.js'
-import * as DBAffect from './mongo/affectController.js'
+import * as DBAffect from '../mongo/affectController.js'
 
 import * as WATSON from './watsonAssistant.js'
 
-import { sendGenericMessage } from './sockets.js'
+import { sendGenericMessage } from '../sockets.js'
 
 // Setup debug for output
 import Debug from 'debug'

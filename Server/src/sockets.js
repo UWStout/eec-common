@@ -1,16 +1,20 @@
 // Import the socket.io library
 import * as io from 'socket.io'
 
-// Import the handlebars template library
-import Handlebars from 'handlebars'
-
 // Database log and user controller objects
 import * as DBUser from './mongo/userController.js'
-import * as DBLog from './mongo/logController.js'
 
-// Helper methods
-import { parseMessageCommands, parseOtherUsers } from './socketMessageHelper.js'
-import * as Analysis from './analysisEngine.js'
+// Needed wizard session functions
+import {
+  socketWizardSession, socketWizardMessage,
+  getWizardSession, clearWizardSession
+} from './sockets/wizardEngine.js'
+
+// Needed client session functions
+import {
+  socketClientSession, socketMessageUpdate, socketMessageSend,
+  getClientSession, lookupClientSessionId, clearClientSession
+} from './sockets/clientEngine.js'
 
 // Read env variables from the .env file
 import dotenv from 'dotenv'
@@ -25,18 +29,36 @@ dotenv.config()
 // Option to enable the Watson analysis engine
 // NOTE: Can conflict with Wizard, consider only having one enabled
 const WATSON_ENABLED = process.env?.WATSON_ENABLED === 'true'
+export function isWatsonEnabled () { return WATSON_ENABLED }
 
 // Option to enable the wizard
 // NOTE: Can conflict with Watson, consider only having one enabled
 const WIZARD_ENABLED = process.env?.WIZARD_ENABLED === 'true'
-
-// Useful global info
-const clientSessions = {}
-const clientSocketLookup = {}
-const wizardSessions = {}
+export function isWizardEnabled () { return WIZARD_ENABLED }
 
 // Our root socket instance
 let mySocket = null
+
+export function getMySocket () {
+  return mySocket
+}
+
+// Helper function to decode a JWT payload
+export function decodeToken (token) {
+  // Validate that token has a payload
+  if (typeof token !== 'string' || token.split('.').length < 2) {
+    return {}
+  }
+
+  // Attempt to decode and parse
+  try {
+    const payloadBuffer = Buffer.from(token.split('.')[1], 'base64')
+    return JSON.parse(payloadBuffer.toString())
+  } catch (e) {
+    debug('Failed to parse JWT payload %o', e)
+    return {}
+  }
+}
 
 // Integrate our web-sockets route with the express server
 export function makeSocket (serverListener) {
@@ -76,210 +98,19 @@ export function makeSocket (serverListener) {
 // Respond to socket.disconnect events
 // - 'this' = current socket
 function socketDisconnect (reason) {
-  if (wizardSessions[this.id]) {
+  if (getWizardSession(this.id)) {
     debug(`[WS:${this.id}] wizard disconnected because - ${reason}`)
-    wizardSessions[this.id] = undefined
-  } else if (clientSessions[this.id]) {
+    clearWizardSession(this.id)
+  } else if (getClientSession(this.id)) {
     debug(`[WS:${this.id}] client disconnected because - ${reason}`)
-    clientSocketLookup[clientSessions[this.id].email] = undefined
-    clientSessions[this.id] = undefined
+    clearClientSession(this.id)
   } else {
     debug(`[WS:${this.id}] unknown connection disconnected because - ${reason}`)
   }
 }
 
-// Helper function to decode a JWT payload
-function decodeToken (token) {
-  // Validate that token has a payload
-  if (typeof token !== 'string' || token.split('.').length < 2) {
-    return {}
-  }
-
-  // Attempt to decode and parse
-  try {
-    const payloadBuffer = Buffer.from(token.split('.')[1], 'base64')
-    return JSON.parse(payloadBuffer.toString())
-  } catch (e) {
-    debug('Failed to parse JWT payload %o', e)
-    return {}
-  }
-}
-
-// Establish an in-memory session for a connected client
-// - 'this' = current socket
-function socketClientSession (clientInfo) {
-  if (clientSessions[this.id]) {
-    debug(`[WS:${this.id}] updated client session (${clientInfo.context})`)
-    clientSocketLookup[clientSessions[this.id].email] = undefined // In case the email has changed
-  } else {
-    // Join the universal clients room and a room for JUST this socket
-    debug(`[WS:${this.id}] new client session (${clientInfo.context})`)
-    this.join('clients')
-    this.join(this.id)
-  }
-
-  // Is there a valid token
-  if (!clientInfo.token) {
-    debug(`[WS:${this.id}] invalid - client session token missing`)
-    return
-  }
-
-  // Decode client token
-  const tokenPayload = { ...decodeToken(clientInfo.token) }
-
-  // Check for any timed triggers on a non-global session
-  if (clientInfo.context !== 'global') {
-    Analysis.checkTimedTriggers(tokenPayload)
-      .catch((err) => {
-        debug('Error checking timed triggers on client session update')
-        debug(err)
-      })
-  }
-
-  // Write/Update session and broadcast change
-  clientSessions[this.id] = { ...clientSessions[this.id], ...tokenPayload }
-  clientSocketLookup[clientSessions[this.id].email] = this.id
-
-  // Connect to team rooms if not already
-  if (!clientSessions[this.id].teams) {
-    DBUser.getUserDetails(tokenPayload.id)
-      .then((result) => {
-        const teams = result?.teams ? result.teams : []
-        teams.forEach((teamID) => {
-          this.join(`team-${teamID}`)
-        })
-        clientSessions[this.id].teams = result.teams
-      })
-      .catch((err) => {
-        debug('Error retrieving user team list, can\'t add to team rooms.')
-        debug(err)
-      })
-  }
-
-  // If not a global connect, update context list, timestamps, and optionally broadcast change
-  if (clientInfo.context !== 'global') {
-    // Pack in array if not already
-    if (!Array.isArray(clientInfo.context)) {
-      clientInfo.context = [clientInfo.context]
-    }
-
-    // Update session list
-    clientSessions[this.id].contexts = [...clientInfo.context]
-
-    // Broadcast to wizard
-    if (WIZARD_ENABLED) {
-      mySocket.to('wizards').emit('updateSessions', clientSessions)
-    }
-
-    // Record the context connection in user entry in database
-    const req = this.request
-    const address = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown'
-    DBUser.updateUserTimestamps(clientSessions[this.id].id, address, clientSessions[this.id].contexts)
-      .catch((err) => {
-        console.error('WARNING: Failed to update context timestamp')
-        console.error(err)
-      })
-  }
-}
-
-// Establish an in-memory session for a connected wizard
-// - 'this' = current socket
-function socketWizardSession (wizardInfo) {
-  if (!wizardInfo.token) {
-    console.error('ERROR: Wizard session missing access token')
-  } else {
-    wizardSessions[this.id] = { ...decodeToken(wizardInfo.token) }
-
-    if (wizardSessions[this.id]) {
-      debug(`[WS:${this.id}] updated wizard session for ${wizardSessions[this.id].email}`)
-    } else {
-      debug(`[WS:${this.id}] new wizard session for ${wizardSessions[this.id].email}`)
-    }
-
-    // Join the wizards room and send the wizard a list of active sessions
-    this.join('wizards')
-    mySocket.to(this.id).emit('updateSessions', clientSessions)
-
-    // Record the wizard login in user entry in database
-    const req = this.request
-    const address = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown'
-    DBUser.updateUserTimestamps(wizardSessions[this.id].id, address, true)
-      .catch((err) => {
-        console.error('WARNING: Failed to update wizard login timestamp')
-        console.error(err)
-      })
-  }
-}
-
-// Broadcast a message from a wizard to a specific client
-async function socketWizardMessage (messageInfo) {
-  const destID = clientSocketLookup[messageInfo.clientEmail]
-  if (destID) {
-    // Pull out some local variables
-    const correspondentID = clientSessions[destID].id
-    let messageText = messageInfo.content
-
-    // Scan for and replace any karuna-specific commands
-    messageText = parseMessageCommands(messageText, messageInfo)
-
-    // Are any user status variables being used?
-    let userStatus = { affect: 'unknown', timeToRespond: 'unknown', collaboration: 'unknown' }
-    if (messageText.match(/{{\s*user\.status.*?}}/)) {
-      // Retrieve user status
-      try {
-        const response = await DBUser.getUserStatus(clientSessions[destID].id)
-        if (response) {
-          userStatus = {
-            affect: response.currentAffectID || 'unknown',
-            timeToRespond: response.timeToRespond || NaN,
-            collaboration: response.collaboration || 'unknown'
-          }
-        }
-      } catch (err) {
-        debug('Error getting user status')
-        debug(err)
-      }
-    }
-
-    try {
-      // Get any extra user data needed for mentioned users
-      const extraUsers = await parseOtherUsers(messageText, messageInfo, DBUser)
-
-      // Fill-in handlebars templates if they exist
-      if (messageText.includes('{{')) {
-        const msgTemplate = Handlebars.compile(messageText)
-        messageText = msgTemplate({
-          user: {
-            ...clientSessions[destID],
-            type: clientSessions[destID].userType,
-            status: userStatus
-          },
-          ...extraUsers
-        })
-      }
-
-      // Update message text and save in log (not waiting on logging, but we do catch errors)
-      messageInfo.content = messageText
-      DBLog.logWizardMessage(messageInfo, correspondentID)
-        .catch((err) => {
-          debug('Logging of wizard message failed')
-          debug(err)
-        })
-
-      // Send the message on to client
-      debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
-      mySocket.to(destID).emit('karunaMessage', messageInfo)
-    } catch (err) {
-      debug('Error awaiting other user parsing')
-      debug(err)
-    }
-  } else {
-    debug(`[WS:${this.id}] wizard sending to UNKNOWN client ${messageInfo.clientEmail} in ${messageInfo.context}`)
-  }
-}
-
-async function socketGenericMessage (messageInfo) {
-  const destID = clientSocketLookup[messageInfo.clientEmail]
+export async function socketGenericMessage (messageInfo) {
+  const destID = lookupClientSessionId(messageInfo.clientEmail)
   console.log('destID in socketGenericMessage: ' + destID)
   if (destID) {
     // Send the message on to client
@@ -290,142 +121,6 @@ async function socketGenericMessage (messageInfo) {
   }
 }
 
-// Updated text of message being written
-// - 'this' = current socket
-function socketMessageUpdate (message) {
-  if (!clientSessions[this.id]) {
-    debug(`[WS:${this.id}] typing message before login`)
-    return
-  }
-
-  // Update user's list of context aliases (their username in a service like Discord or Teams)
-  const userID = clientSessions[this.id].id
-  DBUser.setUserAlias(userID, message.context, message.user)
-    .catch((err) => {
-      debug('Alias update failed')
-      debug(err)
-    })
-
-  debug(`[WS:${this.id}] draft message sent to watson from ${message.context}${WATSON_ENABLED ? '' : ' (DISABLED)'}`)
-  if (WATSON_ENABLED) {
-    debug('Inside line 278')
-    // Hook to intelligence core, expect a promise in return
-    Analysis.analyzeMessage(message, userID, message.context, false)
-      .then((result) => {
-        if (result) {
-          // TODO: Consider something more sophisticated here
-          const messageText = result.output.generic[0].text
-          sendWatsonResponse.bind(this)(
-            messageText,
-            message,
-            message.context,
-            result.output.entities,
-            result.output.intents
-          )
-        } else {
-          debug('Empty result during message analysis')
-        }
-      })
-      .catch((err) => {
-        debug('In-Progress Message analysis failed')
-        debug(err)
-      })
-  }
-
-  // Bounce message to wizard (no logging because it floods the console)
-  if (WIZARD_ENABLED) {
-    mySocket.to('wizards').emit('clientTyping', {
-      clientEmail: clientSessions[this.id].email,
-      context: message.context,
-      data: message.data
-    })
-  }
-}
-
-// Attempt to send message from Client
-// - 'this' = current socket
-async function socketMessageSend (message) {
-  if (!clientSessions[this.id]) {
-    debug(`[WS:${this.id}] sending message before login`)
-    return
-  }
-
-  // Update user's list of context aliases (their username in a service like Discord or Teams)
-  const userID = clientSessions[this.id].id
-  DBUser.setUserAlias(userID, message.context, message.user)
-    .catch((err) => {
-      debug('Alias update failed')
-      debug(err)
-    })
-
-  // Log the message for telemetry and analysis
-  // TODO: do we have the ID of the person receiving the message?
-  DBLog.logUserMessage(message, null, userID)
-    .catch((err) => {
-      debug('client message logging failed')
-      debug(err)
-    })
-
-  // Hook to intelligence core, expect a promise in return
-  debug(`[WS:${this.id}] message sent to watson from ${message.context}${WATSON_ENABLED ? '' : ' (DISABLED)'}`)
-  if (WATSON_ENABLED) {
-    debug('Inside line 337')
-    Analysis.analyzeMessage(message, userID, message.context, true)
-      .then((result) => {
-        // TODO: Consider something more sophisticated here
-        const messageText = result.output.generic[0].text
-        sendWatsonResponse.bind(this)(
-          messageText,
-          message,
-          message.context,
-          result.output.entities,
-          result.output.intents
-        )
-      })
-      .catch((err) => {
-        debug('Completed Message analysis failed')
-        debug(err)
-      })
-  }
-
-  // Log action (if debug is enabled) and send the message to the wizard
-  if (WIZARD_ENABLED) {
-    debug(`[WS:${this.id}] message sent to wizard from ${message.context}`)
-    mySocket.to('wizards').emit('clientSend', {
-      clientEmail: clientSessions[this.id].email,
-      context: message.context,
-      data: message.data
-    })
-  }
-}
-
-// Attempt to send message to client FROM Watson
-// - 'this' = client socket
-export function sendWatsonResponse (responseText, clientPromptObj, clientContext, entities, intents) {
-  if (responseText.trim() === '') {
-    console.log('ignoring empty watson message')
-    return
-  }
-
-  const messageObj = {
-    clientEmail: clientSessions[this.id].email,
-    context: clientContext,
-    content: responseText,
-    isWatson: true,
-    entities,
-    intents
-  }
-
-  DBLog.logWatsonMessage(messageObj, clientPromptObj, clientSessions[this.id].id)
-    .catch((err) => {
-      debug('Logging of watson message failed')
-      debug(err)
-    })
-
-  console.log('sending response from watson')
-  this.emit('karunaMessage', messageObj)
-}
-
 export function sendGenericMessage (message, userID, context, showAffectSurvey = false) {
   if (message.trim() === '') {
     return
@@ -434,7 +129,7 @@ export function sendGenericMessage (message, userID, context, showAffectSurvey =
   DBUser.getUserDetails(userID)
     .then((details) => {
       const userEmail = details.email
-      const socketID = clientSocketLookup[userEmail]
+      const socketID = lookupClientSessionId(userEmail)
       if (socketID) {
         debug('emitting generic message:', message)
         mySocket.to(socketID).emit('karunaMessage', {
@@ -447,39 +142,6 @@ export function sendGenericMessage (message, userID, context, showAffectSurvey =
     })
     .catch((err) => {
       debug('could not get user details')
-      debug(err)
-    })
-}
-
-export async function userStatusUpdated (userID) {
-  DBUser.getUserDetails(userID)
-    .then((details) => {
-      const socketID = clientSocketLookup[details?.email]
-      if (socketID) {
-        if (Array.isArray(clientSessions[socketID].teams) && clientSessions[socketID].teams.length > 0) {
-          // Send message to all team rooms but NOT to this user's socket
-          mySocket.to(
-            // Create array of team room names
-            clientSessions[socketID].teams.map((teamID) => (`team-${teamID}`))
-          )
-            // Send latest status
-            .emit('teammateStatusUpdate', {
-              userId: userID,
-              context: '*',
-              currentAffectID: details.status.currentAffectID,
-              collaboration: details.status.collaboration,
-              timeToRespond: details.status.timeToRespond
-            })
-        } else {
-          debug('No teams to emit too / teams invalid:')
-          debug(clientSessions[socketID].teams)
-        }
-      } else {
-        debug(`Failed to broadcast status: could not find socket session for user ${details?.email}`)
-      }
-    })
-    .catch((err) => {
-      debug(`Failed to broadcast status: could not get user details for ${userID}`)
       debug(err)
     })
 }

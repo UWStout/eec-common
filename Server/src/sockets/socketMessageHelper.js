@@ -1,6 +1,6 @@
 // Setup debug for output
 import Debug from 'debug'
-const socketHelperDebug = Debug('karuna:server:socket_message_helper')
+const socketHelperDebug = Debug('karuna:server:socket-message-helper')
 
 export function parseMessageCommands (messageText, messageInfo) {
   // Scan for and replace any karuna-specific commands
