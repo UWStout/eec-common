@@ -38,6 +38,16 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       }
       break
 
+    case 'ajax-lookupAliasIds':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = getAliasIdLookupList(message.context, message.alias)
+      }
+      break
+
     case 'ajax-getAffectHistory':
       if (!userData.id) {
         promise = Promise.resolve({
@@ -269,6 +279,21 @@ function getFullUserInfo (userID) {
     // Request data from the server
     const config = { headers: authorizationHeader(), validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/details/${userID}`, config)
+    requestPromise.then((response) => {
+      return resolve(response?.data)
+    })
+
+    // Reject on error from the first request (request to get user status)
+    requestPromise.catch((error) => { return reject(error) })
+  })
+}
+
+function getAliasIdLookupList (context, alias) {
+  return new Promise((resolve, reject) => {
+    // Request data from the server
+    const config = { headers: authorizationHeader(), validateStatus }
+    const data = { context, alias }
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/alias_lookup`, data, config)
     requestPromise.then((response) => {
       return resolve(response?.data)
     })

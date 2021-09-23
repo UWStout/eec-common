@@ -296,9 +296,9 @@ export function setTimeToRespond (timeToRespond, context = 'none') {
 
 export function setMoodPrivacy (newPrivacy, context = 'none') {
   return new Promise((resolve, reject) => {
-    // Read the privacy settings from the background context
+    // Write the privacy settings to the background context
     sendMessageToBackground(
-      // Read from browser local storage
+      // write to browser local storage
       { type: 'write', key: 'privacy', value: newPrivacy }, // <- Message object (read/write) (key) [if writing] (value)
       context,
       'Failed to WRITE privacy preferences: ', // <- Message logged to console on error
@@ -306,7 +306,7 @@ export function setMoodPrivacy (newPrivacy, context = 'none') {
       // Success and failure callbacks
       () => { return resolve() },
       (message) => {
-        LOG.error('Error setting mood privacy')
+        LOG.error('Error writing mood privacy')
         LOG.error(message)
         return reject(new Error(message))
       }
@@ -403,6 +403,62 @@ export function retrieveExtendedUserInfo (userId) {
       (userInfo) => { return resolve(userInfo) },
       (message) => {
         LOG.error('Error retrieving extended user info')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
+    )
+  })
+}
+
+export function retrieveAliasLookupInfo (context, alias) {
+  return new Promise((resolve, reject) => {
+    sendMessageToBackground(
+      { type: 'ajax-lookupAliasIds', alias },
+      context,
+      'Retrieving alias lookup info failed: ',
+      (userInfo) => { return resolve(userInfo) },
+      (message) => {
+        LOG.error('Error retrieving alias lookup info')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
+    )
+  })
+}
+
+export function retrieveCachedAliasInfo (context) {
+  return new Promise((resolve, reject) => {
+    // Read the privacy settings from the background context
+    sendMessageToBackground(
+      // Read from browser local storage
+      { type: 'read', key: 'aliasList' },
+      context,
+      'Failed to READ alias list: ',
+
+      // Success and failure callbacks
+      (aliasList) => { return resolve(aliasList) },
+      (message) => {
+        LOG.error('Error reading cached alias list')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
+    )
+  })
+}
+
+export function updateCachedAliasInfo (context, aliasList) {
+  return new Promise((resolve, reject) => {
+    // Write the alias list to the background context
+    sendMessageToBackground(
+      // Write to browser local storage
+      { type: 'write', key: 'aliasList', value: aliasList },
+      context,
+      'Failed to WRITE alias list: ',
+
+      // Success and failure callbacks
+      () => { return resolve() },
+      (message) => {
+        LOG.error('Error writing cached alias list')
         LOG.error(message)
         return reject(new Error(message))
       }

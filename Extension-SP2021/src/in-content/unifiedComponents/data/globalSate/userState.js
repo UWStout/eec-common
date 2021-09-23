@@ -261,3 +261,64 @@ export const PrivacyPrefsStateSetter = selector({
     HELPER.setMoodPrivacy(newPrivacy, getMessagingContext())
   }
 })
+
+/** Atom for locally cached alias to userId lookup info */
+export const CachedAliasListState = atom({
+  key: 'CachedAliasListState',
+  default: { },
+  effects_UNSTABLE: [
+    ({ setSelf, onSet }) => {
+      setSelf(HELPER.retrieveCachedAliasInfo())
+
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Cached Alias Info updated', newVal)
+      })
+    }
+  ]
+})
+
+/** Selector for creating alias to userId lookup data and updating it */
+export const AliasListState = selector({
+  key: 'AliasListState',
+  get: async ({ get }) => {
+    const cachedList = get(CachedAliasListState)
+    return cachedList
+  },
+  set: async ({ get, set }, newAliasList) => {
+    if (!Array.isArray(newAliasList)) {
+      newAliasList = [newAliasList]
+    }
+
+    // Compare cached aliases with requested ones
+    const cachedList = get(CachedAliasListState)
+    const missingAliasList = []
+    newAliasList.forEach((alias) => {
+      if (cachedList[alias] === undefined) {
+        missingAliasList.push(alias)
+      }
+    })
+
+    // Do we need to lookup any new aliases
+    if (missingAliasList.length > 0) {
+      try {
+        // Retrieve just the new aliases
+        const newEntries = await HELPER.retrieveAliasLookupInfo(getMessagingContext(), missingAliasList)
+
+        // Combine new entries with cache
+        const combinedCache = { ...cachedList, ...newEntries }
+
+        // Update cache and return combined list
+        await HELPER.updateCachedAliasInfo(combinedCache)
+        set(CachedAliasListState, combinedCache)
+        return combinedCache
+      } catch (err) {
+        // Log the error and let execution fall through
+        LOG.error('Failed to update alias list:', err)
+      }
+    }
+
+    // In all other cases, just return the cached list
+    return cachedList
+  }
+})

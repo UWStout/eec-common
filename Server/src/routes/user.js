@@ -159,6 +159,37 @@ router.get('/details/:id', authenticateToken, async (req, res) => {
   }
 })
 
+router.post('/alias_lookup', authenticateToken, async (req, res) => {
+  // Check for and validate provided context
+  const context = req.body.context
+  if (!context) {
+    return res.status(400).send({ error: true, message: 'messaging context required' })
+  } else if (context !== 'msTeams' && context !== 'discord' && context !== 'slack') {
+    return res.status(400).send({ error: true, message: `Invalid context "${context}"` })
+  }
+
+  // Read alias from URL params
+  if (!req.body.alias) {
+    return res.status(400).send({ error: true, message: 'alias list missing' })
+  }
+
+  // Extract as array of values
+  const aliasList = (!Array.isArray(req.body.alias) ? [req.body.alias] : req.body.alias)
+
+  // Put limit on size of request
+  if (aliasList.lenth > 100) {
+    return res.status(400).send({ error: true, message: 'max list size exceeded' })
+  }
+
+  // Attempt to retrieve user details
+  try {
+    const userIDs = await DBUser.getIdsFromAliasList(context, aliasList)
+    res.send(userIDs)
+  } catch (err) {
+    UTIL.checkAndReportError('Error looking up ids from alias', res, err, debug)
+  }
+})
+
 // 22. test userController's function getUserCount ()
 router.get('/count', authenticateToken, async (req, res) => {
   // Attempt to create org

@@ -109,6 +109,44 @@ export async function getUserTeams (userID) {
 }
 
 /**
+ * Lookup user IDs for a list of aliases
+ * @param {Array(string)} aliasList List of potential user aliases
+ * @returns {Array(string|null)} Promise that resolves to an array of matching userIDs or null if no match found
+ */
+export async function getIdsFromAliasList (context, aliasList) {
+  return new Promise((resolve, reject) => {
+    if (context !== 'msTeams' && context !== 'discord' && context !== 'slack') {
+      return reject(new Error('Invalid context provided'))
+    }
+
+    // Build find query and projection objects with querystring parameter names
+    const findQuery = {}
+    findQuery[`contextAlias.${context}`] = { $in: aliasList }
+    const projection = { _id: 1 }
+    projection[`contextAlias.${context}`] = 1
+
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users').find(findQuery, { projection })
+        .toArray((err, docs) => {
+          if (err) {
+            debug('Cursor toArray failed for "getIdsFromAliasList"')
+            debug(err)
+            return reject(err)
+          }
+
+          // Convert to lookup table
+          const idLookup = {}
+          aliasList.forEach((alias) => { idLookup[alias] = '' })
+          docs.forEach((doc) => { idLookup[doc.contextAlias[context]] = doc._id })
+
+          // Resolve with the results
+          return resolve(idLookup)
+        })
+    })
+  })
+}
+
+/**
  * Check if a user already exists for the given email
  *
  * tested in test 2 of test.js
