@@ -10,6 +10,9 @@ import { CONTEXT } from '../util/contexts.js'
 import { makeLogger } from '../util/Logger.js'
 const LOG = makeLogger('CONTENT Root', 'maroon', 'white')
 
+// Enable/disable the teams 'r' and 'c' key tunneling
+const ENABLE_TEAMS_TUNNEL = false
+
 // Avoid jQuery conflicts
 $.noConflict()
 
@@ -80,7 +83,7 @@ jQuery(document).ready(() => {
   }
 
   // TEAMS: try and capture and re-broadcast the 'r' and 'c' keys
-  if (IS_TEAMS) {
+  if (IS_TEAMS && ENABLE_TEAMS_TUNNEL) {
     const tunnelKey = (e) => {
       if (e.key === 'r' || e.key === 'c') {
         if (statusEmitter) {
@@ -95,6 +98,9 @@ jQuery(document).ready(() => {
   const mutationCallback = (mutationsList, observer) => {
     // Attempt to update EEC text-boxes (if needed)
     updateTextBoxes()
+
+    // Search for and update list of alias' on the page
+    updateAliasList()
 
     // Check team and channel names on any page mutation.
     // We use optional chaining to avoid undefined errors
@@ -173,4 +179,19 @@ function updateTextBoxes () {
 
   // Send updated list of text-boxes to the unified app
   statusEmitter.emit('updateTextBoxes', textBoxes)
+}
+
+function updateAliasList () {
+  const aliasList = []
+  if (IS_TEAMS) {
+    const nodeList = document.querySelectorAll('img.media-object[src*="/profilepicture"]')
+    nodeList.forEach((node) => {
+      const match = nodeList[0].src.match(/orgid:(.*)\/profilepicture/)
+      if (Array.isArray(match) && match.length > 1) {
+        aliasList.push(match[1])
+      }
+    })
+  }
+
+  LOG('Alias List Extracted:', aliasList)
 }

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { useSetRecoilState } from 'recoil'
 import { MessagingContextState, TextBoxListState, TypeToActiveInputState } from './data/globalSate/appState.js'
 import { TeammateStatusUpdateState } from './data/globalSate/teamState.js'
-import { LoggedInUserState } from './data/globalSate/userState.js'
+import { LoggedInUserState, AliasListState } from './data/globalSate/userState.js'
 
 import { CssBaseline } from '@material-ui/core'
 
@@ -71,11 +71,13 @@ export default function UnifiedApp (props) {
     emitter.on('updateTextBoxes', setTextBoxList)
   }, [emitter, setTextBoxList])
 
-  // Track logged in state globally
-  // const userTeams = useRecoilValue(UserTeamsState)
-  // useEffect(() => {
-  //   LOG('User teams changed: ', userTeams)
-  // }, [userTeams])
+  // Track alias list state globally
+  const setAliasList = useSetRecoilState(AliasListState)
+  useEffect(() => {
+    emitter.on('aliasListChanged', (aliasList) => {
+      setAliasList(aliasList)
+    })
+  }, [emitter, setAliasList])
 
   return (
     <React.Fragment>
