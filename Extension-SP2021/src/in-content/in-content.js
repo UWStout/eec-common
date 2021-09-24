@@ -6,6 +6,8 @@ import EECUnified from './EECUnified.jsx'
 // Context enum
 import { CONTEXT } from '../util/contexts.js'
 
+import store from 'store2'
+
 // Colorful logger
 import { makeLogger } from '../util/Logger.js'
 const LOG = makeLogger('CONTENT Root', 'maroon', 'white')
@@ -117,6 +119,8 @@ jQuery(document).ready(() => {
       userName = userArea.text()?.trim()
       teamName = userArea?.parent()?.children()?.first()?.children()?.first()?.text()?.trim()
       channelName = document.title?.trim()
+      userAppId = getAppId()
+      avatarSrc = jQuery('div[class*="avatarWrapper"] img[class*="avatar"]')?.attr('src')
     } else if (IS_SLACK) {
       userName = jQuery('[data-qa="channel_sidebar_name_you"]')?.parent()?.children()?.first()?.text()?.trim()
       teamName = jQuery('.p-ia__sidebar_header__team_name_text')?.text()?.trim()
@@ -160,6 +164,8 @@ function getAppId () {
 
     // Return the Teams OrgID
     return payload.oid
+  } else if (IS_DISCORD) {
+    return store.local.get('user_id_cache')
   }
 
   return null
@@ -182,16 +188,24 @@ function updateTextBoxes () {
 }
 
 function updateAliasList () {
-  const aliasList = []
+  const aliasList = new Set()
   if (IS_TEAMS) {
     const nodeList = document.querySelectorAll('img.media-object[src*="/profilepicture"]')
     nodeList.forEach((node) => {
-      const match = nodeList[0].src.match(/orgid:(.*)\/profilepicture/)
+      const match = node.src.match(/orgid:(.*)\/profilepicture/i)
       if (Array.isArray(match) && match.length > 1) {
-        aliasList.push(match[1])
+        if (!aliasList.has(match[1])) { aliasList.add(match[1]) }
+      }
+    })
+  } else if (IS_DISCORD) {
+    const nodeList = document.querySelectorAll('img[class*="avatar"]')
+    nodeList.forEach((node) => {
+      const match = node.src.match(/avatars\/(.*)\//i)
+      if (Array.isArray(match) && match.length > 1) {
+        if (!aliasList.has(match[1])) { aliasList.add(match[1]) }
       }
     })
   }
 
-  LOG('Alias List Extracted:', aliasList)
+  LOG('Alias List Extracted:', Array.from(aliasList))
 }
