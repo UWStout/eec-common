@@ -120,28 +120,35 @@ export async function getIdsFromAliasList (context, aliasList) {
     }
 
     // Build find query and projection objects with querystring parameter names
-    const findQuery = {}
-    findQuery[`contextAlias.${context}`] = { $in: aliasList }
+    const findQuery = [{}, {}]
+    findQuery[0][`contextAlias.${context}`] = { $in: aliasList }
+    findQuery[1][`contextId.${context}`] = { $in: aliasList }
     const projection = { _id: 1 }
     projection[`contextAlias.${context}`] = 1
+    projection[`contextId.${context}`] = 1
 
     retrieveDBHandle('karunaData').then((DBHandle) => {
-      DBHandle.collection('Users').find(findQuery, { projection })
-        .toArray((err, docs) => {
-          if (err) {
-            debug('Cursor toArray failed for "getIdsFromAliasList"')
-            debug(err)
-            return reject(err)
-          }
+      DBHandle.collection('Users').find(
+        { $or: findQuery },
+        { projection }
+      ).toArray((err, docs) => {
+        if (err) {
+          debug('Cursor toArray failed for "getIdsFromAliasList"')
+          debug(err)
+          return reject(err)
+        }
 
-          // Convert to lookup table
-          const idLookup = {}
-          aliasList.forEach((alias) => { idLookup[alias] = '' })
-          docs.forEach((doc) => { idLookup[doc.contextAlias[context]] = doc._id })
-
-          // Resolve with the results
-          return resolve(idLookup)
+        // Convert to lookup table
+        const idLookup = {}
+        aliasList.forEach((alias) => { idLookup[alias] = '' })
+        docs.forEach((doc) => {
+          idLookup[doc.contextAlias[context]] = doc._id
+          idLookup[doc.contextId[context]] = doc._id
         })
+
+        // Resolve with the results
+        return resolve(idLookup)
+      })
     })
   })
 }
@@ -447,24 +454,39 @@ export function updateUserTimestamps (userID, remoteAddress, context) {
   })
 }
 
-export function setUserAlias (userID, contextStr, alias) {
-  if (!userID || !contextStr || !alias) {
-    return Promise.reject(new Error('All parameters must be defined to set a user alias'))
+export function setUserAlias (userID, contextStr, aliasID, aliasName, avatarURL) {
+  if (!userID || !contextStr) {
+    return Promise.reject(new Error('UserID and context must be defined to set a user alias'))
+  }
+
+  if (!aliasID && !aliasName && !avatarURL) {
+    return Promise.reject(new Error('At least one of aliasID, aliasName, or avatarURL must be defined'))
   }
 
   // Build the alias document
-  const newAlias = {}
-  newAlias[`contextAlias.${contextStr}`] = alias
+  const aliasSetObject = {}
+  if (aliasID) {
+    aliasSetObject[`contextId.${contextStr}`] = aliasID
+  }
+
+  if (aliasName) {
+    aliasSetObject[`contextAlias.${contextStr}`] = aliasName
+  }
+
+  if (avatarURL) {
+    aliasSetObject[`contextAvatar.${contextStr}`] = avatarURL
+  }
 
   // Update user record with the new/updated alias data
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users').findOneAndUpdate(
         { _id: new ObjectID(userID) },
-        { $set: newAlias },
+        { $set: aliasSetObject },
         (err, result) => {
           if (err) {
-            debug(`Failed to update user alias to "${alias}" for "${contextStr}"`)
+            debug(`Failed to update user alias info for "${contextStr}"`)
+            debug('New alias Info:', aliasSetObject)
             debug(err)
             return reject(err)
           }

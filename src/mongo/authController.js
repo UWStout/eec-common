@@ -117,9 +117,9 @@ export function createUser (fullName, preferredName, email, password, preferredP
             userType,
 
             // Include empty parts of scheme
-            contextAlias: {
-              avatar: {}
-            },
+            contextId: {},
+            contextAlias: {},
+            contextAvatar: {},
             status: {},
             lastLogin: {},
             teams: [],

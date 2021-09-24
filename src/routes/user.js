@@ -114,6 +114,46 @@ router.post('/update', authenticateToken, async (req, res) => {
   }
 })
 
+router.post('/update/alias', authenticateToken, async (req, res) => {
+  // Attempt to retrieve user ID (and check token payload for id)
+  const userID = req.body.id || req.body._id
+  if (!userID || !req.user.id) {
+    return res.status(400).send({ error: true, message: 'Invalid or missing user ID' })
+  }
+
+  // Ensure this is an authorized update (self-update or 'admin' user only)
+  debug(`User "${req.user.id}" wants to update "${userID}" and they are a/an "${req.user.userType}" user`)
+  if (req.user.id !== userID && req.user.userType !== 'admin') {
+    return res.status(403).send({ error: true, message: 'Cannot update other users' })
+  }
+
+  // Check post data
+  const context = req.body.context
+  if (!context || (context !== 'msTeams' && context !== 'discord' && context !== 'slack')) {
+    return res.status(400).send({ error: true, message: 'invalid context' })
+  }
+
+  if (!req.body.aliasId && !req.body.aliasName && !req.body.avatarURL) {
+    return res.status(400).send({ error: true, message: 'At least one of aliasId, aliasName, and avatarURL must be included' })
+  }
+
+  try {
+    // Attempt to retrieve current user details
+    const userDetails = await DBUser.getUserDetails(userID)
+
+    // Update values or fall-back to previous value
+    const aliasId = req.body.aliasId || userDetails.contextId[context]
+    const aliasName = req.body.aliasName || userDetails.contextName[context]
+    const avatarURL = req.body.avatarURL || userDetails.contextAvatar[context]
+
+    // Update the user in the DB
+    await DBUser.setUserAlias(userID, context, aliasId, aliasName, avatarURL)
+    return res.json({ success: true })
+  } catch (err) {
+    UTIL.checkAndReportError('Error setting user alias info', res, err, debug)
+  }
+})
+
 // Update promote a standard user into an admin
 router.post('/promote', authenticateToken, async (req, res) => {
   // Attempt to retrieve user ID (and check token payload for id)
