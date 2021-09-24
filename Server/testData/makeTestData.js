@@ -172,18 +172,24 @@ function hashPassword (password) {
           preferredName: user.name.first,
           userType: (Math.random() > 0.75 ? 'admin' : 'standard'),
 
-          /* Usage/Derived data */
-          contextAlias: {
+          /* Messaging Context Alias info */
+          contextId: {
             msTeams: UUIDv4(),
+            discord: (Math.random() * 10e18).toFixed(0).padStart(18, '0'),
+            slack: (Math.random() * 10e10).toFixed(0).padStart(10, '0')
+          },
+          contextAlias: {
+            msTeams: user.email,
             discord: user.login.username + '#' + getRandomSuffix(),
-            slack: user.email,
-            avatar: {
-              msTeams: (Math.random() < 0.125 ? '' : avatar),
-              discord: (Math.random() < 0.125 ? '' : avatar),
-              slack: (Math.random() < 0.125 ? '' : avatar)
-            }
+            slack: user.email
+          },
+          contextAvatar: {
+            msTeams: (Math.random() < 0.125 ? '' : avatar),
+            discord: (Math.random() < 0.125 ? '' : avatar),
+            slack: (Math.random() < 0.125 ? '' : avatar)
           },
 
+          /* Usage derived data */
           lastLogin: {
             timestamp: randomTimestamp(),
             remoteAddress: getRandomLocalIP(),
