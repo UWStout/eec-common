@@ -9,30 +9,27 @@
   "preferredName": "Brosef",
   "userType": "admin",
   "meta": {},
-  "teams": [
-    {
-      "$oid": "610d4ab77608ade9e0d94ed0"
-    },
-    {
-      "$oid": "610d4ab77608ade9e0d94ed2"
-    }
-  ],
+  "teams": [{
+    "$oid": "614e2a00d88a0a3e02d12cb3"
+  }, {
+    "$oid": "614e2a00d88a0a3e02d12cb5"
+  }],
   "lastLogin": {
     "timestamp": {
-      "$date": "2021-08-07T17:25:43.205Z"
+      "$date": "2021-09-21T14:57:30.700Z"
     },
     "remoteAddress": "127.0.0.1"
   },
   "lastContextLogin": {
     "discord": {
       "timestamp": {
-        "$date": "2021-08-07T19:02:05.515Z"
+        "$date": "2021-09-17T22:14:05.130Z"
       },
       "remoteAddress": "127.0.0.1"
     },
     "msTeams": {
       "timestamp": {
-        "$date": "2021-05-21T02:53:01.873Z"
+        "$date": "2021-09-21T14:57:34.541Z"
       },
       "remoteAddress": "127.0.0.1"
     }
@@ -49,13 +46,17 @@
   },
   "status": {
     "currentAffectID": {
-      "$oid": "6008928508baff43187a74f2"
+      "$oid": "6008928508baff43187a7507"
     },
     "privateAffectID": {
       "$oid": "6008928508baff43187a74f3"
     },
     "currentAffectPrivacy": false,
     "collaboration": "Open to Collaboration",
-    "timeToRespond": 12
+    "timeToRespond": {
+      "time": 24,
+      "units": "h",
+      "automatic": false
+    }
   }
 }]
