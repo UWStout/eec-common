@@ -27,11 +27,15 @@ const useStyles = makeStyles((theme) => ({
   shortIndentLeft: {
     width: '60%',
     marginLeft: theme.spacing(2)
+  },
+  selectMenuStyle: {
+    display: 'flex',
+    flexDirection: 'column'
   }
 }))
 
 export default function TimeToRespondForm (props) {
-  const { shortIndentLeft, indentLeft, indentLeftText, indentLeftTextDisabled } = useStyles()
+  const { shortIndentLeft, indentLeft, indentLeftText, indentLeftTextDisabled, selectMenuStyle } = useStyles()
 
   const [timeToRespond, setTimeToRespond] = useRecoilState(TimeToRespondState)
   const disableAllInput = useRecoilValue(DisableInputState)
@@ -73,6 +77,7 @@ export default function TimeToRespondForm (props) {
                 }}
                 aria-label={'Time to Respond units'}
                 disabled={disableAllInput || automatic}
+                MenuProps={{ MenuListProps: { className: selectMenuStyle } }}
                 disableUnderline
               >
                 <MenuItem value={'m'}>m</MenuItem>
@@ -83,6 +88,8 @@ export default function TimeToRespondForm (props) {
           )
         }}
       />
+      {/* TODO: This feature is not yet implemented */}
+      {/*
       <FormControlLabel
         control={
           <Checkbox
@@ -101,6 +108,7 @@ export default function TimeToRespondForm (props) {
       <Typography variant="caption" className={disableAllInput ? indentLeftTextDisabled : indentLeftText}>
         {'If selected, Karuna will automatically set based on an average of your response times.'}
       </Typography>
+       */}
     </React.Fragment>
   )
 }

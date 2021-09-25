@@ -1,17 +1,17 @@
 import React from 'react'
 
-import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { AffectListState } from '../data/globalSate/teamState.js'
-import { UserStatusState, UserCollaborationState } from '../data/globalSate/userState.js'
+import { UserStatusState } from '../data/globalSate/userState.js'
 import { DisableInputState } from '../data/globalSate/appState.js'
 import { PushConnectActivityState } from '../data/globalSate/connectActivityState.js'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles'
-import { Grid, Typography, Select, MenuItem } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
 
 import InternalLink from '../Shared/InternalLink.jsx'
 import TimeToRespondForm from './TimeToRespondForm.jsx'
-import { rawCollaborationIcon } from '../Shared/CollaborationIcon.jsx'
+import CollaborationForm from './CollaborationForm.jsx'
 
 import { ACTIVITIES } from '../KarunaConnect/Activities/Activities.js'
 
@@ -32,35 +32,17 @@ const TextButton = withStyles((theme) => ({
 }))((props) => (<InternalLink variant="body1" component="span" {...props} />))
 
 const useStyles = makeStyles((theme) => ({
-  iconTweakStyle: {
-    position: 'relative',
-    top: '0.125em',
-    marginRight: theme.spacing(1)
-  },
-  indentLeft: {
-    marginLeft: theme.spacing(2)
-  },
   disabledText: {
     color: theme.palette.text.disabled
   }
 }))
 
-function makeCollaboration (collaboration, iconTweakStyle) {
-  return (
-    <React.Fragment>
-      <span className={iconTweakStyle}>{rawCollaborationIcon(collaboration)}</span>
-      {collaboration ? ` ${collaboration}` : ' unknown'}
-    </React.Fragment>
-  )
-}
-
 export default function UserStatusDetails (props) {
-  const { iconTweakStyle, indentLeft, disabledText } = useStyles()
+  const { disabledText } = useStyles()
 
   // Subscribe to the global emojiList state and current status states (GLOBAL STATE)
   const emojiList = useRecoilValue(AffectListState)
   const currentStatus = useRecoilValue(UserStatusState)
-  const [collaboration, setCollaboration] = useRecoilState(UserCollaborationState)
   const disableAllInput = useRecoilValue(DisableInputState)
 
   // Setter to push a new activity
@@ -74,11 +56,6 @@ export default function UserStatusDetails (props) {
   // Open the affect survey by pushing its activity
   const openAffectSurvey = () => {
     pushActivity(ACTIVITIES.AFFECT_SURVEY.key)
-  }
-
-  // Change Collaboration Status
-  const onChangeCollaboration = (e) => {
-    setCollaboration(e.target.value)
   }
 
   // Change time to respond
@@ -107,11 +84,7 @@ export default function UserStatusDetails (props) {
         <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
           {'I\'m: '}
         </Typography>
-        <Select aria-label="Change Collaboration Status" value={collaboration} onChange={onChangeCollaboration} className={indentLeft} disabled={disableAllInput}>
-          <MenuItem value={'Focused'}>{makeCollaboration('Focused', iconTweakStyle)}</MenuItem>
-          <MenuItem value={'Open to Collaboration'}>{makeCollaboration('Open to Collaboration', iconTweakStyle)}</MenuItem>
-          <MenuItem value={'Currently Collaborating'}>{makeCollaboration('Currently Collaborating', iconTweakStyle)}</MenuItem>
-        </Select>
+        <CollaborationForm />
       </Grid>
 
       {/* Time-to-respond */}
