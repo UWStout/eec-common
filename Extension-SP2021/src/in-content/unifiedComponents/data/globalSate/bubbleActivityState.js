@@ -7,6 +7,18 @@ import { ACTIVITIES } from '../../KarunaBubble/Activities/Activities.js'
 import { makeLogger } from '../../../../util/Logger.js'
 const LOG = makeLogger('RECOIL Bubble Activity State', '#27213C', '#EEF4ED')
 
+// Which activities require a message to be valid
+const requireMessage = [
+  ACTIVITIES.BLANK_MESSAGE.key,
+  ACTIVITIES.PRIVACY_PROMPT.key
+]
+
+// Which activities can have duplicates in the stack
+const allowedDuplicates = [
+  ACTIVITIES.KARUNA_MESSAGE.key,
+  ACTIVITIES.WATSON_MESSAGE.key
+]
+
 /** The trail of activities clicked through in the bubble panel */
 export const BubbleActivityStackState = atom({
   key: 'BubbleActivityStackState',
@@ -25,19 +37,21 @@ export const BubbleActivityStackState = atom({
 export const PushBubbleActivityState = selector({
   key: 'PushBubbleActivityState',
   get: ({ get }) => {
+    // If stack is not empty, return top of stack
     const activityStack = get(BubbleActivityStackState)
     if (activityStack.length < 1) {
       LOG.error('Empty bubble activity stack')
-      return ''
+      return { key: '' }
     }
     return activityStack[activityStack.length - 1]
   },
+
   set: ({ get, set }, newActivity) => {
     // Validate the enw activity
     if (!newActivity?.key) {
       LOG.error('Invalid bubble activity:', newActivity)
       return
-    } else if (newActivity.key !== ACTIVITIES.BLANK_MESSAGE.key && newActivity.key !== ACTIVITIES.PRIVACY_PROMPT.key && !newActivity.message) {
+    } else if (requireMessage.includes(newActivity.key) && !newActivity.message) {
       LOG.error('Bubble activity message missing:', newActivity)
       return
     }
@@ -45,7 +59,7 @@ export const PushBubbleActivityState = selector({
     const activityStack = get(BubbleActivityStackState)
 
     // Avoid duplicates of some activities
-    if (newActivity.key === ACTIVITIES.BLANK_MESSAGE.key || newActivity.key === ACTIVITIES.PRIVACY_PROMPT.key || newActivity.key === ACTIVITIES.AFFECT_SURVEY.key) {
+    if (!allowedDuplicates.includes(newActivity.key)) {
       if (activityStack.indexOf((current) => (current.key === newActivity.key)) >= 0) {
         LOG.error('Duplicate bubble activity:', newActivity)
         return

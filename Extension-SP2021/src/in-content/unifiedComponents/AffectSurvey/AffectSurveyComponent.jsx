@@ -19,12 +19,18 @@ import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')
 
 const useStyles = makeStyles((theme) => ({
+  paddedStyle: {
+    // Need '!important' on these or the grid root overrides
+    paddingLeft: `${theme.spacing(1)}px !important`,
+    paddingRight: `${theme.spacing(1)}px !important`
+  },
   searchBarStyle: {
     width: '100%'
   },
   listRoot: {
     width: '100%',
-    border: '1px solid lightgrey'
+    border: '1px solid lightgrey',
+    padding: 0
   },
   listItem: {
     paddingLeft: theme.spacing(2),
@@ -33,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
   innerList: {
     overflowY: 'auto',
     maxHeight: '280px'
+  },
+  subListHeaderStyle: {
+    padding: '4px',
+    borderBottom: '1px solid lightgrey'
   }
 }))
 
@@ -57,7 +67,7 @@ function searchFilter (fullList, searchText) {
 const AffectSurveyComponent = React.forwardRef((props, ref) => {
   // Make/Deconstruct the props and style class names
   const { noInteraction, selectionCallback } = props
-  const { listRoot, innerList, listItem, searchBarStyle } = useStyles()
+  const { listRoot, innerList, listItem, paddedStyle, searchBarStyle, subListHeaderStyle } = useStyles()
 
   // Subscribe to changes in global states (GLOBAL STATE)
   const emojiList = useRecoilValue(AffectListState)
@@ -170,7 +180,7 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
     >
 
       {/* For searching through the possible moods */}
-      <Grid item xs={12} gutterBottom>
+      <Grid item xs={12} className={paddedStyle}>
         <TunneledSearchBar
           role={'search'}
           value={searchText}
@@ -193,6 +203,7 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
               aria-label={'Expand Recent Emojis'}
               button
               onClick={() => toggleExpanded('recent')}
+              className={subListHeaderStyle}
             >
               <ListItemIcon><History /></ListItemIcon>
               <ListItemText primary="Recent" />
@@ -225,6 +236,7 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
               aria-label={'Expand Favorite Emojis'}
               button
               onClick={() => toggleExpanded('favorites')}
+              className={subListHeaderStyle}
             >
               <ListItemIcon><Favorite /></ListItemIcon>
               <ListItemText primary="Favorites" />
@@ -246,6 +258,7 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
               aria-label={'Expand All Emojis'}
               aria-expanded={(expanded === 'all') ? 'true' : 'false'}
               button onClick={() => toggleExpanded('all')}
+              className={subListHeaderStyle}
             >
               <ListItemIcon><Mood /></ListItemIcon>
               <ListItemText primary="All Moods" />
