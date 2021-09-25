@@ -93,6 +93,95 @@ router.post('/update', authenticateToken, async (req, res) => {
   }
 })
 
+// Update team manager list
+router.post('/addManager', authenticateToken, async (req, res) => {
+  // Attempt to retrieve teamID
+  const teamID = req.body.teamID
+  if (!teamID || !ObjectID.isValid(teamID)) {
+    return res.status(400).send({ error: true, message: 'Invalid or missing team ID' })
+  }
+
+  const userID = req.body.userID || req.user.id
+  if (!userID || !ObjectID.isValid(userID)) {
+    return res.status(400).send({ error: true, message: 'Invalid or missing user ID' })
+  }
+
+  // Ensure this is an authorized update
+  const isMember = await DBUser.memberOfTeam(req.user.id, teamID)
+  const isManager = await DBTeam.managerOfTeam(req.user.id, teamID)
+  if ((!isMember || !isManager) && req.user.userType !== 'admin') {
+    return res.status(403).send({ error: true, message: 'You must be a team manager or be an admin to add a team manager' })
+  }
+
+  // Is the indicated ID already a manager
+  if (await DBTeam.managerOfTeam(userID, teamID)) {
+    return res.json({ success: true })
+  }
+
+  try {
+    // Attempt to retrieve current user details
+    const teamDetails = await DBTeam.getTeamDetails(teamID)
+
+    // Add new userID to the managers list
+    const managers = teamDetails.managers || []
+    if (!managers.includes(new ObjectID(userID))) {
+      managers.push(new ObjectID(userID))
+    }
+
+    // Update the team in the DB
+    await DBTeam.updateTeam(teamID, { managers })
+    return res.json({ success: true })
+  } catch (err) {
+    UTIL.checkAndReportError('Error adding team manager', res, err, debug)
+  }
+})
+
+// Update team manager list
+router.post('/removeManager', authenticateToken, async (req, res) => {
+  // Attempt to retrieve teamID
+  const teamID = req.body.teamID
+  if (!teamID || !ObjectID.isValid(teamID)) {
+    return res.status(400).send({ error: true, message: 'Invalid or missing team ID' })
+  }
+
+  const userID = req.body.userID || req.user.id
+  if (!userID || !ObjectID.isValid(userID)) {
+    return res.status(400).send({ error: true, message: 'Invalid or missing user ID' })
+  }
+
+  // Ensure this is an authorized update
+  const isMember = await DBUser.memberOfTeam(req.user.id, teamID)
+  const isManager = await DBTeam.managerOfTeam(req.user.id, teamID)
+  if ((!isMember || !isManager) && req.user.userType !== 'admin') {
+    return res.status(403).send({ error: true, message: 'You must be a team manager or be an admin to add a team manager' })
+  }
+
+  // Is the indicated ID NOT a manager
+  if (!(await DBTeam.managerOfTeam(userID, teamID))) {
+    return res.json({ success: true })
+  }
+
+  try {
+    // Attempt to retrieve current user details
+    const teamDetails = await DBTeam.getTeamDetails(teamID)
+
+    // Remove user ID from managers list
+    const managers = teamDetails.managers || []
+    const index = managers.indexOf(new ObjectID(userID))
+    if (index >= 0) {
+      managers.splice(index, 1)
+
+      // Update the team in the DB
+      await DBTeam.updateTeam(teamID, { managers })
+    }
+
+    // Indicate success
+    return res.json({ success: true })
+  } catch (err) {
+    UTIL.checkAndReportError('Error adding team manager', res, err, debug)
+  }
+})
+
 // 5. test teamController createTeam
 router.post('/register', authenticateToken, async (req, res) => {
   // Extract and check required fields

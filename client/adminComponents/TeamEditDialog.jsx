@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Grid, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Divider, Slide } from '@material-ui/core'
+import { Grid, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Divider, Slide, Link } from '@material-ui/core'
 import { retrieveFullList, retrieveItem, updateItem, createItem } from './dataHelper'
 
 const Transition = React.forwardRef(function Transition (props, ref) {
@@ -141,6 +141,12 @@ export default function TeamEditDialog (props) {
               ))}
             </TextField>
           </Grid>
+          {teamId !== '' &&
+            <Grid item xs={12}>
+              <Link href={`../TeamCulture.html?teamID=${teamId}`} underline="always" variant="body1" target="_blank">
+                {'Open team culture for editing ...'}
+              </Link>
+            </Grid>}
         </Grid>
       </DialogContent>
       <DialogActions>

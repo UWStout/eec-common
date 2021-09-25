@@ -64,6 +64,17 @@ const COLLABORATION = [
   'Currently collaborating'
 ]
 
+// Possible values for the team comm model link
+const COMM_MODEL_LINKS = [
+  '',
+  'https://baynvc.org/basics-of-nonviolent-communication/',
+  'https://www.pon.harvard.edu/daily/dispute-resolution/principled-negotiation-resolve-disagreements/',
+  'https://www.pon.harvard.edu/daily/negotiation-skills-daily/find-more-value-at-the-bargaining-table/',
+  'https://positivepsychology.com/active-listening/',
+  'https://www.skillsyouneed.com/learn/critical-thinking.html',
+  'https://www.learnalberta.ca/content/aswt/talkingtogether/facilitated_art_of_focused_conversation_fact_sheet.html'
+]
+
 const { ObjectID } = MongoDB.ObjectID
 
 // Helper function for hashing a password
@@ -110,6 +121,7 @@ function hashPassword (password) {
         name: team.name,
         description: (Math.random() < 0.1 ? '' : getRandomDescription()),
         culture: (Math.random() < 0.1 ? '' : getRandomCulture(team.name)),
+        commModelLink: COMM_MODEL_LINKS[getRandIndex(COMM_MODEL_LINKS)],
         orgId: (Math.random() < 0.1 ? null : randOrgId)
       }
     })
@@ -227,11 +239,38 @@ function hashPassword (password) {
       // Output progress
       process.stdout.write('.')
     }
-    process.stdout.write(' done\n\n')
+    process.stdout.write(' done\n')
 
     // Insert users
     await DBHelp.clearCollection(DBHandle, 'Users')
-    await DBHelp.insertAllInCollection(DBHandle, 'Users', rawUsers)
+    const userIds = await DBHelp.insertAllInCollection(DBHandle, 'Users', rawUsers)
+
+    // Ensure the list of TeamIDs is an array
+    const teamIDArray = []
+    Object.entries(teamIDs).forEach((entry) => { teamIDArray[entry[0]] = entry[1] })
+
+    // Update teams to include managers
+    process.stdout.write('\nCreating team managers ...')
+    rawUsers.forEach((curUser, i) => {
+      if (curUser.teams.length > 0) {
+        // Pick a random team
+        const randTeamID = curUser.teams[getRandIndex(curUser.teams)]
+
+        // With 50% chance, make them a manager
+        if (Math.random() > 0.5) {
+          const index = teamIDArray.indexOf(randTeamID)
+          if (!rawTeams[index].managers) {
+            rawTeams[index].managers = [userIds[i]]
+          } else {
+            rawTeams[index].managers.push(userIds[i])
+          }
+        }
+      }
+    })
+    process.stdout.write(' done\n')
+
+    // Update the teams (now with managers)
+    await DBHelp.updateAllInCollection(DBHandle, 'Teams', teamIDs, rawTeams)
 
     // Close connection
     await DBHelp.closeDB(DB)
