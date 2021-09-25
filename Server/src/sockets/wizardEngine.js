@@ -22,6 +22,11 @@ const debug = Debug('karuna:server:wizard-socket-engine')
 // Adjust env based on .env file
 dotenv.config()
 
+// Option to enable the wizard
+// NOTE: Can conflict with Watson, consider only having one enabled
+const WIZARD_ENABLED = process.env?.WIZARD_ENABLED === 'true'
+export function isWizardEnabled () { return WIZARD_ENABLED }
+
 const wizardSessions = {}
 export function getWizardSession (id) {
   return wizardSessions[id]

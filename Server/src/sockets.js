@@ -7,7 +7,7 @@ import * as DBUser from './mongo/userController.js'
 // Needed wizard session functions
 import {
   socketWizardSession, socketWizardMessage,
-  getWizardSession, clearWizardSession
+  getWizardSession, clearWizardSession, isWizardEnabled
 } from './sockets/wizardEngine.js'
 
 // Needed client session functions
@@ -25,16 +25,6 @@ const debug = Debug('karuna:server:socket')
 
 // Adjust env based on .env file
 dotenv.config()
-
-// Option to enable the Watson analysis engine
-// NOTE: Can conflict with Wizard, consider only having one enabled
-const WATSON_ENABLED = process.env?.WATSON_ENABLED === 'true'
-export function isWatsonEnabled () { return WATSON_ENABLED }
-
-// Option to enable the wizard
-// NOTE: Can conflict with Watson, consider only having one enabled
-const WIZARD_ENABLED = process.env?.WIZARD_ENABLED === 'true'
-export function isWizardEnabled () { return WIZARD_ENABLED }
 
 // Our root socket instance
 let mySocket = null
@@ -67,7 +57,7 @@ export function makeSocket (serverListener) {
 
   // Respond to new socket connections
   mySocket.on('connection', (socket) => {
-    if (WIZARD_ENABLED) {
+    if (isWizardEnabled()) {
       // Wizard specific messages
       socket.on('wizardSession', socketWizardSession.bind(socket))
       socket.on('wizardMessage', socketWizardMessage.bind(socket)) // <-- LOG TO DATABASE

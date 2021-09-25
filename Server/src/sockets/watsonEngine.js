@@ -7,6 +7,11 @@ import { getClientSession } from './clientEngine.js'
 import Debug from 'debug'
 const debug = Debug('karuna:server:watson-socket-engine')
 
+// Option to enable the Watson analysis engine
+// NOTE: Can conflict with Wizard, consider only having one enabled
+const WATSON_ENABLED = (process.env?.WATSON_ENABLED === 'true')
+export function isWatsonEnabled () { return WATSON_ENABLED }
+
 // Attempt to send message to client FROM Watson
 // - 'this' = client socket
 export function sendWatsonResponse (responseText, clientPromptObj, clientContext, entities, intents) {
