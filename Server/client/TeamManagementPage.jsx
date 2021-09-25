@@ -9,6 +9,14 @@ import { Container, CssBaseline, Box, ThemeProvider } from '@material-ui/core'
 import DataList from './adminComponents/DataList.jsx'
 import Copyright from './sharedComponents/Copyright.jsx'
 
+// Sort by options shown in the full nav bar
+const teamFieldOptions = [
+  { text: 'Team Name', value: 'name' },
+  { text: 'Team ID', value: '_id' },
+  { text: 'Org Unit Name', value: 'unitName' },
+  { text: 'Org Unit ID', value: 'orgId' }
+]
+
 // Create a default theme
 const theme = createTheme()
 
@@ -17,7 +25,11 @@ ReactDOM.render(
     <Container component="main" maxWidth="md">
       <CssBaseline />
       <RecoilRoot>
-        <DataList dataType={'team'} />
+        <DataList
+          dataType={'team'}
+          sortByOptions={teamFieldOptions}
+          filterByOptions={teamFieldOptions}
+        />
       </RecoilRoot>
       <Box mt={8}>
         <Copyright />

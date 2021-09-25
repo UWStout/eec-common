@@ -15,9 +15,10 @@ export function closeDB (DB) {
 }
 
 export function clearCollection (DB, collectionName) {
+  console.log(`> Deleting all documents from '${collectionName}' collection`)
+
   return new Promise((resolve, reject) => {
     // Clear the collection
-    console.log(`> Deleting all documents from '${collectionName}' collection`)
     DB.collection(collectionName).deleteMany({}, (err, result) => {
       if (err) { return reject(err) }
       const plural = (result.deletedCount === 1 ? 'document' : 'documents')
@@ -28,9 +29,10 @@ export function clearCollection (DB, collectionName) {
 }
 
 export function insertAllInCollection (DB, collectionName, data) {
+  const plural = (data.length === 1 ? 'document' : 'documents')
+  console.log(`> Inserting ${data.length} ${plural} into '${collectionName}' collection`)
+
   return new Promise((resolve, reject) => {
-    const plural = (data.length === 1 ? 'document' : 'documents')
-    console.log(`> Inserting ${data.length} ${plural} into '${collectionName}' collection`)
     DB.collection(collectionName).insertMany(data, (err, result) => {
       if (err) { return reject(err) }
       const plural = (result.insertedCount === 1 ? 'document' : 'documents')
@@ -38,4 +40,24 @@ export function insertAllInCollection (DB, collectionName, data) {
       return resolve(result.insertedIds)
     })
   })
+}
+
+export function updateAllInCollection (DB, collectionName, ids, newData) {
+  const plural = (newData.length === 1 ? 'document' : 'documents')
+  console.log(`> Updating ${newData.length} ${plural} into '${collectionName}' collection`)
+
+  return Promise.all(
+    newData.map((curDoc, i) => {
+      return new Promise((resolve, reject) => {
+        DB.collection(collectionName).findOneAndUpdate(
+          { _id: ids[i] },
+          { $set: curDoc },
+          (err, result) => {
+            if (err) { return reject(err) }
+            return resolve(result.value !== null)
+          }
+        )
+      })
+    })
+  )
 }

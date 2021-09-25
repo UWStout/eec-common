@@ -132,6 +132,25 @@ export function updateTeam (userID, newData) {
 }
 
 /**
+ * Test if a user is a manager on a particular team
+ * @param {string} userID ObjectID of the user you are testing the status of
+ * @param {*} teamID ObjectID of the team you are testing the status on
+ * @returns {Promise} Resolves to true if the given user is a manager on the given team (and both exist)
+ */
+export async function managerOfTeam (userID, teamID) {
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Teams').findOne(
+        { _id: new ObjectID(userID), managers: new ObjectID(userID) },
+        { projection: { _id: 0, teams: 1 } }
+      ).then((team) => {
+        return resolve(team !== null && team !== undefined)
+      }).catch((err) => { return reject(err) })
+    })
+  })
+}
+
+/**
  * List teams in the database with pagination, sorting, and filtering. See listCollection()
  * in 'commonHelper.js' for description of all the parameters and return value
  *
