@@ -2,8 +2,9 @@
 import * as DBUser from '../mongo/userController.js'
 import * as DBLog from '../mongo/logController.js'
 
-import { decodeToken, getMySocket, isWizardEnabled, isWatsonEnabled } from '../sockets.js'
-import { sendWatsonResponse } from './watsonEngine.js'
+import { decodeToken, getMySocket } from '../sockets.js'
+import { isWizardEnabled } from './wizardEngine.js'
+import { isWatsonEnabled, sendWatsonResponse } from './watsonEngine.js'
 
 // Helper methods
 import * as Analysis from './analysisEngine.js'
@@ -131,9 +132,8 @@ export function socketMessageUpdate (message) {
       debug(err)
     })
 
-  debug(`[WS:${this.id}] draft message sent to watson from ${message.context}${isWatsonEnabled() ? '' : ' (DISABLED)'}`)
   if (isWatsonEnabled()) {
-    debug('Inside line 278')
+    debug(`[WS:${this.id}] draft message sent to watson from ${message.context}`)
     // Hook to intelligence core, expect a promise in return
     Analysis.analyzeMessage(message, userID, message.context, false)
       .then((result) => {
@@ -192,9 +192,8 @@ export async function socketMessageSend (message) {
     })
 
   // Hook to intelligence core, expect a promise in return
-  debug(`[WS:${this.id}] message sent to watson from ${message.context}${isWatsonEnabled() ? '' : ' (DISABLED)'}`)
   if (isWatsonEnabled()) {
-    debug('Inside line 337')
+    debug(`[WS:${this.id}] message sent to watson from ${message.context}`)
     Analysis.analyzeMessage(message, userID, message.context, true)
       .then((result) => {
         // TODO: Consider something more sophisticated here
