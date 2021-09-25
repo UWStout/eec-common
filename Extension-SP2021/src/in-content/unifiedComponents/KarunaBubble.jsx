@@ -62,15 +62,15 @@ export default function KarunaBubble (props) {
 
   // Hide the feedback dialog (possibly after a set timeout)
   const hideFeedbackDialog = (immediate) => {
-    // if (feedbackDialogOpen) {
-    //   if (immediate) {
-    //     setFeedbackDialogOpen(false)
-    //   } else {
-    //     LOG('Hide Requested')
-    //     const timeoutHandle = setTimeout(() => { setFeedbackDialogOpen(false) }, 3000)
-    //     setFeedbackHideTimeout(timeoutHandle)
-    //   }
-    // }
+    if (feedbackDialogOpen) {
+      if (immediate) {
+        setFeedbackDialogOpen(false)
+      } else {
+        LOG('Hide Requested')
+        const timeoutHandle = setTimeout(() => { setFeedbackDialogOpen(false) }, 3000)
+        setFeedbackHideTimeout(timeoutHandle)
+      }
+    }
   }
 
   // Function for canceling a pending hide request

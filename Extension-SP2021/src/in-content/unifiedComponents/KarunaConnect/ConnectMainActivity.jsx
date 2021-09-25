@@ -31,14 +31,14 @@ const Accordion = withStyles((theme) => ({
     width: '100%',
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
-    margin: theme.spacing(0, 0, 3, 0),
+    margin: theme.spacing(0, 0, 2, 0),
     boxShadow: 'none',
     borderTop: 'none',
     '&:before': {
       display: 'none'
     },
     '&$expanded': {
-      margin: theme.spacing(0, 0, 3, 0)
+      margin: theme.spacing(0, 0, 2, 0)
     },
     '&$disabled': {
       backgroundColor: theme.palette.background.paper
@@ -76,16 +76,19 @@ const useStyles = makeStyles((theme) => ({
     underline: 'none',
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
-    margin: theme.spacing(0, 0, 3, 0),
-    '&:last-of-type': {
-      margin: 0
-    }
+    margin: theme.spacing(0, 0, 3, 0)
+  },
+  linkRootLast: {
+    underline: 'none',
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    margin: 0
   }
 }))
 
 export default function ConnectMainActivity (props) {
   const { hidden, retracted } = props
-  const { linkRoot } = useStyles()
+  const { linkRoot, linkRootLast } = useStyles()
 
   // Retrieve some global state values
   const currentFullUserInfo = useRecoilValue(FullUserState)
@@ -151,17 +154,29 @@ export default function ConnectMainActivity (props) {
           </Accordion>}
       </Grid>
 
-      <Grid container item xs={12}>
-        {currentTeam &&
-          <ExternalLink href={`https://${HOST_NAME}/TeamCulture.html?teamID=${currentTeam._id}`} variant="body1" aria-label={'Team Culture'} disabled={disableAllInput} classes={{ root: linkRoot }}>
+      {currentTeam &&
+        <Grid container item xs={12}>
+          <ExternalLink
+            href={`https://${HOST_NAME}/TeamCulture.html?teamID=${currentTeam._id}`}
+            variant="body1"
+            disabled={disableAllInput}
+            classes={{ root: (currentTeam.commModelLink ? linkRoot : linkRootLast) }}
+          >
             {`${currentTeam.name} Culture`}
-          </ExternalLink>}
-        {currentTeam && <br />}
-
-        <ExternalLink href="#nvc-info" variant="body1" aria-label={'NVC Information'} disabled={disableAllInput} classes={{ root: linkRoot }}>
-          {'NVC'}
-        </ExternalLink>
-      </Grid>
+          </ExternalLink>
+          {currentTeam.commModelLink &&
+            <React.Fragment>
+              <br />
+              <ExternalLink
+                href={currentTeam.commModelLink}
+                variant="body1"
+                disabled={disableAllInput}
+                classes={{ root: linkRootLast }}
+              >
+                {'Team Communication Model'}
+              </ExternalLink>
+            </React.Fragment>}
+        </Grid>}
     </Grid>
   )
 }

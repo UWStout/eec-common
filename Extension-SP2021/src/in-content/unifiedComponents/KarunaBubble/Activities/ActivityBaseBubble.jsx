@@ -18,7 +18,9 @@ const Tooltip = withStyles((theme) => ({
     border: '1px solid white',
     color: '#4A4A4A',
     fontSize: theme.typography.body1,
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
+    boxShadow: theme.shadows[2],
+    zIndex: 10
   }
 }))(MuiTooltip)
 

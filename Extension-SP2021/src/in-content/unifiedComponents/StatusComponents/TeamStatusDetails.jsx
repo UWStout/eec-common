@@ -81,8 +81,6 @@ export default function TeamStatusDetails (props) {
   ))
 
   return (
-    // AIW Adjusting styling
-    // <Grid container direction='column' spacing={1} item xs={12} className={rootGridStyle}>
     <Grid container direction='row' item xs={12} className={rootGridStyle} wrap="wrap" spacing={2}>
       {/* For searching through the possible moods */}
       <Grid item xs={12}>

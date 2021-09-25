@@ -239,61 +239,31 @@ export function listUsersInTeam (teamID) {
     // Retrieve team details
     retrieveDBHandle('karunaData').then((DBHandle) => {
       try {
-        DBHandle.collection('Teams').findOne({ _id: new ObjectID(teamID) }, (err, result) => {
-          // Check for and handle error
+        // Retrieve filtered list of users (w/o sensitive info) with team info joined
+        DBHandle.collection('Users').find(
+          { teams: new ObjectID(teamID) },
+          {
+            projection: {
+              email: 1,
+              preferredPronouns: 1,
+              name: 1,
+              preferredName: 1,
+              userType: 1,
+              contextAvatar: 1,
+              'status.currentAffectID': 1,
+              'status.collaboration': 1,
+              'status.timeToRespond': 1
+            }
+          }
+        ).toArray((err, docs) => {
           if (err) {
-            debug('Error retrieving unit for "listUsersInTeam"')
+            debug('Cursor toArray failed for "listUsersInTeam"')
             debug(err)
             return reject(err)
           }
 
-          // For invalid teamID (does not exist)
-          if (!result) { return resolve({ error: true, message: 'Team not found' }) }
-
-          // Reshape unit data (removing id)
-          const teamData = {
-            teamName: result.name,
-            teamAdmin: result.admin,
-            teamCulture: result.culture,
-            orgId: result.orgId
-          }
-
-          // Retrieve filtered list of users (w/o sensitive info) with team info joined
-          DBHandle.collection('Users').aggregate([
-            { $match: { teams: new ObjectID(teamID) } },
-            {
-              $project: {
-                passwordHash: 0,
-                lastLogin: 0,
-                lastContextLogin: 0,
-                lastWizardLogin: 0,
-                teams: 0,
-                meta: 0,
-                'status.privateAffectID': 0,
-                'status.currentAffectPrivacy': 0
-              }
-            },
-            { $addFields: teamData }
-          ], (err, cursor) => {
-            // Check for and handle error
-            if (err) {
-              debug('Error listing teams for "listUsersInTeam"')
-              debug(err)
-              return reject(err)
-            }
-
-            // Convert to array and return
-            cursor.toArray((err, docs) => {
-              if (err) {
-                debug('Cursor toArray failed for "listUsersInTeam"')
-                debug(err)
-                return reject(err)
-              }
-
-              // Resolve with the results
-              return resolve(docs)
-            })
-          })
+          // Resolve with the results
+          return resolve(docs)
         })
       } catch (err) {
         return resolve({ error: true, message: err.toString() })

@@ -47,7 +47,7 @@ function AvatarIcon (props) {
   const initials = (names[0] ? names[0].toUpperCase()[0] : '') + (names[lastIdx] ? names[lastIdx].toUpperCase()[0] : '')
 
   // Get avatar URL (might be undefined)
-  const imgURL = userInfo?.contextAlias?.avatar?.[messagingContext]
+  const imgURL = userInfo?.contextAvatar?.[messagingContext]
 
   return (
     <Grid item xs={12}>

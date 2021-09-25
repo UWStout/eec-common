@@ -21,21 +21,21 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     bottom: '0%',
     right: '0%',
-    padding: theme.spacing(2),
+    margin: theme.spacing(1),
     '--animate-repeat': 5
   },
   accountIndicator: {
     fontSize: theme.spacing(3),
     position: 'absolute',
-    right: theme.spacing(3.2),
-    bottom: theme.spacing(4.5)
+    right: theme.spacing(2.75),
+    bottom: theme.spacing(4)
   },
   contextIndicator: {
     color: 'white',
     position: 'absolute',
     minWidth: '36px',
-    right: theme.spacing(2.5),
-    bottom: theme.spacing(5.25)
+    right: theme.spacing(2.13),
+    bottom: theme.spacing(4.75)
   },
   iconStyle: {
     fontSize: theme.spacing(7)

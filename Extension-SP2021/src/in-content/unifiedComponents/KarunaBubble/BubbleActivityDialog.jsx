@@ -15,8 +15,6 @@ import PrivacyPromptBubbleActivity from './Activities/PrivacyPromptBubbleActivit
 import KarunaMessageActivity from './Activities/KarunaMessageActivity.jsx'
 import AffectSurveyBubbleActivity from './Activities/AffectSurveyBubbleActivity.jsx'
 
-import AffectSurveySkeleton from '../AffectSurvey/AffectSurveySkeleton.jsx'
-
 export default function BubbleActivityDialog (props) {
   // Deconstruct the props
   const { hidden, ...restProps } = props
