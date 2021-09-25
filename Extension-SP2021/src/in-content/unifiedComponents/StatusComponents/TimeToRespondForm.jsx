@@ -5,7 +5,7 @@ import { TimeToRespondState } from '../data/globalSate/userState.js'
 import { DisableInputState } from '../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { InputAdornment, FormControlLabel, Select, MenuItem, Checkbox, Typography } from '@material-ui/core'
+import { InputAdornment, Select, MenuItem } from '@material-ui/core' //, FormControlLabel, Checkbox, Typography } from '@material-ui/core'
 
 import { rawTimeToRespondIcon } from '../Shared/TimeToRespondIcon.jsx'
 import TunneledTextField from '../Shared/TunneledTextField.jsx'
@@ -35,12 +35,13 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function TimeToRespondForm (props) {
-  const { shortIndentLeft, indentLeft, indentLeftText, indentLeftTextDisabled, selectMenuStyle } = useStyles()
+  const { shortIndentLeft, selectMenuStyle } = useStyles() //, indentLeft, indentLeftText, indentLeftTextDisabled } = useStyles()
 
   const [timeToRespond, setTimeToRespond] = useRecoilState(TimeToRespondState)
   const disableAllInput = useRecoilValue(DisableInputState)
 
-  const [automatic, setAutomatic] = useState(timeToRespond?.automatic)
+  // const [automatic, setAutomatic] = useState(timeToRespond?.automatic)
+  const automatic = false
   const [time, setLocalTTR] = useState(timeToRespond?.time)
   const [units, setUnits] = useState(timeToRespond?.units)
 

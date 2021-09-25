@@ -31,7 +31,7 @@ const LOG = makeLogger('CONNECT Main Drawer', 'lime', 'black')
 const useStyles = makeStyles((theme) => ({
   // Style when the panel is retracted
   panelRetracted: {
-    right: `calc(0% - ${theme.spacing(1)}px)` // 14)}px)`
+    right: `calc(0% - ${theme.spacing(14)}px)`
   },
 
   // Style when the panel is fully expanded
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
   // Style when the panel is hidden
   panelHidden: {
-    right: `calc(0% - ${theme.spacing(1)}px)` // 39)}px)`
+    right: `calc(0% - ${theme.spacing(39)}px)`
   },
 
   // Activities need to be relatively positioned to overlap with siblings
@@ -117,8 +117,8 @@ export default function ConnectMainDrawer (props) {
   const activityStack = useRecoilValue(ConnectActivityStackState)
   const setDisableInput = useSetRecoilState(DisableInputState)
   useEffect(() => {
-    setDisableInput(false) // <- for debugging
-    // setDisableInput(isRetracted || hidden)
+    // setDisableInput(false) // <- for debugging
+    setDisableInput(isRetracted || hidden)
   }, [hidden, isRetracted, setDisableInput])
 
   // Function for queueing a hide request

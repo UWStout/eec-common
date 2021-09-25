@@ -9,8 +9,9 @@ const LOG = makeLogger('RECOIL Bubble Activity State', '#27213C', '#EEF4ED')
 
 // Which activities require a message to be valid
 const requireMessage = [
-  ACTIVITIES.BLANK_MESSAGE.key,
-  ACTIVITIES.PRIVACY_PROMPT.key
+  ACTIVITIES.AFFECT_SURVEY.key,
+  ACTIVITIES.KARUNA_MESSAGE.key,
+  ACTIVITIES.WATSON_MESSAGE.key
 ]
 
 // Which activities can have duplicates in the stack
