@@ -118,10 +118,10 @@ export default function MessageTextWrapper (props) {
       // Send a message text update to the root element, where it will be bounced
       // to the background (and then to the server).
       if (emitter) {
-        const [content, mentions, replyId] = updateMessageText(event, newJQElem, messagingContext)
+        const [content, mentions, participants, replyId, isCollapsed] = updateMessageText(event, newJQElem, messagingContext)
         LOG('Message text update')
-        LOG({ content, mentions, replyId })
-        emitter.emit('textUpdate', { content, mentions, replyId })
+        LOG({ content, mentions, participants, replyId, isCollapsed })
+        emitter.emit('textUpdate', { content, mentions, participants, replyId, isCollapsed })
       }
     }, 200))
 
@@ -135,7 +135,7 @@ export default function MessageTextWrapper (props) {
       newJQElem.off('focusout')
       newJQElem.off('input')
     }
-  }, [emitter, textBox, updateUnderlinedWords])
+  }, [emitter, messagingContext, textBox, updateUnderlinedWords])
 
   // Build the highlighted words elements
   const highlightedWords = highlightRects.map((rect, i) => (
