@@ -10,7 +10,7 @@ import { validatePassword } from '../passwordHelper.js'
 
 export default function PasswordForm (props) {
   // De-construct props
-  const { setNextStepEnabled } = props
+  const { setNextStepEnabled, showAsReset, disableInput } = props
 
   // Text box state
   const [newPassword, setNewPassword] = useRecoilState(PasswordState)
@@ -23,14 +23,14 @@ export default function PasswordForm (props) {
   // Synchronize next step enabled with form validation
   useEffect(() => {
     if (setNextStepEnabled) {
-      setNextStepEnabled(strength > 50 && passwordsMatch)
+      setNextStepEnabled(strength > 50 && passwordsMatch, newPassword)
     }
-  }, [passwordsMatch, setNextStepEnabled, strength])
+  }, [newPassword, passwordsMatch, setNextStepEnabled, strength])
 
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        {'Account Password'}
+        {`Account Password${showAsReset && ' Reset'}`}
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={12}>
@@ -45,6 +45,7 @@ export default function PasswordForm (props) {
             error={strengthMessage !== ''}
             helperText={strengthMessage !== '' ? strengthMessage : ' '}
             onChange={(e) => { setNewPassword(e.target.value) }}
+            disabled={disableInput}
           />
         </Grid>
         <Grid item xs={12} md={12}>
@@ -58,6 +59,7 @@ export default function PasswordForm (props) {
             error={!passwordsMatch}
             helperText={passwordsMatch ? ' ' : 'Passwords do not match'}
             onChange={(e) => { setConfirmPassword(e.target.value) }}
+            disabled={disableInput}
           />
         </Grid>
       </Grid>
@@ -66,9 +68,13 @@ export default function PasswordForm (props) {
 }
 
 PasswordForm.propTypes = {
-  setNextStepEnabled: PropTypes.func
+  setNextStepEnabled: PropTypes.func,
+  showAsReset: PropTypes.bool,
+  disableInput: PropTypes.bool
 }
 
 PasswordForm.defaultProps = {
-  setNextStepEnabled: null
+  setNextStepEnabled: null,
+  showAsReset: false,
+  disableInput: false
 }

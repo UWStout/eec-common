@@ -1,6 +1,9 @@
 // Basic HTTP routing library
 import Express from 'express'
 
+// Basic file io
+import fs from 'fs'
+
 // Authorization token library
 import JWT from 'jsonwebtoken'
 
@@ -11,9 +14,27 @@ import * as DBAuth from '../mongo/authController.js'
 // Rate limiting middleware
 import rateLimiter from '../rateLimiter.js'
 
+// For checking mongo objectIDs
+import MongoDB from 'mongodb'
+
+// For sending emails
+import { sendEmail } from '../email/emailHelper.js'
+
 // Create debug output object
 import Debug from 'debug'
 const debug = Debug('karuna:server:auth_routes')
+
+// Are we in development mode?
+const _DEV_ = (process.argv.find((arg) => { return arg === 'dev' }))
+const DEV_SERVER = 'localhost:3000'
+const PROD_SERVER = 'karuna.run'
+
+// Constants for validation emails
+const VERIFY_SUBJECT = 'Karuna Email Verification'
+const VERIFY_BODY_TEXT = fs.readFileSync('./src/email/verify.md', { encoding: 'utf8' })
+
+const RECOVERY_SUBJECT = 'Karuna Account Recovery'
+const RECOVERY_BODY_TEXT = fs.readFileSync('./src/email/recovery.md', { encoding: 'utf8' })
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
@@ -184,6 +205,170 @@ router.post('/email', async (req, res) => {
 
   // All is well
   res.status(200).json({ message: 'OK' })
+})
+
+/* Email verification route */
+router.post('/verify', async (req, res) => {
+  // Ensure email was provided
+  const email = req.body.email
+  if (!email) {
+    debug('Missing email for verification')
+    return res.status(400).send({ error: true, message: 'Missing required field' })
+  }
+
+  // Check if user with the same email is registered
+  try {
+    const { _id: existingID } = await DBUser.emailExists(email)
+    if (MongoDB.ObjectID.isValid(existingID)) {
+      // Retrieve full user info
+      const userInfo = await DBUser.getUserDetails(existingID)
+      if (!userInfo.emailVerified) {
+        // Generate verification token
+        const verificationToken = JWT.sign(
+          { id: existingID },
+          process.env.TOKEN_SECRET,
+          { expiresIn: '48h', noTimestamp: true }
+        )
+
+        // Send recovery link via email
+        userInfo.serverURL = (_DEV_ ? DEV_SERVER : PROD_SERVER)
+        userInfo.verificationToken = encodeURIComponent(verificationToken)
+        const success = await sendEmail(userInfo, VERIFY_SUBJECT, VERIFY_BODY_TEXT)
+
+        // Store token and email activity in DB
+        if (success) {
+          await DBUser.updateEmailTimestamp(existingID, 'verify', verificationToken)
+          return res.send({ status: 'ok' })
+        }
+      }
+    }
+
+    // We send ok regardless of weather the email was found or account was already verified
+    // NOTE: We wait a bit so as to slow down the user (in a naive way)
+    setTimeout(() => { return res.send({ status: 'ok' }) }, 5000)
+    return
+  } catch (err) {
+    return res.status(500).json({
+      error: true, message: 'Could not check email'
+    })
+  }
+})
+
+/* Account recovery route */
+router.post('/recover', async (req, res) => {
+  // Ensure email was provided
+  const email = req.body.email
+  if (!email) {
+    debug('Missing email for recovery')
+    return res.status(400).send({ error: true, message: 'Missing required field' })
+  }
+
+  // Check if user with the same email is already registered
+  try {
+    const { _id: existingID } = await DBUser.emailExists(email)
+    if (MongoDB.ObjectID.isValid(existingID)) {
+      // Lookup full user info
+      const userInfo = await DBUser.getUserDetails(existingID)
+
+      // Generate recovery token
+      const recoveryToken = JWT.sign(
+        { id: existingID },
+        process.env.TOKEN_SECRET,
+        { expiresIn: '1h', noTimestamp: true }
+      )
+
+      // Send recovery link via email
+      userInfo.serverURL = (_DEV_ ? DEV_SERVER : PROD_SERVER)
+      userInfo.recoveryToken = encodeURIComponent(recoveryToken)
+      const success = await sendEmail(userInfo, RECOVERY_SUBJECT, RECOVERY_BODY_TEXT)
+
+      // Store token and email activity in DB
+      if (success) {
+        await DBUser.updateEmailTimestamp(existingID, 'recovery', recoveryToken)
+        return res.send({ status: 'ok' })
+      }
+    }
+
+    // We send ok regardless of weather the email was found
+    // NOTE: We wait a bit so as to slow down the user (in a naive way)
+    setTimeout(() => { return res.send({ status: 'ok' }) }, 5000)
+  } catch (err) {
+    return res.status(500).json({
+      error: true, message: 'Could not check email'
+    })
+  }
+})
+
+router.post('/setNewPassword', async (req, res) => {
+  // Extract and check required fields
+  const { token, password } = req.body
+  if (!token || !password) {
+    return res.status(400).json({
+      invalid: true, message: 'Missing required information'
+    })
+  }
+
+  // Validate the token
+  JWT.verify(token, process.env.TOKEN_SECRET, async (err, payload) => {
+    // Check for any errors
+    if (err) {
+      return res.status(401).json({
+        error: true, message: 'not authorized'
+      })
+    }
+
+    // Try to update password
+    try {
+      const success = await DBAuth.updatePassword(payload.id, token, password)
+      if (success) {
+        return res.send({ status: 'ok' })
+      }
+    } catch (error) {
+      console.error('Failed to update password')
+      console.error(error)
+    }
+
+    // Report generic error (presumably internal)
+    return res.status(500).json({
+      error: true, message: 'Error updating password'
+    })
+  })
+})
+
+router.post('/validateEmail', async (req, res) => {
+  // Extract and check required fields
+  const { token } = req.body
+  if (!token) {
+    return res.status(400).json({
+      invalid: true, message: 'Missing required information'
+    })
+  }
+
+  // Validate the token
+  JWT.verify(token, process.env.TOKEN_SECRET, async (err, payload) => {
+    // Check for any errors
+    if (err) {
+      return res.status(401).json({
+        error: true, message: 'not authorized'
+      })
+    }
+
+    // Try to set validation in DB
+    try {
+      const success = await DBAuth.validateEmail(payload.id, token)
+      if (success) {
+        return res.send({ status: 'ok' })
+      }
+    } catch (error) {
+      console.error('Failed to validate email')
+      console.error(error)
+    }
+
+    // Report generic error (presumably internal)
+    return res.status(500).json({
+      error: true, message: 'Error validating email'
+    })
+  })
 })
 
 // A simple validation route (returns 200 and 'OK' if token is valid)

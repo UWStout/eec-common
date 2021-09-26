@@ -113,7 +113,14 @@ export default function SignUpForm () {
             {`Welcome to Karuna, ${preferredName}!`}
           </Typography>
           <Typography variant="subtitle1">
-            {'Your account has been successfully created. To continue, make sure you have '}
+            {'Your account has been successfully created!'}
+            <br />
+            <br />
+            {'Look for an email shortly to verify your email address. This must '}
+            {'be completed before you can log in to the extension.'}
+            <br />
+            <br />
+            {'After verifying your email, make sure you have '}
             <Link href="./instructions.html#basic-install">
               {'installed the extension'}
             </Link>
@@ -129,7 +136,7 @@ export default function SignUpForm () {
             <Link href="https://discord.com" target="_blank">
               {'Discord'}
             </Link>
-            {' and look for the karuna bubble in the lower left to log in.'}
+            {' and look for the karuna bubble in the lower right to log in.'}
             <br />
             <br />
             {'Contact your team manager if you need further assistance.'}

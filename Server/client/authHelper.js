@@ -20,6 +20,42 @@ export function extractDestination () {
 }
 
 /**
+ * Decode a token and check its expiration and structure
+ *
+ * @param {string} emailToken A JWT generated for email verification or password reset
+ */
+export function checkToken (emailToken) {
+  try {
+    // Decode and fix any URL encoding issues
+    const base64URL = emailToken.split('.')[1]
+    const base64 = base64URL.replace(/-/g, '+').replace(/_/g, '/')
+    const jsonPayload = decodeURIComponent(
+      atob(base64).split('').map((c) => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      }).join('')
+    )
+
+    // Parse JSON into object
+    const tokenInfo = JSON.parse(jsonPayload)
+
+    // Check structure
+    if (!tokenInfo?.exp || !tokenInfo?.id) {
+      return false
+    }
+
+    // Check expiration
+    if (Math.floor(Date.now() / 1000) < tokenInfo.exp) {
+      return true
+    }
+  } catch (err) {
+    console.error('Error decoding token')
+    console.error(err)
+  }
+
+  return false
+}
+
+/**
  * A function to quickly check the validity of the stored JWT and bypass
  * login if it is still valid. Runs asynchronously and requires callback.
  * @param {function} result Callback, receives bool for if login is 'valid' and message as string
@@ -27,7 +63,7 @@ export function extractDestination () {
 export function preValidate (result) {
   if (checkForToken()) {
     // Validate and redirect
-    axios.get('/auth/validate', {
+    axios.get('./auth/validate', {
       headers: {
         Authorization: `digest ${token}`
       }
@@ -104,6 +140,56 @@ export function createAccount (newUser) {
   return new Promise((resolve, reject) => {
     // Try to send the register request
     axios.post('./auth/register', newUser)
+      .then((response) => {
+        // Next, request for the authorization email to be sent
+        axios.post('./auth/verify', { email: newUser.email })
+          .then((verifySuccess) => {
+            resolve({ ...(response.data), verifySuccess })
+          })
+          .catch((err) => { reject(err) })
+      })
+      .catch((err) => { reject(err) })
+  })
+}
+
+/**
+ * Attempt to reset a user's password
+ * @param {string} email An email address that may or may not be an account email
+ * @returns {Promise} Resolves or rejects based on success
+ */
+export function requestRecovery (email) {
+  return new Promise((resolve, reject) => {
+    // Try to send the password reset request
+    axios.post('./auth/recover', { email })
+      .then((response) => { resolve(response.data) })
+      .catch((err) => { reject(err) })
+  })
+}
+
+/**
+ * Attempt to reset a user's password
+ * @param {string} token A token generated specific to allow password resetting
+ * @param {string} password The new password in plain-text
+ * @returns {Promise} Resolves or rejects based on success
+ */
+export function resetAccountPassword (token, password) {
+  return new Promise((resolve, reject) => {
+    // Try to send the password reset request
+    axios.post('./auth/setNewPassword', { token, password })
+      .then((response) => { resolve(response.data) })
+      .catch((err) => { reject(err) })
+  })
+}
+
+/**
+ * Attempt to validate an email token
+ * @param {string} token A token generated specific to allow password resetting
+ * @returns {Promise} Resolves or rejects based on success
+ */
+export function submitValidationToken (token) {
+  return new Promise((resolve, reject) => {
+    // Try to send the password reset request
+    axios.post('./auth/validateEmail', { token })
       .then((response) => { resolve(response.data) })
       .catch((err) => { reject(err) })
   })

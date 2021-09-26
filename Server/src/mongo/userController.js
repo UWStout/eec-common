@@ -424,6 +424,46 @@ export function updateUserTimestamps (userID, remoteAddress, context) {
   })
 }
 
+/**
+ * Update a user's recent email activity
+ *
+ * @param {number} userID ID of the user to update
+ * @param {string} type Type of email being sent
+ * @param {string} token Any token sent with the email (optional)
+ * @return {Promise} Resolves with no data if successful, rejects on error
+ */
+export function updateEmailTimestamp (userID, type, token) {
+  // Ensure userID is defined
+  if (!userID || !ObjectID.isValid(userID)) {
+    return Promise.reject(new Error('UserId must be defined'))
+  }
+
+  // Setup new data for database
+  const lastEmail = {
+    timestamp: new Date(),
+    type,
+    token
+  }
+
+  // Update user record with the latest email data
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users').findOneAndUpdate(
+        { _id: new ObjectID(userID) },
+        { $set: { lastEmail } },
+        (err, result) => {
+          if (err) {
+            debug('Failed to update user with email timestamp')
+            debug(err)
+            return reject(err)
+          }
+          return resolve()
+        }
+      )
+    })
+  })
+}
+
 export function setUserAlias (userID, contextStr, aliasID, aliasName, avatarURL) {
   if (!userID || !contextStr) {
     return Promise.reject(new Error('UserID and context must be defined to set a user alias'))
