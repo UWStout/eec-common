@@ -59,9 +59,7 @@ export function listener (details) {
         // Parse out any divs used to break lines
         const domEl = document.createElement('body')
         domEl.innerHTML = requestContent
-        console.log(domEl.children[0])
         if (domEl.children[0] && domEl.children[0].children) {
-          console.log(domEl.children[0].children)
           const text = []
           Array.from(domEl.children[0].children).forEach((div) => {
             text.push(div.textContent)

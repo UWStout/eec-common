@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import debounce from 'debounce'
 
 import { useRecoilValue } from 'recoil'
-import { ActiveKarunaMessageState } from '../data/globalSate/appState.js'
+import { ActiveKarunaMessageState, MessagingContextState } from '../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -15,8 +15,8 @@ import { computeWordRects } from './WordSpanner.js'
 import { updateMessageText } from './BackgroundMessager.js'
 
 // Colorful logger
-// import { makeLogger } from '../../../util/Logger.js'
-// const LOG = makeLogger('MESSAGE Wrapper', 'maroon', 'white')
+import { makeLogger } from '../../../util/Logger.js'
+const LOG = makeLogger('MESSAGE Wrapper', 'maroon', 'white')
 
 // DEBUG: Just for testing
 const highlightWordList = ['test', 'seth', 'the']
@@ -55,6 +55,7 @@ export default function MessageTextWrapper (props) {
   // Global state for identified NVC element
   // const setIsNVCIndicated = useSetRecoilState(NVCIdentifiedState)
   const activeKarunaMessage = useRecoilValue(ActiveKarunaMessageState)
+  const messagingContext = useRecoilValue(MessagingContextState)
 
   // Track the text box as a jQuery element in component state
   const [textBoxJQElem, setTextBoxJQElem] = useState(null)
@@ -116,10 +117,11 @@ export default function MessageTextWrapper (props) {
 
       // Send a message text update to the root element, where it will be bounced
       // to the background (and then to the server).
-      // TODO: Use the correct context name on updateMessageText()
       if (emitter) {
-        const [content, mentions] = updateMessageText(event, newJQElem)
-        emitter.emit('textUpdate', { content, mentions })
+        const [content, mentions, replyId] = updateMessageText(event, newJQElem, messagingContext)
+        LOG('Message text update')
+        LOG({ content, mentions, replyId })
+        emitter.emit('textUpdate', { content, mentions, replyId })
       }
     }, 200))
 

@@ -206,6 +206,4 @@ function updateAliasList () {
       }
     })
   }
-
-  LOG('Alias List Extracted:', Array.from(aliasList))
 }
