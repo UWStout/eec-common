@@ -11,7 +11,6 @@
     "preclient": "rm -f ./public/*.js ./public/*.map ./views/**/*.js ./views/**/*.map",
     "client": "node buildClient.js",
     "clientdev": "nodemon -e js,jsx,json --watch client -- buildClient.js dev",
-
     "test": "mocha"
   },
   "license": "MIT",
@@ -62,6 +61,7 @@
     "bcrypt": "^5.0.1",
     "chokidar": "^3.5.2",
     "colors": "^1.4.0",
+    "commonmark": "^0.30.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "debug": "4.3.2",
@@ -74,6 +74,7 @@
     "mongodb": "3.6.3",
     "mongodb-client-encryption": "1.2.7",
     "morgan": "1.10.0",
+    "nodemailer": "^6.6.5",
     "rate-limiter-flexible": "^2.2.4",
     "react-swipeable-views": "^0.14.0",
     "saslprep": "^1.0.3",

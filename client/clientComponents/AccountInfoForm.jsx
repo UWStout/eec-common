@@ -7,7 +7,7 @@ import { FullNameState, PreferredNameState, PreferredPronounsState, EmailState }
 import { Grid, Typography, TextField } from '@material-ui/core'
 
 // Simple regex for validating emails (not foolproof)
-const EMAIL_REGEX = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}/
+export const EMAIL_REGEX = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}/
 
 export default function AccountInfoForm (props) {
   // De-construct props

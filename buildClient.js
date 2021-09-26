@@ -22,6 +22,8 @@ const clientOptions = {
     './client/LogoutPage.jsx',
     './client/RegisterPage.jsx',
     './client/RecoveryPage.jsx',
+    './client/RecoveryStep2Page.jsx',
+    './client/ValidateStep2Page.jsx',
     './client/PrivacyPage.jsx'
   ]
 }

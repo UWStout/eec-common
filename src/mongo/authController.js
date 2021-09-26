@@ -1,6 +1,8 @@
 // New DB connector (refactored 6/1/2021)
 import { connect as retrieveDBHandle, closeClient } from './connect.js'
 
+import MongoDB from 'mongodb'
+
 // Password hashing library
 import bcrypt from 'bcrypt'
 
@@ -11,6 +13,9 @@ import Debug from 'debug'
 export { closeClient }
 
 const debug = Debug('karuna:mongo:authController')
+
+// Extract ObjectID class for easy of use
+const { ObjectID } = MongoDB
 
 // How many rounds to use when generating hash salt for passwords
 const SALT_ROUNDS = 10
@@ -132,6 +137,119 @@ export function createUser (fullName, preferredName, email, password, preferredP
             return reject(error)
           })
       })
+    })
+  })
+}
+
+/**
+ * Update an existing user's password
+ *
+ * @param {string} userID Database id for the user to update password
+ * @param {string} token The token generated during the reset request (must match one stored in DB)
+ * @param {string} password Plaintext password
+ * @return {Promise} Rejects on errors, resolves to true or false depending on result
+ */
+export function updatePassword (userID, token, password) {
+  return new Promise((resolve, reject) => {
+    // First lookup user details
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users').findOne(
+        { _id: new ObjectID(userID) },
+        (err, userInfo) => {
+          // check for errors
+          if (err) {
+            debug(`Failed to find user ${userID}`)
+            return reject(err)
+          }
+
+          // Check that the token matches and is the right type
+          if (userInfo?.lastEmail?.token !== token || userInfo?.lastEmail?.type !== 'recovery') {
+            debug('Tokens do not match')
+            return resolve(false)
+          }
+
+          // Hash password and update
+          bcrypt.hash(password, SALT_ROUNDS, (err, passwordHash) => {
+            // Check if an error occurred
+            if (err) {
+              debug('Failed to hash password')
+              debug(err)
+              return reject(err)
+            }
+
+            // Setup new password and clear token so it can't be reused
+            const newData = { passwordHash }
+            const unsetData = {}
+            unsetData['lastEmail.token'] = ''
+            unsetData['lastEmail.type'] = ''
+
+            // Update the password and clear the token
+            DBHandle.collection('Users').findOneAndUpdate(
+              { _id: new ObjectID(userID) },
+              { $set: newData, $unset: unsetData },
+              (err, result) => {
+                if (err) {
+                  debug('Failed to update password')
+                  debug(err)
+                  return reject(err)
+                }
+                return resolve(true)
+              }
+            )
+          })
+        }
+      )
+    })
+  })
+}
+
+/**
+ * Update an existing user's password
+ *
+ * @param {string} userID Database id for the user to update password
+ * @param {string} token The token sent in the validation email (must match one stored in DB)
+ * @return {Promise} Rejects on errors, resolves to true or false depending on result
+ */
+export function validateEmail (userID, token, password) {
+  return new Promise((resolve, reject) => {
+    // First lookup user details
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users').findOne(
+        { _id: new ObjectID(userID) },
+        (err, userInfo) => {
+          // Check for errors
+          if (err) {
+            debug(`Failed to find user ${userID}`)
+            return reject(err)
+          }
+
+          // Check that the token matches and is the right type
+          if (userInfo?.lastEmail?.token !== token || userInfo?.lastEmail?.type !== 'verify') {
+            debug('Tokens do not match')
+            return resolve(false)
+          }
+
+          // Setup new password and clear token so it can't be reused
+          const newData = { emailVerified: true }
+          const unsetData = {}
+          unsetData['lastEmail.token'] = ''
+          unsetData['lastEmail.type'] = ''
+
+          // Update email verification and clear token
+          DBHandle.collection('Users').findOneAndUpdate(
+            { _id: new ObjectID(userID) },
+            { $set: newData, $unset: unsetData },
+            (err, result) => {
+              if (err) {
+                debug('Failed to verify email')
+                debug(err)
+                return reject(err)
+              }
+              return resolve(true)
+            }
+          )
+        }
+      )
     })
   })
 }
