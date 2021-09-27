@@ -33,6 +33,9 @@ class EECUnified extends HTMLElement {
   constructor () {
     super()
 
+    // Internal tracking of the messaging context
+    this.fullContext = {}
+
     // Initialize font-awesome once
     if (!FA_INITIALIZED) {
       library.add(fas)
@@ -56,7 +59,7 @@ class EECUnified extends HTMLElement {
   // MUST be called manually now (with an event emitter)
   setupElementReact (contextName, emitter) {
     // Set the context name
-    this.contextName = contextName
+    this.fullContext.context = contextName
 
     // Create 3rd party library CSS for the shadow dom
     this.vendorStyle = jQuery('<style>')
@@ -127,7 +130,7 @@ class EECUnified extends HTMLElement {
           {/* Provides access to global state throughout App */}
           <RecoilRoot>
             <React.Suspense fallback={<div />}>
-              <UnifiedApp context={this.contextName} emitter={this.statusEmitter} />
+              <UnifiedApp context={this.fullContext.context} emitter={this.statusEmitter} />
             </React.Suspense>
           </RecoilRoot>
         </MuiThemeProvider>
@@ -146,13 +149,12 @@ class EECUnified extends HTMLElement {
   registerListeners () {
     // Register to send text update messages back to the background context
     this.statusEmitter.on('textUpdate', (messageObj) => {
-      LOG('Responding to text update event', messageObj.content)
+      LOG('Responding to text update event:', messageObj.content)
       if (this.backgroundPort) {
+        LOG('Sending context details:', this.fullContext)
         this.backgroundPort.postMessage({
           type: 'textUpdate',
-          context: this.contextName,
-          content: messageObj.content,
-          mentions: messageObj.mentions
+          ...messageObj
         })
       }
     })
@@ -170,7 +172,7 @@ class EECUnified extends HTMLElement {
       LOG('Announcing context is ready')
       this.backgroundPort.postMessage({
         type: 'contextReady',
-        context: this.contextName
+        context: this.fullContext.context
       })
     }
   }
@@ -179,7 +181,9 @@ class EECUnified extends HTMLElement {
   backgroundMessage (message) {
     switch (message.type) {
       case 'context':
-        // if (!CONTEXT_UTIL.isValidChannel(message.teamName, message.channelName, this.contextName)) {
+        this.fullContext = { ...message }
+        delete this.fullContext.type
+        // if (!CONTEXT_UTIL.isValidChannel(this.fullContext.teamName, this.fullContext.channelName, this.fullContext.context)) {
         //   this.updateVisibility(false)
         // } else {
         //   this.updateVisibility(true)
@@ -195,7 +199,7 @@ class EECUnified extends HTMLElement {
         if (this.backgroundPort) {
           this.backgroundPort.postMessage({
             type: 'contextReady',
-            context: this.contextName
+            context: this.fullContext.context
           })
         }
         break
@@ -237,7 +241,7 @@ class EECUnified extends HTMLElement {
   }
 
   setContextName (newContext) {
-    this.contextName = newContext
+    this.fullContext.context = newContext
     setMessagingContext(newContext)
   }
 }

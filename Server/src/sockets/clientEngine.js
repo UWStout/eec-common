@@ -6,6 +6,8 @@ import { decodeToken, getMySocket } from '../sockets.js'
 import { isWizardEnabled } from './wizardEngine.js'
 import { isWatsonEnabled, sendWatsonResponse } from './watsonEngine.js'
 
+import { lookupJITStatuses } from './JITStatusHelper.js'
+
 // Helper methods
 import * as Analysis from './analysisEngine.js'
 
@@ -126,23 +128,31 @@ export function socketMessageUpdate (message) {
 
   // Update user's list of context aliases (their username in a service like Discord or Teams)
   const userID = clientSessions[this.id].id
-  DBUser.setUserAlias(userID, message.context, message.user)
+  DBUser.setUserAlias(userID, message.context, message.aliasId, message.aliasName, message.avatarURL)
     .catch((err) => {
       debug('Alias update failed')
       debug(err)
     })
 
+  // Provide any user statuses relevant to the current message
+  if (message.data.replyId || Array.isArray(message.data.participants) || Array.isArray(message.data.mentions)) {
+    lookupJITStatuses(message.aliasId, message, message.context)
+      .then(([replyToStatus, mentionStatus, participantStatus]) => {
+        sendStatusMessage(message.context, clientSessions[this.id].email, replyToStatus, mentionStatus, participantStatus)
+      })
+  }
+
   if (isWatsonEnabled()) {
     debug(`[WS:${this.id}] draft message sent to watson from ${message.context}`)
     // Hook to intelligence core, expect a promise in return
-    Analysis.analyzeMessage(message, userID, message.context, false)
+    Analysis.analyzeMessage(message.data, userID, message.context, false)
       .then((result) => {
         if (result) {
           // TODO: Consider something more sophisticated here
           const messageText = result.output.generic[0].text
           sendWatsonResponse.bind(this)(
             messageText,
-            message,
+            message.data,
             message.context,
             result.output.entities,
             result.output.intents
@@ -177,7 +187,7 @@ export async function socketMessageSend (message) {
 
   // Update user's list of context aliases (their username in a service like Discord or Teams)
   const userID = clientSessions[this.id].id
-  DBUser.setUserAlias(userID, message.context, message.user)
+  DBUser.setUserAlias(userID, message.context, message.aliasId, message.aliasName, message.avatarURL)
     .catch((err) => {
       debug('Alias update failed')
       debug(err)
@@ -254,4 +264,18 @@ export async function userStatusUpdated (userID) {
       debug(`Failed to broadcast status: could not get user details for ${userID}`)
       debug(err)
     })
+}
+
+export function sendStatusMessage (context, userEmail, replyToStatus, mentionsStatus, participantsStatus) {
+  const socketID = lookupClientSessionId(userEmail)
+  if (socketID) {
+    debug('emitting status message')
+    getMySocket().to(socketID).emit('statusMessage', {
+      clientEmail: userEmail,
+      context: context,
+      replyToStatus,
+      mentionsStatus,
+      participantsStatus
+    })
+  }
 }

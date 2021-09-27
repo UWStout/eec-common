@@ -48,6 +48,20 @@ export function setupExtensionCommunication () {
     }
   })
 
+  getSocket().on('statusMessage', (msg) => {
+    console.log('[BACKGROUND] JIT status message received from server:', msg)
+    // Loop through active port names and broadcast message to matching context
+    for (const portName in portSessions) {
+      const context = portName.split('-')[0]
+      if (context === msg.context && portSessions[portName]) {
+        console.log(`[BACKGROUND] posting JIT status message to ${portName}`)
+        portSessions[portName].postMessage(
+          { type: 'statusMessage', ...msg }
+        )
+      }
+    }
+  })
+
   getSocket().on('teammateStatusUpdate', (msg) => {
     console.log('[BACKGROUND] Teammate status message received from server:', msg)
     // Loop through active port names and broadcast message to all
@@ -234,10 +248,12 @@ function portListener (port) {
           type: 'textUpdate',
           subType: '',
           context: context,
-          user: readValue('userName', context),
+          aliasId: readValue('userAppId', context),
+          aliasName: readValue('userName', context),
+          avatarURL: readValue('avatarSrc', context),
           team: readValue('teamName', context),
           channel: readValue('channelName', context),
-          data: message.content
+          data: { ...message }
         })
         break
 
