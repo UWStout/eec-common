@@ -271,3 +271,17 @@ export const KarunaMessageDequeueState = selector({
     }
   }
 })
+
+/** Collaborator status while typing a message */
+export const CollaboratorStatusState = atom({
+  key: 'CollaboratorStatusState',
+  default: [],
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Collaborator status updated:', newVal)
+      })
+    }
+  ]
+})

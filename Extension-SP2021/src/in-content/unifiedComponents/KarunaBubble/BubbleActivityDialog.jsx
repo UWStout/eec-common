@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
@@ -13,6 +13,7 @@ import ActivityBaseBubble from './Activities/ActivityBaseBubble.jsx'
 import BlankActivity from './Activities/BlankActivity.jsx'
 import PrivacyPromptBubbleActivity from './Activities/PrivacyPromptBubbleActivity.jsx'
 import KarunaMessageActivity from './Activities/KarunaMessageActivity.jsx'
+import StatusMessageActivity from './Activities/StatusMessageActivity.jsx'
 import AffectSurveyBubbleActivity from './Activities/AffectSurveyBubbleActivity.jsx'
 
 export default function BubbleActivityDialog (props) {
@@ -34,6 +35,7 @@ export default function BubbleActivityDialog (props) {
         return (
           <ActivityBaseBubble
             key={ACTIVITIES.KARUNA_MESSAGE.key + i}
+            activity={ACTIVITIES.KARUNA_MESSAGE}
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
           >
@@ -41,10 +43,23 @@ export default function BubbleActivityDialog (props) {
           </ActivityBaseBubble>
         )
 
+      case ACTIVITIES.STATUS_MESSAGE.key:
+        return (
+          <ActivityBaseBubble
+            key={ACTIVITIES.STATUS_MESSAGE.key}
+            activity={ACTIVITIES.STATUS_MESSAGE}
+            baseElement={i === last ? icon : empty}
+            hidden={hidden || (i !== last)}
+          >
+            <StatusMessageActivity message={curActivity.message} {...restProps} />
+          </ActivityBaseBubble>
+        )
+
       case ACTIVITIES.WATSON_MESSAGE.key:
         return (
           <ActivityBaseBubble
             key={ACTIVITIES.KARUNA_MESSAGE.key + i}
+            activity={ACTIVITIES.WATSON_MESSAGE}
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
           >
@@ -56,6 +71,7 @@ export default function BubbleActivityDialog (props) {
         return (
           <ActivityBaseBubble
             key={ACTIVITIES.AFFECT_SURVEY.key}
+            activity={ACTIVITIES.AFFECT_SURVEY}
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
           >
@@ -67,6 +83,7 @@ export default function BubbleActivityDialog (props) {
         return (
           <ActivityBaseBubble
             key={ACTIVITIES.PRIVACY_PROMPT.key}
+            activity={ACTIVITIES.PRIVACY_PROMPT}
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
           >
@@ -75,15 +92,22 @@ export default function BubbleActivityDialog (props) {
         )
 
       case ACTIVITIES.BLANK_MESSAGE.key:
-      default:
         return (
           <ActivityBaseBubble
             key={ACTIVITIES.BLANK_MESSAGE.key}
+            activity={ACTIVITIES.BLANK_MESSAGE}
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
+            noClose
           >
             <BlankActivity {...restProps} />
           </ActivityBaseBubble>
+        )
+
+      default:
+        console.log('Bad activity encountered:', curActivity)
+        return (
+          <div key={'error' + i}>{'error'}</div>
         )
     }
   })

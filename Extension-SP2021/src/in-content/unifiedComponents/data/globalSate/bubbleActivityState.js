@@ -11,7 +11,8 @@ const LOG = makeLogger('RECOIL Bubble Activity State', '#27213C', '#EEF4ED')
 const requireMessage = [
   ACTIVITIES.AFFECT_SURVEY.key,
   ACTIVITIES.KARUNA_MESSAGE.key,
-  ACTIVITIES.WATSON_MESSAGE.key
+  ACTIVITIES.WATSON_MESSAGE.key,
+  ACTIVITIES.STATUS_MESSAGE.key
 ]
 
 // Which activities can have duplicates in the stack
@@ -61,8 +62,17 @@ export const PushBubbleActivityState = selector({
 
     // Avoid duplicates of some activities
     if (!allowedDuplicates.includes(newActivity.key)) {
-      if (activityStack.indexOf((current) => (current.key === newActivity.key)) >= 0) {
-        LOG.error('Duplicate bubble activity:', newActivity)
+      LOG('Checking for duplicates of', newActivity.key)
+      // Look for duplicate
+      const index = activityStack.findIndex((current) => (current.key === newActivity.key))
+      if (index >= 0) {
+        LOG('Avoiding duplicate of', newActivity.key)
+        // Replace message with latest message rather than pushing
+        if (requireMessage.includes(newActivity.key)) {
+          LOG('Copying message for', newActivity.key)
+          activityStack[index].message = newActivity.message
+          set(BubbleActivityStackState, [...activityStack])
+        }
         return
       }
     }

@@ -19,9 +19,6 @@ export default function BlankActivity (props) {
       <Grid container>
         <Grid item xs={12}>
           <Typography variant="body1">
-            {'All is Well!'}
-          </Typography>
-          <Typography variant="body1">
             {'Start typing a message to receive feedback from Karuna here.'}
           </Typography>
         </Grid>

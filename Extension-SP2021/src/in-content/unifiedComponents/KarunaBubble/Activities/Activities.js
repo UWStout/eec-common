@@ -11,6 +11,10 @@ export const ACTIVITIES = {
     key: 'WATSON_MESSAGE',
     title: 'Watson Says'
   },
+  STATUS_MESSAGE: {
+    key: 'STATUS_MESSAGE',
+    title: 'Status of Collaborators'
+  },
   KARUNA_MESSAGE: {
     key: 'KARUNA_MESSAGE',
     title: 'Karuna Says'

@@ -40,6 +40,15 @@ export default function KarunaBubble (props) {
       LOG('Adding activity to bubble queue:', newActivity)
       pushBubbleActivity(newActivity)
     })
+
+    // Build the status message activity
+    // NOTE: This will automatically update message of previous activity
+    emitter.on('statusMessage', (message) => {
+      pushBubbleActivity({
+        key: ACTIVITIES.STATUS_MESSAGE.key,
+        message: message
+      })
+    })
   }, [emitter, pushBubbleActivity])
 
   // Full state and setter for visibility of main connect panel (GLOBAL STATE)
@@ -62,15 +71,15 @@ export default function KarunaBubble (props) {
 
   // Hide the feedback dialog (possibly after a set timeout)
   const hideFeedbackDialog = (immediate) => {
-    if (feedbackDialogOpen) {
-      if (immediate) {
-        setFeedbackDialogOpen(false)
-      } else {
-        LOG('Hide Requested')
-        const timeoutHandle = setTimeout(() => { setFeedbackDialogOpen(false) }, 3000)
-        setFeedbackHideTimeout(timeoutHandle)
-      }
-    }
+    // if (feedbackDialogOpen) {
+    //   if (immediate) {
+    //     setFeedbackDialogOpen(false)
+    //   } else {
+    //     LOG('Hide Requested')
+    //     const timeoutHandle = setTimeout(() => { setFeedbackDialogOpen(false) }, 3000)
+    //     setFeedbackHideTimeout(timeoutHandle)
+    //   }
+    // }
   }
 
   // Function for canceling a pending hide request

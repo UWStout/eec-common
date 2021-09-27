@@ -1,8 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { withStyles } from '@material-ui/core/styles'
-import { Tooltip as MuiTooltip, Zoom } from '@material-ui/core'
+import { useSetRecoilState } from 'recoil'
+import { PopBubbleActivityState } from '../../data/globalSate/bubbleActivityState.js'
+
+import { withStyles, makeStyles } from '@material-ui/core/styles'
+import { Tooltip as MuiTooltip, Zoom, Grid, Typography, IconButton } from '@material-ui/core'
+import { Close as CloseIcon } from '@material-ui/icons'
 
 // Create our pre-styled tooltip component
 const Tooltip = withStyles((theme) => ({
@@ -24,8 +28,16 @@ const Tooltip = withStyles((theme) => ({
   }
 }))(MuiTooltip)
 
+const useStyles = makeStyles((theme) => ({
+  titleBox: {
+    borderBottom: '1px solid grey',
+    marginBottom: theme.spacing(2)
+  }
+}))
+
 export default function ActivityBaseBubble (props) {
-  const { children, baseElement, hidden, offset } = props
+  const { activity, noClose, children, baseElement, hidden, offset } = props
+  const { titleBox } = useStyles()
 
   // Customization of the popper for our crazy setup
   const newPopperProps = {
@@ -36,6 +48,10 @@ export default function ActivityBaseBubble (props) {
     }
   }
 
+  // Remove this activity when closing the bubble dialog
+  const popBubbleActivity = useSetRecoilState(PopBubbleActivityState)
+  const onClose = () => { popBubbleActivity(activity) }
+
   return (
     <Tooltip
       interactive
@@ -43,7 +59,22 @@ export default function ActivityBaseBubble (props) {
       TransitionComponent={Zoom}
       TransitionProps={{ appear: true }}
       open={!hidden && children !== null}
-      title={children}
+      title={
+        <Grid container>
+          <Grid item container xs={12} direction="row" justifyContent="space-between" alignItems="center" className={titleBox}>
+            <Typography variant="button">{activity.title}</Typography>
+            {!noClose &&
+              <MuiTooltip title={'Dismiss message'} placement="top-end" PopperProps={{ disablePortal: true }}>
+                <IconButton size="small" onClick={onClose}>
+                  <CloseIcon />
+                </IconButton>
+              </MuiTooltip>}
+          </Grid>
+          <Grid item xs={12}>
+            {children}
+          </Grid>
+        </Grid>
+      }
       PopperProps={newPopperProps}
       arrow
     >
@@ -55,11 +86,17 @@ export default function ActivityBaseBubble (props) {
 ActivityBaseBubble.propTypes = {
   children: PropTypes.node.isRequired,
   baseElement: PropTypes.node.isRequired,
+  activity: PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired
+  }).isRequired,
+  noClose: PropTypes.bool,
   offset: PropTypes.string,
   hidden: PropTypes.bool
 }
 
 ActivityBaseBubble.defaultProps = {
+  noClose: false,
   hidden: false,
   offset: '-16, -25'
 }
