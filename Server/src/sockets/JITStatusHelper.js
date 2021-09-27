@@ -6,28 +6,58 @@ const debug = Debug('karuna:server:socket-JIT-status-helper')
 
 export async function lookupJITStatuses (curUserAliasId, message, context) {
   const processed = [curUserAliasId]
+  debug('JIT Analysis of ', message)
 
   // Lookup statuses for user being replied to
-  const replyToStatus = getStatuses([message.replyId], context, processed)
+  const replyToStatus = await getStatuses(message.replyId, context, processed)
   processed.push(message.replyId)
 
   // Lookup statuses for mentions
-  const mentionStatus = getStatuses(message.mentions, context, processed)
-  processed.push(...message.mentions)
+  const mentionStatus = await getStatuses(message.mentions, context, processed)
+  processed.push(message.mentions)
 
   // Lookup statuses for participants
-  const participantStatus = getStatuses(message.participants, context, processed)
+  const participantStatus = await getStatuses(message.participants, context, processed)
 
   // Return what we found
   return [replyToStatus, mentionStatus, participantStatus]
 }
 
 async function getStatuses (aliasArray, context, filterOut) {
-  if (Array.isArray(aliasArray) && aliasArray.length > 0) {
-    aliasArray = aliasArray.filter((curAlias) => (!filterOut.includes(curAlias)))
-    const userIDs = await DBUser.getIdsFromAliasList(context, aliasArray)
-    const userStatuses = await DBUser.listUsersFromArray(userIDs)
-    return userStatuses
+  // A few sanity checks
+  if (!aliasArray) { return [] }
+  if (!Array.isArray(aliasArray)) {
+    aliasArray = [aliasArray]
+  }
+
+  // Remove any duplicates
+  aliasArray = aliasArray.filter((curAlias) => (!filterOut.includes(curAlias)))
+
+  if (aliasArray.length > 0) {
+    try {
+      // Lookup alias values
+      const aliasLookup = await DBUser.getIdsFromAliasList(context, aliasArray)
+
+      // Convert to array of userIDs
+      const userIDs = []
+      aliasArray.forEach((alias) => {
+        if (aliasLookup[alias]) {
+          userIDs.push(aliasLookup[alias])
+        } else {
+          debug('Unknown alias', alias)
+        }
+      })
+
+      // Convert to statuses
+      debug('UserIDs:', userIDs)
+      if (userIDs.length > 0) {
+        const userStatuses = await DBUser.listUsersFromArray(userIDs)
+        return userStatuses
+      }
+    } catch (err) {
+      debug('Failed to get statuses')
+      debug(err)
+    }
   }
 
   return []

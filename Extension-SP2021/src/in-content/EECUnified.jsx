@@ -221,6 +221,15 @@ class EECUnified extends HTMLElement {
         }
         break
 
+      case 'statusMessage':
+        if (this.statusEmitter) {
+          LOG('Status message bouncing', message)
+          this.statusEmitter.emit('statusMessage', message)
+        } else {
+          LOG('Status message but emitter is undefined', message)
+        }
+        break
+
       case 'teammateStatusUpdate':
         if (this.statusEmitter) {
           LOG('Teammate status update message bouncing', message)

@@ -55,6 +55,13 @@ export default function UnifiedApp (props) {
     })
   }, [emitter, setTeammateStatusUpdate])
 
+  // Process JIT Status data
+  useEffect(() => {
+    emitter.on('statusMessage', (message) => {
+      LOG('Status Message Received:', message)
+    })
+  }, [emitter])
+
   // Capture tunneled keys
   const typeToActiveInput = useSetRecoilState(TypeToActiveInputState)
   useEffect(() => {
