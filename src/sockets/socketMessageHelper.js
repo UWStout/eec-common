@@ -1,6 +1,6 @@
 // Setup debug for output
 import Debug from 'debug'
-const socketHelperDebug = Debug('karuna:server:socket-message-helper')
+const debug = Debug('karuna:server:socket-message-helper')
 
 export function parseMessageCommands (messageText, messageInfo) {
   // Scan for and replace any karuna-specific commands
@@ -51,7 +51,7 @@ export function parseMessageCommands (messageText, messageInfo) {
 
         // Anything else (just remove it)
         default:
-          socketHelperDebug(`WARNING: Unknown command ${cmdName} in wizard message`)
+          debug(`WARNING: Unknown command ${cmdName} in wizard message`)
           return ''
       }
     }

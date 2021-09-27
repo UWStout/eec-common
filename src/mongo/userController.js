@@ -111,7 +111,7 @@ export async function getUserTeams (userID) {
 /**
  * Lookup user IDs for a list of aliases
  * @param {Array(string)} aliasList List of potential user aliases
- * @returns {Array(string|null)} Promise that resolves to an array of matching userIDs or null if no match found
+ * @returns {Promise} Promise that resolves to an array of matching userIDs or null if no match found
  */
 export async function getIdsFromAliasList (context, aliasList) {
   return new Promise((resolve, reject) => {
@@ -258,6 +258,59 @@ export function listUsersInTeam (teamID) {
         ).toArray((err, docs) => {
           if (err) {
             debug('Cursor toArray failed for "listUsersInTeam"')
+            debug(err)
+            return reject(err)
+          }
+
+          // Resolve with the results
+          return resolve(docs)
+        })
+      } catch (err) {
+        return resolve({ error: true, message: err.toString() })
+      }
+    })
+  })
+}
+
+/**
+ * List all the users from an array of IDs (with public static info)
+ *
+ * @param {array[string]} userIDs ObjectID strings of existing users
+ * @returns {Promise} Resolves to list of users on success, rejects with error on failure
+ */
+export function listUsersFromArray (userIDs) {
+  // Validate userID array
+  if (!Array.isArray(userIDs)) { userIDs = [userIDs] }
+  if (userIDs.some((curID) => (!ObjectID.isValid(curID)))) {
+    return Promise.reject(new Error('One or more user IDs in invalid'))
+  }
+
+  // Ensure all objectIDs are the proper type
+  const objectIDArray = userIDs.map((curID) => (new ObjectID(curID)))
+
+  return new Promise((resolve, reject) => {
+    // Retrieve team details
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      try {
+        // Retrieve filtered list of users (w/o sensitive info) with team info joined
+        DBHandle.collection('Users').find(
+          { _id: { $in: objectIDArray } },
+          {
+            projection: {
+              email: 1,
+              preferredPronouns: 1,
+              name: 1,
+              preferredName: 1,
+              userType: 1,
+              contextAvatar: 1,
+              'status.currentAffectID': 1,
+              'status.collaboration': 1,
+              'status.timeToRespond': 1
+            }
+          }
+        ).toArray((err, docs) => {
+          if (err) {
+            debug('Cursor toArray failed for "listUsersFromArray"')
             debug(err)
             return reject(err)
           }
