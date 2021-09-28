@@ -142,7 +142,7 @@ export function createAccount (newUser) {
     axios.post('./auth/register', newUser)
       .then((response) => {
         // Next, request for the authorization email to be sent
-        axios.post('./auth/verify', { email: newUser.email })
+        requestValidation(newUser.email)
           .then((verifySuccess) => {
             resolve({ ...(response.data), verifySuccess })
           })
@@ -161,6 +161,20 @@ export function requestRecovery (email) {
   return new Promise((resolve, reject) => {
     // Try to send the password reset request
     axios.post('./auth/recover', { email })
+      .then((response) => { resolve(response.data) })
+      .catch((err) => { reject(err) })
+  })
+}
+
+/**
+ * Attempt to send a new email validation request for a given email
+ * @param {string} email An email address that may or may not be an account email
+ * @returns {Promise} Resolves or rejects based on success
+ */
+export function requestValidation (email) {
+  return new Promise((resolve, reject) => {
+    // Try to send the email verify request
+    axios.post('./auth/verify', { email })
       .then((response) => { resolve(response.data) })
       .catch((err) => { reject(err) })
   })

@@ -23,6 +23,7 @@ const clientOptions = {
     './client/RegisterPage.jsx',
     './client/RecoveryPage.jsx',
     './client/RecoveryStep2Page.jsx',
+    './client/ValidatePage.jsx',
     './client/ValidateStep2Page.jsx',
     './client/PrivacyPage.jsx'
   ]
