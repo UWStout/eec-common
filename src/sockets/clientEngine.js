@@ -138,7 +138,6 @@ export function socketMessageUpdate (message) {
   if (message.data.replyId || Array.isArray(message.data.participants) || Array.isArray(message.data.mentions)) {
     lookupJITStatuses(message.aliasId, message.data, message.context)
       .then(([replyToStatus, mentionStatus, participantStatus]) => {
-        debug('participants', participantStatus)
         sendStatusMessage(message.context, clientSessions[this.id].email, replyToStatus, mentionStatus, participantStatus)
       })
   }
