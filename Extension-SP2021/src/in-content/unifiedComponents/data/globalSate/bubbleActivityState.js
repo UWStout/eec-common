@@ -5,7 +5,6 @@ import { ACTIVITIES } from '../../KarunaBubble/Activities/Activities.js'
 
 // Colorful logger
 import { makeLogger } from '../../../../util/Logger.js'
-import { ActiveKarunaMessageState } from './appState.js'
 const LOG = makeLogger('RECOIL Bubble Activity State', '#27213C', '#EEF4ED')
 
 // Which activities require a message to be valid

@@ -20,7 +20,7 @@
     "postbuild": "run-s build-postscript build-postshell",
     "build-postscript": "node postBuild.js",
     "build-postshell": "bash postBuild.sh",
-
+    
     "test": "jest",
     "testCoverage": "jest --coverage",
     "testWatch": "jest --watchAll"
@@ -81,6 +81,7 @@
     "animate.css": "^4.1.1",
     "axios": "^0.21.4",
     "commonmark": "^0.30.0",
+    "compare-versions": "^3.6.0",
     "debounce": "^1.2.1",
     "eventemitter3": "^4.0.7",
     "jquery": "^3.6.0",
