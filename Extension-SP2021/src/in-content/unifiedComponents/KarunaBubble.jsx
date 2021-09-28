@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import { ConnectVisibilityState, BubbleVisibilityStateSetter } from './data/globalSate/appState.js'
-import { PushBubbleActivityState } from './data/globalSate/bubbleActivityState.js'
+import { PushBubbleActivityState, BubbleActiveStatusMessageState } from './data/globalSate/bubbleActivityState.js'
 
 import BubbleActivityDialog from './KarunaBubble/BubbleActivityDialog.jsx'
 import { ACTIVITIES } from './KarunaBubble/Activities/Activities.js'
@@ -20,6 +20,7 @@ export default function KarunaBubble (props) {
 
   // Track karuna server messages globally
   const pushBubbleActivity = useSetRecoilState(PushBubbleActivityState)
+  const setActiveStatusMessage = useSetRecoilState(BubbleActiveStatusMessageState)
   useEffect(() => {
     emitter.on('karunaMessage', (newMessage) => {
       // What type of message is this?
@@ -48,8 +49,9 @@ export default function KarunaBubble (props) {
         key: ACTIVITIES.STATUS_MESSAGE.key,
         message: message
       })
+      setActiveStatusMessage(message)
     })
-  }, [emitter, pushBubbleActivity])
+  }, [emitter, pushBubbleActivity, setActiveStatusMessage])
 
   // Full state and setter for visibility of main connect panel (GLOBAL STATE)
   const setMainConnectPanelOpen = useSetRecoilState(ConnectVisibilityState)

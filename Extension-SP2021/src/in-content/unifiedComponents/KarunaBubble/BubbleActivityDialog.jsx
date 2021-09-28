@@ -51,7 +51,7 @@ export default function BubbleActivityDialog (props) {
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
           >
-            <StatusMessageActivity message={curActivity.message} {...restProps} />
+            <StatusMessageActivity {...restProps} />
           </ActivityBaseBubble>
         )
 
@@ -86,6 +86,7 @@ export default function BubbleActivityDialog (props) {
             activity={ACTIVITIES.PRIVACY_PROMPT}
             baseElement={i === last ? icon : empty}
             hidden={hidden || (i !== last)}
+            noClose
           >
             <PrivacyPromptBubbleActivity {...restProps} />
           </ActivityBaseBubble>

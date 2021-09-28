@@ -6,9 +6,11 @@ import { BubbleActivityStackState } from '../data/globalSate/bubbleActivityState
 import { ConnectVisibilityState } from '../data/globalSate/appState.js'
 import { ValidUserState } from '../data/globalSate/userState.js'
 
+import { ACTIVITIES } from './Activities/Activities.js'
+
 import { makeStyles } from '@material-ui/core/styles'
-import { SvgIcon, IconButton, Typography } from '@material-ui/core'
-import { AccountCircle } from '@material-ui/icons'
+import { SvgIcon, IconButton } from '@material-ui/core'
+import { AccountCircle, PriorityHigh, Create as CreateIcon } from '@material-ui/icons'
 
 import { animateCSS } from '../Shared/animateHelper.js'
 
@@ -54,9 +56,9 @@ const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (pro
   const [mainPanelOpen, setMainPanelOpen] = useRecoilState(ConnectVisibilityState)
 
   // Determine what indicators to show
-  // let showCount = false
-  // let showNVCIndicator = false
-  const showAlertIndicator = (Array.isArray(activityStack) && activityStack.length > 1)
+  const topActivityKey = activityStack[activityStack.length - 1].key
+  const showPriorityIndicator = topActivityKey === ACTIVITIES.AFFECT_SURVEY.key
+  const showAlertIndicator = !showPriorityIndicator && (topActivityKey !== ACTIVITIES.BLANK_MESSAGE.key)
 
   const clickCallback = () => {
     if (!userLoggedIn) {
@@ -75,11 +77,18 @@ const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (pro
 
   // Shake the icon whenever there's a new message to view
   useEffect(() => {
+    // Determine what indicators to show
+    const topActivityKey = activityStack[activityStack.length - 1].key
+    const showPriorityIndicator = topActivityKey === ACTIVITIES.AFFECT_SURVEY.key
+    const showAlertIndicator = !showPriorityIndicator && (topActivityKey !== ACTIVITIES.BLANK_MESSAGE.key && topActivityKey !== ACTIVITIES.PRIVACY_PROMPT.key)
+
     const ariaLabel = (userLoggedIn ? 'Open Feedback Dialog' : 'Open Login Dialog')
-    if (!userLoggedIn || (activityStack.length > 1)) {
-      animateCSS(`[aria-label="${ariaLabel}"]`, 'tada')
+    if (!userLoggedIn || showPriorityIndicator) {
+      animateCSS(`[aria-label="${ariaLabel}"]`, 'tada', 1)
+    } else if (showAlertIndicator) {
+      animateCSS(`[aria-label="${ariaLabel}"]`, 'heartBeat')
     }
-  }, [activityStack.length, userLoggedIn])
+  }, [activityStack.length, userLoggedIn, activityStack])
 
   return (
     <IconButton
@@ -112,10 +121,13 @@ const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (pro
         </div>}
 
       {userLoggedIn && showAlertIndicator &&
-        <div className={classes.contextIndicator}>
-          <Typography variant="body1">
-            {showAlertIndicator && '❕'}
-          </Typography>
+        <div className={classes.accountIndicator}>
+          <CreateIcon />
+        </div>}
+
+      {userLoggedIn && showPriorityIndicator &&
+        <div className={classes.accountIndicator}>
+          <PriorityHigh />
         </div>}
 
     </IconButton>

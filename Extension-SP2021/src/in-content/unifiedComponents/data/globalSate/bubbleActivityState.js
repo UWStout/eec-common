@@ -5,6 +5,7 @@ import { ACTIVITIES } from '../../KarunaBubble/Activities/Activities.js'
 
 // Colorful logger
 import { makeLogger } from '../../../../util/Logger.js'
+import { ActiveKarunaMessageState } from './appState.js'
 const LOG = makeLogger('RECOIL Bubble Activity State', '#27213C', '#EEF4ED')
 
 // Which activities require a message to be valid
@@ -30,6 +31,20 @@ export const BubbleActivityStackState = atom({
       // Log any value changes for debugging
       onSet((newVal) => {
         LOG('Bubble activity stack updated', newVal)
+      })
+    }
+  ]
+})
+
+/** The active message for display in the dialog */
+export const BubbleActiveStatusMessageState = atom({
+  key: 'BubbleActiveStatusMessageState',
+  default: {},
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Log any value changes for debugging
+      onSet((newVal) => {
+        LOG('Bubble active status message updated', newVal)
       })
     }
   ]
@@ -65,16 +80,7 @@ export const PushBubbleActivityState = selector({
       LOG('Checking for duplicates of', newActivity.key)
       // Look for duplicate
       const index = activityStack.findIndex((current) => (current.key === newActivity.key))
-      if (index >= 0) {
-        LOG('Avoiding duplicate of', newActivity.key)
-        // Replace message with latest message rather than pushing
-        if (requireMessage.includes(newActivity.key)) {
-          LOG('Copying message for', newActivity.key)
-          activityStack[index].message = newActivity.message
-          set(BubbleActivityStackState, [...activityStack])
-        }
-        return
-      }
+      if (index >= 0) { return }
     }
 
     // Add to top of stack
@@ -100,7 +106,8 @@ export const PopBubbleActivityState = selector({
       if (currentActivity?.key !== activityToPop?.key) {
         LOG.error(`Current bubble activity (${currentActivity?.key}) does not match pop request (${activityToPop?.key})`)
       } else {
-        set(BubbleActivityStackState, activityStack.slice(0, -1))
+        const newStack = activityStack.slice(0, -1)
+        set(BubbleActivityStackState, newStack)
       }
     } else {
       LOG.error('Refusing to remove the last bubble activity (prevented stack underflow)')

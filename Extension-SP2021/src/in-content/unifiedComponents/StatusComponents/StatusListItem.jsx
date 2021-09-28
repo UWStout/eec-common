@@ -17,7 +17,7 @@ import { ExtendedUserInfoShape, StatusObjectShape } from '../data/dataTypeShapes
 const useStyles = makeStyles((theme) => ({
   gridRoot: (props) => ({
     maxHeight: (props.isTeammate ? theme.spacing(6) : theme.spacing(6)),
-    marginBottom: theme.spacing(1)
+    marginBottom: theme.spacing(props.spacingBottom)
   }),
   nameStyle: (props) => ({
     fontSize: (props.isTeammate ? '10px' : '12px')
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function StatusListItem (props) {
   // Deconstruct the props
-  const { userInfo, userStatus, isTeammate, disabled } = props
+  const { userInfo, userStatus, showName, isTeammate, disabled } = props
   const { gridRoot, nameStyle, pronounStyle, nameStyleDisabled, pronounStyleDisabled, disabledText } = useStyles(props)
 
   // Subscribe to the emoji list (for looking up affect objects)
@@ -53,14 +53,14 @@ export default function StatusListItem (props) {
     return item._id === userStatus?.currentAffectID
   })
 
-  const label = (isTeammate ? 'Current Status of Team' : 'Current Status of User')
+  const label = (isTeammate ? 'Current Status of Teammate' : 'Current Status of User')
   return (
     <Grid container direction="column" className={gridRoot} role={'region'} aria-label={label}>
       <AvatarIcon userInfo={userInfo} team={isTeammate} disabled={disabled} />
       <Grid container item>
         <Grid item xs={12}>
           <Typography noWrap variant={'body1'} className={disabled ? nameStyleDisabled : nameStyle}>
-            {isTeammate ? userInfo.preferredName : 'My Statuses'}
+            {isTeammate || showName ? userInfo.preferredName : 'My Statuses'}
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -101,11 +101,16 @@ export default function StatusListItem (props) {
 StatusListItem.propTypes = {
   userInfo: PropTypes.shape(ExtendedUserInfoShape).isRequired,
   userStatus: PropTypes.shape(StatusObjectShape),
+  // eslint-disable-next-line react/no-unused-prop-types
+  spacingBottom: PropTypes.number,
+  showName: PropTypes.bool,
   isTeammate: PropTypes.bool,
   disabled: PropTypes.bool
 }
 
 StatusListItem.defaultProps = {
+  spacingBottom: 1,
+  showName: false,
   isTeammate: false,
   userStatus: undefined,
   disabled: false

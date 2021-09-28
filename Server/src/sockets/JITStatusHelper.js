@@ -6,7 +6,6 @@ const debug = Debug('karuna:server:socket-JIT-status-helper')
 
 export async function lookupJITStatuses (curUserAliasId, message, context) {
   const processed = [curUserAliasId]
-  debug('JIT Analysis of ', message)
 
   // Lookup statuses for user being replied to
   const replyToStatus = await getStatuses(message.replyId, context, processed)
@@ -43,13 +42,10 @@ async function getStatuses (aliasArray, context, filterOut) {
       aliasArray.forEach((alias) => {
         if (aliasLookup[alias]) {
           userIDs.push(aliasLookup[alias])
-        } else {
-          debug('Unknown alias', alias)
         }
       })
 
       // Convert to statuses
-      debug('UserIDs:', userIDs)
       if (userIDs.length > 0) {
         const userStatuses = await DBUser.listUsersFromArray(userIDs)
         return userStatuses
