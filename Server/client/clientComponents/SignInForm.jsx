@@ -73,7 +73,7 @@ export default function SignInForm (props) {
     <div className={classes.paper}>
       <KarunaIcon />
       <Typography component="h1" variant="h5">
-        {'Admin/Manager Sign in'}
+        {'Team and Administrator Sign in'}
       </Typography>
       <form className={classes.form} noValidate onSubmit={onFormSubmit}>
         <TextField
