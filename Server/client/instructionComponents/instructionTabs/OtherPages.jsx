@@ -7,10 +7,10 @@ const siteMapLinks = [
   { href: `${SERVER_ROOT}Login.html`, text: 'General login page for accessing backend server pages' },
   { href: `${SERVER_ROOT}Logout.html`, text: 'Clear credentials from a previous login' },
   { href: `${SERVER_ROOT}Register.html`, text: 'Create a new standard Karuna account' },
-  { href: `${SERVER_ROOT}Recovery.html`, text: 'Account recovery form (not yet implemented)' },
-  { href: `${SERVER_ROOT}dbAdmin/Users.html`, text: 'User data viewing and editing' },
-  { href: `${SERVER_ROOT}dbAdmin/Teams.html`, text: 'Team data viewing and editing' },
-  { href: `${SERVER_ROOT}dbAdmin/OrgUnits.html`, text: 'Org Unit data viewing and editing' }
+  { href: `${SERVER_ROOT}Recovery.html`, text: 'Account recovery page / password reset' },
+  { href: `${SERVER_ROOT}dbAdmin/Users.html`, text: 'User data viewing and editing (ADMIN)' },
+  { href: `${SERVER_ROOT}dbAdmin/Teams.html`, text: 'Team data viewing and editing (ADMIN)' },
+  { href: `${SERVER_ROOT}dbAdmin/OrgUnits.html`, text: 'Org Unit data viewing and editing (ADMIN)' }
 ]
 
 export default function OtherPages () {

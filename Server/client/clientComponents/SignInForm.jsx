@@ -131,10 +131,10 @@ export default function SignInForm (props) {
         </Grid>
       </form>
       <Typography variant="body1" color="textSecondary" className={classes.captionTextStyle}>
-        {'Note: This sign in form is only for administrators and team managers.'}
+        {'Note: This sign in form is for viewing team settings and administrators only.'}
         <br />
         <br />
-        {'If you are trying to sign in as a team member, '}
+        {'If you are trying to sign in to the normal extension, '}
         <Link target="_blank" href="./instructions.html">{'install the karuna extension'}</Link>
         {', then visit '}
         <Link target="_blank" href="https://teams.microsoft.com">{'teams.microsoft.com'}</Link>
