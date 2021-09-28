@@ -78,7 +78,7 @@ export default function ToggleEditor (props) {
         /> :
         <MDEditor.Markdown
           source={localMarkdown}
-          previewOptions={{ linkTarget: '_blank' }}
+          linkTarget={'_blank'}
         />}
 
       <div className={classes.floatingButtonBox}>
