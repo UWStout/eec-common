@@ -149,10 +149,10 @@ export function socketMessageUpdate (message) {
 
   // Provide any user statuses relevant to the current message
   if (message.data.replyId || Array.isArray(message.data.participants) || Array.isArray(message.data.mentions)) {
-    // Check if all the relevant status info was already sent
+    // Is this a duplicate request that was already sent?
     if (message.data.replyId !== clientSessions[this.id].replyId ||
       !compareArrays(message.data.participants, clientSessions[this.id].participants) ||
-      !compareArrays(message.data.mentinos, clientSessions[this.id].mentions)) {
+      !compareArrays(message.data.mentions, clientSessions[this.id].mentions)) {
       // Lookup the statuses
       lookupJITStatuses(message.aliasId, message.data, message.context)
         .then(([replyToStatus, mentionStatus, participantStatus]) => {
