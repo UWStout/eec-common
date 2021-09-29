@@ -41,6 +41,19 @@ export function clearClientSession (id) {
   }
 }
 
+function compareArrays (A, B) {
+  // if the other array is a falsy value, return
+  if (!A || !B) { return false }
+
+  // compare lengths - can save a lot of time
+  if (A.length !== B.length) { return false }
+
+  for (let i = 0; i < A.length; i++) {
+    if (A[i] !== B[i]) { return false }
+  }
+  return true
+}
+
 // Establish an in-memory session for a connected client
 // - 'this' = current socket
 export function socketClientSession (clientInfo) {
@@ -136,10 +149,25 @@ export function socketMessageUpdate (message) {
 
   // Provide any user statuses relevant to the current message
   if (message.data.replyId || Array.isArray(message.data.participants) || Array.isArray(message.data.mentions)) {
-    lookupJITStatuses(message.aliasId, message.data, message.context)
-      .then(([replyToStatus, mentionStatus, participantStatus]) => {
-        sendStatusMessage(message.context, clientSessions[this.id].email, replyToStatus, mentionStatus, participantStatus)
-      })
+    // Check if all the relevant status info was already sent
+    if (message.data.replyId !== clientSessions[this.id].replyId ||
+      !compareArrays(message.data.participants, clientSessions[this.id].participants) ||
+      !compareArrays(message.data.mentinos, clientSessions[this.id].mentions)) {
+      // Lookup the statuses
+      lookupJITStatuses(message.aliasId, message.data, message.context)
+        .then(([replyToStatus, mentionStatus, participantStatus]) => {
+          // Only send a status message if it is not empty
+          if (replyToStatus.length > 0 || mentionStatus.length > 0 || participantStatus.length > 0) {
+            // Remember the most recently sent data (to detect duplicate requests)
+            clientSessions[this.id].replyId = message.replyId
+            clientSessions[this.id].mentions = message.mentions
+            clientSessions[this.id].participants = message.participants
+
+            // Send the latest status info
+            sendStatusMessage(message.context, clientSessions[this.id].email, replyToStatus, mentionStatus, participantStatus)
+          }
+        })
+    }
   }
 
   if (isWatsonEnabled()) {
