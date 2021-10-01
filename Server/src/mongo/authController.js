@@ -20,6 +20,10 @@ const { ObjectID } = MongoDB
 // How many rounds to use when generating hash salt for passwords
 const SALT_ROUNDS = 10
 
+// Setup default team list for any users
+// NOTE: This currently includes the 'Kruna test team'
+const DEFAULT_TEAMS = [new ObjectID('611e80ee4797c4ac202471ae')]
+
 /**
  * Validate user credentials
  * tested in test 1 in test.js
@@ -127,7 +131,7 @@ export function createUser (fullName, preferredName, email, password, preferredP
             contextAvatar: {},
             status: {},
             lastLogin: {},
-            teams: [],
+            teams: DEFAULT_TEAMS,
             meta: {}
           })
           .then((result) => { return resolve(result.insertedId) })

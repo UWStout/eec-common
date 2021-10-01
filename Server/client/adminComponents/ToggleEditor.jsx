@@ -74,8 +74,12 @@ export default function ToggleEditor (props) {
           onChange={setLocalMarkdown}
           height={600}
           minHeight={400}
+          previewOptions={{ linkTarget: '_blank' }}
         /> :
-        <MDEditor.Markdown source={localMarkdown} />}
+        <MDEditor.Markdown
+          source={localMarkdown}
+          linkTarget={'_blank'}
+        />}
 
       <div className={classes.floatingButtonBox}>
         {!editingActive ?

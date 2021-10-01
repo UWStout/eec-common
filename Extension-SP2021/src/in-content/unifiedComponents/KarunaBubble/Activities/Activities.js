@@ -1,4 +1,8 @@
 export const ACTIVITIES = {
+  MULTI_ACTIVITY: {
+    key: 'MULTI_ACTIVITY',
+    title: 'Multiple Activities'
+  },
   AFFECT_SURVEY: {
     key: 'AFFECT_SURVEY',
     title: 'Current Mood'

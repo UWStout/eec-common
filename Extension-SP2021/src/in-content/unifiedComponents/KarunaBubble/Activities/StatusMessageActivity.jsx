@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
@@ -51,6 +51,22 @@ export default function StatusMessageActivity (props) {
     mentionListItems = statusMessage.mentionsStatus.map(makeStatus)
     participantsListItems = statusMessage.participantsStatus.map(makeStatus)
   }
+
+  const [replyCount, setReplyCount] = useState(0)
+  const [mentionCount, setMentionCount] = useState(0)
+  const [participantCount, setParticipantCount] = useState(0)
+  useEffect(() => {
+    if (replyCount !== replyToListItems.length ||
+      mentionCount !== mentionListItems.length ||
+      participantCount !== participantsListItems.length) {
+      window.dispatchEvent(new Event('resize'))
+    }
+
+    setReplyCount(replyToListItems.length)
+    setMentionCount(mentionListItems.length)
+    setParticipantCount(participantsListItems.length)
+  }, [mentionCount, mentionListItems.length, participantCount, participantsListItems.length,
+    replyCount, replyToListItems.length, statusMessage])
 
   // Show affect survey
   return (

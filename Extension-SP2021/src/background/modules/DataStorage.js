@@ -1,5 +1,6 @@
 // Store2 local storage library
 import store from 'store2'
+import compareVersions from 'compare-versions'
 
 /**
  * Read a value from the extension's LocalStorage. The string 'key/context' should be
@@ -45,6 +46,20 @@ export function writeValue (key, data, context, overwrite = true) {
 export function clearValue (key, context) {
   const keyContext = context ? `${context}/${key}` : key
   return store.local.remove(keyContext)
+}
+
+/**
+ * This function reads any stored version number from local storage and compares it
+ * to the current extension version. If they are different, it will clear all stored
+ * data and tokens in order to prevent any conflicts that may arise. It then writes
+ * the current extension version into local storage for future checks.
+ */
+export function checkForVersionConflict () {
+  const previousVersion = readValue('karunaVersion') || '0.0.0'
+  if (compareVersions(_VER_, previousVersion) !== 0) {
+    store.clearAll()
+  }
+  writeValue('karunaVersion', _VER_)
 }
 
 /**
