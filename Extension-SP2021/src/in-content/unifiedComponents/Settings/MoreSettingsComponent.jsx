@@ -1,29 +1,34 @@
 import React from 'react'
 
-import { ConnectVisibilityState } from '../data/globalSate/appState.js'
-import { PopConnectActivityState } from '../data/globalSate/connectActivityState.js'
 import { useSetRecoilState } from 'recoil'
+import { ConnectVisibilityState } from '../data/globalSate/appState.js'
+import { PopConnectActivityState, PushConnectActivityState } from '../data/globalSate/connectActivityState.js'
 
-import { makeStyles } from '@material-ui/core/styles'
-import { Grid, Button } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
+
+import CaptionedButton from '../Shared/CaptionedButton.jsx'
 
 import { logout } from '../data/backgroundHelper.js'
+import { ACTIVITIES } from '../KarunaConnect/Activities/Activities.js'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('More User Settings Act', 'orange', 'white')
 
-const useStyles = makeStyles((theme) => ({
-  buttonStyle: {
-    padding: theme.spacing(1)
-  }
-}))
-
-export default function MoreSettingsActivity (props) {
-  const classes = useStyles()
-
+export default function MoreSettingsComponent (props) {
   // Global state setters
   const setConnectVisibility = useSetRecoilState(ConnectVisibilityState)
+  const pushActivity = useSetRecoilState(PushConnectActivityState)
   const popActivity = useSetRecoilState(PopConnectActivityState)
+
+  // Push account settings activity
+  const onAccountSettings = () => {
+    pushActivity(ACTIVITIES.ACCOUNT_SETTINGS.key)
+  }
+
+  // Push karuna settings activity
+  const onCustomizeKaruna = () => {
+    pushActivity(ACTIVITIES.KARUNA_SETTINGS.key)
+  }
 
   // On sign out, hide drawer, then remove activity and logout
   const onSignOut = () => {
@@ -36,10 +41,27 @@ export default function MoreSettingsActivity (props) {
 
   return (
     <Grid container item spacing={2}>
+
       <Grid item xs={12}>
-        <Button color="primary" onClick={onSignOut} className={classes.buttonStyle}>
-          {'Sign out'}
-        </Button>
+        <Typography variant="body1">{'More Settings'}</Typography>
+      </Grid>
+
+      <Grid item xs={12}>
+        <CaptionedButton onClick={onAccountSettings} buttonText="Account Settings">
+          {'Options for changing your name, email, and password.'}
+        </CaptionedButton>
+      </Grid>
+
+      <Grid item xs={12}>
+        <CaptionedButton onClick={onCustomizeKaruna} buttonText="Customize Karuna">
+          {'Options for changing how Karuna behaves.'}
+        </CaptionedButton>
+      </Grid>
+
+      <Grid item xs={12}>
+        <CaptionedButton onClick={onSignOut} buttonText="Sign Out">
+          {'Sign out of the Karuna Extension and clear all credentials.'}
+        </CaptionedButton>
       </Grid>
     </Grid>
   )

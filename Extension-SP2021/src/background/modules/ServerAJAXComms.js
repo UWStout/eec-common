@@ -38,6 +38,26 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       }
       break
 
+    case 'ajax-karunaSettings':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = getKarunaSettings()
+      }
+      break
+
+    case 'ajax-setKarunaSettings':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = setKarunaSettings(message.karunaSettings)
+      }
+      break
+
     case 'ajax-lookupAliasIds':
       if (!userData.id) {
         promise = Promise.resolve({
@@ -85,6 +105,26 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
         })
       } else {
         promise = getTeamInfoAndStatus(message.teamID)
+      }
+      break
+
+    case 'ajax-checkEmail':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = checkEmail(message.email)
+      }
+      break
+
+    case 'ajax-setUserBasicInfo':
+      if (!userData.id) {
+        promise = Promise.resolve({
+          error: 'No user id available (not logged in?)'
+        })
+      } else {
+        promise = setUserBasicInfo(userData.id, message.basicUserInfo)
       }
       break
 
@@ -288,6 +328,35 @@ function getFullUserInfo (userID) {
   })
 }
 
+function getKarunaSettings () {
+  return new Promise((resolve, reject) => {
+    // Request data from the server
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/settings`, config)
+    requestPromise.then((response) => {
+      return resolve(response?.data)
+    })
+
+    // Reject on error from the first request (request to get user status)
+    requestPromise.catch((error) => { return reject(error) })
+  })
+}
+
+function setKarunaSettings (settings) {
+  return new Promise((resolve, reject) => {
+    // Request data from the server
+    const config = { headers: authorizationHeader() }
+    const data = { settings }
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/settings`, data, config)
+    requestPromise.then((response) => {
+      return resolve(response?.data)
+    })
+
+    // Reject on error from the first request (request to get user status)
+    requestPromise.catch((error) => { return reject(error) })
+  })
+}
+
 function getAliasIdLookupList (context, alias) {
   return new Promise((resolve, reject) => {
     // Request data from the server
@@ -343,6 +412,36 @@ function getTeamAffectTemperature (teamID) {
 
     // Reject on error from the first request (request to get user status)
     requestPromise.catch((error) => { return reject(error) })
+  })
+}
+
+function checkEmail (email) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}auth/email`,
+      { email },
+      config
+    )
+
+    // Listen for server response or error
+    requestPromise.then(() => { resolve() })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
+function setUserBasicInfo (userID, userBasicInfo) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const config = { headers: authorizationHeader() }
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/update`,
+      { id: userID, ...userBasicInfo },
+      config
+    )
+
+    // Listen for server response or error
+    requestPromise.then(() => { resolve() })
+    requestPromise.catch((error) => { reject(error) })
   })
 }
 

@@ -394,6 +394,70 @@ export function retrieveBasicUserInfo () {
   })
 }
 
+export function checkUserEmail (email) {
+  return new Promise((resolve, reject) => {
+    sendMessageToBackground(
+      { type: 'ajax-checkEmail', email },
+      'N/A', // Context doesn't matter
+      'Checking if email is in use failed: ',
+      () => { return resolve() },
+      (message) => {
+        LOG.error('Error checking if email is in use')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
+    )
+  })
+}
+
+export function updateBasicUserInfo (userBasicInfo) {
+  return new Promise((resolve, reject) => {
+    sendMessageToBackground(
+      { type: 'ajax-setUserBasicInfo', userBasicInfo },
+      'N/A', // Context doesn't matter
+      'Updating basic user info failed: ',
+      () => { return resolve() },
+      (message) => {
+        LOG.error('Error updating basic user info')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
+    )
+  })
+}
+
+export function retrieveKarunaSettings () {
+  return new Promise((resolve, reject) => {
+    sendMessageToBackground(
+      { type: 'ajax-karunaSettings' },
+      'N/A', // Context doesn't matter
+      'Retrieving karuna settings: ',
+      (karunaSettings) => { return resolve(karunaSettings) },
+      (message) => {
+        LOG.error('Error retrieving karuna settings')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
+    )
+  })
+}
+
+export function updateKarunaSettings (karunaSettings) {
+  return new Promise((resolve, reject) => {
+    sendMessageToBackground(
+      { type: 'ajax-setKarunaSettings', karunaSettings },
+      'N/A', // Context doesn't matter
+      'Updating karuna settings failed: ',
+      () => { return resolve() },
+      (message) => {
+        LOG.error('Error updating karuna settings')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
+    )
+  })
+}
+
 export function retrieveExtendedUserInfo (userId) {
   return new Promise((resolve, reject) => {
     sendMessageToBackground(

@@ -61,7 +61,7 @@ router.get('/list', authenticateToken, async (req, res) => {
   }
 })
 
-// Update basic user data or metadata (no email, password, or userType)
+// Update basic user data or metadata (not password or userType)
 router.post('/update', authenticateToken, async (req, res) => {
   // Attempt to retrieve user ID (and check token payload for id)
   const userID = req.body.id || req.body._id
@@ -69,9 +69,9 @@ router.post('/update', authenticateToken, async (req, res) => {
     return res.status(400).send({ error: true, message: 'Invalid or missing user ID' })
   }
 
-  // Disallow updating of password, email, or userType with this endpoint
-  if (req.body.password || req.body.passwordHash || req.body.email || req.body.userType) {
-    return res.status(400).send({ error: true, message: 'Cannot update password, email, or userType' })
+  // Disallow updating of password or userType with this endpoint
+  if (req.body.password || req.body.passwordHash || req.body.userType) {
+    return res.status(400).send({ error: true, message: 'Cannot update password or userType' })
   }
 
   // Ensure this is an authorized update (self-update or 'admin' user only)
@@ -88,6 +88,18 @@ router.post('/update', authenticateToken, async (req, res) => {
     const name = req.body.name || userDetails.name
     const preferredName = req.body.preferredName || userDetails.preferredName
     const preferredPronouns = req.body.preferredPronouns || userDetails.preferredPronouns
+    const email = req.body.email || userDetails.email
+
+    // If changing email, confirm not already in use
+    if (email !== userDetails.email) {
+      const existingID = await DBUser.emailExists(email)
+      if (existingID !== -1) {
+        // 409 = CONFLICT
+        return res.status(409).json({
+          invalid: true, exists: true, message: 'Email already registered'
+        })
+      }
+    }
 
     // Merge any changes to 'meta' (and sanitize non-object meta values)
     if (typeof userDetails.meta !== 'object') { userDetails.meta = {} }
@@ -106,7 +118,7 @@ router.post('/update', authenticateToken, async (req, res) => {
 
     // Update the user in the DB
     await DBUser.updateUser(userID, {
-      name, preferredName, preferredPronouns, teams, meta: userMeta
+      name, preferredName, preferredPronouns, email, teams, meta: userMeta
     })
     return res.json({ success: true })
   } catch (err) {

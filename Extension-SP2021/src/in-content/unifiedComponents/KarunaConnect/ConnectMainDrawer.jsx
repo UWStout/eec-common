@@ -7,7 +7,7 @@ import { ConnectActivityStackState } from '../data/globalSate/connectActivitySta
 
 import MuiPaper from '@material-ui/core/Paper'
 
-import { Grid, Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 // The header for the panel (with activity breadcrumbs)
@@ -19,11 +19,16 @@ import ActivityBase from './Activities/ActivityBase.jsx'
 
 import ConnectMainActivity from './ConnectMainActivity.jsx'
 import ConnectLoginActivity from './ConnectLoginActivity.jsx'
+
 import AffectSurveyConnectActivity from './Activities/AffectSurveyConnectActivity.jsx'
 import AffectSurveySkeleton from '../AffectSurvey/AffectSurveySkeleton.jsx'
-import AffectConfirmActivity from './Activities/AffectConfirmActivity.jsx'
+import AffectConfirmConnectActivity from './Activities/AffectConfirmConnectActivity.jsx'
 import PrivacyPromptConnectActivity from './Activities/PrivacyPromptConnectActivity.jsx'
-import MoreSettingsActivity from './Activities/MoreSettingsActivity.jsx'
+
+import MoreSettingsConnectActivity from './Activities/MoreSettingsConnectActivity.jsx'
+import AccountSettingsConnectActivity from './Activities/AccountSettingsConnectActivity.jsx'
+import AccountSettingsConfirmConnectActivity from './Activities/AccountSettingsConfirmConnectActivity.jsx'
+import KarunaSettingsConnectActivity from './Activities/KarunaSettingsConnectActivity.jsx'
 
 // DEBUG: Enable this logger when needed
 import { makeLogger } from '../../../util/Logger.js'
@@ -195,14 +200,31 @@ export default function ConnectMainDrawer (props) {
 
   activityElements.push(
     <ActivityBase key={ACTIVITIES.AFFECT_CONFIRM.key} direction="left" in={activityStack.includes(ACTIVITIES.AFFECT_CONFIRM.key)} mountOnEnter unmountOnExit>
-      <AffectConfirmActivity className={activityStyle} />
+      <AffectConfirmConnectActivity className={activityStyle} />
     </ActivityBase>
   )
 
   activityElements.push(
-    <ActivityBase key={ACTIVITIES.MORE_USER_SETTINGS.key} direction="left" in={activityStack.includes(ACTIVITIES.MORE_USER_SETTINGS.key)} mountOnEnter unmountOnExit>
-      <Typography variant="body1" gutterBottom>{'More User Settings'}</Typography>
-      <MoreSettingsActivity />
+    <ActivityBase key={ACTIVITIES.MORE_SETTINGS.key} direction="left" in={activityStack.includes(ACTIVITIES.MORE_SETTINGS.key)} mountOnEnter unmountOnExit>
+      <MoreSettingsConnectActivity className={activityStyle} />
+    </ActivityBase>
+  )
+
+  activityElements.push(
+    <ActivityBase key={ACTIVITIES.ACCOUNT_SETTINGS.key} direction="left" in={activityStack.includes(ACTIVITIES.ACCOUNT_SETTINGS.key)} mountOnEnter unmountOnExit>
+      <AccountSettingsConnectActivity className={activityStyle} />
+    </ActivityBase>
+  )
+
+  activityElements.push(
+    <ActivityBase key={ACTIVITIES.KARUNA_SETTINGS.key} direction="left" in={activityStack.includes(ACTIVITIES.KARUNA_SETTINGS.key)} mountOnEnter unmountOnExit>
+      <KarunaSettingsConnectActivity className={activityStyle} />
+    </ActivityBase>
+  )
+
+  activityElements.push(
+    <ActivityBase key={ACTIVITIES.ACCOUNT_SETTINGS_CONFIRM.key} direction="left" in={activityStack.includes(ACTIVITIES.ACCOUNT_SETTINGS_CONFIRM.key)} mountOnEnter unmountOnExit>
+      <AccountSettingsConfirmConnectActivity className={activityStyle} />
     </ActivityBase>
   )
 
