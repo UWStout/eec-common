@@ -11,3 +11,7 @@ updates:
     directory: "/Extension-SP2021"
     schedule:
       interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/MinimalExtension"
+    schedule:
+      interval: "daily"
