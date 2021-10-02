@@ -59,7 +59,7 @@ export const ExtendedUserInfoShape = {
 
 export const PrivacyObjectShape = {
   private: PropTypes.bool,
-  prompt: PropTypes.bool
+  noPrompt: PropTypes.bool
 }
 
 /** Default objects to use when none are available */
@@ -91,6 +91,6 @@ export const DEFAULT = {
 
   PrivacyObjectShape: {
     private: true,
-    prompt: true
+    noPrompt: false
   }
 }

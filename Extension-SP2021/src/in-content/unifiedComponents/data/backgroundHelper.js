@@ -216,14 +216,14 @@ export function retrieveMoodPrivacy (context = 'none') {
     // Read the privacy settings from the background context
     sendMessageToBackground(
       // Read from browser local storage
-      { type: 'read', key: 'privacy' }, // <- Message object (read/write) (key) [if writing] (value)
+      { type: 'read', key: 'privacy' }, // <- Message object (read/write) (key) [if writing] (data)
       context,
       'Failed to read privacy preferences: ', // <- Message logged to console on error
 
       // Success and failure callbacks
       (newPrivacy) => {
-        if (!newPrivacy.value || newPrivacy.value === 'undefined') {
-          return resolve({ private: false, prompt: true })
+        if (!newPrivacy?.value || newPrivacy.value === 'undefined') {
+          return resolve({ private: true, noPrompt: false })
         }
         return resolve(newPrivacy.value)
       },
@@ -299,7 +299,7 @@ export function setMoodPrivacy (newPrivacy, context = 'none') {
     // Write the privacy settings to the background context
     sendMessageToBackground(
       // write to browser local storage
-      { type: 'write', key: 'privacy', value: newPrivacy }, // <- Message object (read/write) (key) [if writing] (value)
+      { type: 'write', key: 'privacy', data: newPrivacy }, // <- Message object (read/write) (key) [if writing] (data)
       context,
       'Failed to WRITE privacy preferences: ', // <- Message logged to console on error
 
@@ -451,7 +451,7 @@ export function updateCachedAliasInfo (context, aliasList) {
     // Write the alias list to the background context
     sendMessageToBackground(
       // Write to browser local storage
-      { type: 'write', key: 'aliasList', value: aliasList },
+      { type: 'write', key: 'aliasList', data: aliasList },
       context,
       'Failed to WRITE alias list: ',
 

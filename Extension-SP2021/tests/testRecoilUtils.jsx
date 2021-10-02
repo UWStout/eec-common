@@ -33,7 +33,7 @@ function initializeState (snapshot) {
 
   const privacyPrefs = {
     private: true,
-    prompt: true
+    noPrompt: false
   }
   snapshot.set(PrivacyPrefsState, privacyPrefs)
 

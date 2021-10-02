@@ -48,11 +48,11 @@ const AffectSurveyBubbleActivity = React.forwardRef((props, ref) => {
   // - Show the privacy preferences prompt
   // - Fully commit and update mood
   const onSelection = (affect, affectPrivacy) => {
-    if (affectPrivacy.prompt) {
-      pushActivity(ACTIVITIES.PRIVACY_PROMPT)
-    } else {
+    if (affectPrivacy.noPrompt) {
       setUserAffectID(affect?._id)
       popActivity(ACTIVITIES.AFFECT_SURVEY)
+    } else {
+      pushActivity(ACTIVITIES.PRIVACY_PROMPT)
     }
   }
 

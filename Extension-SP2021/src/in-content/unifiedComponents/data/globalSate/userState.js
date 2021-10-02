@@ -231,7 +231,7 @@ export const PrivacyPrefsState = atom({
   key: 'PrivacyPrefsState',
   default: {
     private: true,
-    prompt: true
+    noPrompt: false
   },
   effects_UNSTABLE: [
     ({ setSelf, onSet }) => {
@@ -257,8 +257,10 @@ export const PrivacyPrefsStateSetter = selector({
     // Update local cached state
     set(PrivacyPrefsState, { ...newPrivacy })
 
-    // Send to the database
-    HELPER.setMoodPrivacy(newPrivacy, getMessagingContext())
+    // Send to the local cache and database
+    if (newPrivacy !== undefined) {
+      HELPER.setMoodPrivacy(newPrivacy, getMessagingContext())
+    }
   }
 })
 

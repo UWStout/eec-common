@@ -32,7 +32,7 @@ export default function AffectIcon (props) {
     <CustomTooltip {...restProps} title={tooltip}>
       <Typography variant='body1' align='center' gutterBottom className={iconRoot}>
         {affectObj?.characterCodes[0] ? affectObj.characterCodes[0] : '?'}
-        {!privacy && <Visibility className={privacyIcon} />}
+        {privacy && <Visibility className={privacyIcon} />}
       </Typography>
     </CustomTooltip>
   )

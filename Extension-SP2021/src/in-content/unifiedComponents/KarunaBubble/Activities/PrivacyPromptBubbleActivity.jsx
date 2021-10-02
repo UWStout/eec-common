@@ -10,8 +10,8 @@ import PrivacyPromptComponent from '../../AffectSurvey/PrivacyPromptComponent.js
 
 import { ACTIVITIES } from './Activities.js'
 
-// import { makeLogger } from '../../../../util/Logger.js'
-// const LOG = makeLogger('Privacy Activity', 'yellow', 'black')
+import { makeLogger } from '../../../../util/Logger.js'
+const LOG = makeLogger('Privacy Bubble Activity', 'yellow', 'black')
 
 export default function PrivacyPromptBubbleActivity (props) {
   const { requestHide, cancelHide } = props
@@ -32,6 +32,7 @@ export default function PrivacyPromptBubbleActivity (props) {
     if (!canceled) {
       // Update affect and privacy
       setCurrentAffect(lastSelectedAffectID)
+      LOG('Setting privacy to', newPrivacy)
       setPrivacy(newPrivacy)
 
       // Dismiss affect survey too

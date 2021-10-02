@@ -29,10 +29,12 @@ export function writeValue (key, data, context, overwrite = true) {
 
   // Check for and avoid overwriting
   if (store.local.get(keyContext) !== undefined && !overwrite) {
+    console.log(`[[Background]] No writing value for ${keyContext} because overwrite is false`)
     return false
   }
 
   // Write the variable and return success
+  console.log(`[[Background]] Setting ${keyContext} to ${data}`)
   store.local.set(keyContext, data, true)
   return true
 }

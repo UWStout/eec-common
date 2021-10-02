@@ -9,8 +9,8 @@ import PrivacyPromptComponent from '../../AffectSurvey/PrivacyPromptComponent.js
 
 import { ACTIVITIES } from './Activities.js'
 
-// import { makeLogger } from '../../../../util/Logger.js'
-// const LOG = makeLogger('Privacy Activity', 'yellow', 'black')
+import { makeLogger } from '../../../../util/Logger.js'
+const LOG = makeLogger('Privacy Connect Activity', 'yellow', 'black')
 
 export default function PrivacyPromptConnectActivity (props) {
   // Global data states
@@ -29,6 +29,7 @@ export default function PrivacyPromptConnectActivity (props) {
     if (!canceled) {
       // Update affect and privacy
       setCurrentAffect(lastSelectedAffectID)
+      LOG('Setting privacy to', newPrivacy)
       setPrivacy(newPrivacy)
 
       // Dismiss affect survey too
