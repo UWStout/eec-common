@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
   innerList: {
     overflowY: 'auto',
-    maxHeight: '280px'
+    maxHeight: '320px'
   },
   subListHeaderStyle: {
     padding: '4px',

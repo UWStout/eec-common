@@ -6,7 +6,9 @@ import { PrivacyPrefsStateSetter, UserAffectIDState } from '../data/globalSate/u
 import { AffectListState } from '../data/globalSate/teamState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Grid, Typography, FormControlLabel, Button, Checkbox } from '@material-ui/core'
+import { Grid, Typography, FormControlLabel, Checkbox } from '@material-ui/core'
+
+import CaptionedButton from '../Shared/CaptionedButton.jsx'
 
 import { makeLogger } from '../../../util/Logger.js'
 const LOG = makeLogger('Privacy Activity', 'yellow', 'black')
@@ -26,15 +28,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PrivacyPromptComponent (props) {
   const { privacyCallback } = props
-  const { gridBoxStyle, captionStyle, checkboxLabelStyle } = useStyles()
+  const { gridBoxStyle, checkboxLabelStyle } = useStyles()
 
   // Global data states
   const affectId = useRecoilValue(UserAffectIDState)
   const emojiList = useRecoilValue(AffectListState)
   const privacy = useRecoilValue(PrivacyPrefsStateSetter)
 
+  LOG('Current privacy', privacy)
+
   // Track local checkbox state
-  const [promptState, setPromptState] = useState(privacy.noPrompt)
+  const [promptState, setPromptState] = useState(privacy.noPrompt || false)
   const handlePromptChange = (event) => {
     setPromptState(event.currentTarget.checked)
   }
@@ -52,7 +56,7 @@ export default function PrivacyPromptComponent (props) {
   return (
     <Grid container item spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="body">
+        <Typography variant="body1">
           {'Do you want to share "'}
           {!affectObj
             ? '[error, unknown affect id]'
@@ -61,39 +65,23 @@ export default function PrivacyPromptComponent (props) {
         </Typography>
       </Grid>
 
-      <Grid container item xs={12} spacing={1}>
-        <Grid item className={gridBoxStyle} xs={12}>
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={() => { onDialogClose(false, { private: false, prompt: promptState }) }}
-          >
-            {'Yes, Share'}
-          </Button>
-        </Grid>
-        <Grid item className={gridBoxStyle} xs={12}>
-          <Typography className={captionStyle} variant="caption">
-            {'No one outside your team will be able to see the information you\'re sharing.'}
-          </Typography>
-        </Grid>
+      <Grid item xs={12}>
+        <CaptionedButton
+          buttonText={'Yes, Share'}
+          onClick={() => { onDialogClose(false, { private: false, prompt: promptState }) }}
+        >
+          {'No one outside your team will be able to see the information you\'re sharing.'}
+        </CaptionedButton>
       </Grid>
 
-      <Grid container item xs={12} spacing={1}>
-        <Grid item className={gridBoxStyle} xs={12}>
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={() => { onDialogClose(false, { private: true, prompt: promptState }) }}
-          >
-            {'No, Keep Private'}
-          </Button>
-        </Grid>
-        <Grid item className={gridBoxStyle} xs={12}>
-          <Typography className={captionStyle} variant="caption">
-            {'Please consider sharing your response with your team. '}
-            {'By doing so, you will be contributing to a more connected and compassionate team.'}
-          </Typography>
-        </Grid>
+      <Grid item xs={12}>
+        <CaptionedButton
+          buttonText={'No, Keep Private'}
+          onClick={() => { onDialogClose(false, { private: true, prompt: promptState }) }}
+        >
+          {'Please consider sharing your response with your team. '}
+          {'By doing so, you will be contributing to a more connected and compassionate team.'}
+        </CaptionedButton>
       </Grid>
 
       {/* Option to dismiss the prompt in the future */}

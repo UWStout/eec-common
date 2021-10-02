@@ -3,7 +3,7 @@ import React from 'react'
 import { useSetRecoilState, useRecoilValue } from 'recoil'
 import { PrivacyPrefsStateSetter, UserAffectIDState } from '../../data/globalSate/userState.js'
 import { LastSelectedAffectIDState } from '../../data/globalSate/appState.js'
-import { PopConnectActivityState } from '../../data/globalSate/connectActivityState.js'
+import { PopConnectActivityState, PushConnectActivityState } from '../../data/globalSate/connectActivityState.js'
 
 import PrivacyPromptComponent from '../../AffectSurvey/PrivacyPromptComponent.jsx'
 
@@ -20,20 +20,20 @@ export default function PrivacyPromptConnectActivity (props) {
 
   // Global activity states
   const popActivity = useSetRecoilState(PopConnectActivityState)
+  const pushActivity = useSetRecoilState(PushConnectActivityState)
 
   // Respond to the dialog closing
   const onPrivacyClose = (canceled, newPrivacy) => {
-    // Dismiss the privacy activity
-    popActivity(ACTIVITIES.PRIVACY_PROMPT.key)
-
     if (!canceled) {
       // Update affect and privacy
       setCurrentAffect(lastSelectedAffectID)
-      LOG('Setting privacy to', newPrivacy)
       setPrivacy(newPrivacy)
 
-      // Dismiss affect survey too
-      popActivity(ACTIVITIES.AFFECT_SURVEY.key)
+      // Show confirmation
+      LOG('Pushing confirm activity from privacy prompt')
+      pushActivity(ACTIVITIES.AFFECT_CONFIRM.key)
+    } else {
+      popActivity(ACTIVITIES.PRIVACY_PROMPT.key)
     }
   }
 

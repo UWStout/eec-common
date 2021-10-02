@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function MoreUserSettingsActivity (props) {
+export default function MoreSettingsActivity (props) {
   const classes = useStyles()
 
   // Global state setters

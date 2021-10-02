@@ -6,8 +6,8 @@ import { ConnectActivityStackState, PopConnectActivityState } from '../data/glob
 import { useRecoilValue, useRecoilState } from 'recoil'
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'
-import { Grid, Typography, IconButton } from '@material-ui/core'
-import { KeyboardArrowRight, Cancel } from '@material-ui/icons'
+import { Grid, Typography, IconButton, Tooltip } from '@material-ui/core'
+import { KeyboardArrowRight, KeyboardArrowLeft, Cancel } from '@material-ui/icons'
 
 import MuiDivider from '@material-ui/core/Divider'
 
@@ -28,23 +28,37 @@ const Divider = withStyles((theme) => ({
 
 function BackButton (props) {
   return (
-    <IconButton aria-label='Backup' size='small' {...props}>
-      <Cancel fontSize="inherit" />
-    </IconButton>
+    <Tooltip title="Go Back" PopperProps={{ disablePortal: true }}>
+      <IconButton aria-label='Back' size='small' {...props}>
+        <KeyboardArrowLeft fontSize="inherit" />
+      </IconButton>
+    </Tooltip>
   )
 }
 
-function CloseButton (props) {
+function DismissButton (props) {
   return (
-    <IconButton aria-label='Close Panel' size='small' {...props}>
-      <KeyboardArrowRight fontSize="inherit" />
-    </IconButton>
+    <Tooltip title="Return Home" PopperProps={{ disablePortal: true }}>
+      <IconButton aria-label='Return Home' size='small' {...props}>
+        <Cancel fontSize="inherit" />
+      </IconButton>
+    </Tooltip>
+  )
+}
+
+function HideButton (props) {
+  return (
+    <Tooltip title="Hide the Connect Panel" PopperProps={{ disablePortal: true }}>
+      <IconButton aria-label='Hide Panel' size='small' {...props}>
+        <KeyboardArrowRight fontSize="inherit" />
+      </IconButton>
+    </Tooltip>
   )
 }
 
 export default function PanelBreadcrumbs (props) {
   // De-structure the props
-  const { onClose } = props
+  const { onClose, noBack, noDismiss } = props
 
   // Create styling class names
   const { rootStyle } = useStyles()
@@ -54,30 +68,33 @@ export default function PanelBreadcrumbs (props) {
   const [currentActivityKey, popActivity] = useRecoilState(PopConnectActivityState)
   const disableAllInput = useRecoilValue(DisableInputState)
 
-  const backCallback = () => {
-    popActivity(currentActivityKey)
+  // Backup one activity
+  const backCallback = () => { popActivity(currentActivityKey) }
+
+  // Dismiss all activities and return to the main one
+  const dismissCallback = () => {
+    // Work backwards and pop all activities except the last one
+    for (let i = activityStack.length - 1; i > 0; i--) {
+      popActivity(activityStack[i])
+    }
   }
 
-  const closeCallback = () => {
-    if (onClose) { onClose() }
-  }
+  // Hide the main drawer
+  const hideCallback = () => { if (onClose) { onClose() } }
 
   // Render
   return (
     <Grid container item xs={12} className={rootStyle}>
-      <Grid container item xs={12}>
-        <Grid item xs={11}>
-          <Typography variant="subtitle2">
-            {'KARUNA'}
-            {activityStack.length > 0 ? ` / ${ACTIVITIES[currentActivityKey].title}` : ''}
-          </Typography>
-        </Grid>
-        <Grid item xs={1}>
-          {activityStack.length <= 1 &&
-            <CloseButton onClick={closeCallback} disabled={disableAllInput} />}
-          {activityStack.length > 1 &&
-            <BackButton onClick={backCallback} disabled={disableAllInput} />}
-        </Grid>
+      <Grid container item xs={12} justifyContent="space-between" alignItems="center">
+        {activityStack.length > 1 && !noBack &&
+          <BackButton onClick={backCallback} disabled={disableAllInput} />}
+        <Typography variant="h6" component="h2">
+          {activityStack.length > 1 ? ACTIVITIES[currentActivityKey].title : 'Karuna Connect'}
+        </Typography>
+        {activityStack.length <= 1 &&
+          <HideButton onClick={hideCallback} disabled={disableAllInput} />}
+        {activityStack.length > 1 && !noDismiss &&
+          <DismissButton onClick={dismissCallback} disabled={disableAllInput} />}
       </Grid>
       <Grid item xs={12}>
         <Divider />
@@ -92,9 +109,13 @@ export default function PanelBreadcrumbs (props) {
 }
 
 PanelBreadcrumbs.propTypes = {
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
+  noBack: PropTypes.bool,
+  noDismiss: PropTypes.bool
 }
 
 PanelBreadcrumbs.defaultProps = {
-  onClose: null
+  onClose: null,
+  noBack: false,
+  noDismiss: false
 }

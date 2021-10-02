@@ -2,15 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
-import { PushConnectActivityState, PopConnectActivityState } from '../../data/globalSate/connectActivityState.js'
+import { PushConnectActivityState } from '../../data/globalSate/connectActivityState.js'
 import { UserAffectIDState } from '../../data/globalSate/userState.js'
 
 import AffectSurveyComponent from '../../AffectSurvey/AffectSurveyComponent.jsx'
 
 import { ACTIVITIES } from './Activities.js'
 
-// import { makeLogger } from '../../../../util/Logger.js'
-// const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')
+import { makeLogger } from '../../../../util/Logger.js'
+const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')
 
 /**
  * Manage the affect survey when shown in the connect panel
@@ -24,7 +24,6 @@ const AffectSurveyConnectActivity = React.forwardRef((props, ref) => {
 
   // Global activity management
   const pushActivity = useSetRecoilState(PushConnectActivityState)
-  const popActivity = useSetRecoilState(PopConnectActivityState)
 
   // Called when the user clicks on an affect. May:
   // - Show the privacy preferences prompt
@@ -32,7 +31,8 @@ const AffectSurveyConnectActivity = React.forwardRef((props, ref) => {
   const onSelection = (affect, affectPrivacy) => {
     if (affectPrivacy.noPrompt) {
       setUserAffectID(affect?._id)
-      popActivity(ACTIVITIES.AFFECT_SURVEY.key)
+      LOG('Pushing confirm activity from survey')
+      pushActivity(ACTIVITIES.AFFECT_CONFIRM.key)
     } else {
       pushActivity(ACTIVITIES.PRIVACY_PROMPT.key)
     }

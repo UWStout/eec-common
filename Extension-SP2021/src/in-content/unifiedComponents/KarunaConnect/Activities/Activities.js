@@ -9,11 +9,15 @@ export const ACTIVITIES = {
   },
   AFFECT_SURVEY: {
     key: 'AFFECT_SURVEY',
-    title: 'Current Mood'
+    title: 'Update Mood'
   },
   PRIVACY_PROMPT: {
     key: 'PRIVACY_PROMPT',
-    title: 'Privacy'
+    title: 'Update Mood'
+  },
+  AFFECT_CONFIRM: {
+    key: 'AFFECT_CONFIRM',
+    title: 'Update Mood'
   },
   MORE_USER_SETTINGS: {
     key: 'MORE_USER_SETTINGS',

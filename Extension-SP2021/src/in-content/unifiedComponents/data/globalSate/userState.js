@@ -221,7 +221,7 @@ export const UserAffectIDState = selector({
       currentAffectID: newAffectID
     })
 
-    // Send to the database (TODO: fix hard-coded privacy)
+    // Send to the database
     HELPER.setCurrentAffect(newAffectID, false, getMessagingContext())
   }
 })
@@ -236,7 +236,11 @@ export const PrivacyPrefsState = atom({
   effects_UNSTABLE: [
     ({ setSelf, onSet }) => {
       // Initialize
-      setSelf(HELPER.retrieveMoodPrivacy(getMessagingContext()))
+      const futurePrivacy = HELPER.retrieveMoodPrivacy(getMessagingContext())
+      setSelf(futurePrivacy)
+      futurePrivacy.then((result) => {
+        LOG('Privacy initialized to', result)
+      })
 
       // Log any value changes for debugging
       onSet((newVal) => {

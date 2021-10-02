@@ -21,8 +21,9 @@ import ConnectMainActivity from './ConnectMainActivity.jsx'
 import ConnectLoginActivity from './ConnectLoginActivity.jsx'
 import AffectSurveyConnectActivity from './Activities/AffectSurveyConnectActivity.jsx'
 import AffectSurveySkeleton from '../AffectSurvey/AffectSurveySkeleton.jsx'
+import AffectConfirmActivity from './Activities/AffectConfirmActivity.jsx'
 import PrivacyPromptConnectActivity from './Activities/PrivacyPromptConnectActivity.jsx'
-import MoreUserSettingsActivity from './Activities/MoreUserSettingsActivity.jsx'
+import MoreSettingsActivity from './Activities/MoreSettingsActivity.jsx'
 
 // DEBUG: Enable this logger when needed
 import { makeLogger } from '../../../util/Logger.js'
@@ -86,15 +87,11 @@ const Paper = withStyles((theme) => ({
  * @returns {React.Element} The element to render for this component
  */
 export default function ConnectMainDrawer (props) {
+  // Deconstruct props
   const { hidden, onHide, waitToHide } = props
 
-  // Deconstruct props and style class names
-  const {
-    panelHidden,
-    panelRetracted,
-    panelExpanded,
-    activityStyle
-  } = useStyles()
+  // Deconstruct style class names
+  const { panelHidden, panelRetracted, panelExpanded, activityStyle } = useStyles()
 
   // Hover state of mouse
   const [mouseIsOver, setMouseIsOver] = useState(false)
@@ -113,8 +110,10 @@ export default function ConnectMainDrawer (props) {
     }
   }, [hidden, setIsRetracted])
 
-  // Global activity and input disabled state
+  // Global Karuna Connect activity stack
   const activityStack = useRecoilValue(ConnectActivityStackState)
+
+  // Control global input disabling
   const setDisableInput = useSetRecoilState(DisableInputState)
   useEffect(() => {
     // setDisableInput(false) // <- for debugging
@@ -123,15 +122,15 @@ export default function ConnectMainDrawer (props) {
 
   // Function for queueing a hide request
   const hide = (immediate) => {
-    if (onHide && !hidden) {
-      LOG('Hiding main drawer in ' + waitToHide + ' ms')
-      if (immediate) {
-        onHide()
-      } else {
-        const timeoutHandle = setTimeout(() => { onHide() }, waitToHide)
-        setHideTimeout(timeoutHandle)
-      }
-    }
+    // if (onHide && !hidden) {
+    //   LOG('Hiding main drawer in ' + waitToHide + ' ms')
+    //   if (immediate) {
+    //     onHide()
+    //   } else {
+    //     const timeoutHandle = setTimeout(() => { onHide() }, waitToHide)
+    //     setHideTimeout(timeoutHandle)
+    //   }
+    // }
   }
 
   // Function for canceling a pending hide request
@@ -145,15 +144,15 @@ export default function ConnectMainDrawer (props) {
 
   // Function for queueing a retract request
   const retract = (immediate) => {
-    if (!isRetracted) {
-      LOG('Retracting main drawer in ' + (waitToHide / 3) + ' ms')
-      if (immediate) {
-        setIsRetracted(true)
-      } else {
-        const timeoutHandle = setTimeout(() => { setIsRetracted(true) }, waitToHide / 3)
-        setRetractTimeout(timeoutHandle)
-      }
-    }
+    // if (!isRetracted) {
+    //   LOG('Retracting main drawer in ' + (waitToHide / 3) + ' ms')
+    //   if (immediate) {
+    //     setIsRetracted(true)
+    //   } else {
+    //     const timeoutHandle = setTimeout(() => { setIsRetracted(true) }, waitToHide / 3)
+    //     setRetractTimeout(timeoutHandle)
+    //   }
+    // }
   }
 
   // Function for canceling a pending retract request
@@ -182,7 +181,6 @@ export default function ConnectMainDrawer (props) {
 
   activityElements.push(
     <ActivityBase key={ACTIVITIES.AFFECT_SURVEY.key} direction="left" in={activityStack.includes(ACTIVITIES.AFFECT_SURVEY.key)} mountOnEnter unmountOnExit>
-      <Typography variant="body1" gutterBottom>{'How are you feeling about the project?'}</Typography>
       <Suspense fallback={<AffectSurveySkeleton />}>
         <AffectSurveyConnectActivity />
       </Suspense>
@@ -196,9 +194,15 @@ export default function ConnectMainDrawer (props) {
   )
 
   activityElements.push(
+    <ActivityBase key={ACTIVITIES.AFFECT_CONFIRM.key} direction="left" in={activityStack.includes(ACTIVITIES.AFFECT_CONFIRM.key)} mountOnEnter unmountOnExit>
+      <AffectConfirmActivity className={activityStyle} />
+    </ActivityBase>
+  )
+
+  activityElements.push(
     <ActivityBase key={ACTIVITIES.MORE_USER_SETTINGS.key} direction="left" in={activityStack.includes(ACTIVITIES.MORE_USER_SETTINGS.key)} mountOnEnter unmountOnExit>
       <Typography variant="body1" gutterBottom>{'More User Settings'}</Typography>
-      <MoreUserSettingsActivity />
+      <MoreSettingsActivity />
     </ActivityBase>
   )
 
@@ -225,6 +229,8 @@ export default function ConnectMainDrawer (props) {
       className={currentClass}
       onMouseEnter={() => { setMouseIsOver(true); cancelHide(); cancelRetract() }}
       onMouseLeave={() => { setMouseIsOver(false); hide(false); retract(false) }}
+      // eslint-disable-next-line react/forbid-component-props
+      style={{ overflowY: (activityStack.length > 1 ? 'hidden' : '') }}
     >
       <Grid container>
         {/* Heading with title and breadcrumbs for activities */}

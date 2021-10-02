@@ -36,6 +36,9 @@ const IS_DISCORD = (contextName === CONTEXT.DISCORD)
 const IS_TEAMS = (contextName === CONTEXT.MS_TEAMS)
 const IS_SLACK = (contextName === CONTEXT.SLACK)
 
+// Has karuna been mounted yet
+let karunaIsMounted = false
+
 // Initialize communication with background page
 const extensionPort = chrome.runtime.connect({ name: contextName })
 
@@ -57,6 +60,77 @@ jQuery(document).ready(() => {
   // Define our custom elements
   customElements.define('eec-unified', EECUnified)
 
+  // Add the mutation observer
+  setupMutationObserver()
+})
+
+function setupMutationObserver () {
+  // Callback function to execute when mutations are observed
+  const mutationCallback = (mutationsList, observer) => {
+    // Wait until the page is truely done loading before proceeding
+    if (!karunaIsMounted) {
+      if (IS_TEAMS) {
+        if (!document.querySelector('.ts-waffle')) {
+          // Page isn't ready yet
+          return
+        } else {
+          karunaIsMounted = true
+          mountKaruna()
+        }
+      } else {
+        // TODO: Update to check for readiness in Discord and Slack
+        karunaIsMounted = true
+        mountKaruna()
+      }
+    }
+
+    // Attempt to update EEC text-boxes (if needed)
+    updateTextBoxes()
+
+    // Search for and update list of alias' on the page
+    updateAliasList()
+
+    // Check team and channel names on any page mutation.
+    // We use optional chaining to avoid undefined errors
+    const oldValues = { userName, userAppId, teamName, channelName, avatarSrc }
+    if (IS_TEAMS) {
+      userName = jQuery('img.user-picture')?.first()?.attr('upn')?.trim()
+      teamName = jQuery('.team-icon')?.attr('alt')?.substr(19)?.trim()
+      channelName = jQuery('.channel-name')?.text()?.trim()
+      if (teamName) { teamName = teamName.substr(0, teamName.length - 1) }
+      userAppId = getAppId()
+      avatarSrc = `https://teams.microsoft.com/api/mt/amer/beta/users/8:orgid:${userAppId}/profilepicturev2?size=HR42x42`
+    } else if (IS_DISCORD) {
+      const userArea = jQuery('section[aria-label="User area"]')
+      userName = userArea.text()?.trim()
+      teamName = userArea?.parent()?.children()?.first()?.children()?.first()?.text()?.trim()
+      channelName = document.title?.trim()
+      userAppId = getAppId()
+      avatarSrc = jQuery('div[class*="avatarWrapper"] img[class*="avatar"]')?.attr('src')
+    } else if (IS_SLACK) {
+      userName = jQuery('[data-qa="channel_sidebar_name_you"]')?.parent()?.children()?.first()?.text()?.trim()
+      teamName = jQuery('.p-ia__sidebar_header__team_name_text')?.text()?.trim()
+      channelName = jQuery('[data-qa="channel_name"]')?.text()?.trim()
+    }
+
+    // Did something change?
+    if (oldValues.userName !== userName || oldValues.userAppId !== userAppId || oldValues.teamName !== teamName || oldValues.channelName !== channelName || oldValues.avatarSrc !== avatarSrc) {
+      // Print updated context info
+      LOG(`context updated: ${contextName}, ${teamName}/${channelName}/${userName} (${userAppId} / ${avatarSrc})`)
+
+      // Update data in the background script
+      chrome.runtime.sendMessage({ type: 'context', userName, userAppId, teamName, channelName, avatarSrc, context: contextName })
+    }
+  }
+
+  // Create an observer instance linked to the callback function
+  const observer = new MutationObserver(mutationCallback)
+
+  // Start observing the target node for configured mutations
+  observer.observe(document.body, { childList: true, subtree: true })
+}
+
+function mountKaruna () {
   // Setup global Unified Karuna element
   const karunaUnifiedElem = document.createElement('eec-unified')
   karunaUnifiedElem.setupElementReact(contextName, statusEmitter)
@@ -95,54 +169,7 @@ jQuery(document).ready(() => {
     }
     window.addEventListener('keydown', tunnelKey, true)
   }
-
-  // Callback function to execute when mutations are observed
-  const mutationCallback = (mutationsList, observer) => {
-    // Attempt to update EEC text-boxes (if needed)
-    updateTextBoxes()
-
-    // Search for and update list of alias' on the page
-    updateAliasList()
-
-    // Check team and channel names on any page mutation.
-    // We use optional chaining to avoid undefined errors
-    const oldValues = { userName, userAppId, teamName, channelName, avatarSrc }
-    if (IS_TEAMS) {
-      userName = jQuery('img.user-picture')?.first()?.attr('upn')?.trim()
-      avatarSrc = jQuery('img.user-picture')?.first()?.attr('src')
-      teamName = jQuery('.team-icon')?.attr('alt')?.substr(19)?.trim()
-      channelName = jQuery('.channel-name')?.text()?.trim()
-      if (teamName) { teamName = teamName.substr(0, teamName.length - 1) }
-      userAppId = getAppId()
-    } else if (IS_DISCORD) {
-      const userArea = jQuery('section[aria-label="User area"]')
-      userName = userArea.text()?.trim()
-      teamName = userArea?.parent()?.children()?.first()?.children()?.first()?.text()?.trim()
-      channelName = document.title?.trim()
-      userAppId = getAppId()
-      avatarSrc = jQuery('div[class*="avatarWrapper"] img[class*="avatar"]')?.attr('src')
-    } else if (IS_SLACK) {
-      userName = jQuery('[data-qa="channel_sidebar_name_you"]')?.parent()?.children()?.first()?.text()?.trim()
-      teamName = jQuery('.p-ia__sidebar_header__team_name_text')?.text()?.trim()
-      channelName = jQuery('[data-qa="channel_name"]')?.text()?.trim()
-    }
-
-    // Did something change?
-    if (oldValues.userName !== userName || oldValues.userAppId !== userAppId || oldValues.teamName !== teamName || oldValues.channelName !== channelName || oldValues.avatarSrc !== avatarSrc) {
-      // Print updated context info
-      LOG(`context updated: ${contextName}, ${teamName}/${channelName}/${userName} (${userAppId} / ${avatarSrc})`)
-
-      // Update data in the background script
-      chrome.runtime.sendMessage({ type: 'context', userName, userAppId, teamName, channelName, avatarSrc, context: contextName })
-    }
-  }
-
-  // Create an observer instance linked to the callback function
-  const observer = new MutationObserver(mutationCallback)
-
-  // Start observing the target node for configured mutations
-  observer.observe(document.body, { childList: true, subtree: true })
-})
+}
 
 function updateCookies () {
   const cookies = {}
