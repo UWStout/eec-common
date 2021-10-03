@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
 
-import MuiPaper from '@material-ui/core/Paper'
-import CircularProgress from '@material-ui/core/CircularProgress'
-
-import { Grid } from '@material-ui/core'
+import { Paper as MuiPaper, Grid, CircularProgress } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({

@@ -60,7 +60,7 @@ export default function UserStatusDetails (props) {
 
   // Change time to respond
   const onChangeMoreSettings = () => {
-    pushActivity(ACTIVITIES.MORE_USER_SETTINGS.key)
+    pushActivity(ACTIVITIES.MORE_SETTINGS.key)
   }
 
   return (

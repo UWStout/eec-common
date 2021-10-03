@@ -4,7 +4,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import GroupOutlinedIcon from '@material-ui/icons/GroupOutlined'
 
 import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
+import { Button } from '@material-ui/core'
 
 import Team from '../Team.jsx'
 import { backgroundMessage } from './AJAXHelper.js'

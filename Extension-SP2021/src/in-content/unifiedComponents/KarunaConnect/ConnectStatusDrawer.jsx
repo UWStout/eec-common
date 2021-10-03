@@ -5,10 +5,9 @@ import { useRecoilValue } from 'recoil'
 import { UserStatusState } from '../data/globalSate/userState.js'
 import { AffectListState } from '../data/globalSate/teamState.js'
 
-import MuiPaper from '@material-ui/core/Paper'
 import { MoreVert } from '@material-ui/icons'
 
-import { Grid, Typography } from '@material-ui/core'
+import { Grid, Typography, Paper as MuiPaper } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 import CollaborationIcon from '../Shared/CollaborationIcon.jsx'

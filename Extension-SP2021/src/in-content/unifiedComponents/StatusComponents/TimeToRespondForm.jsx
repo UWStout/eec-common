@@ -5,8 +5,9 @@ import { TimeToRespondState } from '../data/globalSate/userState.js'
 import { DisableInputState } from '../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { InputAdornment, Select, MenuItem } from '@material-ui/core' //, FormControlLabel, Checkbox, Typography } from '@material-ui/core'
+import { InputAdornment, MenuItem } from '@material-ui/core' //, FormControlLabel, Checkbox, Typography } from '@material-ui/core'
 
+import KarunaSelect from '../Base/KarunaSelect.jsx'
 import { rawTimeToRespondIcon } from '../Shared/TimeToRespondIcon.jsx'
 import TunneledTextField from '../Shared/TunneledTextField.jsx'
 
@@ -70,7 +71,7 @@ export default function TimeToRespondForm (props) {
           ),
           endAdornment: (
             <InputAdornment position="end">
-              <Select
+              <KarunaSelect
                 value={units}
                 onChange={(e) => {
                   setUnits(e.target.value)
@@ -84,7 +85,7 @@ export default function TimeToRespondForm (props) {
                 <MenuItem value={'m'}>m</MenuItem>
                 <MenuItem value={'h'}>h</MenuItem>
                 <MenuItem value={'d'}>d</MenuItem>
-              </Select>
+              </KarunaSelect>
             </InputAdornment>
           )
         }}

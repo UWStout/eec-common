@@ -614,6 +614,50 @@ export async function getUserStatus (userID, privileged = false) {
 }
 
 /**
+ * Retrieves user settings object given userID which contains user data for customizing Karuna
+ *
+ * @param {ObjectID} userID Database ID of the user to retrieve
+ * @returns {Promise} resolves with settings object from user field, else rejects with an error
+ */
+export async function getUserSettings (userID) {
+  const projection = {
+    _id: 0,
+    settings: 1
+  }
+
+  const DBHandle = await retrieveDBHandle('karunaData')
+  return DBHandle.collection('Users')
+    .findOne(
+      { _id: new ObjectID(userID) },
+      { projection }
+    )
+}
+
+/**
+ * updates the user's karuna customization settings
+ *
+ * @param {ObjectID} userID the user whose status is being updated
+ * @param {String} userSettings new user settings object
+ */
+export async function updateUserSettings (userID, userSettings) {
+  const DBHandle = await retrieveDBHandle('karunaData')
+  return new Promise((resolve, reject) => {
+    return DBHandle.collection('Users').findOneAndUpdate(
+      { _id: new ObjectID(userID) },
+      { $set: { settings: userSettings } },
+      (err, result) => {
+        if (err) {
+          debug('Failed to update user settings')
+          debug(err)
+          return reject(err)
+        }
+        resolve(result)
+      }
+    )
+  })
+}
+
+/**
  * updates the user's collaboration status. pushes updates to the status object of the user document with the given userID
  *
  * tested in test 34

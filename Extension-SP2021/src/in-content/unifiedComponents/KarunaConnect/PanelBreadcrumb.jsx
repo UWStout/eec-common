@@ -6,10 +6,8 @@ import { ConnectActivityStackState, PopConnectActivityState } from '../data/glob
 import { useRecoilValue, useRecoilState } from 'recoil'
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'
-import { Grid, Typography, IconButton, Tooltip } from '@material-ui/core'
+import { Grid, Typography, IconButton, Tooltip, Divider as MuiDivider } from '@material-ui/core'
 import { KeyboardArrowRight, KeyboardArrowLeft, Cancel } from '@material-ui/icons'
-
-import MuiDivider from '@material-ui/core/Divider'
 
 import { ACTIVITIES } from './Activities/Activities'
 import TeamTabs from './TeamTabs.jsx'

@@ -50,8 +50,6 @@ class EECUnified extends HTMLElement {
 
     // Read the JWT for later
     chrome.runtime.sendMessage({ type: 'read', key: 'JWT' }, (response) => {
-      LOG('EECUnified Received token')
-      LOG(response)
       this.JWT = response.value
     })
   }
@@ -121,7 +119,6 @@ class EECUnified extends HTMLElement {
     this.registerListeners()
 
     // Give React control of the root element for the unified panel
-    LOG('Mounting react unified component ...')
     ReactDOM.render(
       // Allows isolation of MUI styles to the shadow DOM
       <StylesProvider jss={jss}>
@@ -137,7 +134,6 @@ class EECUnified extends HTMLElement {
       </StylesProvider>,
       this.unifiedPanel[0]
     )
-    LOG('... mounted')
 
     // Start out hidden
     // this.updateVisibility(false)

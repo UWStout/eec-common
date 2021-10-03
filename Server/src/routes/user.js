@@ -211,6 +211,54 @@ router.get('/details/:id', authenticateToken, async (req, res) => {
   }
 })
 
+// Retrieve settings
+router.get('/settings', authenticateToken, async (req, res) => {
+  // Read userID from token
+  const userID = req.user.id
+  if (!userID || !ObjectID.isValid(userID)) {
+    return res.status(400).send({ error: true, message: 'Invalid ID', id: userID })
+  }
+
+  // Attempt to retrieve user settings
+  try {
+    const userSettings = await DBUser.getUserSettings(userID)
+    res.send(userSettings.settings)
+  } catch (err) {
+    UTIL.checkAndReportError('Error retrieving user settings', res, err, debug)
+  }
+})
+
+// Update settings
+router.post('/settings', authenticateToken, async (req, res) => {
+  // Read userID from token
+  const userID = req.user.id
+  if (!userID || !ObjectID.isValid(userID)) {
+    return res.status(400).send({ error: true, message: 'Invalid ID', id: userID })
+  }
+
+  try {
+    // Attempt to retrieve current user settings
+    const userSettings = await DBUser.getUserSettings(userID)
+
+    // Build new user settings
+    debug('Body', req.body)
+    const newSettings = {
+      enableMoodPrompt: (typeof req.body.enableMoodPrompt === 'boolean' ? req.body.enableMoodPrompt : userSettings.enableMoodPrompt),
+      enablePrivacyPrompt: (typeof req.body.enablePrivacyPrompt === 'boolean' ? req.body.enablePrivacyPrompt : userSettings.enablePrivacyPrompt),
+      alwaysShare: (typeof req.body.alwaysShare === 'boolean' ? req.body.alwaysShare : userSettings.alwaysShare),
+      enableJITStatus: (typeof req.body.enableJITStatus === 'boolean' ? req.body.enableJITStatus : userSettings.enableJITStatus),
+      enableMessageFeedback: (typeof req.body.enableMessageFeedback === 'boolean' ? req.body.enableMessageFeedback : userSettings.enableMessageFeedback),
+      enableAutoTTR: (typeof req.body.enableAutoTTR === 'boolean' ? req.body.enableAutoTTR : userSettings.enableAutoTTR)
+    }
+
+    // Update user settings in the DB
+    await DBUser.updateUserSettings(userID, newSettings)
+    res.send({ success: true })
+  } catch (err) {
+    UTIL.checkAndReportError('Error updating user settings', res, err, debug)
+  }
+})
+
 router.post('/alias_lookup', authenticateToken, async (req, res) => {
   // Check for and validate provided context
   const context = req.body.context

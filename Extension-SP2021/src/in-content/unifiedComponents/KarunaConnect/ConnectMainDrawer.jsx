@@ -5,9 +5,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { DisableInputState } from '../data/globalSate/appState.js'
 import { ConnectActivityStackState } from '../data/globalSate/connectActivityState.js'
 
-import MuiPaper from '@material-ui/core/Paper'
-
-import { Grid } from '@material-ui/core'
+import { Grid, Paper as MuiPaper } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 // The header for the panel (with activity breadcrumbs)
@@ -172,18 +170,19 @@ export default function ConnectMainDrawer (props) {
 
   // Build array of activities
   const activityElements = []
+
+  // ======= Base Activities (only one will ever be active) ======
   if (activityStack.includes(ACTIVITIES.LOGIN.key)) {
     activityElements.push(
       <ConnectLoginActivity key={ACTIVITIES.LOGIN.key} className={activityStyle} />
     )
-  }
-
-  if (activityStack.includes(ACTIVITIES.MAIN.key)) {
+  } else if (activityStack.includes(ACTIVITIES.MAIN.key)) {
     activityElements.push(
       <ConnectMainActivity key={ACTIVITIES.MAIN.key} hidden={hidden} retracted={!mouseIsOver} className={activityStyle} />
     )
   }
 
+  // ======= Affect Survey related activities ======
   activityElements.push(
     <ActivityBase key={ACTIVITIES.AFFECT_SURVEY.key} direction="left" in={activityStack.includes(ACTIVITIES.AFFECT_SURVEY.key)} mountOnEnter unmountOnExit>
       <Suspense fallback={<AffectSurveySkeleton />}>
@@ -204,6 +203,7 @@ export default function ConnectMainDrawer (props) {
     </ActivityBase>
   )
 
+  // ======= More Settings related activities ======
   activityElements.push(
     <ActivityBase key={ACTIVITIES.MORE_SETTINGS.key} direction="left" in={activityStack.includes(ACTIVITIES.MORE_SETTINGS.key)} mountOnEnter unmountOnExit>
       <MoreSettingsConnectActivity className={activityStyle} />

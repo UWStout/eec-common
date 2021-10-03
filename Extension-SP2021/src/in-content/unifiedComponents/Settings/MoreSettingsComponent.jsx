@@ -34,7 +34,7 @@ export default function MoreSettingsComponent (props) {
   const onSignOut = () => {
     setConnectVisibility(false)
     setTimeout(() => {
-      popActivity(ACTIVITIES.MORE_USER_SETTINGS.key)
+      popActivity(ACTIVITIES.MORE_SETTINGS.key)
       logout()
     }, 500)
   }

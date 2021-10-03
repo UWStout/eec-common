@@ -27,12 +27,16 @@ const useStyles = makeStyles((theme) => ({
   },
   captionTextStyle: {
     color: theme.palette.text.disabled
+  },
+  textButtonStyle: {
+    color: theme.palette.primary,
+    textTransform: 'none'
   }
 }))
 
 export default function KarunaSettingsComponent (props) {
   // Destructure style classnames
-  const { leftIndent1Style, leftIndent2Style, leftIndent3Style, captionTextStyle } = useStyles()
+  const { leftIndent1Style, leftIndent2Style, leftIndent3Style, captionTextStyle, textButtonStyle } = useStyles()
 
   // Read user info from Global recoil state
   const [karunaSettings, setKarunaSettings] = useRecoilState(KarunaSettingsState)
@@ -73,10 +77,9 @@ export default function KarunaSettingsComponent (props) {
   }
 
   return (
-    <Grid container spacing={3}>
-
+    <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Button color="primary" onClick={onResetToDefaults}>
+        <Button color="primary" onClick={onResetToDefaults} className={textButtonStyle}>
           {'Reset All'}
         </Button>
       </Grid>

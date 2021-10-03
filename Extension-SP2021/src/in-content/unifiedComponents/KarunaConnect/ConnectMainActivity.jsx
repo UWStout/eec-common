@@ -9,11 +9,11 @@ import { ActiveTeamIndexState } from '../data/globalSate/teamState.js'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 
-import MuiAccordion from '@material-ui/core/Accordion'
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
+import {
+  Grid, Typography, Accordion as MuiAccordion,
+  AccordionDetails as MuiAccordionDetails, AccordionSummary as MuiAccordionSummary
+} from '@material-ui/core'
 
-import { Grid, Typography } from '@material-ui/core'
 import { ExpandMore, Settings as SettingsIcon } from '@material-ui/icons'
 
 import StatusListItem from '../StatusComponents/StatusListItem.jsx'

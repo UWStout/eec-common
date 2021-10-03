@@ -6,7 +6,7 @@ import { PushConnectActivityState } from '../data/globalSate/connectActivityStat
 
 import { Grid, TextField, Button } from '@material-ui/core'
 
-import { ExternalLink } from '../Shared/ExternalLink.jsx'
+import ExternalLink from '../Shared/ExternalLink.jsx'
 
 import { checkUserEmail, updateBasicUserInfo } from '../data/backgroundHelper'
 import * as SERVER from '../../../util/serverConfig.js'

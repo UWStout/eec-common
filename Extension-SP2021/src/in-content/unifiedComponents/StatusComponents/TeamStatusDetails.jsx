@@ -29,12 +29,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-// const SearchBar = withStyles((theme) => ({
-//   root: {
-//     // paddingBottom: theme.spacing(2)
-//   }
-// }))(MuiSearchBar)
-
 export default function TeamStatusDetails (props) {
   // Construct our style class names
   const { rootGridStyle, scrollingList, disabledText } = useStyles()
@@ -95,7 +89,7 @@ export default function TeamStatusDetails (props) {
           role={'search'}
           value={searchText}
           onChange={onSearchTextChanged}
-          placeholder={'search team members'}
+          placeholder={'Search'}
           disabled={disableAllInput}
           aria-label={'Team Member Search Box'}
         />

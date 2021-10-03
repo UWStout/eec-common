@@ -5,8 +5,9 @@ import { UserCollaborationState } from '../data/globalSate/userState.js'
 import { DisableInputState } from '../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Select, MenuItem } from '@material-ui/core'
+import { MenuItem } from '@material-ui/core'
 
+import KarunaSelect from '../Base/KarunaSelect.jsx'
 import { rawCollaborationIcon } from '../Shared/CollaborationIcon.jsx'
 
 function makeCollaboration (collaboration, iconTweakStyle) {
@@ -48,7 +49,7 @@ export default function CollaborationForm (props) {
   }
 
   return (
-    <Select
+    <KarunaSelect
       aria-label="Change Collaboration Status"
       value={collaboration}
       onChange={onChangeCollaboration}
@@ -60,6 +61,6 @@ export default function CollaborationForm (props) {
       <MenuItem value={'Focused'}>{makeCollaboration('Focused', iconTweakStyle)}</MenuItem>
       <MenuItem value={'Open to Collaboration'}>{makeCollaboration('Open to Collaboration', iconTweakStyle)}</MenuItem>
       <MenuItem value={'Currently Collaborating'}>{makeCollaboration('Currently Collaborating', iconTweakStyle)}</MenuItem>
-    </Select>
+    </KarunaSelect>
   )
 }

@@ -1,10 +1,12 @@
+/* eslint-disable react/jsx-indent */
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
 import { ActiveInputRefState } from '../data/globalSate/appState'
 
-import SearchBar from 'material-ui-search-bar'
+import { OutlinedInput, InputAdornment, IconButton } from '@material-ui/core'
+import { Search as SearchIcon, Clear as ClearIcon } from '@material-ui/icons'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('TUNNELED Search Bar', 'purple', 'white')
@@ -36,8 +38,41 @@ export default function TunneledSearchBar (props) {
   const handleFocusIn = (e) => { setActiveInputRef({ append: setAppend }) }
   const handleFocusOut = (e) => { setActiveInputRef(null) }
 
+  // Create the icon adornment (search icon or clear icon)
+  let searchBarIcon = ''
+  if (internalValue) {
+    searchBarIcon = (
+      <InputAdornment position="end">
+        <IconButton
+          size="small"
+          aria-label={'Clear search text'}
+          onClick={() => { handleValueChange('') }}
+          disableFocusRipple
+          disableRipple
+        >
+          <ClearIcon />
+        </IconButton>
+      </InputAdornment>
+    )
+  } else {
+    searchBarIcon = (
+      <InputAdornment position="end">
+        <SearchIcon />
+      </InputAdornment>
+    )
+  }
+
   return (
-    <SearchBar {...restProps} value={internalValue} onChange={handleValueChange} onCancelSearch={() => { handleValueChange('') }} onFocus={handleFocusIn} onBlur={handleFocusOut} />
+    <OutlinedInput
+      value={internalValue}
+      onChange={(e) => handleValueChange(e.target.value)}
+      onFocus={handleFocusIn}
+      onBlur={handleFocusOut}
+      endAdornment={searchBarIcon}
+      margin="dense"
+      fullWidth
+      {...restProps}
+    />
   )
 }
 
