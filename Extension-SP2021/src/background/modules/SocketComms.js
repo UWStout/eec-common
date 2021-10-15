@@ -1,5 +1,5 @@
 // Open socket to the karuna server
-import io from 'socket.io-client'
+import { io } from 'socket.io-client'
 import { isValidContext } from '../../util/contexts.js'
 
 // Data storage functions
