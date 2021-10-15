@@ -43,7 +43,7 @@
     "delay": 100
   },
   "devDependencies": {
-    "@babel/core": "7.15.5",
+    "@babel/core": "7.15.8",
     "@babel/preset-env": "7.15.6",
     "@babel/preset-react": "7.14.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -57,7 +57,7 @@
     "esbuild": "^0.13.3",
     "eslint": "7.32.0",
     "eslint-config-standard": "16.0.3",
-    "eslint-plugin-import": "2.24.2",
+    "eslint-plugin-import": "2.25.2",
     "eslint-plugin-jest": "24.5.0",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "5.1.0",
