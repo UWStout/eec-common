@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
   },
   iconStyle: {
     fontSize: theme.spacing(7)
+  },
+  overlayStyle: {
+    color: theme.palette.grey[900]
   }
 }))
 
@@ -117,17 +120,17 @@ const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (pro
 
       {!userLoggedIn &&
         <div className={classes.accountIndicator}>
-          <AccountCircle />
+          <AccountCircle className={classes.overlayStyle} />
         </div>}
 
       {userLoggedIn && showAlertIndicator &&
         <div className={classes.accountIndicator}>
-          <CreateIcon />
+          <CreateIcon className={classes.overlayStyle} />
         </div>}
 
       {userLoggedIn && showPriorityIndicator &&
         <div className={classes.accountIndicator}>
-          <PriorityHigh />
+          <PriorityHigh className={classes.overlayStyle} />
         </div>}
 
     </IconButton>

@@ -101,6 +101,7 @@ export default function RecoveryRequest (props) {
                 label="Account email"
                 fullWidth
                 autoComplete="email"
+                value={email}
                 onChange={(e) => { setEmail(e.target.value); setHelperText(' ') }}
                 helperText={helperText}
                 disabled={!emailEnabled}

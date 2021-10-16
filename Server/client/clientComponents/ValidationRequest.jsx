@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Grid, TextField, Typography, Box, Paper } from '@material-ui/core'
@@ -37,10 +38,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function ValidationRequest (props) {
+  const { defaultEmail } = props
   const classes = useStyles()
 
   // Track password and submit state
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(defaultEmail)
   const [helperText, setHelperText] = useState(' ')
   const [emailEnabled, setEmailEnabled] = useState(true)
   const [submitEnabled, setSubmitEnabled] = useState(false)
@@ -99,6 +101,7 @@ export default function ValidationRequest (props) {
                 label="Account email"
                 fullWidth
                 autoComplete="email"
+                value={email}
                 onChange={(e) => { setEmail(e.target.value); setHelperText(' ') }}
                 helperText={helperText}
                 disabled={!emailEnabled}
@@ -120,4 +123,12 @@ export default function ValidationRequest (props) {
       </Paper>
     </div>
   )
+}
+
+ValidationRequest.propTypes = {
+  defaultEmail: PropTypes.string
+}
+
+ValidationRequest.defaultProps = {
+  defaultEmail: ''
 }
