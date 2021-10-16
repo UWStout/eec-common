@@ -11,6 +11,7 @@ import { getAllClientSessions, getClientSession, lookupClientSessionId } from '.
 
 // Helper methods
 import { parseMessageCommands, parseOtherUsers } from './socketMessageHelper.js'
+import { EXCLUDED_TOKEN_PROPS } from '../sessionManager.js'
 
 // Read env variables from the .env file
 import dotenv from 'dotenv'
@@ -42,7 +43,15 @@ export function socketWizardSession (wizardInfo) {
   if (!wizardInfo.token) {
     console.error('ERROR: Wizard session missing access token')
   } else {
-    wizardSessions[this.id] = { ...decodeToken(wizardInfo.token) }
+    const tokenPayload = decodeToken(wizardInfo.token)
+    wizardSessions[this.id] = { ...tokenPayload }
+    if (this.request.session) {
+      this.request.session.type = 'wizard'
+      this.request.session.userInfo = tokenPayload
+      EXCLUDED_TOKEN_PROPS.forEach((propKey) => {
+        delete this.request.session.userInfo[propKey]
+      })
+    }
 
     if (wizardSessions[this.id]) {
       debug(`[WS:${this.id}] updated wizard session for ${wizardSessions[this.id].email}`)

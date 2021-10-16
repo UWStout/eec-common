@@ -14,15 +14,15 @@ export { closeClient }
 
 const debug = Debug('karuna:mongo:authController')
 
-// Extract ObjectID class for easy of use
-const { ObjectID } = MongoDB
+// Extract ObjectId class for easy of use
+const { ObjectId } = MongoDB
 
 // How many rounds to use when generating hash salt for passwords
 const SALT_ROUNDS = 10
 
 // Setup default team list for any users
 // NOTE: This currently includes the 'Kruna test team'
-const DEFAULT_TEAMS = [new ObjectID('611e80ee4797c4ac202471ae')]
+const DEFAULT_TEAMS = [new ObjectId('611e80ee4797c4ac202471ae')]
 
 /**
  * Validate user credentials
@@ -158,7 +158,7 @@ export function updatePassword (userID, token, password) {
     // First lookup user details
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users').findOne(
-        { _id: new ObjectID(userID) },
+        { _id: new ObjectId(userID) },
         (err, userInfo) => {
           // check for errors
           if (err) {
@@ -189,7 +189,7 @@ export function updatePassword (userID, token, password) {
 
             // Update the password and clear the token
             DBHandle.collection('Users').findOneAndUpdate(
-              { _id: new ObjectID(userID) },
+              { _id: new ObjectId(userID) },
               { $set: newData, $unset: unsetData },
               (err, result) => {
                 if (err) {
@@ -219,7 +219,7 @@ export function validateEmail (userID, token, password) {
     // First lookup user details
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users').findOne(
-        { _id: new ObjectID(userID) },
+        { _id: new ObjectId(userID) },
         (err, userInfo) => {
           // Check for errors
           if (err) {
@@ -241,7 +241,7 @@ export function validateEmail (userID, token, password) {
 
           // Update email verification and clear token
           DBHandle.collection('Users').findOneAndUpdate(
-            { _id: new ObjectID(userID) },
+            { _id: new ObjectId(userID) },
             { $set: newData, $unset: unsetData },
             (err, result) => {
               if (err) {

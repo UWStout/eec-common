@@ -11,8 +11,8 @@ export { closeClient }
 // import Debug from 'debug'
 // const debug = Debug('karuna:mongo:logController')
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 
 /**
  * Log a message to the logging database
@@ -39,8 +39,8 @@ async function logMessage (collectionName, message, correspondentID, promptObj, 
     message: message,
     prompt: promptObj,
     timestamp: new Date(),
-    userID: (ObjectID.isValid(userID) ? new ObjectID(userID) : undefined),
-    correspondentID: (ObjectID.isValid(correspondentID) ? new ObjectID(correspondentID) : undefined)
+    userID: (ObjectId.isValid(userID) ? new ObjectId(userID) : undefined),
+    correspondentID: (ObjectId.isValid(correspondentID) ? new ObjectId(correspondentID) : undefined)
   }
 
   // Get DB handle and insert it

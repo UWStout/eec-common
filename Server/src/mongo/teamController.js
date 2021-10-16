@@ -13,8 +13,8 @@ import Debug from 'debug'
 // Re-export closeClient
 export { closeClient }
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 
 const debug = Debug('karuna:mongo:teamController')
 
@@ -28,13 +28,13 @@ const debug = Debug('karuna:mongo:teamController')
  */
 export async function getTeamDetails (teamID) {
   return new Promise((resolve, reject) => {
-    if (!ObjectID.isValid(teamID)) {
-      reject(new Error('Bad teamID, not a valid ObjectID'))
+    if (!ObjectId.isValid(teamID)) {
+      reject(new Error('Bad teamID, not a valid ObjectId'))
     }
 
     retrieveDBHandle('karunaData')
       .then((DBHandle) => {
-        DBHandle.collection('Teams').findOne({ _id: new ObjectID(teamID) })
+        DBHandle.collection('Teams').findOne({ _id: new ObjectId(teamID) })
           .then((result) => { return resolve(result) })
           .catch((err) => { return reject(err) })
       })
@@ -61,7 +61,7 @@ export function createTeam (name, description, culture, commModelLink, unitID, u
     description,
     culture,
     commModelLink,
-    unitID: (ObjectID.isValid(unitID) ? new ObjectID(unitID) : undefined)
+    unitID: (ObjectId.isValid(unitID) ? new ObjectId(unitID) : undefined)
   }
 
   return new Promise((resolve, reject) => {
@@ -95,7 +95,7 @@ export function createTeam (name, description, culture, commModelLink, unitID, u
  */
 export async function removeTeam (teamID) {
   const DBHandle = await retrieveDBHandle('karunaData')
-  return DBHandle.collection('Teams').findOneAndDelete({ _id: new ObjectID(teamID) })
+  return DBHandle.collection('Teams').findOneAndDelete({ _id: new ObjectId(teamID) })
 }
 
 /**
@@ -109,14 +109,14 @@ export async function removeTeam (teamID) {
  */
 export function updateTeam (userID, newData) {
   return new Promise((resolve, reject) => {
-    // Make sure foreign key is the proper ObjectID type (if its defined)
-    if (newData.orgId && (typeof newData.orgId !== 'object' || !(newData.orgId instanceof ObjectID))) {
-      newData.orgId = new ObjectID(newData.orgId)
+    // Make sure foreign key is the proper ObjectId type (if its defined)
+    if (newData.orgId && (typeof newData.orgId !== 'object' || !(newData.orgId instanceof ObjectId))) {
+      newData.orgId = new ObjectId(newData.orgId)
     }
 
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Teams').findOneAndUpdate(
-        { _id: new ObjectID(userID) },
+        { _id: new ObjectId(userID) },
         { $set: { ...newData } },
         (err, result) => {
           if (err) {
@@ -133,15 +133,15 @@ export function updateTeam (userID, newData) {
 
 /**
  * Test if a user is a manager on a particular team
- * @param {string} userID ObjectID of the user you are testing the status of
- * @param {*} teamID ObjectID of the team you are testing the status on
+ * @param {string} userID ObjectId of the user you are testing the status of
+ * @param {*} teamID ObjectId of the team you are testing the status on
  * @returns {Promise} Resolves to true if the given user is a manager on the given team (and both exist)
  */
 export async function managerOfTeam (userID, teamID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Teams').findOne(
-        { _id: new ObjectID(userID), managers: new ObjectID(userID) },
+        { _id: new ObjectId(userID), managers: new ObjectId(userID) },
         { projection: { _id: 0, teams: 1 } }
       ).then((team) => {
         return resolve(team !== null && team !== undefined)
@@ -203,12 +203,12 @@ export function listTeams (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
  *
  * Tested in test 10 of test.js
  *
- * @param {string} unitID ObjectID string of an existing org-unit
+ * @param {string} unitID ObjectId string of an existing org-unit
  * @returns {Promise} Resolves to list of units on success, rejects with error on failure
  */
 export function listTeamsInUnit (unitID) {
   // Check for proper UnitID
-  if (!ObjectID.isValid(unitID)) {
+  if (!ObjectId.isValid(unitID)) {
     return Promise.reject(new Error('UnitID must be defined'))
   }
 
@@ -216,7 +216,7 @@ export function listTeamsInUnit (unitID) {
     // Retrieve unit details
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Units')
-        .findOne({ _id: new ObjectID(unitID) }, (err, result) => {
+        .findOne({ _id: new ObjectId(unitID) }, (err, result) => {
           // Check for and handle error
           if (err) {
             debug('Error retrieving unit for "listTeamsInUnit"')
@@ -236,7 +236,7 @@ export function listTeamsInUnit (unitID) {
 
           // Retrieve filtered list of teams with unit info joined
           DBHandle.collection('Teams').aggregate([
-            { $match: { orgId: new ObjectID(unitID) } },
+            { $match: { orgId: new ObjectId(unitID) } },
             { $addFields: unitData }
           ]).toArray((err, docs) => {
             if (err) {
@@ -263,7 +263,7 @@ export function listTeamsInUnit (unitID) {
  * @return {Promise} Resolves with 'true' on success, rejects on error
  */
 export function addToTeam (userID, teamID) {
-  if (!ObjectID.isValid(userID) || !ObjectID.isValid(teamID)) {
+  if (!ObjectId.isValid(userID) || !ObjectId.isValid(teamID)) {
     return Promise.reject(new Error('Either userID or teamID is invalid'))
   }
 
@@ -273,8 +273,8 @@ export function addToTeam (userID, teamID) {
       // Update user record to include indicated team
       DBHandle.collection('Users')
         .update(
-          { _id: new ObjectID(userID) },
-          { $push: { teams: new ObjectID(teamID) } }
+          { _id: new ObjectId(userID) },
+          { $push: { teams: new ObjectId(teamID) } }
         ).then(() => { return resolve('true') })
         .catch((err) => { return reject(err) })
     })
@@ -284,7 +284,7 @@ export function addToTeam (userID, teamID) {
 /**
  * List all the users that belong to a certain team.
  *
- * @param {string} teamID ObjectID string of an existing team
+ * @param {string} teamID ObjectId string of an existing team
  * @returns {Promise} Resolves to array of affect id strings on success, rejects with error on failure
  */
 export function getTeamAffectTemperature (teamID) {
@@ -297,7 +297,7 @@ export function getTeamAffectTemperature (teamID) {
     // Retrieve team details
     retrieveDBHandle('karunaData').then((DBHandle) => {
       try {
-        DBHandle.collection('Teams').findOne({ _id: new ObjectID(teamID) }, (err, result) => {
+        DBHandle.collection('Teams').findOne({ _id: new ObjectId(teamID) }, (err, result) => {
           // Check for and handle error
           if (err) {
             debug('Error retrieving team for "listUserAffectsInTeam"')
@@ -310,7 +310,7 @@ export function getTeamAffectTemperature (teamID) {
 
           // Retrieve filtered list of users (w/o sensitive info) with team info joined
           DBHandle.collection('Users').aggregate([
-            { $match: { teams: new ObjectID(teamID) } },
+            { $match: { teams: new ObjectId(teamID) } },
             {
               $lookup: {
                 from: 'Affects',

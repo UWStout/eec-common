@@ -261,7 +261,8 @@ function validateAccount (email, password, expiration, context) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}auth/login`,
-      { email, password, expiration, context: (context || 'unknown') }
+      { email, password, expiration, context: (context || 'unknown') },
+      { withCredentials: true }
     )
 
     // Listen for server response or error
@@ -273,7 +274,7 @@ function validateAccount (email, password, expiration, context) {
 function getEmojiList () {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const config = { headers: authorizationHeader(), validateStatus }
+    const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/list?fullInfo&perPage=500`, config)
 
     // Listen for server response or error
@@ -288,7 +289,7 @@ function getEmojiList () {
 function listAffectHistory (userID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader(), validateStatus }
+    const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/listHistory/userID/${userID}/affectLogID/dateStart/dateEnd`, config)
 
     // Listen for server response or error
@@ -303,7 +304,7 @@ function listAffectHistory (userID) {
 function getUserStatus (userID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const config = { headers: authorizationHeader(), validateStatus }
+    const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/status/${userID}`, config)
     requestPromise.then((response) => {
       return resolve(response?.data)
@@ -317,7 +318,7 @@ function getUserStatus (userID) {
 function getFullUserInfo (userID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const config = { headers: authorizationHeader(), validateStatus }
+    const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/details/${userID}`, config)
     requestPromise.then((response) => {
       return resolve(response?.data)
@@ -331,7 +332,7 @@ function getFullUserInfo (userID) {
 function getKarunaSettings () {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/settings`, config)
     requestPromise.then((response) => {
       return resolve(response?.data)
@@ -345,7 +346,7 @@ function getKarunaSettings () {
 function setKarunaSettings (settings) {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const data = { ...settings }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/settings`, data, config)
     requestPromise.then((response) => {
@@ -360,7 +361,7 @@ function setKarunaSettings (settings) {
 function getAliasIdLookupList (context, alias) {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const config = { headers: authorizationHeader(), validateStatus }
+    const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
     const data = { context, alias }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/alias_lookup`, data, config)
     requestPromise.then((response) => {
@@ -376,7 +377,7 @@ function getAliasIdLookupList (context, alias) {
 function getUserTeams () {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const config = { headers: authorizationHeader(), validateStatus }
+    const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/teams/`, config)
     requestPromise.then((response) => {
       return resolve(response?.data)
@@ -390,7 +391,7 @@ function getUserTeams () {
 function getTeamInfoAndStatus (teamID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const config = { headers: authorizationHeader(), validateStatus }
+    const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/listInTeam/${teamID}`, config)
     requestPromise.then((response) => {
       return resolve(response?.data)
@@ -404,7 +405,7 @@ function getTeamInfoAndStatus (teamID) {
 function getTeamAffectTemperature (teamID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
-    const config = { headers: authorizationHeader(), validateStatus }
+    const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/team/getTeamAffectTemperature/${teamID}`, config)
     requestPromise.then((response) => {
       return resolve(response?.data)
@@ -418,7 +419,7 @@ function getTeamAffectTemperature (teamID) {
 function checkEmail (email) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}auth/email`,
       { email },
       config
@@ -433,7 +434,7 @@ function checkEmail (email) {
 function setUserBasicInfo (userID, userBasicInfo) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/update`,
       { id: userID, ...userBasicInfo },
       config
@@ -448,7 +449,7 @@ function setUserBasicInfo (userID, userBasicInfo) {
 function setUserAffect (userID, context, affectID, isPrivate) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/insertHistory`,
       { userID, context: (context || 'unknown'), affectID, isPrivate },
       config
@@ -463,7 +464,7 @@ function setUserAffect (userID, context, affectID, isPrivate) {
 function setCollaboration (userID, collaborationStatus, context) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/collaboration`,
       { userID, context: (context || 'unknown'), collaborationStatus },
       config
@@ -478,7 +479,7 @@ function setCollaboration (userID, collaborationStatus, context) {
 function setTimeToRespond (userID, timeToRespond, context) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/timeToRespond`,
       { userID, context: (context || 'unknown'), timeToRespond },
       config
@@ -493,7 +494,7 @@ function setTimeToRespond (userID, timeToRespond, context) {
 function setFavoriteAffect (userID, affectID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/setFavoriteAffect`,
       { userID, affectID },
       config
@@ -508,7 +509,7 @@ function setFavoriteAffect (userID, affectID) {
 function removeFavoriteAffect (userID, affectID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/removeFavoriteAffect`,
       { userID, affectID },
       config
@@ -523,7 +524,7 @@ function removeFavoriteAffect (userID, affectID) {
 function listFavoriteAffects (userID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/listFavoriteAffects/${userID}`, config)
     // Listen for server response or error
     requestPromise.then((response) => {
@@ -538,7 +539,7 @@ function listFavoriteAffects (userID) {
 function setTeamDisabledAffect (teamID, affectID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/setTeamDisabledAffect`,
       { teamID, affectID },
       config
@@ -553,7 +554,7 @@ function setTeamDisabledAffect (teamID, affectID) {
 function removeTeamDisabledAffect (teamID, affectID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/removeTeamDisabledAffect`,
       { teamID, affectID },
       config
@@ -568,7 +569,7 @@ function removeTeamDisabledAffect (teamID, affectID) {
 function listTeamDisabledAffects (teamID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
-    const config = { headers: authorizationHeader() }
+    const config = { headers: authorizationHeader(), withCredentials: true }
     const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/affect/listTeamDisabledAffects/${teamID}`, config)
     // Listen for server response or error
     requestPromise.then((response) => {

@@ -20,8 +20,8 @@ import { userStatusUpdated } from '../sockets/clientEngine.js'
 import Debug from 'debug'
 const debug = Debug('karuna:server:affect_routes')
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 
 // Create a router to attach to an express server app
 const router = new Express.Router()
@@ -37,8 +37,8 @@ router.get('/details/:affectID', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if affectID is a reasonable parameter for ObjectID
-  if (affectID && !ObjectID.isValid(affectID)) {
+  // check if affectID is a reasonable parameter for ObjectId
+  if (affectID && !ObjectId.isValid(affectID)) {
     res.status(400).json({ invalid: true, message: 'affectID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -65,8 +65,8 @@ router.post('/create', authenticateToken, async (req, res) => {
 
   if (relatedIDs.length !== 0) {
     for (let i = 0; i < relatedIDs.length; i++) {
-      // check if affectID is a reasonable parameter for ObjectID
-      if (!ObjectID.isValid(relatedIDs[i])) {
+      // check if affectID is a reasonable parameter for ObjectId
+      if (!ObjectId.isValid(relatedIDs[i])) {
         res.status(400).json({ invalid: true, message: 'One of relatedIDs affectID was not a single String of 12 bytes or a string of 24 hex characters' })
       }
     }
@@ -93,8 +93,8 @@ router.delete('/remove', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if affectID is a reasonable parameter for ObjectID
-  if (affectID && !ObjectID.isValid(affectID)) {
+  // check if affectID is a reasonable parameter for ObjectId
+  if (affectID && !ObjectId.isValid(affectID)) {
     res.status(400).json({ invalid: true, message: 'affectID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -121,8 +121,8 @@ router.post('/update', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if affectID is a reasonable parameter for ObjectID
-  if (affectID && !ObjectID.isValid(affectID)) {
+  // check if affectID is a reasonable parameter for ObjectId
+  if (affectID && !ObjectId.isValid(affectID)) {
     res.status(400).json({ invalid: true, message: 'affectID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -189,13 +189,13 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
     isUser = false
   }
 
-  // check if relatedID is a reasonable parameter for ObjectID
-  if (!ObjectID.isValid(relatedID)) {
+  // check if relatedID is a reasonable parameter for ObjectId
+  if (!ObjectId.isValid(relatedID)) {
     res.status(400).json({ invalid: true, id: relatedID, message: 'teamID or userID must be a 12 byte number or a string of 24 hex characters' })
   }
 
-  // check if affectID is a reasonable parameter for ObjectID
-  if (affectID && !ObjectID.isValid(affectID)) {
+  // check if affectID is a reasonable parameter for ObjectId
+  if (affectID && !ObjectId.isValid(affectID)) {
     res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
   }
 
@@ -225,13 +225,13 @@ router.get('/listHistory/userID/:userID?/affectLogID/:affectLogID?/dateStart/:da
 
   debug(affectLogID)
 
-  // check if affectLogID is a reasonable parameter for ObjectID
-  if (affectLogID && !ObjectID.isValid(affectLogID)) {
+  // check if affectLogID is a reasonable parameter for ObjectId
+  if (affectLogID && !ObjectId.isValid(affectLogID)) {
     res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
-  // check if userID is a reasonable parameter for ObjectID
-  if (userID && !ObjectID.isValid(userID)) {
+  // check if userID is a reasonable parameter for ObjectId
+  if (userID && !ObjectId.isValid(userID)) {
     res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -265,8 +265,8 @@ router.delete('/removeHistory', authenticateToken, async (req, res) => {
 
   // TO-DO: check if date is valid
 
-  // check if affectLogID is a reasonable parameter for ObjectID
-  if (affectLogID && !ObjectID.isValid(affectLogID)) {
+  // check if affectLogID is a reasonable parameter for ObjectId
+  if (affectLogID && !ObjectId.isValid(affectLogID)) {
     res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -292,13 +292,13 @@ router.post('/setFavoriteAffect', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if userID is a reasonable parameter for ObjectID
-  if (!ObjectID.isValid(userID)) {
+  // check if userID is a reasonable parameter for ObjectId
+  if (!ObjectId.isValid(userID)) {
     res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
   }
 
-  // check if affectID is a reasonable parameter for ObjectID
-  if (!ObjectID.isValid(affectID)) {
+  // check if affectID is a reasonable parameter for ObjectId
+  if (!ObjectId.isValid(affectID)) {
     res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
   }
 
@@ -324,13 +324,13 @@ router.post('/removeFavoriteAffect', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if userID is a reasonable parameter for ObjectID
-  if (!ObjectID.isValid(userID)) {
+  // check if userID is a reasonable parameter for ObjectId
+  if (!ObjectId.isValid(userID)) {
     res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
   }
 
-  // check if affectID is a reasonable parameter for ObjectID
-  if (!ObjectID.isValid(affectID)) {
+  // check if affectID is a reasonable parameter for ObjectId
+  if (!ObjectId.isValid(affectID)) {
     res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
   }
 
@@ -352,8 +352,8 @@ router.get('/listFavoriteAffects/:userID?', authenticateToken, async (req, res) 
   // Extract and check required fields
   const userID = req.params.userID
 
-  // check if userID is a reasonable parameter for ObjectID
-  if (userID && !ObjectID.isValid(userID)) {
+  // check if userID is a reasonable parameter for ObjectId
+  if (userID && !ObjectId.isValid(userID)) {
     res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -377,13 +377,13 @@ router.post('/setTeamDisabledAffect', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if teamID is a reasonable parameter for ObjectID
-  if (!ObjectID.isValid(teamID)) {
+  // check if teamID is a reasonable parameter for ObjectId
+  if (!ObjectId.isValid(teamID)) {
     res.status(400).json({ invalid: true, id: teamID, message: 'teamID must be a 12 byte number or a string of 24 hex characters' })
   }
 
-  // check if affectID is a reasonable parameter for ObjectID
-  if (!ObjectID.isValid(affectID)) {
+  // check if affectID is a reasonable parameter for ObjectId
+  if (!ObjectId.isValid(affectID)) {
     res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
   }
 
@@ -409,13 +409,13 @@ router.post('/removeTeamDisabledAffect', authenticateToken, async (req, res) => 
     return
   }
 
-  // check if teamID is a reasonable parameter for ObjectID
-  if (!ObjectID.isValid(teamID)) {
+  // check if teamID is a reasonable parameter for ObjectId
+  if (!ObjectId.isValid(teamID)) {
     res.status(400).json({ invalid: true, id: teamID, message: 'teamID must be a 12 byte number or a string of 24 hex characters' })
   }
 
-  // check if affectID is a reasonable parameter for ObjectID
-  if (!ObjectID.isValid(affectID)) {
+  // check if affectID is a reasonable parameter for ObjectId
+  if (!ObjectId.isValid(affectID)) {
     res.status(400).json({ invalid: true, message: 'affectID must be a be a 12 byte number or a string of 24 hex characters' })
   }
 
@@ -437,8 +437,8 @@ router.get('/listTeamDisabledAffects/:teamID?', authenticateToken, async (req, r
   // Extract and check required fields
   const teamID = req.params.teamID
 
-  // check if teamID is a reasonable parameter for ObjectID
-  if (teamID && !ObjectID.isValid(teamID)) {
+  // check if teamID is a reasonable parameter for ObjectId
+  if (teamID && !ObjectId.isValid(teamID)) {
     res.status(400).json({ invalid: true, message: 'affectLogID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 

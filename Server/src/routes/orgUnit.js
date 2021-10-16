@@ -17,8 +17,8 @@ import * as UTIL from './utils.js'
 import Debug from 'debug'
 const debug = Debug('karuna:server:org_unit_routes')
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 
 // Create a router to attach to an express server app
 const router = new Express.Router()
@@ -81,8 +81,8 @@ router.post('/update', authenticateToken, async (req, res) => {
     const description = req.body.description || teamDetails.description
     const adminId = req.body.adminId || teamDetails.adminId
 
-    // check if adminId is a reasonable parameter for ObjectID (hexadecimal)
-    if (adminId && !ObjectID.isValid(adminId)) {
+    // check if adminId is a reasonable parameter for ObjectId (hexadecimal)
+    if (adminId && !ObjectId.isValid(adminId)) {
       res.status(400).json({ invalid: true, message: 'adminId must be a single String of 12 bytes or a string of 24 hex characters' })
     }
 
@@ -103,8 +103,8 @@ router.post('/register', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if adminId is a reasonable parameter for ObjectID (hexadecimal)
-  if (adminId && !ObjectID.isValid(adminId)) {
+  // check if adminId is a reasonable parameter for ObjectId (hexadecimal)
+  if (adminId && !ObjectId.isValid(adminId)) {
     res.status(400).json({ invalid: true, message: 'adminId must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -129,8 +129,8 @@ router.get('/details/:unitID', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if unitID is a reasonable parameter for ObjectID (hexadecimal)
-  if (unitID && !ObjectID.isValid(unitID)) {
+  // check if unitID is a reasonable parameter for ObjectId (hexadecimal)
+  if (unitID && !ObjectId.isValid(unitID)) {
     res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -155,8 +155,8 @@ router.delete('/remove/:unitID', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if unitID is a reasonable parameter for ObjectID (hexadecimal)
-  if (unitID && !ObjectID.isValid(unitID)) {
+  // check if unitID is a reasonable parameter for ObjectId (hexadecimal)
+  if (unitID && !ObjectId.isValid(unitID)) {
     res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 

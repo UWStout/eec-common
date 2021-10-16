@@ -13,8 +13,8 @@ import Debug from 'debug'
 // Re-export closeClient
 export { closeClient }
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 
 const debug = Debug('karuna:mongo:unitController')
 
@@ -29,7 +29,7 @@ const debug = Debug('karuna:mongo:unitController')
 export async function getOrgUnitDetails (unitID) {
   const DBHandle = await retrieveDBHandle('karunaData')
   return DBHandle.collection('Units')
-    .findOne({ _id: new ObjectID(unitID) })
+    .findOne({ _id: new ObjectId(unitID) })
 }
 
 /**
@@ -46,7 +46,7 @@ export async function createOrgUnit (name, description, adminId) {
   const insertThis = {
     name,
     description,
-    adminId: (ObjectID.isValid(adminId) ? new ObjectID(adminId) : undefined)
+    adminId: (ObjectId.isValid(adminId) ? new ObjectId(adminId) : undefined)
   }
 
   const DBHandle = await retrieveDBHandle('karunaData')
@@ -71,7 +71,7 @@ export function removeOrgUnit (unitID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Units')
-        .findOneAndDelete({ _id: new ObjectID(unitID) })
+        .findOneAndDelete({ _id: new ObjectId(unitID) })
         .then(result => { resolve(true) })
         .catch(() => { resolve(false) })
     })
@@ -92,7 +92,7 @@ export function updateOrgUnit (unitID, newData) {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Units')
         .findOneAndUpdate(
-          { _id: new ObjectID(unitID) },
+          { _id: new ObjectId(unitID) },
           { $set: { ...newData } },
           (err, result) => {
             if (err) {

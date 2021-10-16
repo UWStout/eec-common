@@ -10,8 +10,8 @@ import Debug from 'debug'
 // Re-export closeClient
 export { closeClient }
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 const debug = Debug('karuna:mongo:sessionController')
 
 /**
@@ -44,7 +44,7 @@ function getExistingSession (socketID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Sessions').findOne(
-        { socketID: new ObjectID(socketID) },
+        { socketID: new ObjectId(socketID) },
         (sessionDoc, err) => {
           if (err) {
             return reject(err)
@@ -74,7 +74,7 @@ function lookupSession (email, userID) {
     // Create search object
     const searchObj = {
       userEmail: email,
-      userID: (ObjectID.isValid(userID) ? new ObjectID(userID) : undefined)
+      userID: (ObjectId.isValid(userID) ? new ObjectId(userID) : undefined)
     }
 
     // Do query
@@ -104,7 +104,7 @@ function updateExistingSession (socketID, newData) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Sessions').findOneAndUpdate(
-        { socketID: new ObjectID(socketID) },
+        { socketID: new ObjectId(socketID) },
         { $set: { ...newData } }
       ).then((result) => {
         return resolve()
@@ -125,7 +125,7 @@ function removeExistingSession (socketID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Sessions').findOneAndDelete(
-        { socketID: new ObjectID(socketID) }
+        { socketID: new ObjectId(socketID) }
       ).then(result => {
         return resolve()
       }).catch(error => {
@@ -145,7 +145,7 @@ export function isSessionActive (socketID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Sessions').findOne(
-        { socketID: new ObjectID(socketID) }
+        { socketID: new ObjectId(socketID) }
       ).then((result) => {
         return resolve()
       }).catch((err) => {

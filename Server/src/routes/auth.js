@@ -219,7 +219,7 @@ router.post('/verify', async (req, res) => {
   // Check if user with the same email is registered
   try {
     const { _id: existingID } = await DBUser.emailExists(email)
-    if (MongoDB.ObjectID.isValid(existingID)) {
+    if (MongoDB.ObjectId.isValid(existingID)) {
       // Retrieve full user info
       const userInfo = await DBUser.getUserDetails(existingID)
       if (!userInfo.emailVerified) {
@@ -266,7 +266,7 @@ router.post('/recover', async (req, res) => {
   // Check if user with the same email is already registered
   try {
     const { _id: existingID } = await DBUser.emailExists(email)
-    if (MongoDB.ObjectID.isValid(existingID)) {
+    if (MongoDB.ObjectId.isValid(existingID)) {
       // Lookup full user info
       const userInfo = await DBUser.getUserDetails(existingID)
 

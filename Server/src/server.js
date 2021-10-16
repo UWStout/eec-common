@@ -18,6 +18,9 @@ import CookieParser from 'cookie-parser'
 // enabling cross-origin requests
 import Cors from 'cors'
 
+// Session management
+import { getSessionMiddleware } from './sessionManager.js'
+
 // Our sockets events and management
 import { makeSocket } from './sockets.js'
 
@@ -27,6 +30,7 @@ import userRouter from './routes/user.js'
 import teamRouter from './routes/team.js'
 import affectRouter from './routes/affect.js'
 import orgUnitRouter from './routes/orgUnit.js'
+import sessionRouter from './routes/session.js'
 import logRouter from './routes/log.js'
 
 // DISABLED
@@ -48,8 +52,8 @@ import morgan from 'morgan'
 
 // Update environment variables
 dotenv.config()
+const SESSION_SECRET = process.env.SESSION_SECRET || 'qwertyuiop[]'
 const SERVER_ROOT = process.env.SERVER_ROOT || '/'
-console.log(`Server root: ${SERVER_ROOT}`)
 
 // prints messages for debugging purposes
 const serverDebug = Debug('karuna:server')
@@ -88,10 +92,13 @@ app.use(morgan('tiny'))
 app.use(Cors({ origin: true }))
 
 // Install the cookie parser
-app.use(CookieParser())
+app.use(CookieParser(['', SESSION_SECRET]))
 
 // Enable parsing of JSON-Encoded bodies
 app.use(Express.json())
+
+// Enable session storage
+app.use(getSessionMiddleware())
 
 // Redirect all non-ssl traffic to HTTPS
 if (process.env.HEROKU && !process.env.LOCAL) {
@@ -123,6 +130,9 @@ app.use(`${SERVER_ROOT}data/team`, teamRouter)
 
 // All org-unit data routes are under '/data/unit'
 app.use(`${SERVER_ROOT}data/unit`, orgUnitRouter)
+
+// All org-unit data routes are under '/data/session'
+app.use(`${SERVER_ROOT}data/session`, sessionRouter)
 
 // DISABLED
 // All testing routes are under '/test/'

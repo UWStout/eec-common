@@ -20,8 +20,8 @@ import { userStatusUpdated } from '../sockets/clientEngine.js'
 import Debug from 'debug'
 const debug = Debug('karuna:server:user')
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 
 // Create a router to attach to an express server app
 const router = new Express.Router()
@@ -114,7 +114,7 @@ router.post('/update', authenticateToken, async (req, res) => {
     }
 
     // Ensure all teams are ObjectIDs
-    teams = teams.map((curTeamID) => (new ObjectID(curTeamID)))
+    teams = teams.map((curTeamID) => (new ObjectId(curTeamID)))
 
     // Update the user in the DB
     await DBUser.updateUser(userID, {
@@ -193,7 +193,7 @@ router.post('/promote', authenticateToken, async (req, res) => {
 router.get('/details/:id', authenticateToken, async (req, res) => {
   // Read userID from URL params
   const userID = req.params.id
-  if (!userID || !ObjectID.isValid(userID)) {
+  if (!userID || !ObjectId.isValid(userID)) {
     return res.status(400).send({ error: true, message: 'Invalid ID', id: userID })
   }
 
@@ -215,7 +215,7 @@ router.get('/details/:id', authenticateToken, async (req, res) => {
 router.get('/settings', authenticateToken, async (req, res) => {
   // Read userID from token
   const userID = req.user.id
-  if (!userID || !ObjectID.isValid(userID)) {
+  if (!userID || !ObjectId.isValid(userID)) {
     return res.status(400).send({ error: true, message: 'Invalid ID', id: userID })
   }
 
@@ -232,7 +232,7 @@ router.get('/settings', authenticateToken, async (req, res) => {
 router.post('/settings', authenticateToken, async (req, res) => {
   // Read userID from token
   const userID = req.user.id
-  if (!userID || !ObjectID.isValid(userID)) {
+  if (!userID || !ObjectId.isValid(userID)) {
     return res.status(400).send({ error: true, message: 'Invalid ID', id: userID })
   }
 
@@ -241,7 +241,6 @@ router.post('/settings', authenticateToken, async (req, res) => {
     const userSettings = await DBUser.getUserSettings(userID)
 
     // Build new user settings
-    debug('Body', req.body)
     const newSettings = {
       enableMoodPrompt: (typeof req.body.enableMoodPrompt === 'boolean' ? req.body.enableMoodPrompt : userSettings.enableMoodPrompt),
       enablePrivacyPrompt: (typeof req.body.enablePrivacyPrompt === 'boolean' ? req.body.enablePrivacyPrompt : userSettings.enablePrivacyPrompt),
@@ -307,7 +306,7 @@ router.get('/count', authenticateToken, async (req, res) => {
 router.get('/teams/', authenticateToken, async (req, res) => {
   // Read userID from authorization params
   const userID = req.user.id
-  if (!userID || !ObjectID.isValid(userID)) {
+  if (!userID || !ObjectId.isValid(userID)) {
     return res.status(400).send({ error: true, message: 'Invalid ID', id: userID })
   }
 
@@ -328,8 +327,8 @@ router.get('/memberOfTeam/:teamID', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
-  if (!ObjectID.isValid(teamID)) {
+  // check if teamID is a reasonable parameter for ObjectId (hexadecimal)
+  if (!ObjectId.isValid(teamID)) {
     res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters', teamID })
     return
   }
@@ -354,8 +353,8 @@ router.get('/listInTeam/:teamID', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
-  if (!ObjectID.isValid(teamID)) {
+  // check if teamID is a reasonable parameter for ObjectId (hexadecimal)
+  if (!ObjectId.isValid(teamID)) {
     res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters', teamID })
     return
   }
@@ -396,8 +395,8 @@ router.delete('/remove/:userID', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
-  if (userID && !ObjectID.isValid(userID)) {
+  // check if userID is a reasonable parameter for ObjectId (hexadecimal)
+  if (userID && !ObjectId.isValid(userID)) {
     res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
     return
   }
@@ -429,8 +428,8 @@ router.get('/status/:userID?', authenticateToken, async (req, res) => {
   // Extract and check required fields (fallback to the authorization id if no param)
   const userID = req.params.userID || req.user.id
 
-  // check if userID is a reasonable parameter for ObjectID
-  if (userID && !ObjectID.isValid(userID)) {
+  // check if userID is a reasonable parameter for ObjectId
+  if (userID && !ObjectId.isValid(userID)) {
     res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -460,8 +459,8 @@ router.post('/collaboration', authenticateToken, async (req, res) => {
     return res.status(403).send({ error: true, message: 'You can only update your own status' })
   }
 
-  // check if userID is a reasonable parameter for ObjectID
-  if (!ObjectID.isValid(userID)) {
+  // check if userID is a reasonable parameter for ObjectId
+  if (!ObjectId.isValid(userID)) {
     res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
   }
 
@@ -491,8 +490,8 @@ router.post('/timeToRespond', authenticateToken, async (req, res) => {
     return res.status(403).send({ error: true, message: 'You can only update your own status' })
   }
 
-  // check if userID is a reasonable parameter for ObjectID
-  if (!ObjectID.isValid(userID)) {
+  // check if userID is a reasonable parameter for ObjectId
+  if (!ObjectId.isValid(userID)) {
     res.status(400).json({ invalid: true, id: userID, message: 'userID must be a 12 byte number or a string of 24 hex characters' })
   }
 

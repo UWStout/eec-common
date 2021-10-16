@@ -14,8 +14,8 @@ import MongoDB from 'mongodb'
 import Debug from 'debug'
 const debug = Debug('karuna:server:log_routes')
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 
 // Create a router to attach to an express server app
 const router = new Express.Router()
@@ -31,8 +31,8 @@ router.post('/wizardMessage', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
-  if (correspondentID && !ObjectID.isValid(correspondentID)) {
+  // check if userID is a reasonable parameter for ObjectId (hexadecimal)
+  if (correspondentID && !ObjectId.isValid(correspondentID)) {
     res.status(400).json({ invalid: true, message: 'correspondentID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -57,13 +57,13 @@ router.post('/userMessage', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
-  if (correspondentID && !ObjectID.isValid(correspondentID)) {
+  // check if userID is a reasonable parameter for ObjectId (hexadecimal)
+  if (correspondentID && !ObjectId.isValid(correspondentID)) {
     res.status(400).json({ invalid: true, message: 'correspondentID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
-  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
-  if (userID && !ObjectID.isValid(userID)) {
+  // check if userID is a reasonable parameter for ObjectId (hexadecimal)
+  if (userID && !ObjectId.isValid(userID)) {
     res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 

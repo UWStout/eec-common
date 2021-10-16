@@ -7,6 +7,7 @@ import { isWizardEnabled } from './wizardEngine.js'
 import { isWatsonEnabled, sendWatsonResponse } from './watsonEngine.js'
 
 import { lookupJITStatuses } from './JITStatusHelper.js'
+import { EXCLUDED_TOKEN_PROPS } from '../sessionManager.js'
 
 // Helper methods
 import * as Analysis from './analysisEngine.js'
@@ -54,7 +55,7 @@ function compareArrays (A, B) {
   return true
 }
 
-// Establish an in-memory session for a connected client
+// Setup data for this session
 // - 'this' = current socket
 export function socketClientSession (clientInfo) {
   if (clientSessions[this.id]) {
@@ -89,6 +90,16 @@ export function socketClientSession (clientInfo) {
   clientSessions[this.id] = { ...clientSessions[this.id], ...tokenPayload }
   clientSocketLookup[clientSessions[this.id].email] = this.id
 
+  // Update session with 'type' and token payload
+  if (this.request.session) {
+    this.request.session.sessionType = 'client'
+    this.request.session.userInfo = tokenPayload
+    EXCLUDED_TOKEN_PROPS.forEach((propKey) => {
+      delete this.request.session.userInfo[propKey]
+    })
+    this.request.session.save()
+  }
+
   // Connect to team rooms if not already
   if (!clientSessions[this.id].teams) {
     DBUser.getUserDetails(tokenPayload.id)
@@ -98,6 +109,10 @@ export function socketClientSession (clientInfo) {
           this.join(`team-${teamID}`)
         })
         clientSessions[this.id].teams = result.teams
+        if (this.request.session) {
+          this.request.session.teams = result.teams
+          this.request.session.save()
+        }
       })
       .catch((err) => {
         debug('Error retrieving user team list, can\'t add to team rooms.')
@@ -114,6 +129,10 @@ export function socketClientSession (clientInfo) {
 
     // Update session list
     clientSessions[this.id].contexts = [...clientInfo.context]
+    if (this.request.session) {
+      this.request.session.contexts = [...clientInfo.context]
+      this.request.session.save()
+    }
 
     // Broadcast to wizard
     if (isWizardEnabled()) {

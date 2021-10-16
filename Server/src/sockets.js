@@ -2,7 +2,7 @@
 import * as io from 'socket.io'
 
 // Import session manager middleware
-import { getSessionManager } from './sessionManager.js'
+import { getSessionMiddleware } from './sessionManager.js'
 
 // Database log and user controller objects
 import * as DBUser from './mongo/userController.js'
@@ -56,7 +56,7 @@ export function decodeToken (token) {
 // Integrate our web-sockets route with the express server
 export function makeSocket (serverListener) {
   // Use session middleware
-  const sessionMiddleware = getSessionManager()
+  const sessionMiddleware = getSessionMiddleware()
 
   // Setup web-sockets with session middleware
   mySocket = new io.Server(serverListener, { path: '/karuna/socket.io' })
@@ -122,6 +122,10 @@ function socketPing () {
   if (getClientSession(this.id)) {
     const sessions = getAllClientSessions()
     sessions[this.id].lastPing = Date.now()
+    if (this.request.session) {
+      this.request.session.lastPing = Date.now()
+      this.request.session.save()
+    }
   }
 }
 

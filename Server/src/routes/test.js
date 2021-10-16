@@ -25,8 +25,8 @@ import MongoDB from 'mongodb'
 
 // const debug = Debug('karuna:server:test')
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 
 */
 // Get database controllers

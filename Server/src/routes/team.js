@@ -18,8 +18,8 @@ import * as UTIL from './utils.js'
 import Debug from 'debug'
 const debug = Debug('karuna:server:user_routes')
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 
 // Create a router to attach to an express server app
 const router = new Express.Router()
@@ -97,12 +97,12 @@ router.post('/update', authenticateToken, async (req, res) => {
 router.post('/addManager', authenticateToken, async (req, res) => {
   // Attempt to retrieve teamID
   const teamID = req.body.teamID
-  if (!teamID || !ObjectID.isValid(teamID)) {
+  if (!teamID || !ObjectId.isValid(teamID)) {
     return res.status(400).send({ error: true, message: 'Invalid or missing team ID' })
   }
 
   const userID = req.body.userID || req.user.id
-  if (!userID || !ObjectID.isValid(userID)) {
+  if (!userID || !ObjectId.isValid(userID)) {
     return res.status(400).send({ error: true, message: 'Invalid or missing user ID' })
   }
 
@@ -124,8 +124,8 @@ router.post('/addManager', authenticateToken, async (req, res) => {
 
     // Add new userID to the managers list
     const managers = teamDetails.managers || []
-    if (!managers.includes(new ObjectID(userID))) {
-      managers.push(new ObjectID(userID))
+    if (!managers.includes(new ObjectId(userID))) {
+      managers.push(new ObjectId(userID))
     }
 
     // Update the team in the DB
@@ -140,12 +140,12 @@ router.post('/addManager', authenticateToken, async (req, res) => {
 router.post('/removeManager', authenticateToken, async (req, res) => {
   // Attempt to retrieve teamID
   const teamID = req.body.teamID
-  if (!teamID || !ObjectID.isValid(teamID)) {
+  if (!teamID || !ObjectId.isValid(teamID)) {
     return res.status(400).send({ error: true, message: 'Invalid or missing team ID' })
   }
 
   const userID = req.body.userID || req.user.id
-  if (!userID || !ObjectID.isValid(userID)) {
+  if (!userID || !ObjectId.isValid(userID)) {
     return res.status(400).send({ error: true, message: 'Invalid or missing user ID' })
   }
 
@@ -167,7 +167,7 @@ router.post('/removeManager', authenticateToken, async (req, res) => {
 
     // Remove user ID from managers list
     const managers = teamDetails.managers || []
-    const index = managers.indexOf(new ObjectID(userID))
+    const index = managers.indexOf(new ObjectId(userID))
     if (index >= 0) {
       managers.splice(index, 1)
 
@@ -191,13 +191,13 @@ router.post('/register', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if unitID is a reasonable parameter for ObjectID (hexadecimal)
-  if (unitID && !ObjectID.isValid(unitID)) {
+  // check if unitID is a reasonable parameter for ObjectId (hexadecimal)
+  if (unitID && !ObjectId.isValid(unitID)) {
     res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
-  // check if userID is a reasonable parameter for ObjectID (hexadecimal)
-  if (userID && !ObjectID.isValid(userID)) {
+  // check if userID is a reasonable parameter for ObjectId (hexadecimal)
+  if (userID && !ObjectId.isValid(userID)) {
     res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -222,13 +222,13 @@ router.post('/register', authenticateToken, async (req, res) => {
 //     return
 //   }
 
-//   // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
-//   if (teamID && !ObjectID.isValid(teamID)) {
+//   // check if teamID is a reasonable parameter for ObjectId (hexadecimal)
+//   if (teamID && !ObjectId.isValid(teamID)) {
 //     res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
 //   }
 
-//   // check if userID is a reasonable parameter for ObjectID (hexadecimal)
-//   if (userID && !ObjectID.isValid(userID)) {
+//   // check if userID is a reasonable parameter for ObjectId (hexadecimal)
+//   if (userID && !ObjectId.isValid(userID)) {
 //     res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
 //   }
 
@@ -259,8 +259,8 @@ router.delete('/remove/:teamID', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
-  if (teamID && !ObjectID.isValid(teamID)) {
+  // check if teamID is a reasonable parameter for ObjectId (hexadecimal)
+  if (teamID && !ObjectId.isValid(teamID)) {
     res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -285,7 +285,7 @@ router.get('/listInUnit/:unitID', authenticateToken, async (req, res) => {
     return
   }
 
-  if (unitID && !ObjectID.isValid(unitID)) {
+  if (unitID && !ObjectId.isValid(unitID)) {
     res.status(400).json({ invalid: true, message: 'unitID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
@@ -311,8 +311,8 @@ router.get('/details/:teamID', authenticateToken, async (req, res) => {
     return
   }
 
-  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
-  if (teamID && !ObjectID.isValid(teamID)) {
+  // check if teamID is a reasonable parameter for ObjectId (hexadecimal)
+  if (teamID && !ObjectId.isValid(teamID)) {
     res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters' })
     return
   }
@@ -344,8 +344,8 @@ router.get('/getTeamAffectTemperature/:teamID', authenticateToken, async (req, r
     return
   }
 
-  // check if teamID is a reasonable parameter for ObjectID (hexadecimal)
-  if (!ObjectID.isValid(teamID)) {
+  // check if teamID is a reasonable parameter for ObjectId (hexadecimal)
+  if (!ObjectId.isValid(teamID)) {
     res.status(400).json({ invalid: true, message: 'teamID must be a single String of 12 bytes or a string of 24 hex characters', teamID })
     return
   }

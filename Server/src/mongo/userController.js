@@ -13,8 +13,8 @@ import Debug from 'debug'
 // Re-export closeClient
 export { closeClient }
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 
 const debug = Debug('karuna:mongo:userController')
 
@@ -42,14 +42,14 @@ export async function getUserDetails (userID) {
   const DBHandle = await retrieveDBHandle('karunaData')
   return DBHandle
     .collection('Users')
-    .findOne({ _id: new ObjectID(userID) }, { projection: { passwordHash: 0 } })
+    .findOne({ _id: new ObjectId(userID) }, { projection: { passwordHash: 0 } })
 }
 
 export async function memberOfTeam (userID, teamID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users').findOne(
-        { _id: new ObjectID(userID) },
+        { _id: new ObjectId(userID) },
         { projection: { _id: 0, teams: 1 } }
       ).then((user) => {
         if (Array.isArray(user.teams) && user.teams.length > 0) {
@@ -66,7 +66,7 @@ export async function memberOfTeam (userID, teamID) {
 
 /**
  * Lookup the full team info for this user's array of teams
- * @param {string} userID A valid ObjectID that matches a document in the 'Users' collection
+ * @param {string} userID A valid ObjectId that matches a document in the 'Users' collection
  * @param {bool} idsOnly Only return team IDs
  * @returns {Promise} A promise that rejects on an error and resolves to the array of team docs
  */
@@ -75,7 +75,7 @@ export async function getUserTeams (userID) {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users').aggregate([
         // Get user's array of team IDs
-        { $match: { _id: new ObjectID(userID) } },
+        { $match: { _id: new ObjectId(userID) } },
         { $project: { _id: 0, teamId: '$teams' } },
 
         // Convert results to list of just the team IDs, one per doc
@@ -226,7 +226,7 @@ export function listUsers (IDsOnly = true, perPage = 25, page = 1, sortBy = '', 
  *
  * Tested in test 11 of test.js
  *
- * @param {string} teamID ObjectID string of an existing team
+ * @param {string} teamID ObjectId string of an existing team
  * @returns {Promise} Resolves to list of users on success, rejects with error on failure
  */
 export function listUsersInTeam (teamID) {
@@ -241,7 +241,7 @@ export function listUsersInTeam (teamID) {
       try {
         // Retrieve filtered list of users (w/o sensitive info) with team info joined
         DBHandle.collection('Users').find(
-          { teams: new ObjectID(teamID) },
+          { teams: new ObjectId(teamID) },
           {
             projection: {
               email: 1,
@@ -275,18 +275,18 @@ export function listUsersInTeam (teamID) {
 /**
  * List all the users from an array of IDs (with public static info)
  *
- * @param {array[string]} userIDs ObjectID strings of existing users
+ * @param {array[string]} userIDs ObjectId strings of existing users
  * @returns {Promise} Resolves to list of users on success, rejects with error on failure
  */
 export function listUsersFromArray (userIDs) {
   // Validate userID array
   if (!Array.isArray(userIDs)) { userIDs = [userIDs] }
-  if (userIDs.some((curID) => (!ObjectID.isValid(curID)))) {
+  if (userIDs.some((curID) => (!ObjectId.isValid(curID)))) {
     return Promise.reject(new Error('One or more user IDs in invalid'))
   }
 
   // Ensure all objectIDs are the proper type
-  const objectIDArray = userIDs.map((curID) => (new ObjectID(curID)))
+  const objectIDArray = userIDs.map((curID) => (new ObjectId(curID)))
 
   return new Promise((resolve, reject) => {
     // Retrieve team details
@@ -328,7 +328,7 @@ export function listUsersFromArray (userIDs) {
 // /**
 //  * List all the current user affects that belong to a certain team.
 //  *
-//  * @param {string} teamID ObjectID string of an existing team
+//  * @param {string} teamID ObjectId string of an existing team
 //  * @returns {Promise} Resolves to array of affect id strings on success, rejects with error on failure
 //  */
 // export function listUserAffectsInTeam (teamID) {
@@ -341,7 +341,7 @@ export function listUsersFromArray (userIDs) {
 //     // Retrieve team details
 //     retrieveDBHandle('karunaData').then((DBHandle) => {
 //       try {
-//         DBHandle.collection('Teams').findOne({ _id: new ObjectID(teamID) }, (err, result) => {
+//         DBHandle.collection('Teams').findOne({ _id: new ObjectId(teamID) }, (err, result) => {
 //           // Check for and handle error
 //           if (err) {
 //             debug('Error retrieving team for "listUserAffectsInTeam"')
@@ -354,7 +354,7 @@ export function listUsersFromArray (userIDs) {
 
 //           // Retrieve filtered list of users (w/o sensitive info) with team info joined
 //           DBHandle.collection('Users').aggregate([
-//             { $match: { teams: new ObjectID(teamID) } },
+//             { $match: { teams: new ObjectId(teamID) } },
 //             {
 //               $project: {
 //                 _id: 0,
@@ -392,7 +392,7 @@ export function updateUser (userID, newData) {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users')
         .findOneAndUpdate(
-          { _id: new ObjectID(userID) },
+          { _id: new ObjectId(userID) },
           { $set: { ...newData } },
           (err, result) => {
             if (err) {
@@ -452,7 +452,7 @@ export function updateUserTimestamps (userID, remoteAddress, context) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users').findOneAndUpdate(
-        { _id: new ObjectID(userID) },
+        { _id: new ObjectId(userID) },
         { $set: { ...newData } },
         (err, result) => {
           if (err) {
@@ -477,7 +477,7 @@ export function updateUserTimestamps (userID, remoteAddress, context) {
  */
 export function updateEmailTimestamp (userID, type, token) {
   // Ensure userID is defined
-  if (!userID || !ObjectID.isValid(userID)) {
+  if (!userID || !ObjectId.isValid(userID)) {
     return Promise.reject(new Error('UserId must be defined'))
   }
 
@@ -492,7 +492,7 @@ export function updateEmailTimestamp (userID, type, token) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users').findOneAndUpdate(
-        { _id: new ObjectID(userID) },
+        { _id: new ObjectId(userID) },
         { $set: { lastEmail } },
         (err, result) => {
           if (err) {
@@ -534,7 +534,7 @@ export function setUserAlias (userID, contextStr, aliasID, aliasName, avatarURL)
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users').findOneAndUpdate(
-        { _id: new ObjectID(userID) },
+        { _id: new ObjectId(userID) },
         { $set: aliasSetObject },
         (err, result) => {
           if (err) {
@@ -562,7 +562,7 @@ export function removeUser (userID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users')
-        .findOneAndDelete({ _id: new ObjectID(userID) })
+        .findOneAndDelete({ _id: new ObjectId(userID) })
         .then(result => { resolve() })
         .catch(error => {
           debug('Failed to remove user')
@@ -578,7 +578,7 @@ export function removeUser (userID) {
  *
  * tested in test 33
  *
- * @param {ObjectID} userID Database ID of the user to retrieve
+ * @param {ObjectId} userID Database ID of the user to retrieve
  * @param {boolean} privileged Include private info (should only be true when retrieving one's own status)
  * @returns {Promise} resolves with status object from user field, else rejects with an error
  */
@@ -598,7 +598,7 @@ export async function getUserStatus (userID, privileged = false) {
   const DBHandle = await retrieveDBHandle('karunaData')
   return DBHandle.collection('Users')
     .findOne(
-      { _id: new ObjectID(userID) },
+      { _id: new ObjectId(userID) },
       { projection }
     )
 }
@@ -606,7 +606,7 @@ export async function getUserStatus (userID, privileged = false) {
 /**
  * Retrieves user settings object given userID which contains user data for customizing Karuna
  *
- * @param {ObjectID} userID Database ID of the user to retrieve
+ * @param {ObjectId} userID Database ID of the user to retrieve
  * @returns {Promise} resolves with settings object from user field, else rejects with an error
  */
 export async function getUserSettings (userID) {
@@ -618,7 +618,7 @@ export async function getUserSettings (userID) {
   const DBHandle = await retrieveDBHandle('karunaData')
   return DBHandle.collection('Users')
     .findOne(
-      { _id: new ObjectID(userID) },
+      { _id: new ObjectId(userID) },
       { projection }
     )
 }
@@ -626,14 +626,14 @@ export async function getUserSettings (userID) {
 /**
  * updates the user's karuna customization settings
  *
- * @param {ObjectID} userID the user whose status is being updated
+ * @param {ObjectId} userID the user whose status is being updated
  * @param {String} userSettings new user settings object
  */
 export async function updateUserSettings (userID, userSettings) {
   const DBHandle = await retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     return DBHandle.collection('Users').findOneAndUpdate(
-      { _id: new ObjectID(userID) },
+      { _id: new ObjectId(userID) },
       { $set: { settings: userSettings } },
       (err, result) => {
         if (err) {
@@ -652,14 +652,14 @@ export async function updateUserSettings (userID, userSettings) {
  *
  * tested in test 34
  *
- * @param {ObjectID} userID the user whose status is being updated
+ * @param {ObjectId} userID the user whose status is being updated
  * @param {String} collaborationStatus can be null, the user's most recent collaboration status
  */
 export async function updateUserCollaboration (userID, collaborationStatus) {
   const DBHandle = await retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     return DBHandle.collection('Users').findOneAndUpdate(
-      { _id: new ObjectID(userID) },
+      { _id: new ObjectId(userID) },
       { $set: { 'status.collaboration': collaborationStatus } },
       (err, result) => {
         if (err) {
@@ -678,7 +678,7 @@ export async function updateUserCollaboration (userID, collaborationStatus) {
  *
  * tested in test 34
  *
- * @param {ObjectID} userID the user whose status is being updated
+ * @param {ObjectId} userID the user whose status is being updated
  * @param {number} time the user's time to respond to queries in minutes (or NaN if undefined)
  * @param {string} units 'm', 'h', or 'd' for units
  * @param {boolean} automatic Whether or not we should automatically compute TTR
@@ -692,7 +692,7 @@ export async function updateUserTimeToRespond (userID, time, units, automatic) {
   const DBHandle = await retrieveDBHandle('karunaData')
   return new Promise((resolve, reject) => {
     DBHandle.collection('Users').findOneAndUpdate(
-      { _id: new ObjectID(userID) },
+      { _id: new ObjectId(userID) },
       { $set: { 'status.timeToRespond': { time, units, automatic } } },
       (err, result) => {
         if (err) {

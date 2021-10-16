@@ -14,8 +14,8 @@ const debug = Debug('karuna:mongo:affectController')
 // Re-export closeClient
 export { closeClient }
 
-// Extract ObjectID for easy usage
-const { ObjectID } = MongoDB
+// Extract ObjectId for easy usage
+const { ObjectId } = MongoDB
 
 /* Affect Functions */
 
@@ -30,7 +30,7 @@ const { ObjectID } = MongoDB
 export async function getAffectDetails (affectID) {
   const DBHandle = await retrieveDBHandle('karunaData')
   return DBHandle.collection('Affects')
-    .findOne({ _id: new ObjectID(affectID) })
+    .findOne({ _id: new ObjectId(affectID) })
 }
 
 /**
@@ -60,10 +60,10 @@ export function createAffect (affectName, description, characterCodes, relatedID
   // Ensure related IDs are an array and are proper ObjectIDs
   if (!Array.isArray(relatedIDs)) {
     if (relatedIDs) {
-      insertThis.related.push(new ObjectID(relatedIDs))
+      insertThis.related.push(new ObjectId(relatedIDs))
     }
   } else {
-    insertThis.related = relatedIDs.map((relID) => (new ObjectID(relID)))
+    insertThis.related = relatedIDs.map((relID) => (new ObjectId(relID)))
   }
 
   // Insert the affect asynchronously
@@ -89,7 +89,7 @@ export function removeAffect (affectID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Affects')
-        .findOneAndDelete({ _id: new ObjectID(affectID) })
+        .findOneAndDelete({ _id: new ObjectId(affectID) })
         .then(result => { return resolve() })
         .catch((err) => { return reject(err) })
     })
@@ -110,7 +110,7 @@ export function updateAffect (affectID, newData) {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Affects')
         .findOneAndUpdate(
-          { _id: new ObjectID(affectID) },
+          { _id: new ObjectId(affectID) },
           { $set: { ...newData } },
           (err, result) => {
             if (err) {
@@ -145,8 +145,8 @@ export function listAffects (IDsOnly = true, perPage = 25, page = 1, sortBy = ''
 }
 
 /**
- * @param {*} affectID  the mongo ID string that needs to be wrapped in an ObjectID before being pushed to the database
- * @param {*} userID the mongo ID string that needs to be wrapped in an ObjectID before being pushed to the database
+ * @param {*} affectID  the mongo ID string that needs to be wrapped in an ObjectId before being pushed to the database
+ * @param {*} userID the mongo ID string that needs to be wrapped in an ObjectId before being pushed to the database
  * @returns {Promise} Resolves with no data if successful, rejects on error
  */
 export function setFavoriteAffect (affectID, userID) {
@@ -154,7 +154,7 @@ export function setFavoriteAffect (affectID, userID) {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users')
         .findOneAndUpdate(
-          { _id: new ObjectID(userID) },
+          { _id: new ObjectId(userID) },
           {
             $addToSet: { favoriteAffects: affectID }
           },
@@ -175,7 +175,7 @@ export function listFavoriteAffects (userID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users')
-        .find({ _id: new ObjectID(userID) }, { favoriteAffects: 1 })
+        .find({ _id: new ObjectId(userID) }, { favoriteAffects: 1 })
         .toArray(function (err, result) {
           if (err) {
             debug('Failed to list favorite affects')
@@ -196,7 +196,7 @@ export function removeFavoriteAffect (userID, affectID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Users')
-        .findOneAndUpdate({ _id: new ObjectID(userID) },
+        .findOneAndUpdate({ _id: new ObjectId(userID) },
           { $pull: { favoriteAffects: affectID } })
         .then(result => { return resolve() })
         .catch((err) => { return reject(err) })
@@ -205,8 +205,8 @@ export function removeFavoriteAffect (userID, affectID) {
 }
 
 /**
- * @param {*} affectID  the mongo ID string that needs to be wrapped in an ObjectID before being pushed to the database
- * @param {*} teamID the mongo ID string that needs to be wrapped in an ObjectID before being pushed to the database
+ * @param {*} affectID  the mongo ID string that needs to be wrapped in an ObjectId before being pushed to the database
+ * @param {*} teamID the mongo ID string that needs to be wrapped in an ObjectId before being pushed to the database
  * @returns {Promise} Resolves with no data if successful, rejects on error
  */
 export function setTeamDisabledAffect (affectID, teamID) {
@@ -214,7 +214,7 @@ export function setTeamDisabledAffect (affectID, teamID) {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Teams')
         .findOneAndUpdate(
-          { _id: new ObjectID(teamID) },
+          { _id: new ObjectId(teamID) },
           {
             $addToSet: { disabledAffects: affectID }
           },
@@ -235,7 +235,7 @@ export function removeTeamDisabledAffect (teamID, affectID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Teams')
-        .findOneAndUpdate({ _id: new ObjectID(teamID) },
+        .findOneAndUpdate({ _id: new ObjectId(teamID) },
           { $pull: { disabledAffects: affectID } })
         .then(result => { return resolve() })
         .catch((err) => { return reject(err) })
@@ -247,7 +247,7 @@ export function listTeamDisabledAffects (teamID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('Teams')
-        .find({ _id: new ObjectID(teamID) }, { disabledAffects: 1 })
+        .find({ _id: new ObjectId(teamID) }, { disabledAffects: 1 })
         .toArray(function (err, result) {
           if (err) {
             debug('Failed to list disabled affects')
@@ -284,16 +284,16 @@ export async function insertAffectHistoryEntry (affectID, relatedID, isUser, isP
 
   // Build proper object to insert
   const insertThis = {
-    affectID: new ObjectID(affectID),
+    affectID: new ObjectId(affectID),
     timestamp: new Date(),
     isPrivate
   }
 
   // Set either a user or team id as relatedID
   if (isUser) {
-    insertThis.userID = new ObjectID(relatedID)
+    insertThis.userID = new ObjectId(relatedID)
   } else {
-    insertThis.teamID = new ObjectID(relatedID)
+    insertThis.teamID = new ObjectId(relatedID)
   }
 
   // Start affect history entry query
@@ -306,10 +306,10 @@ export async function insertAffectHistoryEntry (affectID, relatedID, isUser, isP
   if (isUser) {
     promises.push(DBHandle.collection('Users')
       .findOneAndUpdate(
-        { _id: new ObjectID(relatedID) },
+        { _id: new ObjectId(relatedID) },
         {
           $set: {
-            'status.currentAffectID': new ObjectID(affectID),
+            'status.currentAffectID': new ObjectId(affectID),
             'status.currentAffectPrivacy': isPrivate
           }
         }
@@ -336,7 +336,7 @@ export function listAffectHistory (userID, affectLogID, dateStart, dateEnd) {
   // Setup an operator to filter by date range
   let findThis = {}
   if (affectLogID) {
-    findThis = { _id: new ObjectID(affectLogID) }
+    findThis = { _id: new ObjectId(affectLogID) }
   } else if (dateStart && dateEnd) { // finds timestamps within (inclusive) two dates
     findThis = { timestamp: { $gte: new Date(dateStart), $lte: new Date(dateEnd) } }
   } else if (dateStart) { // finds timestamps after a certain date (inclusive)
@@ -398,7 +398,7 @@ export function removeAffectHistoryEntry (affectLogID, dateRange) {
   else removeOne = true
 
   let removeThis
-  if (removeOne) removeThis = { _id: new ObjectID(affectLogID) }
+  if (removeOne) removeThis = { _id: new ObjectId(affectLogID) }
   else removeThis = { timestamp: { $gte: new Date(dateRange[0]), $lte: new Date(dateRange[1]) } }
 
   return new Promise((resolve, reject) => {
@@ -421,7 +421,7 @@ export function mostRecentAffectHistory (userID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {
       DBHandle.collection('AffectHistory')
-        .find({ userID: new ObjectID(userID) })
+        .find({ userID: new ObjectId(userID) })
         .sort({ timestamp: -1 })
         .limit(1)
         .toArray(function (err, result) {
