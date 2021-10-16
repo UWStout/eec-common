@@ -12,7 +12,8 @@ const Paper = withStyles((theme) => ({
     height: `calc(100% - ${theme.spacing(7)}px)`,
     width: theme.spacing(33),
     paddingRight: theme.spacing(2),
-    overflow: 'hidden',
+    overflowY: 'auto',
+    overflowX: 'hidden',
     flexDirection: 'column',
     zIndex: 2
   }
