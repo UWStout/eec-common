@@ -238,25 +238,15 @@ export function listTeamsInUnit (unitID) {
           DBHandle.collection('Teams').aggregate([
             { $match: { orgId: new ObjectID(unitID) } },
             { $addFields: unitData }
-          ], (err, cursor) => {
-            // Check for and handle error
+          ]).toArray((err, docs) => {
             if (err) {
-              debug('Error listing teams for "listTeamsInUnit"')
+              debug('Cursor toArray failed for "listTeamsInUnit"')
               debug(err)
               return reject(err)
             }
 
-            // Convert to array and return
-            cursor.toArray((err, docs) => {
-              if (err) {
-                debug('Cursor toArray failed for "listTeamsInUnit"')
-                debug(err)
-                return reject(err)
-              }
-
-              // Resolve with the results
-              return resolve(docs)
-            })
+            // Resolve with the results
+            return resolve(docs)
           })
         })
     })
@@ -336,24 +326,14 @@ export function getTeamAffectTemperature (teamID) {
             // {
             //   $project: { temp: '$userAffects.positivity', _id: 0 }
             // }
-          ], (err, cursor) => {
-            // Check for and handle error
+          ]).toArray((err, docs) => {
             if (err) {
-              debug('Error listing teams for "listUserAffectsInTeam"')
+              debug('Cursor toArray failed for "listUserAffectsInTeam"')
               debug(err)
               return reject(err)
             }
-
-            // Convert to array and return
-            cursor.toArray((err, docs) => {
-              if (err) {
-                debug('Cursor toArray failed for "listUserAffectsInTeam"')
-                debug(err)
-                return reject(err)
-              }
-              // Resolve with the results
-              return resolve(docs)
-            })
+            // Resolve with the results
+            return resolve(docs)
           })
         })
       } catch (err) {

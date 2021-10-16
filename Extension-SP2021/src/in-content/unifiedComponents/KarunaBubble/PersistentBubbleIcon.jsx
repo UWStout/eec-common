@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: '0%',
     right: '0%',
     margin: theme.spacing(1),
-    '--animate-repeat': 5
+    '--animate-repeat': 3
   },
   accountIndicator: {
     fontSize: theme.spacing(3),

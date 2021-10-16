@@ -54,39 +54,39 @@ export const ValidUserState = selector({
 })
 
 /** Customizable karuna settings for the current user */
-export const KarunaSettingsState = selector({
-  key: 'KarunaSettingsStateSetter',
+// export const KarunaSettingsState = selector({
+//   key: 'KarunaSettingsStateSetter',
 
-  get: async ({ get }) => {
-    const validUser = get(ValidUserState)
-    if (validUser) {
-      try {
-        const karunaSettings = await HELPER.retrieveKarunaSettings()
-        return karunaSettings
-      } catch (err) {
-        LOG.error('Failed to retrieve user\'s karuna settings')
-        LOG.error(err)
-        return null
-      }
-    } else {
-      return null
-    }
-  },
+//   get: async ({ get }) => {
+//     const validUser = get(ValidUserState)
+//     if (validUser) {
+//       try {
+//         const karunaSettings = await HELPER.retrieveKarunaSettings()
+//         return karunaSettings
+//       } catch (err) {
+//         LOG.error('Failed to retrieve user\'s karuna settings')
+//         LOG.error(err)
+//         return null
+//       }
+//     } else {
+//       return null
+//     }
+//   },
 
-  set: ({ get, set }, newSettings) => {
-    const validUser = get(ValidUserState)
-    if (validUser) {
-      try {
-        HELPER.updateKarunaSettings(newSettings)
-      } catch (err) {
-        LOG.error('Failed to update user\'s karuna settings')
-        LOG.error(err)
-      }
-    } else {
-      LOG.error('Can\'t update karuna settings when not logged in')
-    }
-  }
-})
+//   set: ({ get, set }, newSettings) => {
+//     const validUser = get(ValidUserState)
+//     if (validUser) {
+//       try {
+//         HELPER.updateKarunaSettings(newSettings)
+//       } catch (err) {
+//         LOG.error('Failed to update user\'s karuna settings')
+//         LOG.error(err)
+//       }
+//     } else {
+//       LOG.error('Can\'t update karuna settings when not logged in')
+//     }
+//   }
+// })
 
 /** List of user's recent emoji */
 export const AffectHistoryListState = atom({

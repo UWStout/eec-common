@@ -3,5 +3,6 @@
       "Orgs",
       "apikey",
       "karuna"
-    ]
+    ],
+    "editor.tabSize": 2
 }

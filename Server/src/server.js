@@ -9,7 +9,7 @@ import dotenv from 'dotenv'
 import http from 'http'
 import https from 'https'
 
-// Using express for basic HTTP
+// Using express for basic HTTP(S)
 import Express from 'express'
 
 // Middleware for parsing cookie headers
@@ -18,7 +18,7 @@ import CookieParser from 'cookie-parser'
 // enabling cross-origin requests
 import Cors from 'cors'
 
-// Our websockets events and management
+// Our sockets events and management
 import { makeSocket } from './sockets.js'
 
 // Custom routers for all the different groups of routes

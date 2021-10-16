@@ -346,7 +346,7 @@ function setKarunaSettings (settings) {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader() }
-    const data = { settings }
+    const data = { ...settings }
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/settings`, data, config)
     requestPromise.then((response) => {
       return resolve(response?.data)

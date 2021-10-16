@@ -1,6 +1,9 @@
 // Import the socket.io library
 import * as io from 'socket.io'
 
+// Import session manager middleware
+import { getSessionManager } from './sessionManager.js'
+
 // Database log and user controller objects
 import * as DBUser from './mongo/userController.js'
 
@@ -13,7 +16,7 @@ import {
 // Needed client session functions
 import {
   socketClientSession, socketMessageUpdate, socketMessageSend,
-  getClientSession, lookupClientSessionId, clearClientSession
+  getClientSession, lookupClientSessionId, clearClientSession, getAllClientSessions
 } from './sockets/clientEngine.js'
 
 // Read env variables from the .env file
@@ -52,8 +55,14 @@ export function decodeToken (token) {
 
 // Integrate our web-sockets route with the express server
 export function makeSocket (serverListener) {
-  // Setup web-sockets
+  // Use session middleware
+  const sessionMiddleware = getSessionManager()
+
+  // Setup web-sockets with session middleware
   mySocket = new io.Server(serverListener, { path: '/karuna/socket.io' })
+  mySocket.use((socket, next) => {
+    sessionMiddleware(socket.request, {}, next)
+  })
 
   // Respond to new socket connections
   mySocket.on('connection', (socket) => {
@@ -73,6 +82,14 @@ export function makeSocket (serverListener) {
 
     // General events
     socket.on('disconnect', socketDisconnect.bind(socket))
+
+    // Internal ping
+    const boundSocketPing = socketPing.bind(socket)
+    socket.conn.on('packet', (packet) => {
+      if (packet.type === 'ping' || packet.type === 'pong') {
+        boundSocketPing()
+      }
+    })
   })
 
   // Catch and log errors
@@ -96,6 +113,15 @@ function socketDisconnect (reason) {
     clearClientSession(this.id)
   } else {
     debug(`[WS:${this.id}] unknown connection disconnected because - ${reason}`)
+  }
+}
+
+// Log the ping from a client
+// - 'this' = current socket
+function socketPing () {
+  if (getClientSession(this.id)) {
+    const sessions = getAllClientSessions()
+    sessions[this.id].lastPing = Date.now()
   }
 }
 

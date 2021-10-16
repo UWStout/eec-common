@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { useRecoilState, useSetRecoilState } from 'recoil'
-import { KarunaSettingsState } from '../data/globalSate/userState'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { KarunaSettingsState, KarunaSettingsSyncState } from '../data/globalSate/settingsState'
 import { PopConnectActivityState } from '../data/globalSate/connectActivityState'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -34,19 +34,31 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+function sanitizeBool (value) {
+  if (typeof value !== 'boolean') {
+    return (value === 'true')
+  } else {
+    return value
+  }
+}
+
 export default function KarunaSettingsComponent (props) {
   // Destructure style classnames
   const { leftIndent1Style, leftIndent2Style, leftIndent3Style, captionTextStyle, textButtonStyle } = useStyles()
 
   // Read user info from Global recoil state
-  const [karunaSettings, setKarunaSettings] = useRecoilState(KarunaSettingsState)
+  const karunaSettings = useRecoilValue(KarunaSettingsState)
+  const setKarunaSettings = useSetRecoilState(KarunaSettingsSyncState)
 
   // Global connect activity state
   const popConnectActivity = useSetRecoilState(PopConnectActivityState)
 
   // Update karuna settings from event
   const onUpdateSettings = (e) => {
-    setKarunaSettings({ ...karunaSettings, [e.target.name]: e.target.value })
+    const newVal = e.target.checked === undefined ? sanitizeBool(e.target.value) : e.target.checked
+    const newSettings = { ...karunaSettings, [e.target.name]: newVal }
+    LOG('New karuna settings:', newSettings)
+    setKarunaSettings(newSettings)
   }
 
   // Set all settings back to defaults
@@ -93,7 +105,7 @@ export default function KarunaSettingsComponent (props) {
           <FormControlLabel
             control={
               <Switch
-                checked={karunaSettings.enableMoodPrompt}
+                checked={sanitizeBool(karunaSettings?.enableMoodPrompt)}
                 onChange={onUpdateSettings}
                 name="enableMoodPrompt"
                 color="default"
@@ -109,7 +121,7 @@ export default function KarunaSettingsComponent (props) {
           <FormControlLabel
             control={
               <Switch
-                checked={karunaSettings.enablePrivacyPrompt}
+                checked={sanitizeBool(karunaSettings?.enablePrivacyPrompt)}
                 onChange={onUpdateSettings}
                 name="enablePrivacyPrompt"
                 color="default"
@@ -122,20 +134,17 @@ export default function KarunaSettingsComponent (props) {
           <RadioGroup
             aria-label="always or never share"
             name="alwaysShare"
-            value={karunaSettings.alwaysShare ? 'true' : 'false'}
-            onChange={(e) => onUpdateSettings({
-              // Convert target.value into a bool
-              target: { ...e.target, value: e.target.value === 'true' }
-            })}
+            value={sanitizeBool(karunaSettings?.alwaysShare) ? 'true' : 'false'}
+            onChange={onUpdateSettings}
           >
             <FormControlLabel
               value={'true'}
-              control={<Radio color="default" disabled={!karunaSettings.enablePrivacyPrompt} />}
+              control={<Radio color="default" disabled={sanitizeBool(karunaSettings?.enablePrivacyPrompt)} />}
               label="Always Share"
             />
             <FormControlLabel
               value={'false'}
-              control={<Radio color="default" disabled={!karunaSettings.enablePrivacyPrompt} />}
+              control={<Radio color="default" disabled={sanitizeBool(karunaSettings?.enablePrivacyPrompt)} />}
               label="Never Share"
             />
           </RadioGroup>
@@ -150,7 +159,7 @@ export default function KarunaSettingsComponent (props) {
           <FormControlLabel
             control={
               <Switch
-                checked={karunaSettings.enableJITStatus}
+                checked={sanitizeBool(karunaSettings?.enableJITStatus)}
                 onChange={onUpdateSettings}
                 name="enableJITStatus"
                 color="default"
@@ -169,7 +178,7 @@ export default function KarunaSettingsComponent (props) {
           <FormControlLabel
             control={
               <Switch
-                checked={karunaSettings.enableMessageFeedback}
+                checked={sanitizeBool(karunaSettings?.enableMessageFeedback)}
                 onChange={onUpdateSettings}
                 name="enableMessageFeedback"
                 color="default"
@@ -192,7 +201,7 @@ export default function KarunaSettingsComponent (props) {
           <FormControlLabel
             control={
               <Switch
-                checked={karunaSettings.enableAutoTTR}
+                checked={sanitizeBool(karunaSettings?.enableAutoTTR)}
                 onChange={onUpdateSettings}
                 name="enableAutoTTR"
                 color="default"
@@ -208,7 +217,7 @@ export default function KarunaSettingsComponent (props) {
       </Grid>
 
       <Grid item xs={12}>
-        <Button color="primary" onClick={onResetPrompts}>
+        <Button color="primary" onClick={onResetPrompts} className={textButtonStyle}>
           {'Reset Confirmation Prompts'}
         </Button>
       </Grid>

@@ -97,16 +97,9 @@ export function listCollection (collectionName, lookup = null, projection = null
 
     // Perform the full query
     retrieveDBHandle('karunaData').then((DBHandle) => {
-      DBHandle.collection(collectionName).aggregate(rootPipeline, (err, cursor) => {
-        // Check for pipeline error
-        if (err) {
-          debug('List users failed')
-          debug(err)
-          return reject(err)
-        }
-
-        // Convert to array and return
-        cursor.toArray((err, docs) => {
+      DBHandle.collection(collectionName)
+        .aggregate(rootPipeline)
+        .toArray((err, docs) => {
           if (err) {
             debug('Aggregation toArray failed')
             debug(err)
@@ -115,7 +108,6 @@ export function listCollection (collectionName, lookup = null, projection = null
 
           return resolve(docs[0])
         })
-      })
     })
   })
 }

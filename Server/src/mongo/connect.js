@@ -17,45 +17,33 @@ const DB_SERVER_URL = 'mongodb://localhost:27017'
 const PROD_SERVER_URL = `mongodb+srv://${process.env.MONGO_USER}@karunacluster1.yb2nw.mongodb.net/karunaData?retryWrites=true&w=majority`
 
 // Client connection handle
-const clientHandle = new MongoDB.MongoClient(
+const clientHandlePromise = MongoDB.MongoClient.connect(
   (process.env.HEROKU ? PROD_SERVER_URL : DB_SERVER_URL),
   { useNewUrlParser: true, useUnifiedTopology: true }
 )
-
-// Promise that resolves once connection is active
-let connectPromise = null
 
 /**
  * Ensure there is a connection to the mongoDB instance and optionally return
  * a handle to the given database.
  * @param {string} dbName Name of the database to connect to.
- * @returns {MongoDB.db | undefined} If a dbName is provided, the database handle will be returned, otherwise null is returned.
+ * @returns {MongoDB.db | null} If a dbName is provided, the database handle will be returned, otherwise null is returned.
  * @throws If connection to mongodb instance fails.
  */
 export async function connect (dbName) {
-  // Attempt to establish a connection with the mongodb instance
-  if (!clientHandle.isConnected()) {
-    try {
-      debug('Connecting to mongo ...')
-      if (connectPromise !== null) {
-        await connectPromise
-      } else {
-        connectPromise = clientHandle.connect()
-        await connectPromise
-        connectPromise = null
-      }
-      debug('... success')
-    } catch (err) {
-      debug('Failed to connect to mongodb')
-      debug(err)
-      throw new Error('Failed to connect to mongodb')
+  try {
+    // Ensure connection is established
+    const clientHandle = await clientHandlePromise
+
+    // Return database handle
+    if (dbName) {
+      return clientHandle.db(dbName)
     }
+  } catch (err) {
+    debug('Connection to mongodb failed')
+    debug(err)
   }
 
-  // Return database handle
-  if (dbName) {
-    return clientHandle.db(dbName)
-  }
+  return null
 }
 
 /**
@@ -63,15 +51,31 @@ export async function connect (dbName) {
  * @throws If there is an error while closing the connection.
  */
 export async function closeClient () {
-  // Establish a connection (if not already)
+  let clientHandle = null
   try {
-    if (clientHandle.isConnected()) {
+    // Ensure connection is established
+    clientHandle = await clientHandlePromise
+  } catch (err) {
+    debug('Connection to mongodb failed')
+    debug(err)
+  }
+
+  if (clientHandle !== null) {
+    try {
       debug('Disconnecting from mongo ...')
       await clientHandle.close()
       debug('... success')
+    } catch (err) {
+      debug('Connection to mongodb failed')
+      debug(err)
     }
-  } catch (err) {
-    debug('Error disconnecting from mongo', err)
-    throw (new Error('Failed to disconnect from mongodb'))
   }
+}
+
+/**
+ * Get the MongoClient connection promise
+ * @returns {Promise<MongoClient>} Resolves to the connected MongoClient on success
+ */
+export function getClientPromise () {
+  return clientHandlePromise
 }

@@ -361,24 +361,14 @@ export function listUsersFromArray (userIDs) {
 //                 affectID: '$status.currentAffectID'
 //               }
 //             }
-//           ], (err, cursor) => {
-//             // Check for and handle error
+//           ]).map((affect) => (affect.affectID)).toArray((err, docs) => {
 //             if (err) {
-//               debug('Error listing teams for "listUserAffectsInTeam"')
+//               debug('Cursor toArray failed for "listUserAffectsInTeam"')
 //               debug(err)
 //               return reject(err)
 //             }
-
-//             // Convert to array and return
-//             cursor.map((affect) => (affect.affectID)).toArray((err, docs) => {
-//               if (err) {
-//                 debug('Cursor toArray failed for "listUserAffectsInTeam"')
-//                 debug(err)
-//                 return reject(err)
-//               }
-//               // Resolve with the results
-//               return resolve(docs)
-//             })
+//             // Resolve with the results
+//             return resolve(docs)
 //           })
 //         })
 //       } catch (err) {
