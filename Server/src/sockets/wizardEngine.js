@@ -7,7 +7,6 @@ import * as DBLog from '../mongo/logController.js'
 
 // Socket methods
 import { decodeToken, getMySocket } from '../sockets.js'
-import { getAllClientSessions, getClientSession, lookupClientSessionId } from './clientEngine.js'
 
 // Helper methods
 import { parseMessageCommands, parseOtherUsers } from './socketMessageHelper.js'
@@ -61,7 +60,8 @@ export function socketWizardSession (wizardInfo) {
 
     // Join the wizards room and send the wizard a list of active sessions
     this.join('wizards')
-    getMySocket().to(this.id).emit('updateSessions', getAllClientSessions())
+    // TODO: Update to new session system
+    // getMySocket().to(this.id).emit('updateSessions', getAllClientSessions())
 
     // Record the wizard login in user entry in database
     const req = this.request
@@ -76,67 +76,76 @@ export function socketWizardSession (wizardInfo) {
 
 // Broadcast a message from a wizard to a specific client
 export async function socketWizardMessage (messageInfo) {
-  const destID = lookupClientSessionId(messageInfo.clientEmail)
-  if (destID) {
-    // Pull out some local variables
-    const correspondentID = getClientSession(destID).id
-    let messageText = messageInfo.content
+  // Try to lookup user by email
+  let userInfo = null
+  try {
+    userInfo = await DBUser.getInfoFromEmail(messageInfo.clientEmail)
+    userInfo.id = userInfo._id
+  } catch (err) {
+    debug('Error getting user info:', err)
+  }
 
-    // Scan for and replace any karuna-specific commands
-    messageText = parseMessageCommands(messageText, messageInfo)
+  // Did we find the user?
+  if (!userInfo) {
+    debug('Wizard message failed: could not lookup email', messageInfo.clientEmail)
+    return
+  }
 
-    // Are any user status variables being used?
-    let userStatus = { affect: 'unknown', timeToRespond: 'unknown', collaboration: 'unknown' }
-    if (messageText.match(/{{\s*user\.status.*?}}/)) {
-      // Retrieve user status
-      try {
-        const response = await DBUser.getUserStatus(getClientSession(destID).id)
-        if (response) {
-          userStatus = {
-            affect: response.currentAffectID || 'unknown',
-            timeToRespond: response.timeToRespond || NaN,
-            collaboration: response.collaboration || 'unknown'
-          }
-        }
-      } catch (err) {
-        debug('Error getting user status')
-        debug(err)
-      }
-    }
+  // Pull out some local variables
+  let messageText = messageInfo.content
 
+  // Scan for and replace any karuna-specific commands
+  messageText = parseMessageCommands(messageText, messageInfo)
+
+  // Are any user status variables being used?
+  let userStatus = { affect: 'unknown', timeToRespond: 'unknown', collaboration: 'unknown' }
+  if (messageText.match(/{{\s*user\.status.*?}}/)) {
+    // Retrieve user status
     try {
-      // Get any extra user data needed for mentioned users
-      const extraUsers = await parseOtherUsers(messageText, messageInfo, DBUser)
-
-      // Fill-in handlebars templates if they exist
-      if (messageText.includes('{{')) {
-        const msgTemplate = Handlebars.compile(messageText)
-        messageText = msgTemplate({
-          user: {
-            ...getClientSession(destID),
-            type: getClientSession(destID).userType,
-            status: userStatus
-          },
-          ...extraUsers
-        })
+      const response = await DBUser.getUserStatus(userInfo.id)
+      if (response) {
+        userStatus = {
+          affect: response.currentAffectID || 'unknown',
+          timeToRespond: response.timeToRespond || NaN,
+          collaboration: response.collaboration || 'unknown'
+        }
       }
-
-      // Update message text and save in log (not waiting on logging, but we do catch errors)
-      messageInfo.content = messageText
-      DBLog.logWizardMessage(messageInfo, correspondentID)
-        .catch((err) => {
-          debug('Logging of wizard message failed')
-          debug(err)
-        })
-
-      // Send the message on to client
-      debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
-      getMySocket().to(destID).emit('karunaMessage', messageInfo)
     } catch (err) {
-      debug('Error awaiting other user parsing')
+      debug('Error getting user status')
       debug(err)
     }
-  } else {
-    debug(`[WS:${this.id}] wizard sending to UNKNOWN client ${messageInfo.clientEmail} in ${messageInfo.context}`)
+  }
+
+  try {
+    // Get any extra user data needed for mentioned users
+    const extraUsers = await parseOtherUsers(messageText, messageInfo, DBUser)
+
+    // Fill-in handlebars templates if they exist
+    if (messageText.includes('{{')) {
+      const msgTemplate = Handlebars.compile(messageText)
+      messageText = msgTemplate({
+        user: {
+          ...userInfo,
+          type: userInfo.userType,
+          status: userStatus
+        },
+        ...extraUsers
+      })
+    }
+
+    // Update message text and save in log (not waiting on logging, but we do catch errors)
+    messageInfo.content = messageText
+    DBLog.logWizardMessage(messageInfo, userInfo.id)
+      .catch((err) => {
+        debug('Logging of wizard message failed')
+        debug(err)
+      })
+
+    // Send the message on to client
+    debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
+    getMySocket().to(messageInfo.clientEmail).emit('karunaMessage', messageInfo)
+  } catch (err) {
+    debug('Error awaiting other user parsing')
+    debug(err)
   }
 }

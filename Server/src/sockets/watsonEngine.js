@@ -1,8 +1,6 @@
 // Database log and user controller objects
 import * as DBLog from '../mongo/logController.js'
 
-import { getClientSession } from './clientEngine.js'
-
 // Setup debug for output
 import Debug from 'debug'
 const debug = Debug('karuna:server:watson-socket-engine')
@@ -20,8 +18,9 @@ export function sendWatsonResponse (responseText, clientPromptObj, clientContext
     return
   }
 
+  const userInfo = this.request.session.userInfo
   const messageObj = {
-    clientEmail: getClientSession(this.id).email,
+    clientEmail: userInfo.email,
     context: clientContext,
     content: responseText,
     isWatson: true,
@@ -29,7 +28,7 @@ export function sendWatsonResponse (responseText, clientPromptObj, clientContext
     intents
   }
 
-  DBLog.logWatsonMessage(messageObj, clientPromptObj, getClientSession(this.id).id)
+  DBLog.logWatsonMessage(messageObj, clientPromptObj, userInfo.id)
     .catch((err) => {
       debug('Logging of watson message failed')
       debug(err)

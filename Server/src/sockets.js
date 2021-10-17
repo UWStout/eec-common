@@ -15,8 +15,7 @@ import {
 
 // Needed client session functions
 import {
-  socketClientSession, socketMessageUpdate, socketMessageSend,
-  getClientSession, lookupClientSessionId, clearClientSession, getAllClientSessions
+  socketClientSession, socketMessageUpdate, socketMessageSend
 } from './sockets/clientEngine.js'
 
 // Read env variables from the .env file
@@ -105,60 +104,48 @@ export function makeSocket (serverListener) {
 // Respond to socket.disconnect events
 // - 'this' = current socket
 function socketDisconnect (reason) {
-  if (getWizardSession(this.id)) {
-    debug(`[WS:${this.id}] wizard disconnected because - ${reason}`)
-    clearWizardSession(this.id)
-  } else if (getClientSession(this.id)) {
-    debug(`[WS:${this.id}] client disconnected because - ${reason}`)
-    clearClientSession(this.id)
-  } else {
-    debug(`[WS:${this.id}] unknown connection disconnected because - ${reason}`)
-  }
+  this.request.sessionStore.destroy(
+    this.request.session.id,
+    (err) => {
+      if (err) {
+        debug(`[WS:${this.id}] Failed to destroy session (${err})`)
+        debug(`[WS:${this.id}] unknown connection disconnected because - ${reason}`)
+      } else {
+        debug(`[WS:${this.id}] ${this.request.session.type} disconnected because - ${reason}`)
+      }
+    }
+  )
 }
 
 // Log the ping from a client
 // - 'this' = current socket
 function socketPing () {
-  if (getClientSession(this.id)) {
-    const sessions = getAllClientSessions()
-    sessions[this.id].lastPing = Date.now()
-    if (this.request.session) {
-      this.request.session.lastPing = Date.now()
-      this.request.session.save()
-    }
+  if (this.request.session) {
+    this.request.session.lastPing = Date.now()
+    this.request.session.save()
   }
 }
 
-export async function socketGenericMessage (messageInfo) {
-  const destID = lookupClientSessionId(messageInfo.clientEmail)
-  console.log('destID in socketGenericMessage: ' + destID)
-  if (destID) {
-    // Send the message on to client
-    debug(`generic message for client ${messageInfo.clientEmail}`)
-    mySocket.to(destID).emit('karunaMessage', messageInfo)
-  } else {
-    debug(`generic message sending to UNKNOWN client ${messageInfo.clientEmail} in ${messageInfo}`)
-  }
+export function socketGenericMessage (messageInfo) {
+  // Send the message on to client
+  debug(`generic message for client ${messageInfo.clientEmail}`)
+  mySocket.to(messageInfo.clientEmail).emit('karunaMessage', messageInfo)
 }
 
 export function sendGenericMessage (message, userID, context, showAffectSurvey = false) {
-  if (message.trim() === '') {
-    return
-  }
+  // Ignore empty messages
+  if (message.trim() === '') { return }
 
+  // Retrieve user details
   DBUser.getUserDetails(userID)
     .then((details) => {
-      const userEmail = details.email
-      const socketID = lookupClientSessionId(userEmail)
-      if (socketID) {
-        debug('emitting generic message:', message)
-        mySocket.to(socketID).emit('karunaMessage', {
-          clientEmail: userEmail, // user email
-          context: context,
-          content: message,
-          affectSurvey: showAffectSurvey
-        })
-      }
+      debug(`emitting generic message to ${details.email}:`, message)
+      mySocket.to(details.email).emit('karunaMessage', {
+        clientEmail: details.email, // user email
+        context: context,
+        content: message,
+        affectSurvey: showAffectSurvey
+      })
     })
     .catch((err) => {
       debug('could not get user details')

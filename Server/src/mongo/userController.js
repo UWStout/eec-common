@@ -45,6 +45,22 @@ export async function getUserDetails (userID) {
     .findOne({ _id: new ObjectId(userID) }, { projection: { passwordHash: 0 } })
 }
 
+export async function getInfoFromEmail (userEmail) {
+  const DBHandle = await retrieveDBHandle('karunaData')
+
+  // Only include basic info
+  const projection = {
+    email: 1,
+    name: 1,
+    preferredName: 1,
+    preferredPronouns: 1,
+    userType: 1
+  }
+
+  return DBHandle.collection('Users')
+    .findOne({ email: userEmail }, { projection })
+}
+
 export async function memberOfTeam (userID, teamID) {
   return new Promise((resolve, reject) => {
     retrieveDBHandle('karunaData').then((DBHandle) => {

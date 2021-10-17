@@ -16,103 +16,72 @@ import * as Analysis from './analysisEngine.js'
 import Debug from 'debug'
 const debug = Debug('karuna:server:client-socket-engine')
 
-// Session management
-const clientSessions = {}
-const clientSocketLookup = {}
-
-export function getAllClientSessions () {
-  return clientSessions
-}
-
-export function getClientSession (id) {
-  return clientSessions[id]
-}
-
-export function lookupClientSessionId (email) {
-  return clientSocketLookup[email]
-}
-
-export function clearClientSession (id) {
-  if (id) {
-    const email = clientSessions[id].email
-    clientSessions[id] = undefined
-    if (email) {
-      clientSocketLookup[email] = undefined
-    }
-  }
-}
-
+// Per-element array comparison (non-recursive)
 function compareArrays (A, B) {
-  // if the other array is a falsy value, return
+  // If both are falsy, return true
+  if (!A && !B) { return true }
+
+  // If one is falsy (null, undefined, etc.) then return false
   if (!A || !B) { return false }
 
   // compare lengths - can save a lot of time
   if (A.length !== B.length) { return false }
 
+  // Compare individual elements
   for (let i = 0; i < A.length; i++) {
     if (A[i] !== B[i]) { return false }
   }
+
+  // Perfect match
   return true
 }
 
 // Setup data for this session
 // - 'this' = current socket
 export function socketClientSession (clientInfo) {
-  if (clientSessions[this.id]) {
-    debug(`[WS:${this.id}] updated client session (${clientInfo.context})`)
-    clientSocketLookup[clientSessions[this.id].email] = undefined // In case the email has changed
-  } else {
-    // Join the universal clients room and a room for JUST this socket
-    debug(`[WS:${this.id}] new client session (${clientInfo.context})`)
-    this.join('clients')
-    this.join(this.id)
-  }
-
   // Is there a valid token
   if (!clientInfo.token) {
     debug(`[WS:${this.id}] invalid - client session token missing`)
     return
   }
 
-  // Decode client token
+  // Setup session storage
   const tokenPayload = { ...decodeToken(clientInfo.token) }
-
-  // Check for any timed triggers on a non-global session
-  if (clientInfo.context !== 'global') {
-    Analysis.checkTimedTriggers(tokenPayload)
-      .catch((err) => {
-        debug('Error checking timed triggers on client session update')
-        debug(err)
-      })
-  }
-
-  // Write/Update session and broadcast change
-  clientSessions[this.id] = { ...clientSessions[this.id], ...tokenPayload }
-  clientSocketLookup[clientSessions[this.id].email] = this.id
-
-  // Update session with 'type' and token payload
   if (this.request.session) {
+    // Setup type and userInfo
     this.request.session.sessionType = 'client'
     this.request.session.userInfo = tokenPayload
     EXCLUDED_TOKEN_PROPS.forEach((propKey) => {
       delete this.request.session.userInfo[propKey]
     })
+
+    // Update list of contexts
+    if (clientInfo.context !== 'global') {
+      if (!Array.isArray(clientInfo.context)) { clientInfo.context = [clientInfo.context] }
+      this.request.session.contexts = [...clientInfo.context]
+    }
+
+    // Write the session data
     this.request.session.save()
   }
 
-  // Connect to team rooms if not already
-  if (!clientSessions[this.id].teams) {
+  // Ensure socket rooms are initialized
+  if (this.rooms.has('clients')) {
+    debug(`[WS:${this.id}] updated client session (${clientInfo.context})`)
+  } else {
+    debug(`[WS:${this.id}] new client session (${clientInfo.context})`)
+
+    // Connect to general client rooms and email based room
+    this.join('clients')
+    this.join(tokenPayload.email)
+
+    // Connect to team rooms (note: runs asynchronously)
     DBUser.getUserDetails(tokenPayload.id)
       .then((result) => {
         const teams = result?.teams ? result.teams : []
         teams.forEach((teamID) => {
           this.join(`team-${teamID}`)
         })
-        clientSessions[this.id].teams = result.teams
-        if (this.request.session) {
-          this.request.session.teams = result.teams
-          this.request.session.save()
-        }
       })
       .catch((err) => {
         debug('Error retrieving user team list, can\'t add to team rooms.')
@@ -120,29 +89,25 @@ export function socketClientSession (clientInfo) {
       })
   }
 
-  // If not a global connect, update context list, timestamps, and optionally broadcast change
+  // If not a global connect, check timed triggers, broadcast to wizard, and record timestamps
   if (clientInfo.context !== 'global') {
-    // Pack in array if not already
-    if (!Array.isArray(clientInfo.context)) {
-      clientInfo.context = [clientInfo.context]
-    }
-
-    // Update session list
-    clientSessions[this.id].contexts = [...clientInfo.context]
-    if (this.request.session) {
-      this.request.session.contexts = [...clientInfo.context]
-      this.request.session.save()
-    }
+    // Update timed triggers
+    Analysis.checkTimedTriggers(tokenPayload)
+      .catch((err) => {
+        debug('Error checking timed triggers on client session update')
+        debug(err)
+      })
 
     // Broadcast to wizard
-    if (isWizardEnabled()) {
-      getMySocket().to('wizards').emit('updateSessions', clientSessions)
-    }
+    // TODO: Update to new session system
+    // if (isWizardEnabled()) {
+    //   getMySocket().to('wizards').emit('updateSessions', clientSessions)
+    // }
 
     // Record the context connection in user entry in database
     const req = this.request
     const address = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown'
-    DBUser.updateUserTimestamps(clientSessions[this.id].id, address, clientSessions[this.id].contexts)
+    DBUser.updateUserTimestamps(tokenPayload.id, address, clientInfo.context)
       .catch((err) => {
         console.error('WARNING: Failed to update context timestamp')
         console.error(err)
@@ -153,37 +118,43 @@ export function socketClientSession (clientInfo) {
 // Updated text of message being written
 // - 'this' = current socket
 export function socketMessageUpdate (message) {
-  if (!clientSessions[this.id]) {
+  if (!this.request.session || !this.request.session.userInfo) {
     debug(`[WS:${this.id}] typing message before login`)
     return
   }
 
   // Update user's list of context aliases (their username in a service like Discord or Teams)
-  const userID = clientSessions[this.id].id
-  DBUser.setUserAlias(userID, message.context, message.aliasId, message.aliasName, message.avatarURL)
+  const userInfo = this.request.session.userInfo
+  DBUser.setUserAlias(userInfo.id, message.context, message.aliasId, message.aliasName, message.avatarURL)
     .catch((err) => {
       debug('Alias update failed')
       debug(err)
     })
 
+  // Get local copy of replyStatus (may be undefined)
+  const replyStatus = this.request.status.replyStatus
+
   // Provide any user statuses relevant to the current message
   if (message.data.replyId || Array.isArray(message.data.participants) || Array.isArray(message.data.mentions)) {
     // Is this a duplicate request that was already sent?
-    if (message.data.replyId !== clientSessions[this.id].replyId ||
-      !compareArrays(message.data.participants, clientSessions[this.id].participants) ||
-      !compareArrays(message.data.mentions, clientSessions[this.id].mentions)) {
+    if (message.data.replyId !== replyStatus?.replyId ||
+      !compareArrays(message.data.participants, replyStatus?.participants) ||
+      !compareArrays(message.data.mentions, replyStatus?.mentions)) {
       // Lookup the statuses
       lookupJITStatuses(message.aliasId, message.data, message.context)
         .then(([replyToStatus, mentionStatus, participantStatus]) => {
           // Only send a status message if it is not empty
           if (replyToStatus.length > 0 || mentionStatus.length > 0 || participantStatus.length > 0) {
             // Remember the most recently sent data (to detect duplicate requests)
-            clientSessions[this.id].replyId = message.replyId
-            clientSessions[this.id].mentions = message.mentions
-            clientSessions[this.id].participants = message.participants
+            this.request.status.replyStatus = {
+              replyId: message.replyId,
+              mentions: message.mentions,
+              participants: message.participants
+            }
+            this.request.status.save()
 
             // Send the latest status info
-            sendStatusMessage(message.context, clientSessions[this.id].email, replyToStatus, mentionStatus, participantStatus)
+            sendStatusMessage(this, message.context, userInfo.email, replyToStatus, mentionStatus, participantStatus)
           }
         })
     }
@@ -192,7 +163,7 @@ export function socketMessageUpdate (message) {
   if (isWatsonEnabled()) {
     debug(`[WS:${this.id}] draft message sent to watson from ${message.context}`)
     // Hook to intelligence core, expect a promise in return
-    Analysis.analyzeMessage(message.data, userID, message.context, false)
+    Analysis.analyzeMessage(message.data, userInfo.id, message.context, false)
       .then((result) => {
         if (result) {
           // TODO: Consider something more sophisticated here
@@ -217,7 +188,7 @@ export function socketMessageUpdate (message) {
   // Bounce message to wizard (no logging because it floods the console)
   if (isWizardEnabled()) {
     getMySocket().to('wizards').emit('clientTyping', {
-      clientEmail: clientSessions[this.id].email,
+      clientEmail: userInfo.email,
       context: message.context,
       data: message.data
     })
@@ -227,14 +198,14 @@ export function socketMessageUpdate (message) {
 // Attempt to send message from Client
 // - 'this' = current socket
 export async function socketMessageSend (message) {
-  if (!clientSessions[this.id]) {
+  if (!this.request.session || !this.request.session.userInfo) {
     debug(`[WS:${this.id}] sending message before login`)
     return
   }
 
   // Update user's list of context aliases (their username in a service like Discord or Teams)
-  const userID = clientSessions[this.id].id
-  DBUser.setUserAlias(userID, message.context, message.aliasId, message.aliasName, message.avatarURL)
+  const userInfo = this.request.session.userInfo
+  DBUser.setUserAlias(userInfo.id, message.context, message.aliasId, message.aliasName, message.avatarURL)
     .catch((err) => {
       debug('Alias update failed')
       debug(err)
@@ -242,7 +213,7 @@ export async function socketMessageSend (message) {
 
   // Log the message for telemetry and analysis
   // TODO: do we have the ID of the person receiving the message?
-  DBLog.logUserMessage(message, null, userID)
+  DBLog.logUserMessage(message, null, userInfo.id)
     .catch((err) => {
       debug('client message logging failed')
       debug(err)
@@ -251,7 +222,7 @@ export async function socketMessageSend (message) {
   // Hook to intelligence core, expect a promise in return
   if (isWatsonEnabled()) {
     debug(`[WS:${this.id}] message sent to watson from ${message.context}`)
-    Analysis.analyzeMessage(message, userID, message.context, true)
+    Analysis.analyzeMessage(message, userInfo.id, message.context, true)
       .then((result) => {
         // TODO: Consider something more sophisticated here
         const messageText = result.output.generic[0].text
@@ -273,7 +244,7 @@ export async function socketMessageSend (message) {
   if (isWizardEnabled()) {
     debug(`[WS:${this.id}] message sent to wizard from ${message.context}`)
     getMySocket().to('wizards').emit('clientSend', {
-      clientEmail: clientSessions[this.id].email,
+      clientEmail: userInfo.email,
       context: message.context,
       data: message.data
     })
@@ -283,28 +254,18 @@ export async function socketMessageSend (message) {
 export async function userStatusUpdated (userID) {
   DBUser.getUserDetails(userID)
     .then((details) => {
-      const socketID = clientSocketLookup[details?.email]
-      if (socketID) {
-        if (Array.isArray(clientSessions[socketID].teams) && clientSessions[socketID].teams.length > 0) {
-          // Send message to all team rooms but NOT to this user's socket
-          getMySocket().to(
-            // Create array of team room names
-            clientSessions[socketID].teams.map((teamID) => (`team-${teamID}`))
-          )
-            // Send latest status
-            .emit('teammateStatusUpdate', {
-              userId: userID,
-              context: '*',
-              currentAffectID: details.status.currentAffectID,
-              collaboration: details.status.collaboration,
-              timeToRespond: details.status.timeToRespond
-            })
-        } else {
-          debug('No teams to emit too / teams invalid:')
-          debug(clientSessions[socketID].teams)
-        }
-      } else {
-        debug(`Failed to broadcast status: could not find socket session for user ${details?.email}`)
+      // Get list of teams
+      const teams = details?.teams ? details.teams : []
+      if (Array.isArray(teams) && teams.length > 0) {
+        // Send latest status to all team rooms
+        getMySocket().to(teams.map((teamID) => (`team-${teamID}`)))
+          .emit('teammateStatusUpdate', {
+            userId: userID,
+            context: '*',
+            currentAffectID: details.status.currentAffectID,
+            collaboration: details.status.collaboration,
+            timeToRespond: details.status.timeToRespond
+          })
       }
     })
     .catch((err) => {
@@ -313,11 +274,10 @@ export async function userStatusUpdated (userID) {
     })
 }
 
-export function sendStatusMessage (context, userEmail, replyToStatus, mentionsStatus, participantsStatus) {
-  const socketID = lookupClientSessionId(userEmail)
-  if (socketID) {
+export function sendStatusMessage (socket, context, userEmail, replyToStatus, mentionsStatus, participantsStatus) {
+  if (socket) {
     debug('emitting status message')
-    getMySocket().to(socketID).emit('statusMessage', {
+    getMySocket().to(socket.id).emit('statusMessage', {
       clientEmail: userEmail,
       context: context,
       replyToStatus,
