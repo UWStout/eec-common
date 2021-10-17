@@ -70,11 +70,6 @@ export default function KarunaBubble (props) {
     setFeedbackDialogOpen(open)
   }
 
-  // TESTING THE AFFECT SURVEY
-  useEffect(() => {
-    pushBubbleActivity(AffectSurveyActivity)
-  }, [])
-
   // Hide the feedback dialog (possibly after a set timeout)
   const hideFeedbackDialog = (immediate) => {
     if (DISABLE_HIDING) { return }
