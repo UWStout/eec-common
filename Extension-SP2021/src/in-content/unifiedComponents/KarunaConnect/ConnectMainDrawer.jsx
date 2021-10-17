@@ -29,8 +29,11 @@ import AccountSettingsConfirmConnectActivity from './Activities/AccountSettingsC
 import KarunaSettingsConnectActivity from './Activities/KarunaSettingsConnectActivity.jsx'
 
 // DEBUG: Enable this logger when needed
-import { makeLogger } from '../../../util/Logger.js'
-const LOG = makeLogger('CONNECT Main Drawer', 'lime', 'black')
+// import { makeLogger } from '../../../util/Logger.js'
+// const LOG = makeLogger('CONNECT Main Drawer', 'lime', 'black')
+
+// Enable this to help with debugging
+const DISABLE_RETRACTING_AND_HIDING = false
 
 const useStyles = makeStyles((theme) => ({
   // Style when the panel is retracted
@@ -125,21 +128,22 @@ export default function ConnectMainDrawer (props) {
 
   // Function for queueing a hide request
   const hide = (immediate) => {
-    // if (onHide && !hidden) {
-    //   LOG('Hiding main drawer in ' + waitToHide + ' ms')
-    //   if (immediate) {
-    //     onHide()
-    //   } else {
-    //     const timeoutHandle = setTimeout(() => { onHide() }, waitToHide)
-    //     setHideTimeout(timeoutHandle)
-    //   }
-    // }
+    if (DISABLE_RETRACTING_AND_HIDING) { return }
+    if (onHide && !hidden) {
+      // LOG('Hiding main drawer in ' + waitToHide + ' ms')
+      if (immediate) {
+        onHide()
+      } else {
+        const timeoutHandle = setTimeout(() => { onHide() }, waitToHide)
+        setHideTimeout(timeoutHandle)
+      }
+    }
   }
 
   // Function for canceling a pending hide request
   const cancelHide = () => {
     if (hideTimeout) {
-      LOG('Canceling hiding')
+      // LOG('Canceling hiding')
       clearTimeout(hideTimeout)
       setHideTimeout(false)
     }
@@ -147,21 +151,22 @@ export default function ConnectMainDrawer (props) {
 
   // Function for queueing a retract request
   const retract = (immediate) => {
-    // if (!isRetracted) {
-    //   LOG('Retracting main drawer in ' + (waitToHide / 3) + ' ms')
-    //   if (immediate) {
-    //     setIsRetracted(true)
-    //   } else {
-    //     const timeoutHandle = setTimeout(() => { setIsRetracted(true) }, waitToHide / 3)
-    //     setRetractTimeout(timeoutHandle)
-    //   }
-    // }
+    if (DISABLE_RETRACTING_AND_HIDING) { return }
+    if (!isRetracted) {
+      // LOG('Retracting main drawer in ' + (waitToHide / 3) + ' ms')
+      if (immediate) {
+        setIsRetracted(true)
+      } else {
+        const timeoutHandle = setTimeout(() => { setIsRetracted(true) }, waitToHide / 3)
+        setRetractTimeout(timeoutHandle)
+      }
+    }
   }
 
   // Function for canceling a pending retract request
   const cancelRetract = () => {
     if (retractTimeout) {
-      LOG('Canceling retracting')
+      // LOG('Canceling retracting')
       clearTimeout(retractTimeout)
       setRetractTimeout(false)
       setIsRetracted(false)
@@ -249,7 +254,7 @@ export default function ConnectMainDrawer (props) {
       aria-label={'Main Drawer'}
       elevation={5}
       className={currentClass}
-      onMouseEnter={() => { setMouseIsOver(true); cancelHide(); cancelRetract() }}
+      onMouseOver={() => { setMouseIsOver(true); cancelHide(); cancelRetract() }}
       onMouseLeave={() => { setMouseIsOver(false); hide(false); retract(false) }}
       // eslint-disable-next-line react/forbid-component-props
       style={{ overflowY: (activityStack.length > 1 ? 'hidden' : '') }}

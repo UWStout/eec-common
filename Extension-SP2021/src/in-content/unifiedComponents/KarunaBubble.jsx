@@ -8,11 +8,15 @@ import { ConnectVisibilityState, BubbleVisibilityStateSetter } from './data/glob
 import { PushBubbleActivityState, BubbleActiveStatusMessageState } from './data/globalSate/bubbleActivityState.js'
 
 import BubbleActivityDialog from './KarunaBubble/BubbleActivityDialog.jsx'
+import { OnboardingActivity } from './KarunaBubble/OnboardingActivity.js'
 import { ACTIVITIES } from './KarunaBubble/Activities/Activities.js'
 
 // Colorful logger (Enable if logging is needed)
 import { makeLogger } from '../../util/Logger.js'
 const LOG = makeLogger('BUBBLE Component', 'lavender', 'black')
+
+// Enable this to help with debugging
+const DISABLE_HIDING = false
 
 // The karuna dialog bubble
 export default function KarunaBubble (props) {
@@ -25,7 +29,9 @@ export default function KarunaBubble (props) {
     emitter.on('karunaMessage', (newMessage) => {
       // What type of message is this?
       let activityKey = ACTIVITIES.BLANK_MESSAGE.key
-      if (newMessage?.affectSurvey) {
+      if (newMessage?.needOnboarding) {
+        activityKey = ACTIVITIES.ONBOARDING_ACTIVITY.key
+      } else if (newMessage?.affectSurvey) {
         activityKey = ACTIVITIES.AFFECT_SURVEY.key
       } else if (newMessage?.observations?.length > 0) {
         activityKey = ACTIVITIES.WATSON_MESSAGE.key
@@ -34,11 +40,15 @@ export default function KarunaBubble (props) {
       }
 
       // Build and push the activity
-      const newActivity = {
+      let newActivity = {
         key: activityKey,
         message: newMessage
       }
-      LOG('Adding activity to bubble queue:', newActivity)
+      if (activityKey === ACTIVITIES.ONBOARDING_ACTIVITY.key) {
+        newActivity = OnboardingActivity
+      }
+
+      // LOG('Adding activity to bubble queue:', newActivity)
       pushBubbleActivity(newActivity)
     })
 
@@ -73,11 +83,12 @@ export default function KarunaBubble (props) {
 
   // Hide the feedback dialog (possibly after a set timeout)
   const hideFeedbackDialog = (immediate) => {
+    if (DISABLE_HIDING) { return }
     if (feedbackDialogOpen) {
       if (immediate) {
         setFeedbackDialogOpen(false)
       } else {
-        LOG('Hide Requested')
+        // LOG('Hide Requested')
         const timeoutHandle = setTimeout(() => { setFeedbackDialogOpen(false) }, 3000)
         setFeedbackHideTimeout(timeoutHandle)
       }
@@ -87,7 +98,7 @@ export default function KarunaBubble (props) {
   // Function for canceling a pending hide request
   const cancelHideFeedbackDialog = () => {
     if (feedbackHideTimeout) {
-      LOG('Hide Canceled')
+      // LOG('Hide Canceled')
       clearTimeout(feedbackHideTimeout)
       setFeedbackHideTimeout(false)
     }

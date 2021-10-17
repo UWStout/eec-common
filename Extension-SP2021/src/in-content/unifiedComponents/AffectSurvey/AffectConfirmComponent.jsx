@@ -53,7 +53,7 @@ export default function AffectConfirmComponent (props) {
           : <Typography variant="body1">
               {'Your status was updated and shared. '}
               {'Thank you for sharing your mood with '}
-              {currentTeam ? currentTeam.teamName : 'your team'}
+              {currentTeam ? currentTeam.name : 'your team'}
               {'!'}
             </Typography>}
       </Grid>

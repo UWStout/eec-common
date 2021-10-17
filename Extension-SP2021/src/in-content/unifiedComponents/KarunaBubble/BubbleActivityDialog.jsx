@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
@@ -18,6 +18,8 @@ import PrivacyPromptBubbleActivity from './Activities/PrivacyPromptBubbleActivit
 import KarunaMessageActivity from './Activities/KarunaMessageActivity.jsx'
 import StatusMessageActivity from './Activities/StatusMessageActivity.jsx'
 import AffectSurveyBubbleActivity from './Activities/AffectSurveyBubbleActivity.jsx'
+import CollaborationBubbleActivity from './Activities/CollaborationBubbleActivity.jsx'
+import TimeToRespondBubbleActivity from './Activities/TimeToRespondActivity.jsx'
 
 // Colorful logger (enable if logging is needed)
 import { makeLogger } from '../../../util/Logger.js'
@@ -74,6 +76,18 @@ function buildActivity (curActivity, suffix = '', restProps = {}) {
       )
     }
 
+    case ACTIVITIES.COLLABORATION_SURVEY.key: {
+      return (
+        <CollaborationBubbleActivity key={key} {...restProps} />
+      )
+    }
+
+    case ACTIVITIES.TIME_TO_RESPOND_SURVEY.key: {
+      return (
+        <TimeToRespondBubbleActivity key={key} {...restProps} />
+      )
+    }
+
     case ACTIVITIES.BLANK_MESSAGE.key: {
       return (
         <BlankActivity key={key} {...restProps} />
@@ -81,6 +95,7 @@ function buildActivity (curActivity, suffix = '', restProps = {}) {
     }
 
     // Multi-activities must be inside their own base and can't be nested
+    case ACTIVITIES.ONBOARDING_ACTIVITY.key:
     case ACTIVITIES.MULTI_ACTIVITY.key: {
       LOG.error('Cannot have a nested multi-activity')
       return <div key={key + '-error'}>{'error'}</div>
@@ -98,11 +113,14 @@ function buildActivity (curActivity, suffix = '', restProps = {}) {
 
 export default function BubbleActivityDialog (props) {
   // Deconstruct the props and styles
-  const { hidden, ...restProps } = props
+  const { hidden, requestHide, cancelHide } = props
   const { emptyBaseStyle } = useStyles()
 
   // Global activity and input disabled state
   const activityStack = useRecoilValue(BubbleActivityStackState)
+
+  // Is the multi-activity next button enabled
+  const [nextEnabled, setNextEnabled] = useState(true)
 
   // Create the persistent icon and the empty base
   const icon = <PersistentBubbleIcon {...props} />
@@ -111,19 +129,19 @@ export default function BubbleActivityDialog (props) {
   // Construct the proper activity to display based on the stack
   const last = activityStack.length - 1
   const activityElements = activityStack.map((curActivity, i) => {
-    if (curActivity.key === ACTIVITIES.MULTI_ACTIVITY.key) {
-      const subActivities = curActivity.message.activityList.map(
-        (activityKey) => (ACTIVITIES[activityKey])
-      )
+    if (curActivity.key === ACTIVITIES.MULTI_ACTIVITY.key || curActivity.key === ACTIVITIES.ONBOARDING_ACTIVITY.key) {
       return (
         <MultiStageActivityBase
           key={ACTIVITIES.MULTI_ACTIVITY.key + i}
-          activityList={subActivities}
+          activityList={curActivity.message.activityList}
           baseElement={i === last ? icon : empty}
           hidden={hidden || (i !== last)}
+          requestHide={requestHide}
+          cancelHide={cancelHide}
+          nextEnabled={nextEnabled}
         >
-          {subActivities.map((curSubActivity) => (
-            buildActivity(curSubActivity, `multi-${i}`, restProps)
+          {curActivity.message.activityList.map((curSubActivity) => (
+            buildActivity(curSubActivity, `multi-${i}`, { requestHide, cancelHide, allowNext: setNextEnabled, isOnboarding: true })
           ))}
         </MultiStageActivityBase>
       )
@@ -131,11 +149,14 @@ export default function BubbleActivityDialog (props) {
     return (
       <ActivityBaseBubble
         key={curActivity.key}
-        activity={ACTIVITIES.KARUNA_MESSAGE}
+        activity={curActivity}
         baseElement={i === last ? icon : empty}
         hidden={hidden || (i !== last)}
+        requestHide={requestHide}
+        cancelHide={cancelHide}
+        noClose={curActivity.key === ACTIVITIES.BLANK_MESSAGE.key}
       >
-        {buildActivity(curActivity, i, restProps)}
+        {buildActivity(curActivity, i, { requestHide, cancelHide })}
       </ActivityBaseBubble>
     )
   })

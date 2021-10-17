@@ -132,7 +132,7 @@ export function socketGenericMessage (messageInfo) {
   mySocket.to(messageInfo.clientEmail).emit('karunaMessage', messageInfo)
 }
 
-export function sendGenericMessage (message, userID, context, showAffectSurvey = false) {
+export function sendGenericMessage (message, userID, context, showAffectSurvey = false, showOnboarding = false) {
   // Ignore empty messages
   if (message.trim() === '') { return }
 
@@ -144,7 +144,8 @@ export function sendGenericMessage (message, userID, context, showAffectSurvey =
         clientEmail: details.email, // user email
         context: context,
         content: message,
-        affectSurvey: showAffectSurvey
+        affectSurvey: showAffectSurvey,
+        needOnboarding: showOnboarding
       })
     })
     .catch((err) => {

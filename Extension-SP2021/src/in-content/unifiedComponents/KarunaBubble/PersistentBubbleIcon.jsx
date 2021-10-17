@@ -10,7 +10,7 @@ import { ACTIVITIES } from './Activities/Activities.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { SvgIcon, IconButton } from '@material-ui/core'
-import { AccountCircle, PriorityHigh, Create as CreateIcon } from '@material-ui/icons'
+import { AccountCircle, PriorityHigh, Create as CreateIcon, EmojiPeople as EmojiPeopleIcon } from '@material-ui/icons'
 
 import { animateCSS } from '../Shared/animateHelper.js'
 
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: '0%',
     right: '0%',
     margin: theme.spacing(1),
-    '--animate-repeat': 3
+    '--animate-repeat': 2
   },
   accountIndicator: {
     fontSize: theme.spacing(3),
@@ -60,8 +60,9 @@ const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (pro
 
   // Determine what indicators to show
   const topActivityKey = activityStack[activityStack.length - 1].key
+  const showOnboardIndicator = topActivityKey === ACTIVITIES.ONBOARDING_ACTIVITY.key
   const showPriorityIndicator = topActivityKey === ACTIVITIES.AFFECT_SURVEY.key
-  const showAlertIndicator = !showPriorityIndicator && (topActivityKey !== ACTIVITIES.BLANK_MESSAGE.key)
+  const showAlertIndicator = !showPriorityIndicator && !showOnboardIndicator && (topActivityKey !== ACTIVITIES.BLANK_MESSAGE.key)
 
   const clickCallback = () => {
     if (!userLoggedIn) {
@@ -82,12 +83,15 @@ const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (pro
   useEffect(() => {
     // Determine what indicators to show
     const topActivityKey = activityStack[activityStack.length - 1].key
+    const showOnboardIndicator = topActivityKey === ACTIVITIES.ONBOARDING_ACTIVITY.key
     const showPriorityIndicator = topActivityKey === ACTIVITIES.AFFECT_SURVEY.key
-    const showAlertIndicator = !showPriorityIndicator && (topActivityKey !== ACTIVITIES.BLANK_MESSAGE.key && topActivityKey !== ACTIVITIES.PRIVACY_PROMPT.key)
+    const showAlertIndicator = !showPriorityIndicator && !showOnboardIndicator && (topActivityKey !== ACTIVITIES.BLANK_MESSAGE.key)
 
     const ariaLabel = (userLoggedIn ? 'Open Feedback Dialog' : 'Open Login Dialog')
     if (!userLoggedIn || showPriorityIndicator) {
       animateCSS(`[aria-label="${ariaLabel}"]`, 'tada', 1)
+    } else if (showOnboardIndicator) {
+      animateCSS(`[aria-label="${ariaLabel}"]`, 'wobble', 2)
     } else if (showAlertIndicator) {
       animateCSS(`[aria-label="${ariaLabel}"]`, 'heartBeat')
     }
@@ -97,7 +101,7 @@ const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (pro
     <IconButton
       ref={ref}
       onClick={clickCallback}
-      onMouseEnter={cancelHide}
+      onMouseOver={cancelHide}
       onMouseLeave={() => requestHide && requestHide(false)}
       className={classes.root}
       aria-label={userLoggedIn ? 'Open Feedback Dialog' : 'Open Login Dialog'}
@@ -126,6 +130,11 @@ const PersistentBubbleIcon = React.forwardRef(function PersistentBubbleIcon (pro
       {userLoggedIn && showAlertIndicator &&
         <div className={classes.accountIndicator}>
           <CreateIcon className={classes.overlayStyle} />
+        </div>}
+
+      {userLoggedIn && showOnboardIndicator &&
+        <div className={classes.accountIndicator}>
+          <EmojiPeopleIcon className={classes.overlayStyle} />
         </div>}
 
       {userLoggedIn && showPriorityIndicator &&

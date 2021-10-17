@@ -58,7 +58,7 @@ export default function FeedbackDialogContent (props) {
 
   return (
     <Grid container spacing={1} >
-      <Grid item onMouseEnter={cancelHide} onMouseLeave={() => onHide(false)}>
+      <Grid item onMouseOver={cancelHide} onMouseLeave={() => onHide(false)}>
         {displayedFeedback === 'observations' &&
           <ListNVCElements observations={observations} fromBubble />}
 

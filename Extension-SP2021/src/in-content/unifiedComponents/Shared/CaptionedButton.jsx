@@ -18,13 +18,13 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function CaptionedButton (props) {
-  const { buttonText, onClick, children } = props
+  const { buttonText, onClick, children, ...restProps } = props
   const { captionTextStyle, gridBoxStyle, textBoxStyle } = useStyles()
 
   return (
     <Grid container spacing={1}>
       <Grid item className={gridBoxStyle} xs={12}>
-        <Button variant="contained" fullWidth onClick={onClick}>
+        <Button {...restProps} variant="contained" fullWidth onClick={onClick}>
           {buttonText}
         </Button>
       </Grid>

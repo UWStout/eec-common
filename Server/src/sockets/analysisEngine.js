@@ -83,8 +83,8 @@ export async function checkTimedTriggers (userInfo) {
 
     // Check if they've never set their mood before
     if (!lastAffect?.timestamp) {
-      debug('checkTimedTriggers: requesting mood from new user')
-      sendGenericMessage('We need to set your mood. How are you feeling about the project today?', userInfo.id, '*', true)
+      debug('checkTimedTriggers: requesting onboarding for new user')
+      sendGenericMessage('We need to set your mood. How are you feeling about the project today?', userInfo.id, '*', false, true)
     } else {
       // Compute the age of the most recent mood in hours
       const offset = (new Date()).getTimezoneOffset() * 60000
@@ -93,7 +93,7 @@ export async function checkTimedTriggers (userInfo) {
       // Is it too old?
       if (affectAgeHours > 16) {
         debug('checkTimedTriggers: mood is too old, requesting update')
-        sendGenericMessage('It has been a while since you updated your mood. How are you feeling about the project today?', userInfo.id, '*', true)
+        sendGenericMessage('It has been a while since you updated your mood. How are you feeling about the project today?', userInfo.id, '*', true, false)
       }
     }
   } catch (err) {

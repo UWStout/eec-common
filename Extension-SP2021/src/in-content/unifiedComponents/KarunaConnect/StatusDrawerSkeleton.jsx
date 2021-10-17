@@ -71,7 +71,7 @@ export default function ConnectStatusDrawer () {
       aria-label={'Status Drawer'}
       elevation={3}
       className={`${(mouseIsOver ? panelExpanded : panelRetracted)}`}
-      onMouseEnter={() => { setMouseIsOver(true) }}
+      onMouseOver={() => { setMouseIsOver(true) }}
       onMouseLeave={() => { setMouseIsOver(false) }}
       onClick={clickCallback}
     >

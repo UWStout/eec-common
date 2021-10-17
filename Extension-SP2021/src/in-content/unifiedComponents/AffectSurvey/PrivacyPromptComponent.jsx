@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function PrivacyPromptComponent (props) {
-  const { privacyCallback } = props
+  const { privacyCallback, noOptOut } = props
   const { gridBoxStyle, checkboxLabelStyle } = useStyles()
 
   // Global data states
@@ -35,7 +35,8 @@ export default function PrivacyPromptComponent (props) {
   const emojiList = useRecoilValue(AffectListState)
   const privacy = useRecoilValue(PrivacyPrefsStateSetter)
 
-  LOG('Current privacy', privacy)
+  // Track last button clicked
+  const [localPrivate, setLocalPrivate] = useState(undefined)
 
   // Track local checkbox state
   const [promptState, setPromptState] = useState(privacy.noPrompt || false)
@@ -53,6 +54,14 @@ export default function PrivacyPromptComponent (props) {
   // Find selected affect info
   const affectObj = emojiList.find((item) => (item._id === affectId))
 
+  // Set button color
+  let yesColor = 'default'
+  let noColor = 'default'
+  if (noOptOut && localPrivate !== undefined) {
+    yesColor = (localPrivate ? 'default' : 'primary')
+    noColor = (localPrivate ? 'primary' : 'default')
+  }
+
   return (
     <Grid container item spacing={3}>
       <Grid item xs={12}>
@@ -68,7 +77,8 @@ export default function PrivacyPromptComponent (props) {
       <Grid item xs={12}>
         <CaptionedButton
           buttonText={'Yes, Share'}
-          onClick={() => { onDialogClose(false, { private: false, prompt: promptState }) }}
+          color={yesColor}
+          onClick={() => { setLocalPrivate(false); onDialogClose(false, { private: false, prompt: promptState }) }}
         >
           {'No one outside your team will be able to see the information you\'re sharing.'}
         </CaptionedButton>
@@ -77,7 +87,8 @@ export default function PrivacyPromptComponent (props) {
       <Grid item xs={12}>
         <CaptionedButton
           buttonText={'No, Keep Private'}
-          onClick={() => { onDialogClose(false, { private: true, prompt: promptState }) }}
+          color={noColor}
+          onClick={() => { setLocalPrivate(true); onDialogClose(false, { private: true, prompt: promptState }) }}
         >
           {'Please consider sharing your response with your team. '}
           {'By doing so, you will be contributing to a more connected and compassionate team.'}
@@ -85,29 +96,32 @@ export default function PrivacyPromptComponent (props) {
       </Grid>
 
       {/* Option to dismiss the prompt in the future */}
-      <Grid container item xs={12} spacing={1}>
-        <Grid item className={gridBoxStyle} xs={12}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={promptState}
-                onChange={handlePromptChange}
-                color="default"
-              />
-            }
-            label="Save my response and don't show this message again."
-            classes={{ label: checkboxLabelStyle }}
-          />
-        </Grid>
-      </Grid>
+      {!noOptOut &&
+        <Grid container item xs={12} spacing={1}>
+          <Grid item className={gridBoxStyle} xs={12}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={promptState}
+                  onChange={handlePromptChange}
+                  color="default"
+                />
+              }
+              label="Save my response and don't show this message again."
+              classes={{ label: checkboxLabelStyle }}
+            />
+          </Grid>
+        </Grid>}
     </Grid>
   )
 }
 
 PrivacyPromptComponent.propTypes = {
-  privacyCallback: PropTypes.func
+  privacyCallback: PropTypes.func,
+  noOptOut: PropTypes.bool
 }
 
 PrivacyPromptComponent.defaultProps = {
-  privacyCallback: null
+  privacyCallback: null,
+  noOptOut: false
 }

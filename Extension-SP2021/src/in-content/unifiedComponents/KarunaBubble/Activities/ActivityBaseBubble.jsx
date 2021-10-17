@@ -8,6 +8,9 @@ import { withStyles, makeStyles } from '@material-ui/core/styles'
 import { Tooltip as MuiTooltip, Zoom, Grid, Typography, IconButton } from '@material-ui/core'
 import { Close as CloseIcon } from '@material-ui/icons'
 
+import { makeLogger } from '../../../../util/Logger.js'
+const LOG = makeLogger('Bubble Activity Base', 'pink', 'black')
+
 // Create our pre-styled tooltip component
 const Tooltip = withStyles((theme) => ({
   arrow: {
@@ -36,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function ActivityBaseBubble (props) {
-  const { activity, noClose, children, baseElement, hidden, offset } = props
+  const { activity, noClose, children, baseElement, hidden, offset, requestHide, cancelHide } = props
   const { titleBox } = useStyles()
 
   // Customization of the popper for our crazy setup
@@ -50,7 +53,10 @@ export default function ActivityBaseBubble (props) {
 
   // Remove this activity when closing the bubble dialog
   const popBubbleActivity = useSetRecoilState(PopBubbleActivityState)
-  const onClose = () => { popBubbleActivity(activity) }
+  const onClose = () => {
+    if (cancelHide) { cancelHide() }
+    popBubbleActivity(activity)
+  }
 
   return (
     <Tooltip
@@ -60,20 +66,22 @@ export default function ActivityBaseBubble (props) {
       TransitionProps={{ appear: true }}
       open={!hidden && children !== null}
       title={
-        <Grid container>
-          <Grid item container xs={12} direction="row" justifyContent="space-between" alignItems="center" className={titleBox}>
-            <Typography variant="button">{activity.title}</Typography>
-            {!noClose &&
-              <MuiTooltip title={'Dismiss message'} placement="top-end" PopperProps={{ disablePortal: true }}>
-                <IconButton size="small" onClick={onClose}>
-                  <CloseIcon />
-                </IconButton>
-              </MuiTooltip>}
+        <div onMouseOver={cancelHide} onMouseLeave={() => requestHide && requestHide(false)}>
+          <Grid container>
+            <Grid item container xs={12} direction="row" justifyContent="space-between" alignItems="center" className={titleBox}>
+              <Typography variant="button">{activity.title}</Typography>
+              {!noClose &&
+                <MuiTooltip title={'Dismiss message'} placement="top-end" PopperProps={{ disablePortal: true }}>
+                  <IconButton size="small" onClick={onClose}>
+                    <CloseIcon />
+                  </IconButton>
+                </MuiTooltip>}
+            </Grid>
+            <Grid item xs={12}>
+              {children}
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            {children}
-          </Grid>
-        </Grid>
+        </div>
       }
       PopperProps={newPopperProps}
       arrow
@@ -92,10 +100,14 @@ ActivityBaseBubble.propTypes = {
   }).isRequired,
   noClose: PropTypes.bool,
   offset: PropTypes.string,
+  requestHide: PropTypes.func,
+  cancelHide: PropTypes.func,
   hidden: PropTypes.bool
 }
 
 ActivityBaseBubble.defaultProps = {
+  requestHide: null,
+  cancelHide: null,
   noClose: false,
   hidden: false,
   offset: '-16, -25'

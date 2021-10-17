@@ -15,7 +15,7 @@ export default function BlankActivity (props) {
 
   // Show affect survey
   return (
-    <div onMouseEnter={cancelHide} onMouseLeave={() => requestHide && requestHide(false)}>
+    <div onMouseOver={cancelHide} onMouseLeave={() => requestHide && requestHide(false)}>
       <Grid container>
         <Grid item xs={12}>
           <Typography variant="body1">

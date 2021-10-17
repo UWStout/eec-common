@@ -32,7 +32,7 @@ export default function AffectSurveySkeleton (props) {
 
   // Affect Survey Skeleton
   return (
-    <div onMouseEnter={cancelHide} onMouseLeave={() => requestHide && requestHide(false)} className={container}>
+    <div onMouseOver={cancelHide} onMouseLeave={() => requestHide && requestHide(false)} className={container}>
       <Grid container spacing={1} role={'region'} aria-label={'Affect Survey Loading'} >
         { withTitleText &&
           <Grid item xs={12}>
