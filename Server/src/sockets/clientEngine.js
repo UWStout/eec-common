@@ -132,7 +132,7 @@ export function socketMessageUpdate (message) {
     })
 
   // Get local copy of replyStatus (may be undefined)
-  const replyStatus = this.request.status.replyStatus
+  const replyStatus = this.request.session.replyStatus
 
   // Provide any user statuses relevant to the current message
   if (message.data.replyId || Array.isArray(message.data.participants) || Array.isArray(message.data.mentions)) {
@@ -146,12 +146,12 @@ export function socketMessageUpdate (message) {
           // Only send a status message if it is not empty
           if (replyToStatus.length > 0 || mentionStatus.length > 0 || participantStatus.length > 0) {
             // Remember the most recently sent data (to detect duplicate requests)
-            this.request.status.replyStatus = {
+            this.request.session.replyStatus = {
               replyId: message.replyId,
               mentions: message.mentions,
               participants: message.participants
             }
-            this.request.status.save()
+            this.request.session.save()
 
             // Send the latest status info
             sendStatusMessage(this, message.context, userInfo.email, replyToStatus, mentionStatus, participantStatus)
@@ -205,15 +205,17 @@ export async function socketMessageSend (message) {
 
   // Update user's list of context aliases (their username in a service like Discord or Teams)
   const userInfo = this.request.session.userInfo
-  DBUser.setUserAlias(userInfo.id, message.context, message.aliasId, message.aliasName, message.avatarURL)
-    .catch((err) => {
-      debug('Alias update failed')
-      debug(err)
-    })
+  if (message.aliasId || message.aliasName || message.avatarURL) {
+    DBUser.setUserAlias(userInfo.id, message.context, message.aliasId, message.aliasName, message.avatarURL)
+      .catch((err) => {
+        debug('Alias update failed')
+        debug(err)
+      })
+  }
 
   // Log the message for telemetry and analysis
   // TODO: do we have the ID of the person receiving the message?
-  DBLog.logUserMessage(message, null, userInfo.id)
+  DBLog.logUserMessage(message, this.request.session?.replyStatus?.replyId, userInfo.id)
     .catch((err) => {
       debug('client message logging failed')
       debug(err)
