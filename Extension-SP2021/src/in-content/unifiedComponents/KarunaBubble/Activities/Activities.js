@@ -1,9 +1,4 @@
 export const ACTIVITIES = {
-  MULTI_ACTIVITY: {
-    key: 'MULTI_ACTIVITY',
-    title: 'Multiple Activities'
-  },
-
   ONBOARDING_ACTIVITY: {
     key: 'ONBOARDING_ACTIVITY',
     title: 'Welcome to Karuna'
@@ -17,12 +12,10 @@ export const ACTIVITIES = {
     key: 'PRIVACY_PROMPT',
     title: 'Privacy'
   },
-
   COLLABORATION_SURVEY: {
     key: 'COLLABORATION_SURVEY',
     title: 'Collaboration'
   },
-
   TIME_TO_RESPOND_SURVEY: {
     key: 'TIME_TO_RESPOND_SURVEY',
     title: 'Time to Respond'

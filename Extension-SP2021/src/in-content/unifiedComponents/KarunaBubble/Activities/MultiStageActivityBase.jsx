@@ -124,7 +124,7 @@ export default function MultiStageActivityBase (props) {
                 ? <MuiTooltip title={'Next Step'} placement="bottom-end" PopperProps={{ disablePortal: true }}>
                     <div>
                       <IconButton size="small" onClick={onNext} disabled={!nextEnabled}>
-                        <ArrowForwardIos />
+                        <ArrowForwardIos color={nextEnabled ? 'primary' : 'disabled'} />
                       </IconButton>
                     </div>
                   </MuiTooltip>
@@ -132,7 +132,7 @@ export default function MultiStageActivityBase (props) {
                 : <MuiTooltip title={'Finish'} placement="bottom-end" PopperProps={{ disablePortal: true }}>
                     <div>
                       <IconButton size="small" onClick={onClose} disabled={!nextEnabled}>
-                        <DoneIcon />
+                        <DoneIcon color={nextEnabled ? 'primary' : 'disabled'} />
                       </IconButton>
                     </div>
                   </MuiTooltip>}

@@ -8,11 +8,12 @@ import { ConnectVisibilityState, BubbleVisibilityStateSetter } from './data/glob
 import { PushBubbleActivityState, BubbleActiveStatusMessageState } from './data/globalSate/bubbleActivityState.js'
 
 import BubbleActivityDialog from './KarunaBubble/BubbleActivityDialog.jsx'
-import { OnboardingActivity } from './KarunaBubble/OnboardingActivity.js'
+import { OnboardingActivity } from './KarunaBubble/Activities/OnboardingActivity.js'
 import { ACTIVITIES } from './KarunaBubble/Activities/Activities.js'
 
 // Colorful logger (Enable if logging is needed)
 import { makeLogger } from '../../util/Logger.js'
+import { AffectSurveyActivity } from './KarunaBubble/Activities/AffectSurveyActivity.js'
 const LOG = makeLogger('BUBBLE Component', 'lavender', 'black')
 
 // Enable this to help with debugging
@@ -28,27 +29,15 @@ export default function KarunaBubble (props) {
   useEffect(() => {
     emitter.on('karunaMessage', (newMessage) => {
       // What type of message is this?
-      let activityKey = ACTIVITIES.BLANK_MESSAGE.key
+      let newActivity = { ...ACTIVITIES.KARUNA_MESSAGE, message: newMessage }
       if (newMessage?.needOnboarding) {
-        activityKey = ACTIVITIES.ONBOARDING_ACTIVITY.key
-      } else if (newMessage?.affectSurvey) {
-        activityKey = ACTIVITIES.AFFECT_SURVEY.key
-      } else if (newMessage?.observations?.length > 0) {
-        activityKey = ACTIVITIES.WATSON_MESSAGE.key
-      } else if (newMessage) {
-        activityKey = ACTIVITIES.KARUNA_MESSAGE.key
-      }
-
-      // Build and push the activity
-      let newActivity = {
-        key: activityKey,
-        message: newMessage
-      }
-      if (activityKey === ACTIVITIES.ONBOARDING_ACTIVITY.key) {
         newActivity = OnboardingActivity
+      } else if (newMessage?.affectSurvey) {
+        newActivity = AffectSurveyActivity
+      } else if (newMessage?.observations?.length > 0) {
+        newActivity = { ...ACTIVITIES.WATSON_MESSAGE, message: newMessage }
       }
 
-      // LOG('Adding activity to bubble queue:', newActivity)
       pushBubbleActivity(newActivity)
     })
 
@@ -80,6 +69,11 @@ export default function KarunaBubble (props) {
 
     setFeedbackDialogOpen(open)
   }
+
+  // TESTING THE AFFECT SURVEY
+  useEffect(() => {
+    pushBubbleActivity(AffectSurveyActivity)
+  }, [])
 
   // Hide the feedback dialog (possibly after a set timeout)
   const hideFeedbackDialog = (immediate) => {

@@ -95,8 +95,7 @@ function buildActivity (curActivity, suffix = '', restProps = {}) {
     }
 
     // Multi-activities must be inside their own base and can't be nested
-    case ACTIVITIES.ONBOARDING_ACTIVITY.key:
-    case ACTIVITIES.MULTI_ACTIVITY.key: {
+    case ACTIVITIES.ONBOARDING_ACTIVITY.key: {
       LOG.error('Cannot have a nested multi-activity')
       return <div key={key + '-error'}>{'error'}</div>
     }
@@ -129,10 +128,10 @@ export default function BubbleActivityDialog (props) {
   // Construct the proper activity to display based on the stack
   const last = activityStack.length - 1
   const activityElements = activityStack.map((curActivity, i) => {
-    if (curActivity.key === ACTIVITIES.MULTI_ACTIVITY.key || curActivity.key === ACTIVITIES.ONBOARDING_ACTIVITY.key) {
+    if (curActivity.key === ACTIVITIES.AFFECT_SURVEY.key || curActivity.key === ACTIVITIES.ONBOARDING_ACTIVITY.key) {
       return (
         <MultiStageActivityBase
-          key={ACTIVITIES.MULTI_ACTIVITY.key + i}
+          key={curActivity.key + i}
           activityList={curActivity.message.activityList}
           baseElement={i === last ? icon : empty}
           hidden={hidden || (i !== last)}

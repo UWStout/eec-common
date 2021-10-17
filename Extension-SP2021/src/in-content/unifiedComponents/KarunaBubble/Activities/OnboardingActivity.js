@@ -1,4 +1,4 @@
-import { ACTIVITIES } from './Activities/Activities.js'
+import { ACTIVITIES } from './Activities.js'
 
 // A pre-made multi-activity for onboarding a user
 export const OnboardingActivity = {

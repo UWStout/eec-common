@@ -18,8 +18,8 @@ import AffectSurveySkeleton from '../../AffectSurvey/AffectSurveySkeleton.jsx'
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    minHeight: theme.spacing(68),
-    maxHeight: theme.spacing(68),
+    minHeight: theme.spacing(70),
+    maxHeight: theme.spacing(70),
     overflowY: 'hidden',
     overflowX: 'hidden'
   },
