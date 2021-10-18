@@ -1,6 +1,6 @@
 {
   "name": "karuna-eec-extension",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Web browser extension to integrate with the Karuna EEC project.",
   "main": "index.js",
   "scripts": {
