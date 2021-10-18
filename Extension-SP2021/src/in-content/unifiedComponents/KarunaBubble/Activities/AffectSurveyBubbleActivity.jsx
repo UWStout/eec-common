@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { useSetRecoilState, useRecoilState } from 'recoil'
 import { PushBubbleActivityState, PopBubbleActivityState } from '../../data/globalSate/bubbleActivityState.js'
-import { UserAffectIDState } from '../../data/globalSate/userState.js'
+import { UserAffectInfoState } from '../../data/globalSate/userState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
@@ -38,7 +38,7 @@ const AffectSurveyBubbleActivity = React.forwardRef((props, ref) => {
   const { container, title } = useStyles()
 
   // Values and mutator functions for global state (GLOBAL STATE)
-  const setUserAffectID = useSetRecoilState(UserAffectIDState)
+  const setAffectInfo = useSetRecoilState(UserAffectInfoState)
 
   // Global activity management
   const [currentActivity, pushActivity] = useRecoilState(PushBubbleActivityState)
@@ -52,16 +52,22 @@ const AffectSurveyBubbleActivity = React.forwardRef((props, ref) => {
   // Called when the user clicks on an affect. May:
   // - Show the privacy preferences prompt
   // - Fully commit and update mood
-  const onSelection = (affect, affectPrivacy) => {
+  const onSelection = (affect, karunaSettings) => {
     if (isOnboarding) {
-      setUserAffectID(affect?._id)
+      setAffectInfo({
+        affectID: affect?._id,
+        affectPrivacy: !karunaSettings.alwaysShare
+      })
       if (allowNext) { allowNext(true) }
     } else {
-      if (affectPrivacy.noPrompt) {
-        setUserAffectID(affect?._id)
-        popActivity(ACTIVITIES.AFFECT_SURVEY)
-      } else {
+      if (karunaSettings.enablePrivacyPrompt) {
         pushActivity(ACTIVITIES.PRIVACY_PROMPT)
+      } else {
+        setAffectInfo({
+          affectID: affect?._id,
+          affectPrivacy: !karunaSettings.alwaysShare
+        })
+        popActivity(ACTIVITIES.AFFECT_SURVEY)
       }
     }
   }

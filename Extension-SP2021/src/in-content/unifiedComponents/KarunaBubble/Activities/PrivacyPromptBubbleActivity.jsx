@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState, useRecoilValue } from 'recoil'
-import { PrivacyPrefsStateSetter, UserAffectIDState } from '../../data/globalSate/userState.js'
+import { UserAffectInfoState } from '../../data/globalSate/userState.js'
 import { LastSelectedAffectIDState } from '../../data/globalSate/appState.js'
 import { PopBubbleActivityState } from '../../data/globalSate/bubbleActivityState.js'
+import { KarunaSettingsState, KarunaSettingsSyncState } from '../../data/globalSate/settingsState.js'
 
 import PrivacyPromptComponent from '../../AffectSurvey/PrivacyPromptComponent.jsx'
 
@@ -17,8 +18,9 @@ export default function PrivacyPromptBubbleActivity (props) {
   const { requestHide, cancelHide, allowNext, isOnboarding } = props
 
   // Global data states
-  const setPrivacy = useSetRecoilState(PrivacyPrefsStateSetter)
-  const setCurrentAffect = useSetRecoilState(UserAffectIDState)
+  const setKarunaSettings = useSetRecoilState(KarunaSettingsSyncState)
+  const karunaSettings = useRecoilValue(KarunaSettingsState)
+  const setAffectInfo = useSetRecoilState(UserAffectInfoState)
   const lastSelectedAffectID = useRecoilValue(LastSelectedAffectIDState)
 
   // Global activity states
@@ -29,24 +31,34 @@ export default function PrivacyPromptBubbleActivity (props) {
   }, [allowNext, isOnboarding])
 
   // Respond to the dialog closing
-  const onPrivacyClose = (canceled, newPrivacy) => {
+  const onPrivacyClose = (alwaysShare, enablePrivacyPrompt) => {
     if (isOnboarding) {
       // Update affect and privacy
-      setCurrentAffect(lastSelectedAffectID)
-      setPrivacy(newPrivacy)
+      setAffectInfo({
+        affectID: lastSelectedAffectID,
+        affectPrivacy: !alwaysShare
+      })
+      setKarunaSettings({
+        ...karunaSettings,
+        enablePrivacyPrompt,
+        alwaysShare
+      })
       if (allowNext) { allowNext(true) }
     } else {
-      // Dismiss the privacy activity
+      // Update affect and privacy
+      setAffectInfo({
+        affectID: lastSelectedAffectID,
+        affectPrivacy: !alwaysShare
+      })
+      setKarunaSettings({
+        ...karunaSettings,
+        enablePrivacyPrompt,
+        alwaysShare
+      })
+
+      // Dismiss privacy and affect survey activities
       popActivity(ACTIVITIES.PRIVACY_PROMPT)
-
-      if (!canceled) {
-        // Update affect and privacy
-        setCurrentAffect(lastSelectedAffectID)
-        setPrivacy(newPrivacy)
-
-        // Dismiss affect survey too
-        popActivity(ACTIVITIES.AFFECT_SURVEY)
-      }
+      popActivity(ACTIVITIES.AFFECT_SURVEY)
     }
   }
 

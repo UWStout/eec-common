@@ -211,31 +211,6 @@ export function removeTeamDisabledAffect (teamID, affectID, context = 'none') {
   })
 }
 
-export function retrieveMoodPrivacy (context = 'none') {
-  return new Promise((resolve, reject) => {
-    // Read the privacy settings from the background context
-    sendMessageToBackground(
-      // Read from browser local storage
-      { type: 'read', key: 'privacy' }, // <- Message object (read/write) (key) [if writing] (data)
-      context,
-      'Failed to read privacy preferences: ', // <- Message logged to console on error
-
-      // Success and failure callbacks
-      (newPrivacy) => {
-        if (!newPrivacy?.value || newPrivacy.value === 'undefined') {
-          return resolve({ private: true, noPrompt: false })
-        }
-        return resolve(newPrivacy.value)
-      },
-      (message) => {
-        LOG.error('Error retrieving privacy')
-        LOG.error(message)
-        return reject(new Error(message))
-      }
-    )
-  })
-}
-
 export function setCurrentAffect (affectID, privacy, context = 'none') {
   return new Promise((resolve, reject) => {
     // Send updated affect/mood status to the background process
@@ -287,26 +262,6 @@ export function setTimeToRespond (timeToRespond, context = 'none') {
       () => { return resolve() },
       (message) => {
         LOG.error('Error setting time to respond')
-        LOG.error(message)
-        return reject(new Error(message))
-      }
-    )
-  })
-}
-
-export function setMoodPrivacy (newPrivacy, context = 'none') {
-  return new Promise((resolve, reject) => {
-    // Write the privacy settings to the background context
-    sendMessageToBackground(
-      // write to browser local storage
-      { type: 'write', key: 'privacy', data: newPrivacy }, // <- Message object (read/write) (key) [if writing] (data)
-      context,
-      'Failed to WRITE privacy preferences: ', // <- Message logged to console on error
-
-      // Success and failure callbacks
-      () => { return resolve() },
-      (message) => {
-        LOG.error('Error writing mood privacy')
         LOG.error(message)
         return reject(new Error(message))
       }
@@ -492,7 +447,7 @@ export function retrieveAliasLookupInfo (context, alias) {
 
 export function retrieveCachedAliasInfo (context) {
   return new Promise((resolve, reject) => {
-    // Read the privacy settings from the background context
+    // Read the alias list from the background context
     sendMessageToBackground(
       // Read from browser local storage
       { type: 'read', key: 'aliasList' },

@@ -2,16 +2,17 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { useRecoilValue } from 'recoil'
-import { PrivacyPrefsStateSetter, UserAffectIDState } from '../data/globalSate/userState.js'
 import { AffectListState } from '../data/globalSate/teamState.js'
+import { KarunaSettingsState } from '../data/globalSate/settingsState.js'
+import { LastSelectedAffectIDState } from '../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography, FormControlLabel, Checkbox } from '@material-ui/core'
 
 import CaptionedButton from '../Shared/CaptionedButton.jsx'
 
-import { makeLogger } from '../../../util/Logger.js'
-const LOG = makeLogger('Privacy Activity', 'yellow', 'black')
+// import { makeLogger } from '../../../util/Logger.js'
+// const LOG = makeLogger('Privacy Activity', 'yellow', 'black')
 
 const useStyles = makeStyles((theme) => ({
   captionStyle: {
@@ -31,35 +32,35 @@ export default function PrivacyPromptComponent (props) {
   const { gridBoxStyle, checkboxLabelStyle } = useStyles()
 
   // Global data states
-  const affectId = useRecoilValue(UserAffectIDState)
   const emojiList = useRecoilValue(AffectListState)
-  const privacy = useRecoilValue(PrivacyPrefsStateSetter)
+  const karunaSettings = useRecoilValue(KarunaSettingsState)
+  const lastSelectedAffectID = useRecoilValue(LastSelectedAffectIDState)
 
   // Track last button clicked
-  const [localPrivate, setLocalPrivate] = useState(undefined)
+  const [localShare, setLocalShare] = useState(undefined)
 
   // Track local checkbox state
-  const [promptState, setPromptState] = useState(privacy.noPrompt || false)
+  const [promptCheckedState, setPromptCheckedState] = useState((!karunaSettings.enablePrivacyPrompt) || false)
   const handlePromptChange = (event) => {
-    setPromptState(event.currentTarget.checked)
+    setPromptCheckedState(event.currentTarget.checked)
   }
 
   // Respond to the dialog closing
-  const onDialogClose = (canceled, newPrivacy) => {
+  const onDialogClose = (didShare, enablePrivacyPrompt) => {
     if (privacyCallback) {
-      privacyCallback(canceled, newPrivacy)
+      privacyCallback(didShare, enablePrivacyPrompt)
     }
   }
 
   // Find selected affect info
-  const affectObj = emojiList.find((item) => (item._id === affectId))
+  const affectObj = emojiList.find((item) => (item._id === lastSelectedAffectID))
 
   // Set button color
   let yesColor = 'default'
   let noColor = 'default'
-  if (noOptOut && localPrivate !== undefined) {
-    yesColor = (localPrivate ? 'default' : 'primary')
-    noColor = (localPrivate ? 'primary' : 'default')
+  if (noOptOut && localShare !== undefined) {
+    yesColor = (localShare ? 'primary' : 'default')
+    noColor = (localShare ? 'default' : 'primary')
   }
 
   return (
@@ -78,7 +79,7 @@ export default function PrivacyPromptComponent (props) {
         <CaptionedButton
           buttonText={'Yes, Share'}
           color={yesColor}
-          onClick={() => { setLocalPrivate(false); onDialogClose(false, { private: false, prompt: promptState }) }}
+          onClick={() => { setLocalShare(true); onDialogClose(true, !promptCheckedState) }}
         >
           {'No one outside your team will be able to see the information you\'re sharing.'}
         </CaptionedButton>
@@ -88,7 +89,7 @@ export default function PrivacyPromptComponent (props) {
         <CaptionedButton
           buttonText={'No, Keep Private'}
           color={noColor}
-          onClick={() => { setLocalPrivate(true); onDialogClose(false, { private: true, prompt: promptState }) }}
+          onClick={() => { setLocalShare(false); onDialogClose(false, !promptCheckedState) }}
         >
           {'Please consider sharing your response with your team. '}
           {'By doing so, you will be contributing to a more connected and compassionate team.'}
@@ -102,7 +103,7 @@ export default function PrivacyPromptComponent (props) {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={promptState}
+                  checked={promptCheckedState}
                   onChange={handlePromptChange}
                   color="default"
                 />

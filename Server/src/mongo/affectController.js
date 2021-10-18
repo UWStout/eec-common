@@ -304,15 +304,19 @@ export async function insertAffectHistoryEntry (affectID, relatedID, isUser, isP
 
   // Possibly start user current mood update query
   if (isUser) {
+    const setData = {
+      'status.currentAffectPrivacy': isPrivate
+    }
+    if (isPrivate) {
+      setData['status.privateAffectID'] = new ObjectId(affectID)
+    } else {
+      setData['status.currentAffectID'] = new ObjectId(affectID)
+    }
+
     promises.push(DBHandle.collection('Users')
       .findOneAndUpdate(
         { _id: new ObjectId(relatedID) },
-        {
-          $set: {
-            'status.currentAffectID': new ObjectId(affectID),
-            'status.currentAffectPrivacy': isPrivate
-          }
-        }
+        { $set: setData }
       )
     )
   }

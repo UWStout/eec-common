@@ -132,7 +132,17 @@ export function createUser (fullName, preferredName, email, password, preferredP
             status: {},
             lastLogin: {},
             teams: DEFAULT_TEAMS,
-            meta: {}
+            meta: {},
+
+            // Default user settings
+            settings: {
+              enableMoodPrompt: true,
+              enablePrivacyPrompt: true,
+              alwaysShare: true,
+              enableJITStatus: true,
+              enableMessageFeedback: false,
+              enableAutoTTR: false
+            }
           })
           .then((result) => { return resolve(result.insertedId) })
           .catch((error) => {

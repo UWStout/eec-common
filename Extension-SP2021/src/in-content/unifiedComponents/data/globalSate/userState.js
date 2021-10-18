@@ -241,65 +241,27 @@ export const TimeToRespondState = selector({
 })
 
 /** Global state for the user's mood/affect */
-export const UserAffectIDState = selector({
-  key: 'UserAffectIDState',
+export const UserAffectInfoState = selector({
+  key: 'UserAffectInfoState',
   get: ({ get }) => {
     const currentStatus = get(UserStatusState)
-    return currentStatus?.currentAffectID
+    return {
+      affectID: currentStatus?.currentAffectID,
+      affectPrivacy: currentStatus?.currentAffectPrivacy
+    }
   },
 
-  set: ({ get, set }, newAffectID) => {
+  set: ({ get, set }, { affectID, affectPrivacy }) => {
     // Update local cached state
     const currentStatus = get(UserStatusState)
     set(UserStatusState, {
       ...currentStatus,
-      currentAffectID: newAffectID
+      currentAffectID: affectID,
+      currentAffectPrivacy: affectPrivacy
     })
 
     // Send to the database
-    HELPER.setCurrentAffect(newAffectID, false, getMessagingContext())
-  }
-})
-
-/** Privacy preferences data for sharing mood */
-export const PrivacyPrefsState = atom({
-  key: 'PrivacyPrefsState',
-  default: {
-    private: true,
-    noPrompt: false
-  },
-  effects_UNSTABLE: [
-    ({ setSelf, onSet }) => {
-      // Initialize
-      const futurePrivacy = HELPER.retrieveMoodPrivacy(getMessagingContext())
-      setSelf(futurePrivacy)
-      futurePrivacy.then((result) => {
-        LOG('Privacy initialized to', result)
-      })
-
-      // Log any value changes for debugging
-      onSet((newVal) => {
-        LOG('Privacy preferences updated', newVal)
-      })
-    }
-  ]
-})
-
-/** Selector to set Privacy Preferences (with side-effects) */
-export const PrivacyPrefsStateSetter = selector({
-  key: 'PrivacyPrefsStateSetter',
-  get: ({ get }) => {
-    return get(PrivacyPrefsState)
-  },
-
-  set: ({ set }, newPrivacy) => {
-    // Update local cached state
-    set(PrivacyPrefsState, { ...newPrivacy })
-
-    // Send to the local cache and database
-    if (newPrivacy !== undefined) {
-      HELPER.setMoodPrivacy(newPrivacy, getMessagingContext())
-    }
+    HELPER.setCurrentAffect(affectID, affectPrivacy, getMessagingContext())
   }
 })
 

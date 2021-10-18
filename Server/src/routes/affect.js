@@ -204,7 +204,7 @@ router.post('/insertHistory', authenticateToken, async (req, res) => {
   try {
     // updates history and user status
     await DBAffect.insertAffectHistoryEntry(affectID, relatedID, isUser, isPrivate)
-    if (isUser) {
+    if (isUser && !isPrivate) {
       userStatusUpdated(relatedID) // runs async, but no need to await
     }
     res.json({ success: true })

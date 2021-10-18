@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
 import { PushConnectActivityState } from '../../data/globalSate/connectActivityState.js'
-import { UserAffectIDState } from '../../data/globalSate/userState.js'
+import { UserAffectInfoState } from '../../data/globalSate/userState.js'
 
 import AffectSurveyComponent from '../../AffectSurvey/AffectSurveyComponent.jsx'
 
 import { ACTIVITIES } from './Activities.js'
 
-import { makeLogger } from '../../../../util/Logger.js'
-const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')
+// import { makeLogger } from '../../../../util/Logger.js'
+// const LOG = makeLogger('Affect Survey Activity', 'pink', 'black')
 
 /**
  * Manage the affect survey when shown in the connect panel
@@ -20,7 +20,7 @@ const AffectSurveyConnectActivity = React.forwardRef((props, ref) => {
   const { noInteraction } = props
 
   // Values and mutator functions for global state (GLOBAL STATE)
-  const setUserAffectID = useSetRecoilState(UserAffectIDState)
+  const setUserAffectInfo = useSetRecoilState(UserAffectInfoState)
 
   // Global activity management
   const pushActivity = useSetRecoilState(PushConnectActivityState)
@@ -28,13 +28,12 @@ const AffectSurveyConnectActivity = React.forwardRef((props, ref) => {
   // Called when the user clicks on an affect. May:
   // - Show the privacy preferences prompt
   // - Fully commit and update mood
-  const onSelection = (affect, affectPrivacy) => {
-    if (affectPrivacy.noPrompt) {
-      setUserAffectID(affect?._id)
-      LOG('Pushing confirm activity from survey')
-      pushActivity(ACTIVITIES.AFFECT_CONFIRM.key)
-    } else {
+  const onSelection = (affect, karunaSettings) => {
+    if (karunaSettings.enablePrivacyPrompt) {
       pushActivity(ACTIVITIES.PRIVACY_PROMPT.key)
+    } else {
+      setUserAffectInfo({ affectID: affect?._id, affectPrivacy: !karunaSettings.alwaysShare })
+      pushActivity(ACTIVITIES.AFFECT_CONFIRM.key)
     }
   }
 

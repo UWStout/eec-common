@@ -6,7 +6,8 @@ import { debounce } from 'debounce'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { LastSelectedAffectIDState } from '../data/globalSate/appState.js'
 import { AffectListState, DisabledAffectsListState } from '../data/globalSate/teamState.js'
-import { AffectHistoryListState, FavoriteAffectsListState, UserAffectIDState, PrivacyPrefsState } from '../data/globalSate/userState.js'
+import { AffectHistoryListState, FavoriteAffectsListState, UserAffectInfoState } from '../data/globalSate/userState.js'
+import { KarunaSettingsState } from '../data/globalSate/settingsState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse, Grid } from '@material-ui/core'
@@ -76,9 +77,11 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
   const disabledAffects = useRecoilValue(DisabledAffectsListState)
 
   // Values and mutator functions for global state (GLOBAL STATE)
-  const userAffectID = useRecoilValue(UserAffectIDState)
+  const userAffectInfo = useRecoilValue(UserAffectInfoState)
   const setLastSelectedAffectID = useSetRecoilState(LastSelectedAffectIDState)
-  const affectPrivacy = useRecoilValue(PrivacyPrefsState)
+
+  // Read settings info from Global recoil state
+  const karunaSettings = useRecoilValue(KarunaSettingsState)
 
   // Current search text (if any)
   const [searchText, setSearchText] = useState('')
@@ -110,7 +113,7 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
   const onSelection = (affect) => {
     setLastSelectedAffectID(affect?._id)
     if (selectionCallback) {
-      selectionCallback(affect, affectPrivacy)
+      selectionCallback(affect, karunaSettings)
     }
   }
 
@@ -130,7 +133,7 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
       affect={emoji}
       handleClick={onSelection}
       button
-      selected={(userAffectID === emoji._id)}
+      selected={(userAffectInfo?.affectID === emoji._id)}
       favoriteList={favoriteAffectsList}
     />
   ))
@@ -147,7 +150,7 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
         affect={favEmoji}
         handleClick={onSelection}
         button
-        selected={(userAffectID === favEmoji._id)}
+        selected={(userAffectInfo?.affectID === favEmoji._id)}
         favoriteList={favoriteAffectsList}
       />
     ))
@@ -164,7 +167,7 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
         affect={recentEmoji}
         handleClick={onSelection}
         button
-        selected={(userAffectID === recentEmoji._id)}
+        selected={(userAffectInfo?.affectID === recentEmoji._id)}
         favoriteList={favoriteAffectsList}
       />
     ))

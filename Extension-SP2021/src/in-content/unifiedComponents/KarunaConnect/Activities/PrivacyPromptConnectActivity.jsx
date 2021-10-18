@@ -1,40 +1,43 @@
 import React from 'react'
 
 import { useSetRecoilState, useRecoilValue } from 'recoil'
-import { PrivacyPrefsStateSetter, UserAffectIDState } from '../../data/globalSate/userState.js'
+import { UserAffectInfoState } from '../../data/globalSate/userState.js'
 import { LastSelectedAffectIDState } from '../../data/globalSate/appState.js'
-import { PopConnectActivityState, PushConnectActivityState } from '../../data/globalSate/connectActivityState.js'
+import { PushConnectActivityState } from '../../data/globalSate/connectActivityState.js'
+import { KarunaSettingsState, KarunaSettingsSyncState } from '../../data/globalSate/settingsState.js'
 
 import PrivacyPromptComponent from '../../AffectSurvey/PrivacyPromptComponent.jsx'
 
 import { ACTIVITIES } from './Activities.js'
 
-import { makeLogger } from '../../../../util/Logger.js'
-const LOG = makeLogger('Privacy Connect Activity', 'yellow', 'black')
+// import { makeLogger } from '../../../../util/Logger.js'
+// const LOG = makeLogger('Privacy Connect Activity', 'yellow', 'black')
 
 export default function PrivacyPromptConnectActivity (props) {
   // Global data states
-  const setPrivacy = useSetRecoilState(PrivacyPrefsStateSetter)
-  const setCurrentAffect = useSetRecoilState(UserAffectIDState)
+  const setKarunaSettings = useSetRecoilState(KarunaSettingsSyncState)
+  const karunaSettings = useRecoilValue(KarunaSettingsState)
+  const setAffectInfo = useSetRecoilState(UserAffectInfoState)
   const lastSelectedAffectID = useRecoilValue(LastSelectedAffectIDState)
 
   // Global activity states
-  const popActivity = useSetRecoilState(PopConnectActivityState)
   const pushActivity = useSetRecoilState(PushConnectActivityState)
 
   // Respond to the dialog closing
-  const onPrivacyClose = (canceled, newPrivacy) => {
-    if (!canceled) {
-      // Update affect and privacy
-      setCurrentAffect(lastSelectedAffectID)
-      setPrivacy(newPrivacy)
+  const onPrivacyClose = (alwaysShare, enablePrivacyPrompt) => {
+    // Update affect and privacy
+    setAffectInfo({
+      affectID: lastSelectedAffectID,
+      affectPrivacy: !alwaysShare
+    })
+    setKarunaSettings({
+      ...karunaSettings,
+      enablePrivacyPrompt,
+      alwaysShare
+    })
 
-      // Show confirmation
-      LOG('Pushing confirm activity from privacy prompt')
-      pushActivity(ACTIVITIES.AFFECT_CONFIRM.key)
-    } else {
-      popActivity(ACTIVITIES.PRIVACY_PROMPT.key)
-    }
+    // Show confirmation
+    pushActivity(ACTIVITIES.AFFECT_CONFIRM.key)
   }
 
   return (

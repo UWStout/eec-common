@@ -57,7 +57,6 @@ export default function KarunaSettingsComponent (props) {
   const onUpdateSettings = (e) => {
     const newVal = e.target.checked === undefined ? sanitizeBool(e.target.value) : e.target.checked
     const newSettings = { ...karunaSettings, [e.target.name]: newVal }
-    LOG('New karuna settings:', newSettings)
     setKarunaSettings(newSettings)
   }
 
