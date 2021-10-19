@@ -1,3 +1,3 @@
 #!/bin/bash
 
-git subtree push --rejoin --prefix Server heroku master
+git subtree push --ignore-joins --prefix Server heroku master
