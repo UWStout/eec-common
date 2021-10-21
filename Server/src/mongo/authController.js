@@ -93,6 +93,40 @@ export function validateUser (email, password) {
 }
 
 /**
+ * Return only basic info for an existing user
+ * tested in test 1 in test.js
+ * @param {string} userId The internal userId of the user
+ * @return {Promise} Resolves to object with basic user info, rejects if invalid
+ */
+export function userBasics (userId) {
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Users').findOne(
+        { _id: new ObjectId(userId) },
+        (err, result) => {
+          // Check for an error
+          if (err || !result) {
+            debug('User not found')
+            if (err) { debug(err) }
+            return reject(new Error('Invalid email or password'))
+          }
+
+          // Sanitize and return userInfo
+          return resolve({
+            id: result._id,
+            email: result.email,
+            name: result.name,
+            preferredName: result.preferredName,
+            preferredPronouns: result.preferredPronouns,
+            userType: result.userType
+          })
+        }
+      )
+    })
+  })
+}
+
+/**
  * Create a new user in the database
  * tested in test 3 of test.js
  * @param {string} fullName Full real name of the user to create

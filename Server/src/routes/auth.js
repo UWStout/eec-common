@@ -7,9 +7,13 @@ import fs from 'fs'
 // Authorization token library
 import JWT from 'jsonwebtoken'
 
+// Date handling library
+import moment from 'moment'
+
 // Database controller
 import * as DBUser from '../mongo/userController.js'
 import * as DBAuth from '../mongo/authController.js'
+import * as DBToken from '../mongo/tokenController.js'
 
 // Rate limiting middleware
 import rateLimiter from '../rateLimiter.js'
@@ -38,7 +42,7 @@ const RECOVERY_BODY_TEXT = fs.readFileSync('./src/email/recovery.md', { encoding
 
 // Express middleware to authenticate a user
 export function authenticateToken (req, res, next) {
-  // Try the authorization header next
+  // Try the authorization header first
   const authHeader = req.headers.authorization
   const type = authHeader && authHeader.split(' ')[0]
   let token = authHeader && authHeader.split(' ')[1]
@@ -48,7 +52,7 @@ export function authenticateToken (req, res, next) {
     })
   }
 
-  // If no auth digest / token, try cookies instead
+  // If no auth digest/token, try cookies instead
   if (!token) {
     token = req.cookies && req.cookies.JWT
     if (!token) {
@@ -60,15 +64,28 @@ export function authenticateToken (req, res, next) {
 
   // Attempt to verify the token
   JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
+    // Verification failed
     if (err) {
+      debug('Token failed authorization:', err)
       return res.status(401).json({
         error: true, message: 'not authorized'
       })
     }
 
-    // Append payload to the request
-    req.user = payload
-    next()
+    // Is the token in the allowed list?
+    DBToken.findToken(payload.id || payload._id, token).then(
+      () => {
+        // Append payload to the request
+        req.user = { ...payload }
+        req.token = token
+        return next()
+      }
+    ).catch((err) => {
+      debug('Error finding token:', err)
+      return res.status(401).json({
+        error: true, message: 'not authorized'
+      })
+    })
   })
 }
 
@@ -90,6 +107,7 @@ export function decodeToken (req, res, next) {
   JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
     // Append payload to the request
     req.user = { ...payload }
+    req.token = token
 
     // Check for error on verification
     if (err) {
@@ -128,13 +146,14 @@ router.post('/login', async (req, res) => {
     const address = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown'
     DBUser.updateUserTimestamps(userData.id, address)
 
-    // Generate token and return
+    // Generate token, save it, and return it
     const token = JWT.sign(userData, process.env.TOKEN_SECRET, {
       subject: 'authorization',
       issuer: 'Karuna',
       audience: userData.email,
       expiresIn: `${expiration}h`
     })
+    await DBToken.addToken(userData.id, token, moment().add(expiration, 'h').toDate())
     return res.json(token)
   } catch (err) {
     // Something went wrong so log it
@@ -374,6 +393,41 @@ router.post('/validateEmail', async (req, res) => {
 // A simple validation route (returns 200 and 'OK' if token is valid)
 router.get('/validate', authenticateToken, (req, res) => {
   res.send('OK')
+})
+
+// A route to expire and rollover a token
+router.get('/rollover', authenticateToken, async (req, res) => {
+  const payloadData = req.user
+  try {
+    // Retrieve user's latest details and merge with payload data
+    const userData = await DBAuth.userBasics(payloadData.id)
+
+    // Generate new token with merged data
+    const newToken = JWT.sign({ ...payloadData, ...userData }, process.env.TOKEN_SECRET)
+
+    // Overwrite previous token in DB and return new one
+    await DBToken.updateToken(payloadData.id, req.token, newToken)
+    return res.json(newToken)
+  } catch (err) {
+    debug('Error rolling over token:', err)
+    return res.status(500).json({
+      error: true, message: 'Failed to update token'
+    })
+  }
+})
+
+// A simple logout route (removes the token from the DB)
+router.get('/logout', authenticateToken, async (req, res) => {
+  try {
+    // Delete the token used from the list
+    await DBToken.removeToken(req.user.id, req.token)
+    return res.json({ status: 'ok' })
+  } catch (err) {
+    debug('Error removing token:', err)
+    return res.status(500).json({
+      error: true, message: 'Failed log out'
+    })
+  }
 })
 
 // Expose the router for use in other files

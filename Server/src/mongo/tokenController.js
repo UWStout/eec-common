@@ -99,3 +99,34 @@ export function removeToken (userId, token) {
     })
   })
 }
+
+/**
+ * Replace an existing token with a new one (with same expiration)
+ *
+ * @param {string} userId the user associated with the token
+ * @param {string} oldToken the old JWT for this user's session
+ * @param {string} newToken the new JWT for this user's session
+ * @return {Promise} A promise that resolves if the token is found and deleted and rejects otherwise
+ */
+export function updateToken (userId, oldToken, newToken) {
+  // userID is required
+  if (!ObjectId.isValid(userId)) {
+    return Promise.reject(new Error('A valid ObjectId is required for the userID'))
+  }
+
+  return new Promise((resolve, reject) => {
+    retrieveDBHandle('karunaData').then((DBHandle) => {
+      DBHandle.collection('Tokens')
+        .findOneAndUpdate(
+          { userId: new ObjectId(userId), token: oldToken },
+          { $set: { token: newToken } }
+        )
+        .then(result => { return resolve() })
+        .catch(error => {
+          debug('Failed to update token')
+          debug(error)
+          return reject(error)
+        })
+    })
+  })
+}
