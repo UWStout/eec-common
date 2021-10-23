@@ -32,7 +32,7 @@ export default function ItemDeleteDialog (props) {
         await deleteItem(dataType, itemId)
         onDialogClose(true)
       } catch (err) {
-        console.error('Failed to delete item')
+        console.error(`Failed to delete ${dataType}`)
         console.error(err)
       }
     } else {
@@ -47,9 +47,9 @@ export default function ItemDeleteDialog (props) {
       fullWidth
       maxWidth={'sm'}
       TransitionComponent={Transition}
-      aria-labelledby="unit-edit-dialog-title"
+      aria-labelledby="item-delete-dialog-title"
     >
-      <DialogTitle id="unit-edit-dialog-title">Edit Org Unit</DialogTitle>
+      <DialogTitle id="item-delete-dialog-title">{`Delete ${dataType}`}</DialogTitle>
       <DialogContent className={classes.contentStyle}>
         <DialogContentText>
           {'This will permanently delete this item, removing it from the database.'}

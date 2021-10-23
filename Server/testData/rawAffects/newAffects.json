@@ -1,0 +1,193 @@
+[{
+    "name": "Rested, Restored",
+    "description": "Smiling Face",
+    "characterCodes": ["☺️"],
+    "related": [],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Confident, Empowered",
+    "description": "Beaming Face w Smiling Eyes",
+    "characterCodes": ["😁"],
+    "related": ["Pride"],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Joyful, Amused",
+    "description": "Face with Tears of Joy",
+    "characterCodes": ["😂"],
+    "related": ["Happiness", "Happy"],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Friendly, Empathetic",
+    "description": "Grinning Face w Big Eyes",
+    "characterCodes": ["😃"],
+    "related": [],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Humor",
+    "description": "Grinning Face w Smiling Eyes",
+    "characterCodes": ["😄"],
+    "related": ["Amusement", "Laughter"],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Excited, Enthusiastic",
+    "description": "Grinning Squinting Face",
+    "characterCodes": ["😆"],
+    "related": ["Awe"],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Inspired",
+    "description": "Smiling Face w Halo",
+    "characterCodes": ["😇"],
+    "related": ["Idea"],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Hopeful",
+    "description": "Smiling face with Smiling Eyes",
+    "characterCodes": ["😊"],
+    "related": ["Encouraged"],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Relief",
+    "description": "Relieved Face",
+    "characterCodes": ["😌"],
+    "related": [],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Jealous",
+    "description": "Smirking Face",
+    "characterCodes": ["😏"],
+    "related": ["Envy", "Envious"],
+    "positivity": 0,
+    "active": true
+  },
+  {
+    "name": "Aversion, Disgust",
+    "description": "Unamused Face",
+    "characterCodes": ["😒"],
+    "related": [],
+    "positivity": -1,
+    "active": true
+  },
+  {
+    "name": "Restless, Upset",
+    "description": "Downcast Face w Sweat",
+    "characterCodes": ["😓"],
+    "related": [],
+    "positivity": -1,
+    "active": true
+  },
+  {
+    "name": "Confused",
+    "description": "Confused Face",
+    "characterCodes": ["😕"],
+    "related": [],
+    "positivity": 0,
+    "active": true
+  },
+  {
+    "name": "Disappointed, Discouraged",
+    "description": "Disappointed Face",
+    "characterCodes": ["😞"],
+    "related": ["Disappointment"],
+    "positivity": -1,
+    "active": true
+  },
+  {
+    "name": "Tense, Nervous, Anxious",
+    "description": "Worried Face",
+    "characterCodes": ["😟"],
+    "related": ["Anxiety"],
+    "positivity": -1,
+    "active": true
+  },
+  {
+    "name": "Furious, Outraged",
+    "description": "Pouting Face",
+    "characterCodes": ["😡"],
+    "related": ["Boiling"],
+    "positivity": -1,
+    "active": true
+  },
+  {
+    "name": "Annoyed, Frustrated",
+    "description": "Face w Steam From Nose",
+    "characterCodes": ["😤"],
+    "related": [],
+    "positivity": -1,
+    "active": true
+  },
+  {
+    "name": "Fatigued, Burned-Out",
+    "description": "Sleepy Face",
+    "characterCodes": ["😪"],
+    "related": [],
+    "positivity": 0,
+    "active": true
+  },
+  {
+    "name": "Embarrassed, Ashamed",
+    "description": "Grimacing Face",
+    "characterCodes": ["😬"],
+    "related": ["Awkwardness"],
+    "positivity": -1,
+    "active": true
+  },
+  {
+    "name": "Afraid",
+    "description": "Anxious Face w Sweat",
+    "characterCodes": ["😰"],
+    "related": ["Fear"],
+    "positivity": -1,
+    "active": true
+  },
+  {
+    "name": "Calm, Relaxed",
+    "description": "Slightly Smiling Face",
+    "characterCodes": ["🙂"],
+    "related": ["Peacefulness", "Serenity"],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Admiration",
+    "description": "Star-Struck",
+    "characterCodes": ["🤩"],
+    "related": ["Impressed", "Pride", "Amazement"],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Bored, Detached",
+    "description": "Yawning Face",
+    "characterCodes": ["🥱"],
+    "related": [],
+    "positivity": -1,
+    "active": true
+  },
+  {
+    "name": "Grateful, Thankful",
+    "description": "Partying Face",
+    "characterCodes": ["🥳"],
+    "related": [],
+    "positivity": 1,
+    "active": true
+  }
+]
