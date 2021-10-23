@@ -222,7 +222,7 @@ router.get('/settings', authenticateToken, async (req, res) => {
   // Attempt to retrieve user settings
   try {
     const userSettings = await DBUser.getUserSettings(userID)
-    res.send(userSettings.settings)
+    res.send(userSettings)
   } catch (err) {
     UTIL.checkAndReportError('Error retrieving user settings', res, err, debug)
   }

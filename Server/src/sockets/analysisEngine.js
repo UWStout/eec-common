@@ -1,4 +1,5 @@
 // Database controller interfaces
+import * as DBUser from '../mongo/userController.js'
 import * as DBAffect from '../mongo/affectController.js'
 
 import * as WATSON from './watsonAssistant.js'
@@ -81,19 +82,27 @@ export async function checkTimedTriggers (userInfo) {
     // Get most recent affect
     const lastAffect = await DBAffect.mostRecentAffectHistory(userInfo.id)
 
+    // Get user settings
+    const settings = await DBUser.getUserSettings(userInfo.id)
+
     // Check if they've never set their mood before
     if (!lastAffect?.timestamp) {
       debug('checkTimedTriggers: requesting onboarding for new user')
       sendGenericMessage('We need to set your mood. How are you feeling about the project today?', userInfo.id, '*', false, true)
     } else {
-      // Compute the age of the most recent mood in hours
-      const offset = (new Date()).getTimezoneOffset() * 60000
-      const affectAgeHours = (Math.abs(Date.now() - lastAffect.timestamp) - offset) / 36e5
+      // Do they want to be prompted to update their mood
+      if (!settings || settings.enableMoodPrompt) {
+        // Compute the age of the most recent mood in hours
+        const offset = (new Date()).getTimezoneOffset() * 60000
+        const affectAgeHours = (Math.abs(Date.now() - lastAffect.timestamp) - offset) / 36e5
 
-      // Is it too old?
-      if (affectAgeHours > 16) {
-        debug('checkTimedTriggers: mood is too old, requesting update')
-        sendGenericMessage('It has been a while since you updated your mood. How are you feeling about the project today?', userInfo.id, '*', true, false)
+        // Is it too old?
+        if (affectAgeHours > 16) {
+          debug('checkTimedTriggers: mood is too old, requesting update')
+          sendGenericMessage('It has been a while since you updated your mood. How are you feeling about the project today?', userInfo.id, '*', true, false)
+        }
+      } else {
+        debug('Skipping mood prompt due to settings')
       }
     }
   } catch (err) {

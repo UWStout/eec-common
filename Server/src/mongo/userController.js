@@ -632,11 +632,12 @@ export async function getUserSettings (userID) {
   }
 
   const DBHandle = await retrieveDBHandle('karunaData')
-  return DBHandle.collection('Users')
+  const result = await DBHandle.collection('Users')
     .findOne(
       { _id: new ObjectId(userID) },
       { projection }
     )
+  return result.settings
 }
 
 /**

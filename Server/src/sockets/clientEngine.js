@@ -131,34 +131,43 @@ export function socketMessageUpdate (message) {
       debug(err)
     })
 
-  // Get local copy of replyStatus (may be undefined)
-  const replyStatus = this.request.session.replyStatus
+  // Retrieve user settings
+  DBUser.getUserSettings(userInfo.id).then((settings) => {
+    // Check if JIT Status Messages are enabled
+    if (!settings || settings.enableJITStatus) {
+      // Get local copy of replyStatus (may be undefined)
+      const replyStatus = this.request.session.replyStatus
 
-  // Provide any user statuses relevant to the current message
-  if (message.data.replyId || Array.isArray(message.data.participants) || Array.isArray(message.data.mentions)) {
-    // Is this a duplicate request that was already sent?
-    if (message.data.replyId !== replyStatus?.replyId ||
-      !compareArrays(message.data.participants, replyStatus?.participants) ||
-      !compareArrays(message.data.mentions, replyStatus?.mentions)) {
-      // Lookup the statuses
-      lookupJITStatuses(message.aliasId, message.data, message.context)
-        .then(([replyToStatus, mentionStatus, participantStatus]) => {
-          // Only send a status message if it is not empty
-          if (replyToStatus.length > 0 || mentionStatus.length > 0 || participantStatus.length > 0) {
-            // Remember the most recently sent data (to detect duplicate requests)
-            this.request.session.replyStatus = {
-              replyId: message.replyId,
-              mentions: message.mentions,
-              participants: message.participants
-            }
-            this.request.session.save()
+      // Provide any user statuses relevant to the current message
+      if (message.data.replyId || Array.isArray(message.data.participants) || Array.isArray(message.data.mentions)) {
+        // Is this a duplicate request that was already sent?
+        if (message.data.replyId !== replyStatus?.replyId ||
+          !compareArrays(message.data.participants, replyStatus?.participants) ||
+          !compareArrays(message.data.mentions, replyStatus?.mentions)) {
+          // Lookup the statuses
+          debug('Attempting JIT status lookup')
+          lookupJITStatuses(message.aliasId, message.data, message.context)
+            .then(([replyToStatus, mentionStatus, participantStatus]) => {
+              // Only send a status message if it is not empty
+              if (replyToStatus.length > 0 || mentionStatus.length > 0 || participantStatus.length > 0) {
+                // Remember the most recently sent data (to detect duplicate requests)
+                this.request.session.replyStatus = {
+                  replyId: message.replyId,
+                  mentions: message.mentions,
+                  participants: message.participants
+                }
+                this.request.session.save()
 
-            // Send the latest status info
-            sendStatusMessage(this, message.context, userInfo.email, replyToStatus, mentionStatus, participantStatus)
-          }
-        })
+                // Send the latest status info
+                sendStatusMessage(this, message.context, userInfo.email, replyToStatus, mentionStatus, participantStatus)
+              } else {
+                debug('No statuses to send')
+              }
+            })
+        }
+      }
     }
-  }
+  })
 
   if (isWatsonEnabled()) {
     debug(`[WS:${this.id}] draft message sent to watson from ${message.context}`)
