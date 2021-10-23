@@ -8,7 +8,7 @@ import { Grid, TextField, Button } from '@material-ui/core'
 
 import ExternalLink from '../Shared/ExternalLink.jsx'
 
-import { checkUserEmail, updateBasicUserInfo } from '../data/backgroundHelper'
+import { checkUserEmail, updateBasicUserInfo, updateToken } from '../data/backgroundHelper'
 import * as SERVER from '../../../util/serverConfig.js'
 import { ACTIVITIES } from '../KarunaConnect/Activities/Activities'
 
@@ -25,12 +25,16 @@ export default function AccountSettingsComponent (props) {
   // Global connect activity state
   const pushConnectActivity = useSetRecoilState(PushConnectActivityState)
 
-  // Text box state
+  // Form element value states
   const [fullName, setFullName] = useState(accountInfo.name)
   const [preferredPronouns, setPreferredPronouns] = useState(accountInfo.preferredPronouns)
   const [preferredName, setPreferredName] = useState(accountInfo.preferredName)
   const [email, setEmail] = useState(accountInfo.email)
+
+  // Form elements status
+  const [generalErrorMsg, setGeneralErrorMsg] = useState('')
   const [emailErrorMsg, setEmailErrorMsg] = useState('')
+  const [disableForm, setDisableForm] = useState(false)
 
   // Email encoded as a URI
   const emailURIComp = encodeURIComponent(accountInfo.email)
@@ -44,6 +48,10 @@ export default function AccountSettingsComponent (props) {
 
   // Function to save changes to the database
   const onSaveChanges = async () => {
+    // Turn off form while we try to update account data
+    setDisableForm(true)
+    setGeneralErrorMsg('')
+
     // Check if email is changed
     if (email.toLowerCase() !== accountInfo.email.toLowerCase()) {
       // Ensure email not already in use
@@ -52,16 +60,19 @@ export default function AccountSettingsComponent (props) {
       } catch (err) {
         LOG('Bad email', err)
         setEmailErrorMsg('Email already in use')
+        setDisableForm(false)
         return
       }
     }
 
-    // Try to update all basic user info
+    // Try to update all basic user info and rollover our token
     try {
-      await updateBasicUserInfo({ name: fullName, preferredName, preferredPronouns, email })
+      const newToken = await updateBasicUserInfo({ name: fullName, preferredName, preferredPronouns, email })
+      await updateToken(newToken)
     } catch (err) {
       alert('Error updating user info (see console for details).')
       LOG('Failed to update user info', err)
+      setDisableForm(false)
       return
     }
 
@@ -79,9 +90,11 @@ export default function AccountSettingsComponent (props) {
           label="Name"
           fullWidth
           autoComplete="name"
-          helperText="Edit your legal/full name"
+          helperText={generalErrorMsg === '' ? 'Edit your full/formal name' : generalErrorMsg}
           value={fullName}
-          onChange={(e) => { setFullName(e.target.value) }}
+          onChange={(e) => { setFullName(e.target.value); setGeneralErrorMsg('') }}
+          error={generalErrorMsg !== ''}
+          disabled={disableForm}
         />
       </Grid>
       <Grid item xs={12}>
@@ -95,6 +108,7 @@ export default function AccountSettingsComponent (props) {
           helperText="Edit your preferred name"
           value={preferredName}
           onChange={(e) => { setPreferredName(e.target.value) }}
+          disabled={disableForm}
         />
       </Grid>
       <Grid item xs={12}>
@@ -107,6 +121,7 @@ export default function AccountSettingsComponent (props) {
           helperText="Edit your pronouns"
           value={preferredPronouns}
           onChange={(e) => { setPreferredPronouns(e.target.value) }}
+          disabled={disableForm}
         />
       </Grid>
       <Grid item xs={12}>
@@ -117,10 +132,11 @@ export default function AccountSettingsComponent (props) {
           label="email"
           fullWidth
           autoComplete="email"
-          helperText={emailErrorMsg === '' ? 'Edit your accountEmail' : emailErrorMsg}
+          helperText={emailErrorMsg === '' ? 'Edit your account Email' : emailErrorMsg}
           value={email}
-          onChange={(e) => { setEmail(e.target.value) }}
+          onChange={(e) => { setEmail(e.target.value); setEmailErrorMsg('') }}
           error={emailErrorMsg !== ''}
+          disabled={disableForm}
         />
       </Grid>
 
@@ -131,7 +147,7 @@ export default function AccountSettingsComponent (props) {
       </Grid>
 
       <Grid item xs={12}>
-        <Button variant="contained" fullWidth onClick={onSaveChanges}>
+        <Button variant="contained" fullWidth onClick={onSaveChanges} disabled={disableForm}>
           {'Save Changes'}
         </Button>
       </Grid>

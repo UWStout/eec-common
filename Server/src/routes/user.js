@@ -2,7 +2,7 @@
 import Express from 'express'
 
 // JWT authorization middleware
-import { authenticateToken } from './auth.js'
+import { authenticateToken, generateNewToken } from './auth.js'
 
 // Database controller
 import * as DBUser from '../mongo/userController.js'
@@ -14,7 +14,7 @@ import MongoDB from 'mongodb'
 import * as UTIL from './utils.js'
 
 // Allow interaction with the socket.io server
-import { userStatusUpdated } from '../sockets/clientEngine.js'
+import { userInfoUpdated, userStatusUpdated } from '../sockets/clientEngine.js'
 
 // Create debug output object
 import Debug from 'debug'
@@ -120,7 +120,20 @@ router.post('/update', authenticateToken, async (req, res) => {
     await DBUser.updateUser(userID, {
       name, preferredName, preferredPronouns, email, teams, meta: userMeta
     })
-    return res.json({ success: true })
+
+    // Regenerate and return new token
+    try {
+      const newToken = await generateNewToken(req.user, req.token)
+      res.json(newToken) // Deliberately fall through
+    } catch (err) {
+      debug('Error rolling over token:', err)
+      res.status(500).json({
+        error: true, message: 'Failed to update token'
+      }) // Deliberately fall through
+    }
+
+    // Broadcast update to all connected sockets
+    userInfoUpdated(userID)
   } catch (err) {
     UTIL.checkAndReportError('Error updating user', res, err, debug)
   }

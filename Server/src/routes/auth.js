@@ -118,6 +118,23 @@ export function decodeToken (req, res, next) {
   })
 }
 
+export async function generateNewToken (oldPayload, oldToken) {
+  try {
+    // Retrieve user's latest details and merge with payload data
+    const userData = await DBAuth.userBasics(oldPayload.id)
+
+    // Generate new token with merged data
+    const newToken = JWT.sign({ ...oldPayload, ...userData }, process.env.TOKEN_SECRET)
+
+    // Overwrite previous token in DB and return new one
+    await DBToken.updateToken(oldPayload.id, oldToken, newToken)
+    return newToken
+  } catch (err) {
+    debug('Error generating new token:', err)
+    return null
+  }
+}
+
 // Create a router to attach to an express server app
 // This one will be rate limited (as these are authentication routes)
 const router = new Express.Router()
@@ -397,16 +414,8 @@ router.get('/validate', authenticateToken, (req, res) => {
 
 // A route to expire and rollover a token
 router.get('/rollover', authenticateToken, async (req, res) => {
-  const payloadData = req.user
   try {
-    // Retrieve user's latest details and merge with payload data
-    const userData = await DBAuth.userBasics(payloadData.id)
-
-    // Generate new token with merged data
-    const newToken = JWT.sign({ ...payloadData, ...userData }, process.env.TOKEN_SECRET)
-
-    // Overwrite previous token in DB and return new one
-    await DBToken.updateToken(payloadData.id, req.token, newToken)
+    const newToken = await generateNewToken(req.user, req.token)
     return res.json(newToken)
   } catch (err) {
     debug('Error rolling over token:', err)

@@ -18,6 +18,10 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
       promise = validateAccount(message.email, message.password, message.expiration, message.context)
       break
 
+    case 'ajax-rolloverToken':
+      promise = rolloverToken()
+      break
+
     case 'ajax-getEmojiList':
       if (!userData.id) {
         promise = Promise.resolve({
@@ -124,7 +128,7 @@ export function processAjaxRequest (message, resolve, reject, sendResponse) {
           error: 'No user id available (not logged in?)'
         })
       } else {
-        promise = setUserBasicInfo(userData.id, message.basicUserInfo)
+        promise = setUserBasicInfo(userData.id, message.userBasicInfo)
       }
       break
 
@@ -264,6 +268,18 @@ function validateAccount (email, password, expiration, context) {
       { email, password, expiration, context: (context || 'unknown') },
       { withCredentials: true }
     )
+
+    // Listen for server response or error
+    requestPromise.then((response) => { resolve(response.data) })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
+function rolloverToken () {
+  return new Promise((resolve, reject) => {
+    // Request data from the server
+    const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
+    const requestPromise = Axios.get(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}auth/rollover`, config)
 
     // Listen for server response or error
     requestPromise.then((response) => { resolve(response.data) })
@@ -441,7 +457,7 @@ function setUserBasicInfo (userID, userBasicInfo) {
     )
 
     // Listen for server response or error
-    requestPromise.then(() => { resolve() })
+    requestPromise.then((response) => { resolve(response.data) })
     requestPromise.catch((error) => { reject(error) })
   })
 }

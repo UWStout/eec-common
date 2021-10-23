@@ -136,7 +136,7 @@ export const TeammatesUserInfoState = selector({
 /** Status updated for one teammate, trigger state lookup */
 export const TeammateStatusUpdateState = selector({
   key: 'TeammateStatusUpdateState',
-  get: async ({ get }) => {
+  get: ({ get }) => {
     const activeTeamStateUpdateCount = get(ActiveTeamInfoUpdatedState)
     return activeTeamStateUpdateCount
   },

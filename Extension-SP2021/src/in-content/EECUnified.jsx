@@ -208,30 +208,16 @@ class EECUnified extends HTMLElement {
         // this.updateVisibility(false)
         break
 
+      // All these messages just get duplicated/bounced in the status emitter
       case 'karunaMessage':
-        if (this.statusEmitter) {
-          LOG('Background karunaMessage bouncing', message)
-          this.statusEmitter.emit('karunaMessage', message)
-        } else {
-          LOG('Background karunaMessage but emitter is undefined', message)
-        }
-        break
-
       case 'statusMessage':
-        if (this.statusEmitter) {
-          LOG('Status message bouncing', message)
-          this.statusEmitter.emit('statusMessage', message)
-        } else {
-          LOG('Status message but emitter is undefined', message)
-        }
-        break
-
       case 'teammateStatusUpdate':
+      case 'teammateInfoUpdate':
         if (this.statusEmitter) {
-          LOG('Teammate status update message bouncing', message)
-          this.statusEmitter.emit('teammateStatusUpdate', message)
+          LOG(`${message.type} bouncing`, message)
+          this.statusEmitter.emit(message.type, message)
         } else {
-          LOG('Teammate status update message but emitter is undefined', message)
+          LOG(`Background ${message.type} received but emitter is undefined`, message)
         }
         break
     }

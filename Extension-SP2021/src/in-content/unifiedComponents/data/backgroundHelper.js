@@ -39,11 +39,30 @@ export function login (email, password, expiration, onFailed, context) {
     'Invalid username or password',
     (data) => {
       LOG('Login succeeded')
-      chrome.runtime.sendMessage({ type: 'write', key: 'JWT', data })
-      chrome.runtime.sendMessage({ type: 'login', key: 'JWT', data })
+      chrome.runtime.sendMessage({ type: 'login', data })
     },
     onFailed
   )
+}
+
+export function rolloverToken () {
+  LOG('Attempting to rollover token')
+  return new Promise((resolve, reject) => {
+    sendMessageToBackground(
+      { type: 'ajax-rolloverToken' },
+      '*',
+      'token rollover failed',
+      (data) => {
+        LOG('Rollover succeeded')
+        chrome.runtime.sendMessage({ type: 'refresh', data })
+        return resolve(data)
+      },
+      (message, err) => {
+        LOG('Rollover failed', err)
+        return reject(err)
+      }
+    )
+  })
 }
 
 export function logout () {
@@ -371,7 +390,10 @@ export function updateBasicUserInfo (userBasicInfo) {
       { type: 'ajax-setUserBasicInfo', userBasicInfo },
       'N/A', // Context doesn't matter
       'Updating basic user info failed: ',
-      () => { return resolve() },
+      (newToken) => {
+        LOG('Received new token:', newToken)
+        return resolve(newToken)
+      },
       (message) => {
         LOG.error('Error updating basic user info')
         LOG.error(message)
@@ -458,6 +480,26 @@ export function retrieveCachedAliasInfo (context) {
       (aliasList) => { return resolve(aliasList) },
       (message) => {
         LOG.error('Error reading cached alias list')
+        LOG.error(message)
+        return reject(new Error(message))
+      }
+    )
+  })
+}
+
+export function updateToken (token) {
+  return new Promise((resolve, reject) => {
+    // Send new token to background
+    sendMessageToBackground(
+      // Write to browser local storage
+      { type: 'refresh', data: token },
+      null,
+      'Failed to WRITE new token: ',
+
+      // Success and failure callbacks
+      () => { return resolve() },
+      (message) => {
+        LOG.error('Error writing new token')
         LOG.error(message)
         return reject(new Error(message))
       }

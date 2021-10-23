@@ -74,6 +74,19 @@ export function setupExtensionCommunication () {
       }
     }
   })
+
+  getSocket().on('teammateInfoUpdate', (msg) => {
+    console.log('[BACKGROUND] Teammate info update message received from server:', msg)
+    // Loop through active port names and broadcast message to all
+    for (const portName in portSessions) {
+      if (portSessions[portName]) {
+        console.log(`[BACKGROUND] posting teammateInfo message to ${portName}`)
+        portSessions[portName].postMessage(
+          { type: 'teammateInfoUpdate', ...msg }
+        )
+      }
+    }
+  })
 }
 
 /**
@@ -162,8 +175,28 @@ function oneTimeMessage (message, sender, sendResponse) {
 
       // User successfully logged in (comes from popup)
       case 'login':
+        // Save token
+        writeValue('JWT', message.data)
+
         // Announce the global session
         announceSession()
+
+        // Send the token to each in-context session
+        for (const portName in portSessions) {
+          // CAUTION: Sometimes it is undefined (not sure why)
+          if (portSessions[portName]) {
+            portSessions[portName].postMessage(
+              { type: 'login', token: message.data }
+            )
+          }
+        }
+        sendResponse('ok')
+        return resolve('ok')
+
+      // Token was updated (same as login with the announceSession)
+      case 'refresh':
+        // Save token
+        writeValue('JWT', message.data)
 
         // Send the token to each in-context session
         for (const portName in portSessions) {

@@ -46,11 +46,16 @@ export default function UnifiedApp (props) {
     })
   }, [emitter, setLoggedInUserState])
 
-  // Track user status updates globally
+  // Track user status and user info updates globally
   const setTeammateStatusUpdate = useSetRecoilState(TeammateStatusUpdateState)
   useEffect(() => {
     emitter.on('teammateStatusUpdate', (newUserStatus) => {
       LOG('Teammate status updated:', newUserStatus)
+      setTeammateStatusUpdate()
+    })
+
+    emitter.on('teammateInfoUpdate', (newUserInfo) => {
+      LOG('Teammate info updated:', newUserInfo)
       setTeammateStatusUpdate()
     })
   }, [emitter, setTeammateStatusUpdate])

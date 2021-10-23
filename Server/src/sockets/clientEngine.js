@@ -262,6 +262,32 @@ export async function socketMessageSend (message) {
   }
 }
 
+// Broadcast a user info change to all connected relevant sockets
+export async function userInfoUpdated (userID) {
+  DBUser.getUserDetails(userID)
+    .then((details) => {
+      // Get list of teams
+      const teams = details?.teams ? details.teams : []
+      if (Array.isArray(teams) && teams.length > 0) {
+        // Send latest status to all team rooms
+        getMySocket().to(teams.map((teamID) => (`team-${teamID}`)))
+          .emit('teammateInfoUpdate', {
+            userId: userID,
+            context: '*',
+            email: details.email,
+            name: details.name,
+            preferredName: details.preferredName,
+            preferredPronouns: details.preferredPronouns
+          })
+      }
+    })
+    .catch((err) => {
+      debug(`Failed to broadcast user info update: could not get user details for ${userID}`)
+      debug(err)
+    })
+}
+
+// Broadcast a user status change to all connected relevant sockets
 export async function userStatusUpdated (userID) {
   DBUser.getUserDetails(userID)
     .then((details) => {
@@ -280,14 +306,14 @@ export async function userStatusUpdated (userID) {
       }
     })
     .catch((err) => {
-      debug(`Failed to broadcast status: could not get user details for ${userID}`)
+      debug(`Failed to broadcast user status update: could not get user details for ${userID}`)
       debug(err)
     })
 }
 
+// Send a JIT Status message
 export function sendStatusMessage (socket, context, userEmail, replyToStatus, mentionsStatus, participantsStatus) {
   if (socket) {
-    debug('emitting status message')
     getMySocket().to(socket.id).emit('statusMessage', {
       clientEmail: userEmail,
       context: context,
