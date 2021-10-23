@@ -10,9 +10,9 @@
   "userType": "admin",
   "meta": {},
   "teams": [{
-    "$oid": "614f503f753c6a568c482a0a"
+    "$oid": "6174161c92e0f3b694113b60"
   }, {
-    "$oid": "614f503f753c6a568c482a0c"
+    "$oid": "6174161c92e0f3b694113b62"
   }],
   "lastLogin": {
     "timestamp": {
@@ -34,29 +34,34 @@
       "remoteAddress": "127.0.0.1"
     }
   },
-  "lastWizardLogin": {
-    "timestamp": {
-      "$date": "2021-03-06T17:24:05.169Z"
-    },
-    "remoteAddress": "127.0.0.1"
-  },
   "contextAlias": {
     "msTeams": "berriers@uwstout.edu",
     "discord": "SethB#1799"
   },
+  "contextId": {
+    "msTeams": "",
+    "discord": ""
+  },
   "status": {
     "currentAffectID": {
-      "$oid": "6008928508baff43187a7507"
+      "$oid": "617411f52dbc734f03ad01f0"
     },
     "privateAffectID": {
-      "$oid": "6008928508baff43187a74f3"
+      "$oid": "617411f52dbc734f03ad01f0"
     },
     "currentAffectPrivacy": false,
     "collaboration": "Open to Collaboration",
     "timeToRespond": {
       "time": 24,
-      "units": "h",
-      "automatic": false
+      "units": "h"
     }
+  },
+  "settings": {
+    "enableMoodPrompt": true,
+    "enablePrivacyPrompt": true,
+    "alwaysShare": true,
+    "enableJITStatus": true,
+    "enableMessageFeedback": false,
+    "enableAutoTTR": false
   }
 }]

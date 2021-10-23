@@ -75,7 +75,7 @@ const COMM_MODEL_LINKS = [
   'https://www.learnalberta.ca/content/aswt/talkingtogether/facilitated_art_of_focused_conversation_fact_sheet.html'
 ]
 
-const { ObjectID } = MongoDB.ObjectID
+const { ObjectId } = MongoDB
 
 // Helper function for hashing a password
 const SALT_ROUNDS = 10
@@ -116,7 +116,7 @@ function hashPassword (password) {
 
     // Decorate with descriptions, culture, and random org IDs (~10% will have no org)
     rawTeams = rawTeams.map((team, i) => {
-      const randOrgId = new ObjectID(orgIDs[Math.floor(Math.random() * rawOrgs.length)])
+      const randOrgId = new ObjectId(orgIDs[Math.floor(Math.random() * rawOrgs.length)])
       return {
         name: team.name,
         description: (Math.random() < 0.1 ? '' : getRandomDescription()),
@@ -131,7 +131,7 @@ function hashPassword (password) {
     const teamIDs = await DBHelp.insertAllInCollection(DBHandle, 'Teams', rawTeams)
 
     // Read and parse affects for setting random statuses
-    const rawAffectsStr = fs.readFileSync('./rawAffects/affects.json', { encoding: 'utf8' })
+    const rawAffectsStr = fs.readFileSync('./rawAffects/newAffects.json', { encoding: 'utf8' })
     const rawAffects = JSON.parse(rawAffectsStr)
 
     // Parse and re-structure users
@@ -156,7 +156,7 @@ function hashPassword (password) {
           } while (teamStrings.indexOf(randomID) >= 0)
           teamStrings.push(randomID)
         }
-        const teams = teamStrings.map((teamStr) => { return new ObjectID(teamStr) })
+        const teams = teamStrings.map((teamStr) => { return new ObjectId(teamStr) })
 
         // Hash password
         const passwordHash = await hashPassword(user.login.password)
@@ -204,7 +204,10 @@ function hashPassword (password) {
           /* Usage derived data */
           lastLogin: {
             timestamp: randomTimestamp(),
-            remoteAddress: getRandomLocalIP(),
+            remoteAddress: getRandomLocalIP()
+          },
+
+          lastContextLogin: {
             discord: {
               timestamp: randomTimestamp(),
               remoteAddress: getRandomLocalIP()
@@ -220,19 +223,28 @@ function hashPassword (password) {
           },
 
           status: {
-            currentAffectID: rawAffects[affectIndex[0]]._id,
-            privateAffectID: rawAffects[affectIndex[1]]._id,
+            currentAffectID: new ObjectId(rawAffects[affectIndex[0]]._id),
+            privateAffectID: new ObjectId(rawAffects[affectIndex[1]]._id),
             currentAffectPrivacy: privateAffect,
             collaboration: COLLABORATION[getRandIndex(COLLABORATION)],
             timeToRespond: {
               time: getRandomInt(1, 24),
-              units: TIME_UNITS[getRandIndex(TIME_UNITS)],
-              automatic: Math.random() >= 0.5
+              units: TIME_UNITS[getRandIndex(TIME_UNITS)]
             }
           },
 
           meta: {},
-          teams
+          teams,
+
+          // Default settings
+          settings: {
+            enableMoodPrompt: true,
+            enablePrivacyPrompt: true,
+            alwaysShare: true,
+            enableJITStatus: true,
+            enableMessageFeedback: false,
+            enableAutoTTR: false
+          }
         })
       }
 
@@ -247,7 +259,7 @@ function hashPassword (password) {
 
     // Ensure the list of TeamIDs is an array
     const teamIDArray = []
-    Object.entries(teamIDs).forEach((entry) => { teamIDArray[entry[0]] = entry[1] })
+    Object.entries(teamIDs).forEach((entry) => { teamIDArray[entry[0]] = entry[1].toString() })
 
     // Update teams to include managers
     process.stdout.write('\nCreating team managers ...')
@@ -258,11 +270,13 @@ function hashPassword (password) {
 
         // With 50% chance, make them a manager
         if (Math.random() > 0.5) {
-          const index = teamIDArray.indexOf(randTeamID)
-          if (!rawTeams[index].managers) {
-            rawTeams[index].managers = [userIds[i]]
-          } else {
-            rawTeams[index].managers.push(userIds[i])
+          const index = teamIDArray.indexOf(randTeamID.toString())
+          if (index >= 0) {
+            if (!rawTeams[index].managers) {
+              rawTeams[index].managers = [userIds[i]]
+            } else {
+              rawTeams[index].managers.push(userIds[i])
+            }
           }
         }
       }
@@ -280,12 +294,12 @@ function hashPassword (password) {
 })()
 
 /**
-* Returns a random integer between min (inclusive) and max (inclusive).
-* The value is no lower than min (or the next integer greater than min
-* if min isn't an integer) and no greater than max (or the next integer
-* lower than max if max isn't an integer).
-* Using Math.round() will give you a non-uniform distribution!
-*/
+ * Returns a random integer between min (inclusive) and max (inclusive).
+ * The value is no lower than min (or the next integer greater than min
+ * if min isn't an integer) and no greater than max (or the next integer
+ * lower than max if max isn't an integer).
+ * Using Math.round() will give you a non-uniform distribution!
+ */
 function getRandomInt (low, high) {
   low = Math.ceil(low)
   high = Math.floor(high)
@@ -301,8 +315,8 @@ function getRandomLocalIP () {
 }
 
 function randomDate (start, end, startHour, endHour) {
-  var date = new Date(+start + Math.random() * (end - start))
-  var hour = startHour + Math.random() * (endHour - startHour) | 0
+  const date = new Date(+start + Math.random() * (end - start))
+  const hour = startHour + Math.random() * (endHour - startHour) | 0
   date.setHours(hour)
   return date
 }
