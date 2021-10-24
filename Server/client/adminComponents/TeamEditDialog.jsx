@@ -59,6 +59,15 @@ export default function TeamEditDialog (props) {
     }
   }, [teamId])
 
+  const closeDialog = (updatedTeam) => {
+    setTeamName('')
+    setTeamDescription('')
+    setTeamOrgId('')
+    if (onDialogClose) {
+      onDialogClose(updatedTeam)
+    }
+  }
+
   const handleClose = async (save) => {
     if (save) {
       setDisableActions(true)
@@ -66,11 +75,11 @@ export default function TeamEditDialog (props) {
         if (teamId === '') {
           const newTeam = { name: teamName, description: teamDescription, orgId: teamOrgId }
           await createItem('team', newTeam)
-          onDialogClose()
+          closeDialog()
         } else {
           const updatedTeam = { id: teamId, name: teamName, description: teamDescription, orgId: teamOrgId }
           await updateItem('team', updatedTeam)
-          onDialogClose(updatedTeam)
+          closeDialog(updatedTeam)
         }
       } catch (err) {
         console.error('Failed to save data')
@@ -79,7 +88,7 @@ export default function TeamEditDialog (props) {
         setDisableActions(false)
       }
     } else {
-      onDialogClose()
+      closeDialog()
     }
   }
 

@@ -25,18 +25,30 @@ export default function ItemDeleteDialog (props) {
   const classes = useStyles()
 
   const [userConfirmText, setUserConfirmText] = useState('')
+  const [formDisabled, setFormDisabled] = useState(false)
+
+  const closeDialog = (state) => {
+    setUserConfirmText('') // reset form back to empty
+    setFormDisabled(false)
+    if (onDialogClose) {
+      onDialogClose(state)
+    }
+  }
 
   const handleClose = async (doDelete) => {
+    setFormDisabled(true)
     if (doDelete) {
       try {
         await deleteItem(dataType, itemId)
-        onDialogClose(true)
+        closeDialog(true)
       } catch (err) {
+        window.alert(`Failed to delete ${dataType}\n\n${err?.response?.data?.message}`)
         console.error(`Failed to delete ${dataType}`)
         console.error(err)
+        setFormDisabled(false)
       }
     } else {
-      onDialogClose(false)
+      closeDialog(false)
     }
   }
 
@@ -66,16 +78,17 @@ export default function ItemDeleteDialog (props) {
           fullWidth
           value={userConfirmText}
           onChange={(e) => { setUserConfirmText(e.target.value) }}
+          disabled={formDisabled}
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={(e) => { handleClose(false) }} color="primary">{'Cancel'}</Button>
+        <Button onClick={(e) => { handleClose(false) }} color="primary" disabled={formDisabled}>{'Cancel'}</Button>
         <Button
           onClick={(e) => { handleClose(true) }}
           color="secondary"
           variant="contained"
           disableElevation
-          disabled={confirmText !== userConfirmText}
+          disabled={confirmText !== userConfirmText || formDisabled}
         >
           {'Delete'}
         </Button>

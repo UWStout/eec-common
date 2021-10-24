@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { useSetRecoilState } from 'recoil'
-import { ConnectVisibilityState } from '../data/globalSate/appState.js'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
+import { ConnectVisibilityState, DisableInputState } from '../data/globalSate/appState.js'
 import { PopConnectActivityState, PushConnectActivityState } from '../data/globalSate/connectActivityState.js'
 
 import { Grid, Typography } from '@material-ui/core'
@@ -19,6 +19,7 @@ export default function MoreSettingsComponent (props) {
   const setConnectVisibility = useSetRecoilState(ConnectVisibilityState)
   const pushActivity = useSetRecoilState(PushConnectActivityState)
   const popActivity = useSetRecoilState(PopConnectActivityState)
+  const disableAllInput = useRecoilValue(DisableInputState)
 
   // Push account settings activity
   const onAccountSettings = () => {
@@ -47,19 +48,19 @@ export default function MoreSettingsComponent (props) {
       </Grid>
 
       <Grid item xs={12}>
-        <CaptionedButton onClick={onAccountSettings} buttonText="Account Settings">
+        <CaptionedButton onClick={onAccountSettings} buttonText="Account Settings" disabled={disableAllInput}>
           {'Options for changing your name, email, and password.'}
         </CaptionedButton>
       </Grid>
 
       <Grid item xs={12}>
-        <CaptionedButton onClick={onCustomizeKaruna} buttonText="Customize Karuna">
+        <CaptionedButton onClick={onCustomizeKaruna} buttonText="Customize Karuna" disabled={disableAllInput}>
           {'Options for changing how Karuna behaves.'}
         </CaptionedButton>
       </Grid>
 
       <Grid item xs={12}>
-        <CaptionedButton onClick={onSignOut} buttonText="Sign Out">
+        <CaptionedButton onClick={onSignOut} buttonText="Sign Out" disabled={disableAllInput}>
           {'Sign out of the Karuna Extension and clear all credentials.'}
         </CaptionedButton>
       </Grid>

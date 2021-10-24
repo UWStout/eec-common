@@ -59,35 +59,3 @@ export const KarunaSettingsSyncState = selector({
     }
   }
 })
-
-// export const EnableMoodPromptSettingState = selector({
-//   key: 'EnableMoodPromptSettingState',
-//   get: ({ get }) => {
-//     const karunaSettings = get(KarunaSettingsState)
-//     if (karunaSettings) {
-//       return karunaSettings.enableMoodPrompt
-//     } else {
-//       LOG('Can\'t retrieve mood prompt settings: kaurnaSettings is null')
-//       return null
-//     }
-//   },
-//   set: ({ get, set }, newValue) => {
-//     const karunaSettings = get(KarunaSettingsState)
-//     if (karunaSettings) {
-//       const newSettings = { ...karunaSettings, enableMoodPrompt: newValue }
-//       set(KarunaSettingsState, newSettings)
-//     } else {
-//       LOG('Can\'t update mood prompt settings: kaurnaSettings is null')
-//     }
-//   }
-// })
-
-// export const SettingState = selector({
-//   key: '',
-//   get: ({ get }) => {
-
-//   },
-//   set: ({ get, set }, newValue) => {
-
-//   }
-// })

@@ -73,15 +73,17 @@ function setupMutationObserver () {
         if (!document.querySelector('.ts-waffle')) {
           // Page isn't ready yet
           return
-        } else {
-          karunaIsMounted = true
-          mountKaruna()
         }
-      } else {
-        // TODO: Update to check for readiness in Discord and Slack
-        karunaIsMounted = true
-        mountKaruna()
-      }
+      } else if (IS_DISCORD) {
+        if (!document.querySelector('[data-list-item-id="guildsnav___home"]')) {
+          // Page isn't ready yet
+          return
+        }
+      } // TODO: Add a slack check for readiness
+
+      // Page is ready so fully mount
+      karunaIsMounted = true
+      mountKaruna()
     }
 
     // Attempt to update EEC text-boxes (if needed)

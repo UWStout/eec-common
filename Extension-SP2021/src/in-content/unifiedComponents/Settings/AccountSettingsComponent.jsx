@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { LoggedInUserState } from '../data/globalSate/userState'
+import { DisableInputState } from '../data/globalSate/appState'
 import { PushConnectActivityState } from '../data/globalSate/connectActivityState'
 
 import { Grid, TextField, Button } from '@material-ui/core'
@@ -24,6 +25,7 @@ export default function AccountSettingsComponent (props) {
 
   // Global connect activity state
   const pushConnectActivity = useSetRecoilState(PushConnectActivityState)
+  const disableAllInput = useRecoilValue(DisableInputState)
 
   // Form element value states
   const [fullName, setFullName] = useState(accountInfo.name)
@@ -94,7 +96,7 @@ export default function AccountSettingsComponent (props) {
           value={fullName}
           onChange={(e) => { setFullName(e.target.value); setGeneralErrorMsg('') }}
           error={generalErrorMsg !== ''}
-          disabled={disableForm}
+          disabled={disableForm || disableAllInput}
         />
       </Grid>
       <Grid item xs={12}>
@@ -108,7 +110,7 @@ export default function AccountSettingsComponent (props) {
           helperText="Edit your preferred name"
           value={preferredName}
           onChange={(e) => { setPreferredName(e.target.value) }}
-          disabled={disableForm}
+          disabled={disableForm || disableAllInput}
         />
       </Grid>
       <Grid item xs={12}>
@@ -121,7 +123,7 @@ export default function AccountSettingsComponent (props) {
           helperText="Edit your pronouns"
           value={preferredPronouns}
           onChange={(e) => { setPreferredPronouns(e.target.value) }}
-          disabled={disableForm}
+          disabled={disableForm || disableAllInput}
         />
       </Grid>
       <Grid item xs={12}>
@@ -136,18 +138,18 @@ export default function AccountSettingsComponent (props) {
           value={email}
           onChange={(e) => { setEmail(e.target.value); setEmailErrorMsg('') }}
           error={emailErrorMsg !== ''}
-          disabled={disableForm}
+          disabled={disableForm || disableAllInput}
         />
       </Grid>
 
       <Grid item xs={12}>
-        <ExternalLink href={`https://${SERVER.HOST_NAME}/${SERVER.ROOT}Recovery.html?email=${emailURIComp}`}>
+        <ExternalLink href={`https://${SERVER.HOST_NAME}/${SERVER.ROOT}Recovery.html?email=${emailURIComp}`} disabled={disableAllInput}>
           {'Change Password'}
         </ExternalLink>
       </Grid>
 
       <Grid item xs={12}>
-        <Button variant="contained" fullWidth onClick={onSaveChanges} disabled={disableForm}>
+        <Button variant="contained" fullWidth onClick={onSaveChanges} disabled={disableForm || disableAllInput}>
           {'Save Changes'}
         </Button>
       </Grid>

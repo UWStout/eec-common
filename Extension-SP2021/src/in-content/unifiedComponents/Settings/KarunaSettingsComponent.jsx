@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { DisableInputState } from '../data/globalSate/appState'
 import { KarunaSettingsState, KarunaSettingsSyncState } from '../data/globalSate/settingsState'
 import { PopConnectActivityState } from '../data/globalSate/connectActivityState'
 
@@ -31,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
   textButtonStyle: {
     color: theme.palette.primary,
     textTransform: 'none'
+  },
+  disabledText: {
+    color: theme.palette.text.disabled
   }
 }))
 
@@ -44,20 +48,25 @@ function sanitizeBool (value) {
 
 export default function KarunaSettingsComponent (props) {
   // Destructure style classnames
-  const { leftIndent1Style, leftIndent2Style, leftIndent3Style, captionTextStyle, textButtonStyle } = useStyles()
+  const { leftIndent1Style, leftIndent2Style, leftIndent3Style, captionTextStyle, textButtonStyle, disabledText } = useStyles()
 
   // Read user info from Global recoil state
   const karunaSettings = useRecoilValue(KarunaSettingsState)
   const setKarunaSettings = useSetRecoilState(KarunaSettingsSyncState)
+  const disableAllInput = useRecoilValue(DisableInputState)
 
   // Global connect activity state
   const popConnectActivity = useSetRecoilState(PopConnectActivityState)
 
   // Update karuna settings from event
   const onUpdateSettings = (e) => {
-    const newVal = e.target.checked === undefined ? sanitizeBool(e.target.value) : e.target.checked
-    const newSettings = { ...karunaSettings, [e.target.name]: newVal }
-    setKarunaSettings(newSettings)
+    if (e.target.name === 'alwaysShare') {
+      const newSettings = { ...karunaSettings, [e.target.name]: (e.target.value === 'share') }
+      setKarunaSettings(newSettings)
+    } else {
+      const newSettings = { ...karunaSettings, [e.target.name]: e.target.checked }
+      setKarunaSettings(newSettings)
+    }
   }
 
   // Set all settings back to defaults
@@ -90,7 +99,7 @@ export default function KarunaSettingsComponent (props) {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Button color="primary" onClick={onResetToDefaults} className={textButtonStyle}>
+        <Button color="primary" onClick={onResetToDefaults} className={textButtonStyle} disabled={disableAllInput}>
           {'Reset All'}
         </Button>
       </Grid>
@@ -98,7 +107,9 @@ export default function KarunaSettingsComponent (props) {
       {/* Mood Grid */}
       <Grid item xs={12} container spacing={1}>
         <Grid item xs={12}>
-          <Typography variant="h6" component="h3">{'Mood'}</Typography>
+          <Typography variant="h6" component="h3" className={disableAllInput ? disabledText : ''}>
+            {'Mood'}
+          </Typography>
         </Grid>
         <Grid item xs={12} className={leftIndent1Style}>
           <FormControlLabel
@@ -111,10 +122,13 @@ export default function KarunaSettingsComponent (props) {
               />
             }
             label="Ask me how I'm feeling"
+            disabled={disableAllInput}
           />
         </Grid>
         <Grid item xs={12} className={leftIndent2Style}>
-          <Typography variant="body1">{'Sharing'}</Typography>
+          <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
+            {'Sharing'}
+          </Typography>
         </Grid>
         <Grid item xs={12} className={leftIndent3Style}>
           <FormControlLabel
@@ -127,23 +141,24 @@ export default function KarunaSettingsComponent (props) {
               />
             }
             label="Always ask if I want to share my mood"
+            disabled={disableAllInput}
           />
         </Grid>
         <Grid item xs={12} className={leftIndent3Style}>
           <RadioGroup
             aria-label="always or never share"
             name="alwaysShare"
-            value={sanitizeBool(karunaSettings?.alwaysShare) ? 'true' : 'false'}
+            value={sanitizeBool(karunaSettings?.alwaysShare) ? 'share' : 'don\'t share'}
             onChange={onUpdateSettings}
           >
             <FormControlLabel
-              value={'true'}
-              control={<Radio color="default" disabled={sanitizeBool(karunaSettings?.enablePrivacyPrompt)} />}
+              value={'share'}
+              control={<Radio color="default" disabled={sanitizeBool(karunaSettings?.enablePrivacyPrompt) || disableAllInput} />}
               label="Always Share"
             />
             <FormControlLabel
-              value={'false'}
-              control={<Radio color="default" disabled={sanitizeBool(karunaSettings?.enablePrivacyPrompt)} />}
+              value={'don\'t share'}
+              control={<Radio color="default" disabled={sanitizeBool(karunaSettings?.enablePrivacyPrompt) || disableAllInput} />}
               label="Never Share"
             />
           </RadioGroup>
@@ -152,7 +167,9 @@ export default function KarunaSettingsComponent (props) {
 
       <Grid item xs={12} container spacing={1}>
         <Grid item xs={12}>
-          <Typography variant="h6" component="h3">{'Status of Collaborators'}</Typography>
+          <Typography variant="h6" component="h3" className={disableAllInput ? disabledText : ''}>
+            {'Status of Collaborators'}
+          </Typography>
         </Grid>
         <Grid item xs={12} className={leftIndent1Style}>
           <FormControlLabel
@@ -165,13 +182,16 @@ export default function KarunaSettingsComponent (props) {
               />
             }
             label="Show messages with current collaborator statuses while typing"
+            disabled={disableAllInput}
           />
         </Grid>
       </Grid>
 
       <Grid item xs={12} container spacing={1}>
         <Grid item xs={12}>
-          <Typography variant="h6" component="h3">{'Communication Model'}</Typography>
+          <Typography variant="h6" component="h3" className={disableAllInput ? disabledText : ''}>
+            {'Communication Model'}
+          </Typography>
         </Grid>
         <Grid item xs={12} className={leftIndent1Style}>
           <FormControlLabel
@@ -184,7 +204,7 @@ export default function KarunaSettingsComponent (props) {
               />
             }
             label="Give me feedback on my messages"
-            disabled
+            disabled={true || disableAllInput}
           />
           <Typography variant="caption" className={captionTextStyle}>
             {'(coming soon)'}
@@ -194,7 +214,9 @@ export default function KarunaSettingsComponent (props) {
 
       <Grid item xs={12} container spacing={1}>
         <Grid item xs={12}>
-          <Typography variant="h6" component="h3">{'Typical Response Time'}</Typography>
+          <Typography variant="h6" component="h3" className={disableAllInput ? disabledText : ''}>
+            {'Typical Response Time'}
+          </Typography>
         </Grid>
         <Grid item xs={12} className={leftIndent1Style}>
           <FormControlLabel
@@ -207,7 +229,7 @@ export default function KarunaSettingsComponent (props) {
               />
             }
             label="Automatically track how long it takes me to respond to messages"
-            disabled
+            disabled={true || disableAllInput}
           />
           <Typography variant="caption" className={captionTextStyle}>
             {'(coming soon)'}
@@ -216,13 +238,13 @@ export default function KarunaSettingsComponent (props) {
       </Grid>
 
       <Grid item xs={12}>
-        <Button color="primary" onClick={onResetPrompts} className={textButtonStyle}>
+        <Button color="primary" onClick={onResetPrompts} className={textButtonStyle} disabled={disableAllInput}>
           {'Reset Confirmation Prompts'}
         </Button>
       </Grid>
 
       <Grid item xs={12}>
-        <Button variant="contained" fullWidth onClick={onBack}>
+        <Button variant="contained" fullWidth onClick={onBack} disabled={disableAllInput}>
           {'Back to More Settings'}
         </Button>
       </Grid>

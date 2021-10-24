@@ -3,17 +3,18 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { KarunaSettingsState } from './data/globalSate/settingsState.js'
 import { ConnectVisibilityState, BubbleVisibilityStateSetter } from './data/globalSate/appState.js'
 import { PushBubbleActivityState, BubbleActiveStatusMessageState } from './data/globalSate/bubbleActivityState.js'
 
 import BubbleActivityDialog from './KarunaBubble/BubbleActivityDialog.jsx'
 import { OnboardingActivity } from './KarunaBubble/Activities/OnboardingActivity.js'
+import { AffectSurveyActivity, AffectSurveyNoPromptActivity } from './KarunaBubble/Activities/AffectSurveyActivity.js'
 import { ACTIVITIES } from './KarunaBubble/Activities/Activities.js'
 
 // Colorful logger (Enable if logging is needed)
 import { makeLogger } from '../../util/Logger.js'
-import { AffectSurveyActivity } from './KarunaBubble/Activities/AffectSurveyActivity.js'
 const LOG = makeLogger('BUBBLE Component', 'lavender', 'black')
 
 // Enable this to help with debugging
@@ -26,14 +27,23 @@ export default function KarunaBubble (props) {
   // Track karuna server messages globally
   const pushBubbleActivity = useSetRecoilState(PushBubbleActivityState)
   const setActiveStatusMessage = useSetRecoilState(BubbleActiveStatusMessageState)
+  const karunaSettings = useRecoilValue(KarunaSettingsState)
   useEffect(() => {
+    LOG('Registering karunaMessage listener')
     emitter.on('karunaMessage', (newMessage) => {
       // What type of message is this?
+      LOG('Karuna message received', newMessage)
       let newActivity = { ...ACTIVITIES.KARUNA_MESSAGE, message: newMessage }
       if (newMessage?.needOnboarding) {
         newActivity = OnboardingActivity
       } else if (newMessage?.affectSurvey) {
-        newActivity = AffectSurveyActivity
+        if (karunaSettings?.enablePrivacyPrompt) {
+          LOG('Adding simple affect survey')
+          newActivity = AffectSurveyActivity
+        } else {
+          LOG('Adding no-prompt affect survey')
+          newActivity = AffectSurveyNoPromptActivity
+        }
       } else if (newMessage?.observations?.length > 0) {
         newActivity = { ...ACTIVITIES.WATSON_MESSAGE, message: newMessage }
       }
@@ -50,6 +60,9 @@ export default function KarunaBubble (props) {
       })
       setActiveStatusMessage(message)
     })
+
+    // Let other elements know we are ready
+    emitter.emit('unifiedAppReady')
   }, [emitter, pushBubbleActivity, setActiveStatusMessage])
 
   // Full state and setter for visibility of main connect panel (GLOBAL STATE)

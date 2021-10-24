@@ -118,6 +118,19 @@ class EECUnified extends HTMLElement {
     this.statusEmitter = emitter
     this.registerListeners()
 
+    // Announce when app is fully ready
+    const self = this
+    this.statusEmitter.on('unifiedAppReady', () => {
+      if (!self.alreadyAnnounced) {
+        LOG('Announcing context is ready')
+        self.backgroundPort.postMessage({
+          type: 'contextReady',
+          context: self.fullContext.context
+        })
+        self.alreadyAnnounced = true
+      }
+    })
+
     // Give React control of the root element for the unified panel
     ReactDOM.render(
       // Allows isolation of MUI styles to the shadow DOM
@@ -164,12 +177,6 @@ class EECUnified extends HTMLElement {
       this.backgroundPort.onMessage.addListener(
         this.backgroundMessage.bind(this)
       )
-
-      LOG('Announcing context is ready')
-      this.backgroundPort.postMessage({
-        type: 'contextReady',
-        context: this.fullContext.context
-      })
     }
   }
 

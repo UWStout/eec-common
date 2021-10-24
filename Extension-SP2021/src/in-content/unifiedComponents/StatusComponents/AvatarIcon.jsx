@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { MessagingContextState } from '../data/globalSate/appState.js'
@@ -32,6 +32,10 @@ function AvatarIcon (props) {
   // Deconstruct props
   const { userInfo, team, disabled } = props
 
+  // State of image loading
+  const [loadingError, setLoadingError] = useState(false)
+  const onError = () => { setLoadingError(true) }
+
   // Subscribe to changes in messaging context
   const messagingContext = useRecoilValue(MessagingContextState)
 
@@ -51,7 +55,7 @@ function AvatarIcon (props) {
 
   return (
     <Grid item xs={12}>
-      <Avatar className={avatarStyle} src={imgURL}>{imgURL ? '' : initials}</Avatar>
+      <Avatar className={avatarStyle} src={imgURL} onError={onError}>{imgURL && !loadingError ? '' : initials}</Avatar>
     </Grid>
   )
 }

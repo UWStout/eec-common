@@ -74,12 +74,19 @@ export const PushBubbleActivityState = selector({
 
     const activityStack = get(BubbleActivityStackState)
 
+    // If onboarding or affect survey is active, ignore all other karuna activities
+    if (activityStack.some((activity) => (
+      activity.key === ACTIVITIES.ONBOARDING_ACTIVITY.key ||
+      activity.key === ACTIVITIES.AFFECT_SURVEY.key))) {
+      LOG('Blocking activity because onboarding or affect survey are already active:', newActivity.key)
+      return
+    }
+
     // Avoid duplicates of some activities
     if (!allowedDuplicates.includes(newActivity.key)) {
-      LOG('Checking for duplicates of', newActivity.key)
-      // Look for duplicate
-      const index = activityStack.findIndex((current) => (current.key === newActivity.key))
-      if (index >= 0) { return }
+      if (activityStack.some((current) => (current.key === newActivity.key))) {
+        return
+      }
     }
 
     // Add to top of stack

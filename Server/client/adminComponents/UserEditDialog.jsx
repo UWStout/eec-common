@@ -59,6 +59,17 @@ export default function UserEditDialog (props) {
     })()
   }, [userId])
 
+  const closeDialog = (updatedUser) => {
+    setFullName('')
+    setPreferredName('')
+    setPreferredPronouns('')
+    setEmail('')
+    setTeamList([])
+    if (onDialogClose) {
+      onDialogClose(updatedUser)
+    }
+  }
+
   // Close dialog, optionally saving the edits
   const handleClose = async (save) => {
     if (save) {
@@ -71,7 +82,7 @@ export default function UserEditDialog (props) {
           preferredPronouns,
           teams: userTeams
         })
-        onDialogClose()
+        closeDialog()
       } catch (err) {
         console.error('Failed to save data')
         console.error(err)
@@ -79,7 +90,7 @@ export default function UserEditDialog (props) {
         setDisableActions(false)
       }
     } else {
-      onDialogClose()
+      closeDialog()
     }
   }
 

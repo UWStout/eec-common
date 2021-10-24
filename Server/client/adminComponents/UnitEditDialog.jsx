@@ -44,17 +44,25 @@ export default function UnitEditDialog (props) {
     }
   }, [unitId])
 
+  const closeDialog = (updatedUnit) => {
+    setUnitName('')
+    setUnitDescription('')
+    if (onDialogClose) {
+      onDialogClose(updatedUnit)
+    }
+  }
+
   const handleClose = async (save) => {
     if (save) {
       setDisableActions(true)
       try {
         if (unitId === '') {
           await createItem('unit', { unitName, description: unitDescription })
-          onDialogClose()
+          closeDialog()
         } else {
           const updatedUnit = { id: unitId, name: unitName, description: unitDescription }
           await updateItem('unit', updatedUnit)
-          onDialogClose(updatedUnit)
+          closeDialog(updatedUnit)
         }
       } catch (err) {
         console.error('Failed to save data')
@@ -63,7 +71,7 @@ export default function UnitEditDialog (props) {
         setDisableActions(false)
       }
     } else {
-      onDialogClose()
+      closeDialog()
     }
   }
 

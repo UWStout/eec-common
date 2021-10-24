@@ -403,7 +403,8 @@ router.delete('/remove/:userID', authenticateToken, async (req, res) => {
     return
   }
 
-  if (userID === req.params.userID) {
+  // Make sure you don't delete your own account (which is the ID for the token in use)
+  if (userID === req.user.id) {
     res.status(400).json({ invalid: true, message: 'You may not remove your own account' })
     return
   }

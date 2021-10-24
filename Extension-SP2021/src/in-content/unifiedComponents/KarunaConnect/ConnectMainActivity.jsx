@@ -31,14 +31,17 @@ const Accordion = withStyles((theme) => ({
     width: '100%',
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
+    paddingBottom: theme.spacing(2),
     margin: theme.spacing(0, 0, 2, 0),
     boxShadow: 'none',
     borderTop: 'none',
     '&:before': {
       display: 'none'
     },
+    borderBottom: '1px solid rgba(0, 0, 0, .125)',
     '&$expanded': {
-      margin: theme.spacing(0, 0, 2, 0)
+      margin: theme.spacing(0, 0, 2, 0),
+      paddingBottom: theme.spacing(0)
     },
     '&$disabled': {
       backgroundColor: theme.palette.background.paper
@@ -66,8 +69,7 @@ const AccordionSummary = withStyles((theme) => ({
 const AccordionDetails = withStyles((theme) => ({
   root: {
     paddingLeft: theme.spacing(1),
-    paddingRight: 0,
-    borderBottom: '1px solid rgba(0, 0, 0, .125)'
+    paddingRight: 0
   }
 }))(MuiAccordionDetails)
 
@@ -83,12 +85,15 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
     margin: 0
+  },
+  accordionTitleText: {
+    fontWeight: 600
   }
 }))
 
 export default function ConnectMainActivity (props) {
   const { hidden, retracted } = props
-  const { linkRoot, linkRootLast } = useStyles()
+  const { linkRoot, linkRootLast, accordionTitleText } = useStyles()
 
   // Retrieve some global state values
   const currentFullUserInfo = useRecoilValue(FullUserState)
@@ -142,7 +147,7 @@ export default function ConnectMainActivity (props) {
               aria-controls="team-status-content"
               id="team-status-header"
             >
-              <Typography>
+              <Typography className={accordionTitleText}>
                 {`${currentTeam.name} Status`}
               </Typography>
             </AccordionSummary>

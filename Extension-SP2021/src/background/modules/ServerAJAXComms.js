@@ -261,7 +261,7 @@ function validateStatus (status) {
   return ((status >= 200 && status < 300) || status === 401)
 }
 
-function validateAccount (email, password, expiration, context) {
+export function validateAccount (email, password, expiration, context) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}auth/login`,
@@ -275,7 +275,7 @@ function validateAccount (email, password, expiration, context) {
   })
 }
 
-function rolloverToken () {
+export function rolloverToken () {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
@@ -287,7 +287,7 @@ function rolloverToken () {
   })
 }
 
-function getEmojiList () {
+export function getEmojiList () {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
@@ -302,7 +302,7 @@ function getEmojiList () {
   })
 }
 
-function listAffectHistory (userID) {
+export function listAffectHistory (userID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
@@ -317,7 +317,7 @@ function listAffectHistory (userID) {
   })
 }
 
-function getUserStatus (userID) {
+export function getUserStatus (userID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
@@ -331,7 +331,7 @@ function getUserStatus (userID) {
   })
 }
 
-function getFullUserInfo (userID) {
+export function getFullUserInfo (userID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
@@ -345,7 +345,7 @@ function getFullUserInfo (userID) {
   })
 }
 
-function getKarunaSettings () {
+export function getKarunaSettings () {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -359,7 +359,7 @@ function getKarunaSettings () {
   })
 }
 
-function setKarunaSettings (settings) {
+export function setKarunaSettings (settings) {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -374,7 +374,7 @@ function setKarunaSettings (settings) {
   })
 }
 
-function getAliasIdLookupList (context, alias) {
+export function getAliasIdLookupList (context, alias) {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
@@ -389,8 +389,23 @@ function getAliasIdLookupList (context, alias) {
   })
 }
 
+export function setUserAliasValues (userID, context, aliasName, aliasId, avatarURL) {
+  return new Promise((resolve, reject) => {
+    // Send request to server via Axios
+    const config = { headers: authorizationHeader(), withCredentials: true }
+    const requestPromise = Axios.post(`https://${SERVER_CONFIG.HOST_NAME}/${SERVER_CONFIG.ROOT}data/user/update/alias`,
+      { id: userID, context, aliasId, aliasName, avatarURL },
+      config
+    )
+
+    // Listen for server response or error
+    requestPromise.then((response) => { resolve(response.data) })
+    requestPromise.catch((error) => { reject(error) })
+  })
+}
+
 // Retrieve list of teams for user
-function getUserTeams () {
+export function getUserTeams () {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
@@ -404,7 +419,7 @@ function getUserTeams () {
   })
 }
 
-function getTeamInfoAndStatus (teamID) {
+export function getTeamInfoAndStatus (teamID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
@@ -418,7 +433,7 @@ function getTeamInfoAndStatus (teamID) {
   })
 }
 
-function getTeamAffectTemperature (teamID) {
+export function getTeamAffectTemperature (teamID) {
   return new Promise((resolve, reject) => {
     // Request data from the server
     const config = { headers: authorizationHeader(), withCredentials: true, validateStatus }
@@ -432,7 +447,7 @@ function getTeamAffectTemperature (teamID) {
   })
 }
 
-function checkEmail (email) {
+export function checkEmail (email) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -447,7 +462,7 @@ function checkEmail (email) {
   })
 }
 
-function setUserBasicInfo (userID, userBasicInfo) {
+export function setUserBasicInfo (userID, userBasicInfo) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -462,7 +477,7 @@ function setUserBasicInfo (userID, userBasicInfo) {
   })
 }
 
-function setUserAffect (userID, context, affectID, isPrivate) {
+export function setUserAffect (userID, context, affectID, isPrivate) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -477,7 +492,7 @@ function setUserAffect (userID, context, affectID, isPrivate) {
   })
 }
 
-function setCollaboration (userID, collaborationStatus, context) {
+export function setCollaboration (userID, collaborationStatus, context) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -492,7 +507,7 @@ function setCollaboration (userID, collaborationStatus, context) {
   })
 }
 
-function setTimeToRespond (userID, timeToRespond, context) {
+export function setTimeToRespond (userID, timeToRespond, context) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -507,7 +522,7 @@ function setTimeToRespond (userID, timeToRespond, context) {
   })
 }
 
-function setFavoriteAffect (userID, affectID) {
+export function setFavoriteAffect (userID, affectID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -522,7 +537,7 @@ function setFavoriteAffect (userID, affectID) {
   })
 }
 
-function removeFavoriteAffect (userID, affectID) {
+export function removeFavoriteAffect (userID, affectID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -537,7 +552,7 @@ function removeFavoriteAffect (userID, affectID) {
   })
 }
 
-function listFavoriteAffects (userID) {
+export function listFavoriteAffects (userID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -552,7 +567,7 @@ function listFavoriteAffects (userID) {
   })
 }
 
-function setTeamDisabledAffect (teamID, affectID) {
+export function setTeamDisabledAffect (teamID, affectID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -567,7 +582,7 @@ function setTeamDisabledAffect (teamID, affectID) {
   })
 }
 
-function removeTeamDisabledAffect (teamID, affectID) {
+export function removeTeamDisabledAffect (teamID, affectID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true }
@@ -582,7 +597,7 @@ function removeTeamDisabledAffect (teamID, affectID) {
   })
 }
 
-function listTeamDisabledAffects (teamID) {
+export function listTeamDisabledAffects (teamID) {
   return new Promise((resolve, reject) => {
     // Send request to server via Axios
     const config = { headers: authorizationHeader(), withCredentials: true }

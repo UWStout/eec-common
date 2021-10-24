@@ -1,7 +1,7 @@
 // Functions from other background modules
 import { readValue, writeValue, clearValue, retrieveUser } from './DataStorage.js'
 import { getSocket, announceSession, endSession } from './SocketComms.js'
-import { processAjaxRequest } from './ServerAJAXComms.js'
+import { processAjaxRequest, setUserAliasValues } from './ServerAJAXComms.js'
 
 import { isValidContext } from '../../util/contexts.js'
 
@@ -89,6 +89,30 @@ export function setupExtensionCommunication () {
   })
 }
 
+function changedVals (message, keys) {
+  // Setup arrays
+  if (!Array.isArray(keys)) { keys = [keys] }
+
+  // Compare what's stored with what's in the message object
+  for (let i = 0; i < keys.length; i++) {
+    if (message[keys[i]] && readValue(keys[i], message.context) !== message[keys[i]]) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function updateVals (message, keys) {
+  // Setup array
+  if (!Array.isArray(keys)) { keys = [keys] }
+
+  // Loop over keys and update them all
+  for (let i = 0; i < keys.length; i++) {
+    writeValue(keys[i], message[keys[i]], message.context)
+  }
+}
+
 /**
  * Respond to a single message from Chrome.runtime.onMessage. Used to read and write values
  * from extension's LocalStorage only. May also be used for Karuna server AJAX requests in
@@ -146,16 +170,16 @@ function oneTimeMessage (message, sender, sendResponse) {
       // Context is updating for one tab
       case 'context':
         // Are the context values any different than before?
-        if (readValue('userName', message.context) !== message.userName ||
-            readValue('userAppId', message.context) !== message.userAppId ||
-            readValue('teamName', message.context) !== message.teamName ||
-            readValue('channelName', message.context) !== message.channelName ||
-            readValue('avatarSrc', message.context) !== message.avatarSrc) {
-          writeValue('userName', message.userName, message.context)
-          writeValue('userAppId', message.userAppId, message.context)
-          writeValue('teamName', message.teamName, message.context)
-          writeValue('channelName', message.channelName, message.context)
-          writeValue('avatarSrc', message.avatarSrc, message.context)
+        if (changedVals(message, ['userName', 'userAppId', 'teamName', 'channelName', 'avatarSrc'])) {
+          // Has the alias info changed from what is already in local storage
+          if (changedVals(message, ['userName', 'userAppId', 'avatarSrc'])) {
+            // Send new info to server (happens asynchronously, but we don't wait)
+            const userInfo = retrieveUser()
+            setUserAliasValues(userInfo.id, message.context, message.userName, message.userAppId, message.avatarSrc)
+          }
+
+          // Write all the new values to local storage
+          updateVals(message, ['userName', 'userAppId', 'teamName', 'channelName', 'avatarSrc'])
 
           // Echo this message to all listening ports with the same 'context'
           for (const portName in portSessions) {
@@ -164,7 +188,10 @@ function oneTimeMessage (message, sender, sendResponse) {
             }
           }
         }
-        break
+
+        // Indicate success
+        sendResponse('ok')
+        return resolve('ok')
 
       // Retrieve data about logged in user
       case 'getuser': {

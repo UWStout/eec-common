@@ -2,15 +2,16 @@ import React, { useState } from 'react'
 
 import { debounce } from 'debounce'
 
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil'
 import { DisableInputState } from '../data/globalSate/appState.js'
-import { ActiveTeamIDState, TeamAffectTemperature, TeammatesUserInfoState } from '../data/globalSate/teamState.js'
+import { ActiveTeamIDState, TeamAffectTemperature, TeammatesUserInfoState, TeammateStatusUpdateState } from '../data/globalSate/teamState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Typography, List, Grid } from '@material-ui/core'
+import { Typography, List, Grid, Button } from '@material-ui/core'
 
 import StatusListItem from './StatusListItem.jsx'
 import TunneledSearchBar from '../Shared/TunneledSearchBar.jsx'
+import CustomTooltip from '../KarunaConnect/CustomTooltip.jsx'
 
 // import { makeLogger } from '../../../util/Logger.js'
 // const LOG = makeLogger('Team Status Details', 'pink', 'black')
@@ -38,6 +39,7 @@ export default function TeamStatusDetails (props) {
   const activeTeamID = useRecoilValue(ActiveTeamIDState)
   const teammatesInfo = useRecoilValue(TeammatesUserInfoState)
   const teamTemperature = useRecoilValue(TeamAffectTemperature)
+  const triggerTeamUpdate = useResetRecoilState(TeammateStatusUpdateState)
 
   // Current search text (if any)
   const [searchText, setSearchText] = useState('')
@@ -57,9 +59,18 @@ export default function TeamStatusDetails (props) {
   // Ensure there are teammates to display
   if (!Array.isArray(teammatesInfo) || teammatesInfo.length < 1) {
     return (
-      <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
-        {'Failed to retrieve teammates for active team'}
-      </Typography>
+      <Grid item container xs={12} spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
+            {'Failed to retrieve teammates for active team'}
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Button variant="contained" fullWidth onClick={triggerTeamUpdate} disabled={disableAllInput}>
+            {'Retry'}
+          </Button>
+        </Grid>
+      </Grid>
     )
   }
 
@@ -78,11 +89,13 @@ export default function TeamStatusDetails (props) {
     <Grid container direction='row' item xs={12} className={rootGridStyle} wrap="wrap" spacing={2}>
       {/* For searching through the possible moods */}
       <Grid item xs={12}>
-        <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
-          {typeof teamTemperature === 'number'
-            ? `Team Temperature is ${teamTemperature.toFixed(2)}`
-            : 'No team temperature'}
-        </Typography>
+        <CustomTooltip title="Average positivity of moods">
+          <Typography variant="body1" className={disableAllInput ? disabledText : ''}>
+            {typeof teamTemperature === 'number'
+              ? `🌡️ Team Temp: ${teamTemperature.toFixed(2)}`
+              : 'No team temperature'}
+          </Typography>
+        </CustomTooltip>
       </Grid>
       <Grid item xs={12}>
         <TunneledSearchBar
