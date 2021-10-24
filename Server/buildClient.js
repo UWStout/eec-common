@@ -11,6 +11,7 @@ const publicOptions = {
   outdir: './public',
   entryPoints: [
     './client/InstructionsPage.jsx',
+    './client/AdvancedInstallPage.jsx',
     './client/TeamCulturePage.jsx'
   ]
 }

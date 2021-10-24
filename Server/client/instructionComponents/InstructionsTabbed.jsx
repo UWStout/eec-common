@@ -12,7 +12,7 @@ import BasicInstallation from './instructionTabs/BasicInstallation.jsx'
 import BasicUsage from './instructionTabs/BasicUsage.jsx'
 import AccountCreation from './instructionTabs/AccountCreation.jsx'
 import OtherPages from './instructionTabs/OtherPages.jsx'
-import AdvancedInstallation from './instructionTabs/AdvancedInstallation.jsx'
+// import AdvancedInstallation from './instructionTabs/AdvancedInstallation.jsx'
 
 export function a11yPropsTab (name) {
   return {
@@ -40,8 +40,8 @@ const TAB_INFO = [
   { name: 'install-basic', label: 'Install Extension' },
   { name: 'account-creation', label: 'Create Account' },
   { name: 'basic-usage', label: 'Basic Usage' },
-  { name: 'other-pages', label: 'Other Pages' },
-  { name: 'install-advanced', label: 'Advanced Installation' }
+  { name: 'other-pages', label: 'Other Pages' }
+  // { name: 'install-advanced', label: 'Advanced Installation' }
 ]
 
 export default function InstructionsTabbed () {
@@ -61,8 +61,8 @@ export default function InstructionsTabbed () {
     <BasicInstallation key={0} />,
     <AccountCreation key={1} />,
     <BasicUsage key={2} />,
-    <OtherPages key={3} />,
-    <AdvancedInstallation key={4} />
+    <OtherPages key={3} />
+    // <AdvancedInstallation key={4} />
   ]
 
   // Hash change listener function
@@ -72,7 +72,7 @@ export default function InstructionsTabbed () {
       case '#account-creation': setActiveIndex(1); break
       case '#basic-usage': setActiveIndex(2); break
       case '#other-pages': setActiveIndex(3); break
-      case '#advanced-installation': setActiveIndex(4); break
+      // case '#advanced-installation': setActiveIndex(4); break
     }
   }, [])
 
