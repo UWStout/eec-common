@@ -15,10 +15,12 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#ffffff00'
   },
   textStyle: {
-    overflowX: 'hidden'
+    overflowX: 'hidden',
+    maxWidth: '60%'
   },
   favButtonStyle: {
-    color: (props) => (props.isFavorite ? theme.palette.primary.light : theme.palette.grey[400]),
+    color: (props) => (props.isFavorite ? theme.palette.primary.light : theme.palette.grey[300]),
+    padding: theme.spacing(0.5),
     '&:hover': {
       color: (props) => (props.isFavorite ? theme.palette.primary.dark : theme.palette.grey[500]),
       backgroundColor: '#ffffff00'

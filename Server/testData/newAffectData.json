@@ -1,8 +1,24 @@
 [{
-    "name": "Rested, Restored",
-    "description": "Smiling Face",
-    "characterCodes": ["☺️"],
-    "related": [],
+    "name": "Admiration",
+    "description": "Star-Struck",
+    "characterCodes": ["🤩"],
+    "related": ["Impressed", "Pride", "Amazement"],
+    "positivity": 1,
+    "active": true
+  },
+  {
+    "name": "Bored, Detached",
+    "description": "Yawning Face",
+    "characterCodes": ["🥱"],
+    "related": ["Uninterested"],
+    "positivity": -1,
+    "active": true
+  },
+  {
+    "name": "Grateful, Thankful",
+    "description": "Partying Face",
+    "characterCodes": ["🥳"],
+    "related": ["Celebrate", "Congrats", "Congratulations"],
     "positivity": 1,
     "active": true
   },
@@ -71,10 +87,26 @@
     "active": true
   },
   {
+    "name": "Rested, Restored",
+    "description": "Smiling Face with Sunglasses",
+    "characterCodes": ["😎"],
+    "related": ["Ready", "Energized"],
+    "positivity": 1,
+    "active": true
+  },
+  {
     "name": "Jealous",
     "description": "Smirking Face",
     "characterCodes": ["😏"],
     "related": ["Envy", "Envious"],
+    "positivity": 0,
+    "active": true
+  },
+  {
+    "name": "Ambivalent, Neutral",
+    "description": "Face with Straight Mouth",
+    "characterCodes": ["😐"],
+    "related": [],
     "positivity": 0,
     "active": true
   },
@@ -98,8 +130,8 @@
     "name": "Confused",
     "description": "Confused Face",
     "characterCodes": ["😕"],
-    "related": [],
-    "positivity": 0,
+    "related": ["Confusion"],
+    "positivity": -1,
     "active": true
   },
   {
@@ -122,7 +154,7 @@
     "name": "Furious, Outraged",
     "description": "Pouting Face",
     "characterCodes": ["😡"],
-    "related": ["Boiling"],
+    "related": ["Boiling", "Angry"],
     "positivity": -1,
     "active": true
   },
@@ -138,8 +170,8 @@
     "name": "Fatigued, Burned-Out",
     "description": "Sleepy Face",
     "characterCodes": ["😪"],
-    "related": [],
-    "positivity": 0,
+    "related": ["Exhausted", "Exhaustion"],
+    "positivity": -1,
     "active": true
   },
   {
@@ -163,30 +195,6 @@
     "description": "Slightly Smiling Face",
     "characterCodes": ["🙂"],
     "related": ["Peacefulness", "Serenity"],
-    "positivity": 1,
-    "active": true
-  },
-  {
-    "name": "Admiration",
-    "description": "Star-Struck",
-    "characterCodes": ["🤩"],
-    "related": ["Impressed", "Pride", "Amazement"],
-    "positivity": 1,
-    "active": true
-  },
-  {
-    "name": "Bored, Detached",
-    "description": "Yawning Face",
-    "characterCodes": ["🥱"],
-    "related": [],
-    "positivity": -1,
-    "active": true
-  },
-  {
-    "name": "Grateful, Thankful",
-    "description": "Partying Face",
-    "characterCodes": ["🥳"],
-    "related": [],
     "positivity": 1,
     "active": true
   }

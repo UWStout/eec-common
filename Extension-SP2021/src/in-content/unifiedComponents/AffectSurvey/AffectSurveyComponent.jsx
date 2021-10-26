@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
     padding: 0
   },
   listItem: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2)
+    paddingLeft: theme.spacing(0.5),
+    paddingRight: theme.spacing(0.5)
   },
   innerList: {
     overflowY: 'auto',
@@ -57,7 +57,9 @@ function searchFilter (fullList, searchText) {
     const text = searchText.toLowerCase()
     return (
       (curItem.name && curItem.name.toLowerCase().includes(text)) ||
-      (curItem.description && curItem.description.toLowerCase().includes(text))
+      (curItem.description && curItem.description.toLowerCase().includes(text)) ||
+      (Array.isArray(curItem.related) &&
+        curItem.related.some((rel) => (rel.toLowerCase().includes(text))))
     )
   })
 }
@@ -221,8 +223,8 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
                 <List
                   role={'list'}
                   component="div"
-                  disablePadding
                   aria-label={'Recent Emojis'}
+                  dense
                 >
                   {recentEmojiElements}
                 </List>
@@ -247,7 +249,12 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
             </ListItem>
             <Collapse in={expanded === 'favorites'} timeout="auto" unmountOnExit>
               <div className={innerList}>
-                <List aria-label={'Favorite Emojis'} role={'list'} component="div" disablePadding>
+                <List
+                  aria-label={'Favorite Emojis'}
+                  role={'list'}
+                  component="div"
+                  dense
+                >
                   {favEmojiElements}
                 </List>
               </div>
@@ -273,7 +280,12 @@ const AffectSurveyComponent = React.forwardRef((props, ref) => {
               unmountOnExit
             >
               <div className={innerList}>
-                <List aria-label={'All Emojis'} role={'list'} component="div" disablePadding>
+                <List
+                  aria-label={'All Emojis'}
+                  role={'list'}
+                  component="div"
+                  dense
+                >
                   {allEmojiElements}
                 </List>
               </div>
