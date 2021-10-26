@@ -341,11 +341,10 @@ export function retrieveTeamAffectTemperature (teamID) {
     sendMessageToBackground(
       { type: 'ajax-teamAffectTemperature', teamID },
       'N/A', // Context does not matter
-      'Retrieving teammates info and status failed: ',
-      (userInfo) => { return resolve(userInfo) },
+      'Retrieving team temperature failed: ',
+      (temperature) => { return resolve(temperature) },
       (message) => {
-        LOG.error('Error retrieving team temperature')
-        LOG.error(message)
+        LOG('Error retrieving team temperature')
         return reject(new Error(message))
       }
     )
@@ -411,9 +410,8 @@ export function retrieveKarunaSettings () {
       'Retrieving karuna settings: ',
       (karunaSettings) => { return resolve(karunaSettings) },
       (message) => {
-        LOG.error('Error retrieving karuna settings')
-        LOG.error(message)
-        return reject(new Error(message))
+        LOG('Failed to retrieve karuna settings')
+        return resolve({})
       }
     )
   })

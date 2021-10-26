@@ -175,7 +175,9 @@ function oneTimeMessage (message, sender, sendResponse) {
           if (changedVals(message, ['userName', 'userAppId', 'avatarSrc'])) {
             // Send new info to server (happens asynchronously, but we don't wait)
             const userInfo = retrieveUser()
-            setUserAliasValues(userInfo.id, message.context, message.userName, message.userAppId, message.avatarSrc)
+            if (userInfo?.id) {
+              setUserAliasValues(userInfo.id, message.context, message.userName, message.userAppId, message.avatarSrc)
+            }
           }
 
           // Write all the new values to local storage

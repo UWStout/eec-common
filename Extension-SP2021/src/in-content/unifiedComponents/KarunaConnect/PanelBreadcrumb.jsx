@@ -15,6 +15,9 @@ import TeamTabs from './TeamTabs.jsx'
 const useStyles = makeStyles((theme) => ({
   rootStyle: {
     margin: theme.spacing(0, 0, 2, 0)
+  },
+  disableStyle: {
+    color: theme.palette.text.disabled
   }
 }))
 
@@ -27,9 +30,11 @@ const Divider = withStyles((theme) => ({
 function BackButton (props) {
   return (
     <Tooltip title="Go Back" PopperProps={{ disablePortal: true }}>
-      <IconButton aria-label='Back' size='small' {...props}>
-        <KeyboardArrowLeft fontSize="inherit" />
-      </IconButton>
+      <div>
+        <IconButton aria-label='Back' size='small' {...props}>
+          <KeyboardArrowLeft fontSize="inherit" />
+        </IconButton>
+      </div>
     </Tooltip>
   )
 }
@@ -37,9 +42,11 @@ function BackButton (props) {
 function DismissButton (props) {
   return (
     <Tooltip title="Return Home" PopperProps={{ disablePortal: true }}>
-      <IconButton aria-label='Return Home' size='small' {...props}>
-        <Cancel fontSize="inherit" />
-      </IconButton>
+      <div>
+        <IconButton aria-label='Return Home' size='small' {...props}>
+          <Cancel fontSize="inherit" />
+        </IconButton>
+      </div>
     </Tooltip>
   )
 }
@@ -47,9 +54,11 @@ function DismissButton (props) {
 function HideButton (props) {
   return (
     <Tooltip title="Hide the Connect Panel" PopperProps={{ disablePortal: true }}>
-      <IconButton aria-label='Hide Panel' size='small' {...props}>
-        <KeyboardArrowRight fontSize="inherit" />
-      </IconButton>
+      <div>
+        <IconButton aria-label='Hide Panel' size='small' {...props}>
+          <KeyboardArrowRight fontSize="inherit" />
+        </IconButton>
+      </div>
     </Tooltip>
   )
 }
@@ -59,7 +68,7 @@ export default function PanelBreadcrumbs (props) {
   const { onClose, noBack, noDismiss } = props
 
   // Create styling class names
-  const { rootStyle } = useStyles()
+  const { rootStyle, disableStyle } = useStyles()
 
   // Get global activity stack info
   const activityStack = useRecoilValue(ConnectActivityStackState)
@@ -86,7 +95,7 @@ export default function PanelBreadcrumbs (props) {
       <Grid container item xs={12} justifyContent="space-between" alignItems="center">
         {activityStack.length > 1 && !noBack &&
           <BackButton onClick={backCallback} disabled={disableAllInput} />}
-        <Typography variant="h6" component="h2">
+        <Typography variant="h6" component="h2" className={disableAllInput ? disableStyle : ''}>
           {activityStack.length > 1 ? ACTIVITIES[currentActivityKey].title : 'Karuna Connect'}
         </Typography>
         {activityStack.length <= 1 &&
@@ -94,12 +103,12 @@ export default function PanelBreadcrumbs (props) {
         {activityStack.length > 1 && !noDismiss &&
           <DismissButton onClick={dismissCallback} disabled={disableAllInput} />}
       </Grid>
+
       <Grid item xs={12}>
         <Divider />
       </Grid>
+
       <Grid item xs={12}>
-        {/* AIW this is a placeholder for an eventual tabbed teamName carousel component */}
-        {/* <Typography variant="caption">{teammatesInfo?.length > 0 ? teammatesInfo[0].teamName : 'Unknown Team'}</Typography> */}
         <TeamTabs />
       </Grid>
     </Grid>

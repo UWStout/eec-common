@@ -5,7 +5,6 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { Typography, Badge } from '@material-ui/core'
 import { Timer, Help } from '@material-ui/icons'
 
-// import CustomTooltip from '../KarunaConnect/CustomTooltip.jsx'
 import { TimeToRespondShape } from '../data/dataTypeShapes.js'
 
 const useStyles = makeStyles((theme) => ({
@@ -37,7 +36,6 @@ export default function TimeToRespondIcon (props) {
   const { disabledText } = useStyles()
 
   return (
-    // <CustomTooltip {...restProps} title={timeToRespond ? `${timeToRespond.time} ${timeToRespond.units}` : 'Unknown'}>
     <StyledBadge
       badgeContent={(timeToRespond ? `${timeToRespond.time}${timeToRespond.units}` : '')}
       invisible={!timeToRespond}
@@ -48,7 +46,6 @@ export default function TimeToRespondIcon (props) {
         {rawTimeToRespondIcon(timeToRespond?.time, fontSize)}
       </Typography>
     </StyledBadge>
-    // </CustomTooltip>
   )
 }
 

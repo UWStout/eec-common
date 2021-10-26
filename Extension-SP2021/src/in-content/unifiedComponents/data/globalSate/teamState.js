@@ -151,12 +151,12 @@ export const TeamAffectTemperature = selector({
   key: 'TeamAffectTemperature',
   get: async ({ get }) => {
     const activeTeamID = get(ActiveTeamIDState)
+    if (!activeTeamID) { return 'N/A' }
     try {
       const teamTemperature = await HELPER.retrieveTeamAffectTemperature(activeTeamID, getMessagingContext())
       return teamTemperature
     } catch (err) {
-      LOG.error(`Failed to retrieve temperature for team "${activeTeamID}"`)
-      LOG.error(err)
+      LOG(`Failed to retrieve temperature for team "${activeTeamID}"`)
       return 'N/A'
     }
   }
