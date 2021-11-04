@@ -36,16 +36,15 @@ router.post('/wizardMessage', authenticateToken, async (req, res) => {
     res.status(400).json({ invalid: true, message: 'correspondentID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
-  // Attempt to create org
-  debug('logging wizard message')
-  try {
-    await DBLog.logWizardMessage(message, correspondentID)
-    return res.json({ success: true })
-  } catch (error) {
-    console.error('Failed to log wizard message')
-    console.error(error)
-    return res.status(500).json({ error: true, message: 'Error while logging wizard message' })
-  }
+  // debug('logging wizard message')
+  // try {
+  //   await DBLog.logWizardMessage(message, correspondentID)
+  //   return res.json({ success: true })
+  // } catch (error) {
+  //   console.error('Failed to log wizard message')
+  //   console.error(error)
+  //   return res.status(500).json({ error: true, message: 'Error while logging wizard message' })
+  // }
 })
 
 // 21. test logController's logUserMessage (message, correspondentID, userID): TO-DO: BROKEN
@@ -67,16 +66,15 @@ router.post('/userMessage', authenticateToken, async (req, res) => {
     res.status(400).json({ invalid: true, message: 'userID must be a single String of 12 bytes or a string of 24 hex characters' })
   }
 
-  // Attempt to create org
-  debug('logging user message')
-  try {
-    await DBLog.logUserMessage(message, correspondentID, userID)
-    return res.json({ success: true })
-  } catch (error) {
-    console.error('Failed to log user message')
-    console.error(error)
-    return res.status(500).json({ error: true, message: 'Error while logging user message' })
-  }
+  // debug('logging user message')
+  // try {
+  //   await DBLog.logUserMessage(message, correspondentID, userID)
+  //   return res.json({ success: true })
+  // } catch (error) {
+  //   console.error('Failed to log user message')
+  //   console.error(error)
+  //   return res.status(500).json({ error: true, message: 'Error while logging user message' })
+  // }
 })
 
 export default router

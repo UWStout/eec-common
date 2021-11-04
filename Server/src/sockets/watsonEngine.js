@@ -28,11 +28,11 @@ export function sendWatsonResponse (responseText, clientPromptObj, clientContext
     intents
   }
 
-  DBLog.logWatsonMessage(messageObj, clientPromptObj, userInfo.id)
-    .catch((err) => {
-      debug('Logging of watson message failed')
-      debug(err)
-    })
+  // DBLog.logWatsonMessage(messageObj, clientPromptObj, userInfo.id)
+  //   .catch((err) => {
+  //     debug('Logging of watson message failed')
+  //     debug(err)
+  //   })
 
   console.log('sending response from watson')
   this.emit('karunaMessage', messageObj)

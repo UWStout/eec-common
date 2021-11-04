@@ -223,19 +223,17 @@ export async function socketMessageSend (message) {
   }
 
   // Log the message for telemetry and analysis
-  // TODO: do we have the ID of the person receiving the message?
-  DBLog.logUserMessage(message, this.request.session?.replyStatus?.replyId, userInfo.id)
-    .catch((err) => {
-      debug('client message logging failed')
-      debug(err)
-    })
+  // DBLog.logUserMessage(message, this.request.session?.replyStatus?.replyId, userInfo.id)
+  //   .catch((err) => {
+  //     debug('client message logging failed')
+  //     debug(err)
+  //   })
 
   // Hook to intelligence core, expect a promise in return
   if (isWatsonEnabled()) {
     debug(`[WS:${this.id}] message sent to watson from ${message.context}`)
     Analysis.analyzeMessage(message, userInfo.id, message.context, true)
       .then((result) => {
-        // TODO: Consider something more sophisticated here
         const messageText = result.output.generic[0].text
         sendWatsonResponse.bind(this)(
           messageText,

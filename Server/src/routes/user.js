@@ -107,14 +107,17 @@ router.post('/update', authenticateToken, async (req, res) => {
 
     // Sanitize non-array teams values and union with existing teams
     if (!Array.isArray(userDetails.teams)) { userDetails.teams = [] }
-    let teams = [...userDetails.teams]
+
+    // Build unique list of teams (avoid duplicates)
+    const teamSet = new Set(userDetails.teams)
     if (Array.isArray(req.body.teams)) {
-      const uniqueTeams = req.body.teams.filter((item) => userDetails.teams.indexOf(item) < 0)
-      teams = [...teams, ...uniqueTeams]
+      req.body.teams.forEach((newTeam) => {
+        if (!teamSet.has(newTeam)) { teamSet.add(newTeam) }
+      })
     }
 
-    // Ensure all teams are ObjectIDs
-    teams = teams.map((curTeamID) => (new ObjectId(curTeamID)))
+    // Ensure teams is an array and all are are ObjectId objects
+    const teams = Array.from(teamSet).map((curTeamID) => (new ObjectId(curTeamID)))
 
     // Update the user in the DB
     await DBUser.updateUser(userID, {
@@ -510,9 +513,11 @@ router.post('/timeToRespond', authenticateToken, async (req, res) => {
   }
 
   // Check individual parts of TTR
-  const time = timeToRespond.time || -1
+  let time = timeToRespond.time || 0
   const units = timeToRespond.units || 'm'
   const automatic = timeToRespond.automatic || false
+
+  if (typeof time !== 'number' || time < 0) { time = 0 }
 
   // Attempt to update user time to respond
   try {

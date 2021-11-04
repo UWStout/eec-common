@@ -42,7 +42,7 @@ export default function RecoveryRequest (props) {
   const classes = useStyles()
 
   // Track password and submit state
-  const [email, setEmail] = useState(defaultEmail)
+  const [email, setEmail] = useState(defaultEmail || '')
   const [helperText, setHelperText] = useState(' ')
   const [emailEnabled, setEmailEnabled] = useState(true)
   const [submitEnabled, setSubmitEnabled] = useState(false)

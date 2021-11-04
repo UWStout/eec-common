@@ -135,11 +135,11 @@ export async function socketWizardMessage (messageInfo) {
 
     // Update message text and save in log (not waiting on logging, but we do catch errors)
     messageInfo.content = messageText
-    DBLog.logWizardMessage(messageInfo, userInfo.id)
-      .catch((err) => {
-        debug('Logging of wizard message failed')
-        debug(err)
-      })
+    // DBLog.logWizardMessage(messageInfo, userInfo.id)
+    //   .catch((err) => {
+    //     debug('Logging of wizard message failed')
+    //     debug(err)
+    //   })
 
     // Send the message on to client
     debug(`[WS:${this.id}] wizard message for client ${messageInfo.clientEmail} in ${messageInfo.context}`)
