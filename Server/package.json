@@ -1,6 +1,6 @@
 {
   "name": "karuna-server",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Backend server / RESTful API for the Karuna communication tool.",
   "type": "module",
   "scripts": {
