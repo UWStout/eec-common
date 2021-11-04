@@ -60,9 +60,9 @@ export default function TeamEditDialog (props) {
   }, [teamId])
 
   const closeDialog = (updatedTeam) => {
-    setTeamName('')
-    setTeamDescription('')
-    setTeamOrgId('')
+    // setTeamName('')
+    // setTeamDescription('')
+    // setTeamOrgId('')
     if (onDialogClose) {
       onDialogClose(updatedTeam)
     }

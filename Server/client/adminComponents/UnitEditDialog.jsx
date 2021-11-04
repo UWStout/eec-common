@@ -45,8 +45,8 @@ export default function UnitEditDialog (props) {
   }, [unitId])
 
   const closeDialog = (updatedUnit) => {
-    setUnitName('')
-    setUnitDescription('')
+    // setUnitName('')
+    // setUnitDescription('')
     if (onDialogClose) {
       onDialogClose(updatedUnit)
     }

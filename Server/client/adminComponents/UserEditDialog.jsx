@@ -60,11 +60,11 @@ export default function UserEditDialog (props) {
   }, [userId])
 
   const closeDialog = (updatedUser) => {
-    setFullName('')
-    setPreferredName('')
-    setPreferredPronouns('')
-    setEmail('')
-    setTeamList([])
+    // setFullName('')
+    // setPreferredName('')
+    // setPreferredPronouns('')
+    // setEmail('')
+    // setTeamList([])
     if (onDialogClose) {
       onDialogClose(updatedUser)
     }
