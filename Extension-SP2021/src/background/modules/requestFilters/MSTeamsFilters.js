@@ -93,7 +93,7 @@ export function listener (details) {
         user: readValue('userName', CONTEXT.MS_TEAMS),
         team: readValue('teamName', CONTEXT.MS_TEAMS),
         channel: readValue('channelName', CONTEXT.MS_TEAMS),
-        data: requestContent
+        data: 'REDACTED' // requestContent
       }
       getSocket().emit('messageSend', wsMsg)
     }

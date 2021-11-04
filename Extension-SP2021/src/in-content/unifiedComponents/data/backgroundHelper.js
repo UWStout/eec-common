@@ -32,7 +32,6 @@ export function sendMessageToBackground (messageObject, context = 'none',
 }
 
 export function login (email, password, expiration, onFailed, context) {
-  LOG(`Attempting to login with "${email}" and "${password}"`)
   sendMessageToBackground(
     { type: 'ajax-validateAccount', email, password, expiration },
     context,

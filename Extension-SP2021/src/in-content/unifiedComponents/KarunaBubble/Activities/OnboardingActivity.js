@@ -10,7 +10,7 @@ export const OnboardingActivity = {
         ...ACTIVITIES.KARUNA_MESSAGE,
         message: {
           content: 'Your MOOD STATUS is literally how you feel in general. It may also be how you feel about the project. It is important ' +
-          'to be honest as it is a key part of building empathy with your team, however you can always choose weather or not to share ' +
+          'to be honest as it is a key part of building empathy with your team, however you can always choose whether or not to share ' +
           'your mood with the rest of your team'
         }
       },
@@ -19,7 +19,7 @@ export const OnboardingActivity = {
       {
         ...ACTIVITIES.KARUNA_MESSAGE,
         message: {
-          content: 'Your COLLABORATION STATUS is weather or not you are currently willing to work with someone else on the team. ' +
+          content: 'Your COLLABORATION STATUS is whether or not you are currently willing to work with someone else on the team. ' +
           'You might be OPEN to collaboration, ALREADY collaborating with someone, or FOCUSED and prefer not to collaborate.'
         }
       },

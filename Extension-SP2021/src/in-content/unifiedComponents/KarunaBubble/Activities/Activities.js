@@ -27,7 +27,7 @@ export const ACTIVITIES = {
   },
   STATUS_MESSAGE: {
     key: 'STATUS_MESSAGE',
-    title: 'Status of Collaborators'
+    title: 'Collaborator Status'
   },
   KARUNA_MESSAGE: {
     key: 'KARUNA_MESSAGE',

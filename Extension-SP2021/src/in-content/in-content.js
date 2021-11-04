@@ -147,12 +147,15 @@ function mountKaruna () {
 
   // DISCORD: Prevent focus stealing and keyboard input stealing
   if (IS_DISCORD) {
-    document.addEventListener('focusin', (e) => {
-      if (e.target.hasAttribute('data-slate-editor')) {
-        LOG('PREVENTING FOCUS STEALING', e)
-        e.stopPropagation()
-      }
-    }, true)
+    // Disabled for now / Breaks mentions in discord (Seems to not be needed)
+    // document.addEventListener('focusin', (e) => {
+    //   if (e.target.hasAttribute('data-slate-editor')) {
+    //     LOG('PREVENTING FOCUS STEALING', e)
+    //     e.stopPropagation()
+    //   }
+    // }, true)
+
+    // This works okay and allows typing in our text fields
     window.addEventListener('keydown', (e) => {
       if (e.key !== 'Enter') {
         e.stopImmediatePropagation()

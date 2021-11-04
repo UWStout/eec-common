@@ -79,7 +79,7 @@ export function listener (details) {
         user: readValue('userName', CONTEXT.DISCORD),
         team: readValue('teamName', CONTEXT.DISCORD),
         channel: readValue('channelName', CONTEXT.DISCORD),
-        data: requestContent
+        data: 'REDACTED' // requestContent
       }
       getSocket().emit('messageSend', wsMsg)
     }

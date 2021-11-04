@@ -77,7 +77,7 @@ export function listener (details) {
         user: readValue('userName', CONTEXT.SLACK),
         team: readValue('teamName', CONTEXT.SLACK),
         channel: readValue('channelName', CONTEXT.SLACK),
-        data: '[none]'
+        data: 'REDACTED' // requestContent
       }
       getSocket().emit('messageSend', wsMsg)
     }

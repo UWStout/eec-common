@@ -55,7 +55,7 @@ export default function KarunaBubble (props) {
     // NOTE: This will automatically update message of previous activity
     emitter.on('statusMessage', (message) => {
       pushBubbleActivity({
-        key: ACTIVITIES.STATUS_MESSAGE.key,
+        ...ACTIVITIES.STATUS_MESSAGE,
         message: message
       })
       setActiveStatusMessage(message)

@@ -8,8 +8,8 @@ import { withStyles, makeStyles } from '@material-ui/core/styles'
 import { Tooltip as MuiTooltip, Zoom, Grid, Typography, IconButton } from '@material-ui/core'
 import { Close as CloseIcon } from '@material-ui/icons'
 
-import { makeLogger } from '../../../../util/Logger.js'
-const LOG = makeLogger('Bubble Activity Base', 'pink', 'black')
+// import { makeLogger } from '../../../../util/Logger.js'
+// const LOG = makeLogger('Bubble Activity Base', 'pink', 'black')
 
 // Create our pre-styled tooltip component
 const Tooltip = withStyles((theme) => ({

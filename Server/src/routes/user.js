@@ -109,15 +109,23 @@ router.post('/update', authenticateToken, async (req, res) => {
     if (!Array.isArray(userDetails.teams)) { userDetails.teams = [] }
 
     // Build unique list of teams (avoid duplicates)
-    const teamSet = new Set(userDetails.teams)
+    let teams = []
     if (Array.isArray(req.body.teams)) {
+      // Eliminate duplicates
+      const teamSet = new Set()
       req.body.teams.forEach((newTeam) => {
         if (!teamSet.has(newTeam)) { teamSet.add(newTeam) }
       })
+
+      // Convert to array
+      teams = Array.from(teamSet)
+    } else {
+      // Don't change teams if a new array is not provided (tick with the old ones)
+      teams = [...userDetails.teams]
     }
 
     // Ensure teams is an array and all are are ObjectId objects
-    const teams = Array.from(teamSet).map((curTeamID) => (new ObjectId(curTeamID)))
+    teams = teams.map((curTeamID) => (new ObjectId(curTeamID)))
 
     // Update the user in the DB
     await DBUser.updateUser(userID, {
