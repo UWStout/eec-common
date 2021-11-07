@@ -157,7 +157,12 @@ function mountKaruna () {
 
     // This works okay and allows typing in our text fields
     window.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter') {
+      if (e.key === 'Enter') {
+        // Pass along to extension as a 'submit' event
+        if (statusEmitter) {
+          statusEmitter.emit('submitRequested')
+        }
+      } else {
         e.stopImmediatePropagation()
       }
     }, true)

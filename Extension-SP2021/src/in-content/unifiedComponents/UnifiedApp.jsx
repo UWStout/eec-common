@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { useSetRecoilState } from 'recoil'
-import { MessagingContextState, TextBoxListState, TypeToActiveInputState } from './data/globalSate/appState.js'
+import { MessagingContextState, TextBoxListState, TypeToActiveInputState, SubmitRequestState } from './data/globalSate/appState.js'
 import { TeammateStatusUpdateState } from './data/globalSate/teamState.js'
 import { LoggedInUserState, AliasListState } from './data/globalSate/userState.js'
 
@@ -60,15 +60,20 @@ export default function UnifiedApp (props) {
     })
   }, [emitter, setTeammateStatusUpdate])
 
-  // Capture tunneled keys
+  // Capture and bounce key events
   const typeToActiveInput = useSetRecoilState(TypeToActiveInputState)
+  const setSubmitRequest = useSetRecoilState(SubmitRequestState)
   useEffect(() => {
     emitter.on('tunnel-key', (keyEvent) => {
       if (keyEvent.type === 'keydown') {
         typeToActiveInput(keyEvent.key)
       }
     })
-  }, [emitter, typeToActiveInput])
+
+    emitter.on('submitRequested', () => {
+      setSubmitRequest(true)
+    })
+  }, [emitter, setSubmitRequest, typeToActiveInput])
 
   // Track logged in state globally
   const setTextBoxList = useSetRecoilState(TextBoxListState)

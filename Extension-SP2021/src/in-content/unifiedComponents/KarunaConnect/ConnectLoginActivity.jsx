@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-import { DisableInputState } from '../data/globalSate/appState.js'
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useRecoilState } from 'recoil'
+import { DisableInputState, SubmitRequestState } from '../data/globalSate/appState.js'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Button, FormControlLabel, Checkbox } from '@material-ui/core'
@@ -33,6 +33,7 @@ export default function ConnectLoginActivity (props) {
 
   // Get global input state
   const disableAllInput = useRecoilValue(DisableInputState)
+  const [submitRequested, setSubmitRequest] = useRecoilState(SubmitRequestState)
 
   const handleCheckboxChange = (e) => {
     setRememberMe(e.target.checked)
@@ -55,6 +56,13 @@ export default function ConnectLoginActivity (props) {
     )
   }
 
+  useEffect(() => {
+    if (submitRequested && submitEnabled) {
+      setSubmitRequest(false)
+      validateLogin()
+    }
+  }, [submitRequested, submitEnabled])
+
   return (
     <Grid container item direction={'column'} spacing={2} role={'region'} aria-label={'Login Activity'}>
       <Grid item>
@@ -68,7 +76,7 @@ export default function ConnectLoginActivity (props) {
           error={errorMessage !== ''}
           disabled={disableAllInput}
         />
-        <ExternalLink href={`https://${HOST_NAME}/Register.html`} small disabled={disableAllInput}>
+        <ExternalLink href={`https://${HOST_NAME}/Register.html`} small disabled={disableAllInput} tabIndex={-1}>
           {'I need an account'}
         </ExternalLink>
       </Grid>
@@ -86,7 +94,7 @@ export default function ConnectLoginActivity (props) {
           helperText={errorMessage !== '' ? errorMessage : ' '}
           disabled={disableAllInput}
         />
-        <ExternalLink href={`https://${HOST_NAME}/Recovery.html`} small disabled={disableAllInput}>
+        <ExternalLink href={`https://${HOST_NAME}/Recovery.html`} small disabled={disableAllInput} tabIndex={-1}>
           {'Forgot password?'}
         </ExternalLink>
       </Grid>

@@ -75,6 +75,12 @@ export const DisableInputState = atom({
   default: true
 })
 
+/** Indicate that the user has requested submitting a form */
+export const SubmitRequestState = atom({
+  key: 'SubmitRequestState',
+  default: false
+})
+
 /** Track which TextField input is focused (if any) */
 export const ActiveInputRefState = atom({
   key: 'ActiveInputRefState',
