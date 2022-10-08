@@ -1,5 +1,12 @@
 # Electronic Empathetic Communication Project
 
+## End of Life
+As of May 2022, this project is no longer in active development.  We may resume development in the future
+but for now, it will not be maintained further and it is not in active use at Stout or in any ongoing
+research projects by the original authors.
+
+If you are interested in reviving or funding further work on this project, please contact Seth Berrier.
+
 ## Introduction
 This repository contains code for the larger research into enabling more empathetic communication over
 electronic mediums. It targets team chat tools (like Microsoft Teams, Discord, Slack, and Google Meet).
